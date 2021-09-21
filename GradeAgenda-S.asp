@@ -65,7 +65,7 @@ end if
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=Agenda-S&Pers=1'>Agenda</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(escreveData)%>");
@@ -92,8 +92,8 @@ end if
 </script>
 
 <div class="col-md-offset-10 col-md-2 text-right" style="padding: 5px">
-    <a href="javascript:loadAgenda('<%=dateadd("d", -7, Data)%>', $('#ProfissionalID').val() );" id="anterior" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></a>
-    <a href="javascript:loadAgenda('<%=dateadd("d", 7, Data)%>', $('#ProfissionalID').val() );" id="proxima" class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></a>
+    <a href="javascript:loadAgenda('<%=dateadd("d", -7, Data)%>', $('#ProfissionalID').val() );" id="anterior" class="btn btn-default btn-sm"><i class="far fa-chevron-left"></i></a>
+    <a href="javascript:loadAgenda('<%=dateadd("d", 7, Data)%>', $('#ProfissionalID').val() );" id="proxima" class="btn btn-default btn-sm"><i class="far fa-chevron-right"></i></a>
     <a href="javascript:loadAgenda('<%=date()%>', $('#ProfissionalID').val() );" class="btn btn-default btn-sm">Hoje</a>
 </div>
 
@@ -267,7 +267,7 @@ while diaS<n
                             <td colspan="4">
                                 <%if UtilizarFila<>"" then%>
                                 <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-                                    <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                    <i class="far fa-chevron-left"></i> Agendar Aqui
                                 </button>
                                 <%end if%>
                             </td>
@@ -280,7 +280,7 @@ while diaS<n
                             <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                             <td colspan="4">
                                 <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%= Data %>')" class="btn btn-xs btn-warning">
-                                    <i class="fa fa-chevron-left"></i> Remarcar Aqui 
+                                    <i class="far fa-chevron-left"></i> Remarcar Aqui 
                                 </button>
                             </td>
                         </tr>
@@ -292,7 +292,7 @@ while diaS<n
                             <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                             <td colspan="4">
                                 <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%= Data %>')" class="btn btn-xs btn-warning">
-                                    <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                    <i class="far fa-chevron-left"></i> Repetir Aqui
                                 </button>
                             </td>
                         </tr>
@@ -325,7 +325,7 @@ while diaS<n
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
                                         <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>')" class="btn btn-xs btn-primary">
-                                            <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                            <i class="far fa-chevron-left"></i> Agendar Aqui
                                         </button>
                                     </td>
                                 </tr>
@@ -337,7 +337,7 @@ while diaS<n
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
                                         <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>', '<%= Data %>')" class="btn btn-xs btn-warning">
-                                            <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                            <i class="far fa-chevron-left"></i> Remarcar Aqui
                                         </button>
                                     </td>
                                 </tr>
@@ -349,7 +349,7 @@ while diaS<n
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                     <td colspan="4">
                                         <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>', '<%= Data %>')" class="btn btn-xs btn-warning">
-                                            <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                            <i class="far fa-chevron-left"></i> Repetir Aqui
                                         </button>
                                     </td>
                                 </tr>
@@ -498,14 +498,14 @@ while diaS<n
         Conteudo = "<tr id="""&DiaSemana&HoraComp&""""&CorLinha &" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
                 if not isnull(comps("Resposta")) then
-            Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
+            Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
         end if
         if comps("Primeira")=1 then
-            Conteudo = Conteudo & "<i class=""fa fa-flag blue"" title=""Primeira vez""></i>"
+            Conteudo = Conteudo & "<i class=""far fa-flag blue"" title=""Primeira vez""></i>"
         end if
         if comps("LocalID")<>LocalID then
             Conteudo = Conteudo & " [LOCAL_DIF] "
-            LocalDiferente = "<i class=""fa fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
+            LocalDiferente = "<i class=""far fa-exclamation-triangle grey"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
         end if
         FirstTdBgColor = ""
         if getConfig("ExibirCorPacienteAgenda")&""=1 then
@@ -514,8 +514,10 @@ while diaS<n
             end if
             FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
         end if
+        statusIcon = imoon(comps("StaID"))
+
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
-        "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+        "<td nowrap> "&statusIcon
         if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if
@@ -639,7 +641,7 @@ while diaS<n
             {
                 $(this).removeClass("btn-default");
                 $(this).addClass("btn-danger");
-                $(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+                $(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
             }
         });
         <%

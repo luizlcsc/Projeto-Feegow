@@ -41,7 +41,7 @@ Mensagem = "Prezado(a) sr(a). "& prop("NomePaciente") & "<br><br>Conforme conver
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-        <button class="btn btn-primary"><i class="fa fa-paper-plane"></i> Enviar</button>
+        <button class="btn btn-primary"><i class="far fa-paper-plane"></i> Enviar</button>
     </div>
 </form>
 

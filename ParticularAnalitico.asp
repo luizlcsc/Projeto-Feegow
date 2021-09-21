@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <div class="alert alert-danger hidden">
     <button class="close" data-dismiss="alert" type="button">
-        <i class="fa fa-remove"></i>
+        <i class="far fa-remove"></i>
     </button>
-    <strong><i class="fa fa-warning-sign"></i>ATEN&Ccedil;&Atilde;O:</strong>
+    <strong><i class="far fa-warning-sign"></i>ATEN&Ccedil;&Atilde;O:</strong>
     Este relatório encontra-se em manutenção, o que poderá ocasionar inconsistência de dados. A liberação ocorrerá hoje, até as 20 horas.<br>
     <br>
     Atenciosamente,<br>
@@ -73,7 +73,7 @@ end if
 
                 <div class="col-md-3 pull-right">
                     <label>&nbsp;</label><br>
-                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-search"></i>Buscar</button>
+                    <button type="submit" class="btn btn-success btn-block"><i class="far fa-search"></i>Buscar</button>
                 </div>
             </div>
         </div>

@@ -29,7 +29,7 @@ end function
     %>
     <div class="panel-heading">
         <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
-        <h4 class="modal-title"><i class="fa fa-history"></i> Histórico de Ações</h4>
+        <h4 class="modal-title"><i class="far fa-history"></i> Histórico de Ações</h4>
     </div>
     <div class="panel-body" style="overflow-x: scroll">
         <%

@@ -98,12 +98,12 @@ end if
 
 <div class="modal-footer">
 	<div class="btn-group">
-		<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Fechar este Lote de Guias</button>
+		<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Fechar este Lote de Guias</button>
 		<button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
 			<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu" role="menu">
-			<li><a href="#" onclick="" id="LancaConta"><i class="fa fa-plus"></i>Fechar Lote e Lançar no Contas a Receber</a></li>
+			<li><a href="#" onclick="" id="LancaConta"><i class="far fa-plus"></i> Fechar Lote e Lançar no Contas a Receber</a></li>
 			<%
 			set g = db.execute("select count(id) Qtd, sum(TotalGeral) Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
@@ -127,7 +127,7 @@ end if
 			end if
 			while not ContasSQL.eof
 			%>
-					<li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="fa fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
+					<li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="far fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
 			<%
 				ContasSQL.movenext
 				wend
@@ -138,7 +138,7 @@ end if
 	
 	</div>
     <button class="btn btn-sm btn-default" data-dismiss="modal">
-    	<i class="fa fa-remove"></i> Cancelar</button>
+    	<i class="far fa-remove"></i> Cancelar</button>
     </button>
 </div>
 </form>

@@ -60,8 +60,8 @@ end if
 %>
 
 new PNotify({
-    title: 'SUCESSO!',
-    text: 'Dados do laudo alterados.',
+    title: 'Sucesso!',
+    text: 'Valores da tabela alterado.',
     type: 'success',
     delay: 3000
 });

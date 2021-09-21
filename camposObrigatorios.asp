@@ -5,15 +5,15 @@ FormID = req("F")
 <form action="" method="post" id="formObriga">
 <div class="clearfix form-actions">
   <div class="btn-group col-md-2">
-    <button class="btn btn-primary btn-sm btn-block dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Inserir Grupo <span class="fa fa-caret-down icon-on-right"></span></button>
+    <button class="btn btn-primary btn-sm btn-block dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Inserir Grupo <span class="far fa-caret-down icon-on-right"></span></button>
     <ul class="dropdown-menu dropdown-info">
-      <li><a href="javascript:addPerm('Paciente');"><i class="fa fa-plus"></i> Pacientes</a></li>
-      <li><a href="javascript:addPerm('Agendamento');" ><i class="fa fa-plus"></i> Agendamento</a></li>
-      <li><a href="javascript:addPerm('AltAge');" class="hidden"><i class="fa fa-plus"></i> Alteração do agendamento para "aguardando"</a></li>
+      <li><a href="javascript:addPerm('Paciente');"><i class="far fa-plus"></i> Pacientes</a></li>
+      <li><a href="javascript:addPerm('Agendamento');" ><i class="far fa-plus"></i> Agendamento</a></li>
+      <li><a href="javascript:addPerm('AltAge');" class="hidden"><i class="far fa-plus"></i> Alteração do agendamento para "aguardando"</a></li>
     </ul>
   </div>
   <div class="col-xs-2 pull-right">
-	<button class="btn btn-sm btn-success btn-block"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-success btn-block"><i class="far fa-save"></i> Salvar</button>
   </div>
 </div>
 <div class="row">

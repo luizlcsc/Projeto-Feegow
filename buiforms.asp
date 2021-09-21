@@ -85,7 +85,7 @@ end if
     	<%=quickField("simpleSelect", "Tipo", "Tipo", 3, reg("Tipo"), "select * from cliniccentral.buitiposforms where sysActive=1 order by NomeTipo", "NomeTipo", "")%>
     	<%=quickField("multiple", "Especialidade", "Especialidades", 3, reg("Especialidade"), "select * from especialidades order by especialidade", "especialidade", " data-placeholder='Selecione as especialidades'")%>
         <div class="col-md-2">
-        	<label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-sm btn-block" onclick="permissoes()"><i class="fa fa-lock"></i> Permiss&otilde;es</button>
+        	<label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-sm btn-block" onclick="permissoes()"><i class="far fa-lock"></i> Permiss&otilde;es</button>
         </div>
     </div>
     <hr />

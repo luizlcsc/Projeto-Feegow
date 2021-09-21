@@ -143,7 +143,7 @@ else
             <span class="title">Permissões de <%=Nome%></span>
 
             <button type="button" onclick="MostraLogsPermissoes()" class="btn btn-sm btn-default fright mt10" style="float: right">
-                <i class="fa fa-history"></i>
+                <i class="far fa-history"></i>
             </button>
         </div>
         <div class="panel-body">
@@ -246,7 +246,7 @@ else
 	          <tr class="info">
 		        <td>Se desejar utilizar estas mesmas permiss&otilde;es em outro usu&aacute;rio, d&ecirc; um nome a esta regra:</td>
 		        <td colspan="2"><input type="text" name="Regra" class="form-control" placeholder="Nome da regra (opcional)" /></td>
-		        <td colspan="2"><button class="btn btn-primary"><i class="fa fa-save"></i> Salvar permiss&otilde;es</button></td>
+		        <td colspan="2"><button class="btn btn-primary"><i class="far fa-save"></i> Salvar permiss&otilde;es</button></td>
 	          </tr>
 	        </table>
         </div>
@@ -258,7 +258,7 @@ else
 	<div class="panel-heading success">
         <span class="panel-title">Voc&ecirc; tamb&eacute;m pode aplicar uma das regras predefinidas abaixo</span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-primary btn-sm" onClick="editaRegra('N')"><i class="fa fa-plus"></i>  Inserir Regra</button>
+            <button type="button" class="btn btn-primary btn-sm" onClick="editaRegra('N')"><i class="far fa-plus"></i>  Inserir Regra</button>
         </span>
 	</div>
 	<%
@@ -270,11 +270,11 @@ else
 	    while not pr.eof
 	    %>
 	    <tr>
-        <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="fa fa-check green"></i><%end if%></td>
+        <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="far fa-check green"></i><%end if%></td>
 	    <td width="92%"><%=pr("Regra")%></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=req("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="fa fa-check"></i> Aplicar</button></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="fa fa-edit"></i> Editar</button></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=req("T")%>&ExcluiRegra=<%=pr("id")%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="fa fa-remove"></i> Excluir</button></td></tr>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=req("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-check"></i> Aplicar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="far fa-edit"></i> Editar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=req("T")%>&ExcluiRegra=<%=pr("id")%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-remove"></i> Excluir</button></td></tr>
 	    <%
 	    pr.movenext
 	    wend

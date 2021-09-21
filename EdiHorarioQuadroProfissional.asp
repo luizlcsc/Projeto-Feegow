@@ -134,8 +134,8 @@ end if
 	</select>	</td>
     <td nowrap>
     <label>&nbsp;</label><br>
-    <button type="submit" class="btn btn-sm btn-primary" name="Confirmar"><i class="fa fa-save"></i> Salvar</button>
-	<%if id>0 then%><button class="btn btn-sm btn-danger" type="button" onClick="location.href='?P=EdiHorarioQuadroProfissional&X=<%=id%>&LocalID=<%=req("LocalID")%>';"><i class="fa fa-remove"></i> Excluir</button><%end if%>
+    <button type="submit" class="btn btn-sm btn-primary" name="Confirmar"><i class="far fa-save"></i> Salvar</button>
+	<%if id>0 then%><button class="btn btn-sm btn-danger" type="button" onClick="location.href='?P=EdiHorarioQuadroProfissional&X=<%=id%>&LocalID=<%=req("LocalID")%>';"><i class="far fa-remove"></i> Excluir</button><%end if%>
 	<input type="hidden" name="E" value="E" />
 	
 	</td>

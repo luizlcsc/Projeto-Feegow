@@ -2,13 +2,13 @@
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Repasses a Consolidar");
-    $(".crumb-icon a span").attr("class", "fa fa-puzzle-piece");
+    $(".crumb-icon a span").attr("class", "far fa-puzzle-piece");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("conferência de repasses gerados");
     <%
     if aut("configrateio")=1 and false then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=Rateio&Pers=1"><i class="fa fa-puzzle-piece"></i><span class="menu-text"> Configurar Regras de Repasse</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=Rateio&Pers=1"><i class="far fa-puzzle-piece"></i><span class="menu-text"> Configurar Regras de Repasse</span></a>');
     <%
     end if
     %>
@@ -61,7 +61,7 @@ end if
         <div class="panel">
             <div class="panel-body hidden-print">
                 <div class="row">
-                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
+                    <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and c.NomeConvenio!='' and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
                     <%= quickfield("multiple", "TipoRecebedor", "Tipo do recebedor", 2, reqf("TipoRecebedor"), "select id, AssociationName from sys_financialaccountsassociation where id in (2,4,5,8) ORDER BY AssociationName", "AssociationName", "") %>
                     <div class="col-md-2">
                         <label for="Status">Status de Recto</label><br />
@@ -108,7 +108,7 @@ end if
                     %>
                     <%= quickfield("simpleSelect", "ProcedimentoID", "Limitar procedimento", 2, reqf("ProcedimentoID"), "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg  WHERE sysActive=1    UNION ALL       select id, NomeProcedimento from procedimentos where ativo='on' and sysActive=1 order by NomeProcedimento limit 1000", "NomeProcedimento", "") %>
                     <div class="col-md-2">
-                        <button id="BtnBuscar" class="btn btn-primary btn-buscar btn-block mt25"><i class="fa fa-search"></i>Buscar</button>
+                        <button id="BtnBuscar" class="btn btn-primary btn-buscar btn-block mt25"><i class="far fa-search"></i>Buscar</button>
                     </div>
                 </div>
                <% if reqf("Forma")<>"" or reqf("AC")="1" then %>
@@ -124,9 +124,9 @@ end if
                         <span class="checkbox-custom">
                             <input type="checkbox" id="allCons" name="allCons" onclick="$('input[name=desconsAll]').prop('checked', $(this).prop('checked') )" /><label for="allCons">Marcar consolidados</label>
                         </span>
-                        <button type="button" onclick="descAll()" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i> Desconsolidar</button>
+                        <button type="button" onclick="descAll()" class="btn btn-xs btn-danger"><i class="far fa-remove"></i> Desconsolidar</button>
                         <button class="btn btn-default btn-xs btn-consolida" type="button" onclick="consolida()">
-                            <i class="fa fa-check"></i> Consolidar
+                            <i class="far fa-check"></i> Consolidar
                         </button>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ end if
     if datediff("d", De, Ate)>91 then
         %>
         <div class="alert alert-sm alert-border-left alert-danger alert-dismissable">
-          <i class="fa fa-exclamation-circle pr10"></i>
+          <i class="far fa-exclamation-circle pr10"></i>
           <strong>Atenção!</strong> Escolha um período menor que 3 meses.
         </div>
         <%
@@ -151,7 +151,7 @@ end if
     if ExibirNaoExecutado="S" then
         %>
         <div class="alert alert-sm alert-border-left alert-warning alert-dismissable">
-          <i class="fa fa-exclamation-circle pr10"></i>
+          <i class="far fa-exclamation-circle pr10"></i>
           <strong>Atenção!</strong> Ao exibir atendimentos não executados, regras com recebedor <i>"Profissional Executante"</i> <strong>não serão aplicadas</strong>.
         </div>
 <%

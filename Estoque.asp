@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Controle de Estoque</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-medkit");
+    $(".crumb-icon a span").attr("class", "far fa-medkit");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("painel principal");
 </script>
@@ -15,7 +15,7 @@ if aut("estoque")=1 then
     	<div class="panel-body">
         	<div class="col-xs-12" id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
                 <h3>Posição Atual</h3>
-                <i class="fa fa-circle-o-notch fa-spin"></i> Carregando gráfico...
+                <i class="far fa-circle-o-notch fa-spin"></i> Carregando gráfico...
         	</div>
         </div>
         <div class="panel-body">

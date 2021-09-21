@@ -19,7 +19,7 @@ if ProfissionalID&""<>"" then
 %>
 
 <div class="panel-heading">
-    <span class="panel-title"><i class="fa fa-print"></i> Entrega de Laudo <small>&raquo; por <%= session("nameUser") %></small></span>
+    <span class="panel-title"><i class="far fa-print"></i> Entrega de Laudo <small>&raquo; por <%= session("nameUser") %></small></span>
 </div>
 <div class="panel-body">
     <div class="col-md-6">
@@ -44,12 +44,12 @@ if ProfissionalID&""<>"" then
 <div class="panel-footer text-right">
 
     <div class="btn-group">
-        <a href="javascript:saveLaudo('Entrega', 1); openPrint();" class="btn btn-sm btn-info"><i class="fa fa-print"></i> ENTREGAR E IMPRIMIR</a>
-        <button class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-angle-down icon-only"></i></button>
+        <a href="javascript:saveLaudo('Entrega', 1); openPrint();" class="btn btn-sm btn-info"><i class="far fa-print"></i> ENTREGAR E IMPRIMIR</a>
+        <button class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="far fa-angle-down icon-only"></i></button>
         <ul class="dropdown-menu dropdown-info">
             <li>
-                <a href="javascript:saveLaudo('Entrega', 0)"><i class="fa fa-exit"></i> SOMENTE ENTREGAR</a>
-                <a href="javascript:openPrint()"><i class="fa fa-print"></i> SOMENTE IMPRIMIR</a>
+                <a href="javascript:saveLaudo('Entrega', 0)"><i class="far fa-exit"></i> SOMENTE ENTREGAR</a>
+                <a href="javascript:openPrint()"><i class="far fa-print"></i> SOMENTE IMPRIMIR</a>
             </li>
         </ul>
     </div>

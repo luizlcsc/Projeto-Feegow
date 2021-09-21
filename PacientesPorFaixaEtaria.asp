@@ -42,7 +42,7 @@ end if
               </select>
            </div>
            <div class="col-md-2">&nbsp;<br />
-	        <button type="submit" class="btn btn-block btn-success" name="Gerar"><i class="fa fa-list"></i> Gerar</button>
+	        <button type="submit" class="btn btn-block btn-success" name="Gerar"><i class="far fa-list"></i> Gerar</button>
           </div></td>
         </tr>
       </table>

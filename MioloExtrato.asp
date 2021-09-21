@@ -1,5 +1,9 @@
  <!--#include file="connect.asp"-->
 <%
+if req("Data")<>"" then
+    session("DateFrom") = req("Data")
+    session("DateTo") = req("Data")
+end if
 if session("DateFrom")="" then
 	session("DateFrom") = dateadd("m", -1, date())
 end if
@@ -99,15 +103,15 @@ end if
             </div>
             <div class="col-md-2">
                 <label>&nbsp;</label><br />
-                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="fa fa-search bigger-110"></i>Gerar</button>
+                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i>Gerar</button>
             </div>
             <div class="col-md-2">
                 <label>&nbsp;</label><br />
-                <button disabled class="btn-export btn btn-sm btn-info btn-block" name="Filtrate" onclick="$('#headerExtrato h2').html( $('#searchAccountID').val() ); $('#headerExtrato h4').html( $('#DateFrom').val() + ' a ' + $('#DateTo').val() ); print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
+                <button disabled class="btn-export btn btn-sm btn-info btn-block" name="Filtrate" onclick="$('#headerExtrato h2').html( $('#searchAccountID').val() ); $('#headerExtrato h4').html( $('#DateFrom').val() + ' a ' + $('#DateTo').val() ); print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
             </div>
             <div class="col-md-2">
                 <label>&nbsp;</label><br />
-                <button disabled class="btn-export btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> Excel</button>
+                <button disabled class="btn-export btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> Excel</button>
             </div>
         </div>
     </div>

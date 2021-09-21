@@ -10,7 +10,7 @@
         <%=quickfield("datepicker", "Ate", "Até", 2, ref("Ate"), "input-mask-date", "", "") %>
         <%=quickfield("users", "Operador", "Operador", 2, ref("Operador"), "", "", "") %>
         <%=quickfield("multiple", "Canal", "Canal", 4, ref("Canal"), "select * from chamadascanais", "NomeCanal", "") %>
-        <label>&nbsp;</label><br /><button class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Buscar</button>
+        <label>&nbsp;</label><br /><button class="btn btn-sm btn-primary"><i class="far fa-search"></i> Buscar</button>
     </div>
 </form>
 
@@ -68,7 +68,7 @@
                                     set age = db.execute("select p.NomeProfissional, a.Data, a.Hora from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.id="&cham("AgendamentoID"))
                                     if not age.eof then
                                         %>
-                                        <a href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=cham("AgendamentoID") %>" class="btn btn-success btn-xs"><i class="fa fa-calendar"></i> <%=age("Data") & " - " & formatdatetime(age("Hora"), 4) %></a>
+                                        <a href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=cham("AgendamentoID") %>" class="btn btn-success btn-xs"><i class="far fa-calendar"></i> <%=age("Data") & " - " & formatdatetime(age("Hora"), 4) %></a>
                                         <%
                                     end if
                                 end if

@@ -71,7 +71,7 @@ while not RecebimentosDebitoECreditoSQL.eof
     <td><%=RecebimentosDebitoECreditoSQL("NomeProcedimento")%></td>
     <td><%=fn(RecebimentosDebitoECreditoSQL("ValorDescontado"))%></td>
     <td><%=fn(ValorLiquido)%></td>
-    <td><a href="./?P=invoice&I=<%=RecebimentosDebitoECreditoSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
+    <td><a href="./?P=invoice&I=<%=RecebimentosDebitoECreditoSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
 </tr>
     <%
 
@@ -121,7 +121,7 @@ while not ServicosNaoExecutadosSQL.eof
     <td><%=ServicosNaoExecutadosSQL("sysDate")%></td>
     <td><%=ServicosNaoExecutadosSQL("NomeProcedimento")%></td>
     <td><%=fn(ServicosNaoExecutadosSQL("Valor"))%></td>
-    <td><a href="./?P=invoice&I=<%=ServicosNaoExecutadosSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
+    <td><a href="./?P=invoice&I=<%=ServicosNaoExecutadosSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
 </tr>
     <%
 ServicosNaoExecutadosSQL.movenext
@@ -159,7 +159,7 @@ while not DevolucoesSQL.eof
     <td><%=DevolucoesSQL("DataDevolucao")%></td>
     <td><%=DevolucoesSQL("NomeProcedimento")%></td>
     <td><%=fn(ccur(DevolucoesSQL("TotalDevolucao")))%></td>
-    <td><a href="./?P=invoice&I=<%=DevolucoesSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
+    <td><a href="./?P=invoice&I=<%=DevolucoesSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
 </tr>
     <%
 DevolucoesSQL.movenext
@@ -246,7 +246,7 @@ if not RepassesDiferentesSQL.eof then
             <td><%=RepassesDiferentesSQL("sysDate")%></td>
             <td><%=RepassesDiferentesSQL("NomeProcedimento")%></td>
             <td><%=fn(RepassesDiferentesSQL("ValorRepasse"))%></td>
-            <td><a href="./?P=invoice&I=<%=RepassesDiferentesSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
+            <td><a href="./?P=invoice&I=<%=RepassesDiferentesSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
         </tr>
             <%
         end if
@@ -295,7 +295,7 @@ while not MovementsNaoPagasSQL.eof
     <td><%=fn(MovementsNaoPagasSQL("ValorAberto"))%></td>
     <td><%=MovementsNaoPagasSQL("NomeProcedimento")%></td>
     <td><%=MovementsNaoPagasSQL("Date")%></td>
-    <td><a href="./?P=invoice&I=<%=MovementsNaoPagasSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></a></td>
+    <td><a href="./?P=invoice&I=<%=MovementsNaoPagasSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
 </tr>
     <%
 MovementsNaoPagasSQL.movenext

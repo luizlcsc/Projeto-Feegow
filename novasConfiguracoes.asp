@@ -160,7 +160,7 @@ end function
 
 %>
     <div class="clearfix form-actions">
-        <button class="btn btn-primary pull-right btnsave"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary pull-right btnsave"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>
 <script>

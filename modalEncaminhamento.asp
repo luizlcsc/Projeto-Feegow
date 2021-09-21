@@ -16,7 +16,7 @@
             </label>
             <hr />
             <button class="btn btn-sm btn-success btn-block" data-dismiss="modal">
-                <i class="fa fa-remove"></i>
+                <i class="far fa-remove"></i>
                 Fechar
             </button>
         </div>

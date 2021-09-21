@@ -69,7 +69,7 @@
 										<div class="toolbar clearfix">
 											<div>
 												<a href="http://www.feegowclinic.com.br" class="forgot-password-link">
-													<i class="fa fa-arrow-left"></i>
+													<i class="far fa-arrow-left"></i>
 													Voltar para o website
 												</a>
 											</div>
@@ -81,7 +81,7 @@
 									<div class="widget-body">
 										<div class="widget-main">
 											<h4 class="header red lighter bigger">
-												<i class="fa fa-key"></i>
+												<i class="far fa-key"></i>
 												Recuperar Senha
 											</h4>
 
@@ -95,13 +95,13 @@
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="email" class="form-control" placeholder="Email" />
-															<i class="fa fa-envelope"></i>
+															<i class="far fa-envelope"></i>
 														</span>
 													</label>
 
 													<div class="clearfix">
 														<button type="button" class="width-35 pull-right btn btn-sm btn-danger">
-															<i class="fa fa-lightbulb"></i>
+															<i class="far fa-lightbulb"></i>
 															Enviar!
 														</button>
 													</div>
@@ -112,7 +112,7 @@
 										<div class="toolbar center">
 											<a href="#" onClick="show_box('login-box'); return false;" class="back-to-login-link">
 												Voltar para o login
-												<i class="fa fa-arrow-right"></i>
+												<i class="far fa-arrow-right"></i>
 											</a>
 										</div>
 									</div><!-- /widget-body -->
@@ -122,7 +122,7 @@
 									<div class="widget-body">
 										<div class="widget-main">
 											<h4 class="header green lighter bigger">
-												<i class="fa fa-group blue"></i>
+												<i class="far fa-group blue"></i>
 												New User Registration
 											</h4>
 
@@ -134,28 +134,28 @@
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="email" class="form-control" placeholder="Email" />
-															<i class="fa fa-envelope"></i>
+															<i class="far fa-envelope"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="text" class="form-control" placeholder="Username" />
-															<i class="fa fa-user"></i>
+															<i class="far fa-user"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" class="form-control" placeholder="Password" />
-															<i class="fa fa-lock"></i>
+															<i class="far fa-lock"></i>
 														</span>
 													</label>
 
 													<label class="block clearfix">
 														<span class="block input-icon input-icon-right">
 															<input type="password" class="form-control" placeholder="Repeat password" />
-															<i class="fa fa-retweet"></i>
+															<i class="far fa-retweet"></i>
 														</span>
 													</label>
 
@@ -171,13 +171,13 @@
 
 													<div class="clearfix">
 														<button type="reset" class="width-30 pull-left btn btn-sm">
-															<i class="fa fa-refresh"></i>
+															<i class="far fa-refresh"></i>
 															Reset
 														</button>
 
 														<button type="button" class="width-65 pull-right btn btn-sm btn-success">
 															Register
-															<i class="fa fa-arrow-right icon-on-right"></i>
+															<i class="far fa-arrow-right icon-on-right"></i>
 														</button>
 													</div>
 												</fieldset>
@@ -186,7 +186,7 @@
 
 										<div class="toolbar center">
 											<a href="#" onClick="show_box('login-box'); return false;" class="back-to-login-link">
-												<i class="fa fa-arrow-left"></i>
+												<i class="far fa-arrow-left"></i>
 												Back to login
 											</a>
 										</div>

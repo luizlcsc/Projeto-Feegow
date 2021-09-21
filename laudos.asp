@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Laudos");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("lista de laudos");
-    $(".crumb-icon a span").attr("class", "fa fa-file-text");
+    $(".crumb-icon a span").attr("class", "far fa-file-text");
 </script>
 
 <%
@@ -29,7 +29,7 @@ end if
     <div class="panel">
         <div class="panel-body mt20">
             <div class="row">
-                <%= quickfield("simpleSelect", "ProcedimentoID", "Procedimento", 2, "", "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg inner join procedimentos proc on proc.GrupoID=pg.id where proc.Laudo=1 and proc.sysActive UNION ALL select id, NomeProcedimento from procedimentos where ativo='on' and Laudo", "NomeProcedimento", "empty required=''") %>
+                <%= quickfield("simpleSelect", "ProcedimentoID", "Procedimento", 2, "", "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg inner join procedimentos proc on proc.GrupoID=pg.id where proc.Laudo=1 and proc.sysActive UNION ALL select id, NomeProcedimento from procedimentos where ativo='on' and Laudo", "NomeProcedimento", "empty ") %>
                 <div class="col-md-2">
                     <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
                 </div>
@@ -55,7 +55,7 @@ end if
                 <%= quickfield("simpleSelect", "TipoData", "Tipo", 2, "1", "select '1' id, 'Data de criação' TipoData UNION SELECT '2' id, 'Previsão de entrega' TipoData", "TipoData", "empty") %>
                 <%= quickfield("multiple", "Status", "Status", 2, "", "select id, Status FROM laudostatus ", "Status", "") %>
                 <div class="col-md-2">
-                    <button class="btn btn-primary btn-block mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
+                    <button class="btn btn-primary btn-block mt20"><i class="far fa-search bigger-110"></i> Buscar</button>
                 </div>
             </div>
 
@@ -66,7 +66,7 @@ end if
 <div class="panel">
     <div class="panel-heading">
       <span class="panel-title">
-        <span class="fa fa-table"></span>Lista de laudos</span>
+        <span class="far fa-table"></span>Lista de laudos</span>
       <div class="pull-right">
 
       </div>
@@ -80,7 +80,7 @@ end if
 
     $(function () {
         $("#frmLaudos").submit(function () {
-            var carregando  = ' <div class=\"panel-body pn\" id=\"divListaLaudos\" style=\"text-align: center;\"> <i class=\"fa fa-circle-o-notch fa-spin\" style="text-align: center; margin: 30px;"></i>  </div>';
+            var carregando  = ' <div class=\"panel-body pn\" id=\"divListaLaudos\" style=\"text-align: center;\"> <i class=\"far fa-circle-o-notch fa-spin\" style="text-align: center; margin: 30px;"></i>  </div>';
             $("#divListaLaudos").html(carregando);
             $.post("listaLaudos.asp", $(this).serialize(), function (data) {
                 $("#divListaLaudos").html(data);

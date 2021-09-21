@@ -14,7 +14,7 @@
       /* Alert the copied text */
     //      alert("Texto copiado: " + copyText.value);
             new PNotify({
-            title: '<i class="fa fa-copy"></i> Texto copiado!',
+            title: '<i class="far fa-copy"></i> Texto copiado!',
             text: copyText.value,
             type: 'success'
         });
@@ -350,7 +350,7 @@ if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=6 then
             <!--#include file="Tags.asp"-->
         </div>
         <div class="col-md-3">
-            <button type="button" class="btn btn-block btn-alert mt20" onclick="$('#divFormula').slideToggle()">Configurar Fórmula <i class="fa fa-chevron-down"></i></button>
+            <button type="button" class="btn btn-block btn-alert mt20" onclick="$('#divFormula').slideToggle()">Configurar Fórmula <i class="far fa-chevron-down"></i></button>
         </div>
 
     </div>
@@ -456,7 +456,7 @@ if TipoCampoID=3 then
                 form_imgSRC = replace(imgSRC("FORMULARIOS",ValorPadrao&"&dimension=full"),"renderMode=download","renderMode=redirect")
                 %>
                     <img src="<%=form_imgSRC%>" height="150" class="img-thumbnail" id="assinatura-img"/>
-                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
                 <%
                 else
                 dropZone_SRC = "dropzone.php?PacienteID=0&Tipo=A&FormularioID="&pCampo("id")&"&Pasta=Formularios&L="&replace(session("Banco"),"clinic","")
@@ -469,9 +469,9 @@ if TipoCampoID=3 then
                 
             </div>
             <div class="row"><div class="col-xs-6">
-	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="fa fa-check"></i></button>
+	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
             </div><div class="col-xs-6">
-	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
             </div></div>
     </div>
 
@@ -719,10 +719,10 @@ end if
 %>
 </form>
 <div class="panel-footer mt25 text-right">
-  <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="fa fa-save"></i>Salvar</button>
+  <button type="button" class="btn btn-primary" onclick="saveEdit(<%=pCampo("id")%>, '<%=req("W")%>', '<%=req("F")%>', 0, 'S');"><i class="far fa-save"></i>Salvar</button>
   <%
   if TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 then
-  	%><button type="button" class="btn btn-success" onclick="addOption('A', <%=req("I")%>);"><i class="fa fa-plus"></i> Adicionar Op&ccedil;&atilde;o</button><%
+  	%><button type="button" class="btn btn-success" onclick="addOption('A', <%=req("I")%>);"><i class="far fa-plus"></i> Adicionar Op&ccedil;&atilde;o</button><%
   end if
   %>
 </div>

@@ -30,7 +30,7 @@ end if
     </script>
     <div class="widget-box transparent">
         <div class="widget-header widget-header-flat">
-            <!--<h4 class=""><i class="fa fa-inbox blue"></i> MEU CAIXA <small>&raquo; movimentações do caixa atual</small></h4>-->
+            <!--<h4 class=""><i class="far fa-inbox blue"></i> MEU CAIXA <small>&raquo; movimentações do caixa atual</small></h4>-->
         </div>
     </div>
     <div class="row">
@@ -52,10 +52,10 @@ end if
         <input type="hidden" name="AccountID" value="7_<%=session("CaixaID")%>">
 
         <div class="col-lg-offset-1 col-md-1">
-            <button class="btn btn-sm btn-info no-print" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
+            <button class="btn btn-sm btn-info no-print" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
         </div>
         <div class="col-md-1">
-            <button class="btn btn-sm btn-success no-print" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> Excel</button>
+            <button class="btn btn-sm btn-success no-print" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> Excel</button>
         </div>
     </div>
     <div class="row">
@@ -85,7 +85,7 @@ function downloadExcel(){
     $(".crumb-active a").html("Meu Caixa");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("movimentações do caixa atual");
-    $(".crumb-icon a span").attr("class", "fa fa-inbox blue");
+    $(".crumb-icon a span").attr("class", "far fa-inbox blue");
 
     $.post("ExtratoConteudo.asp?T=MeuCaixa", $("#frmExtrato").serialize(), function(data){
         $("#Extrato").html(data)

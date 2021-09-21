@@ -39,16 +39,16 @@ if strIds<>"" then
             <div class="btn-group">
                 <%if tar("staPara") <> "Finalizada" then %>
                     <button type="button" onclick="staTar(<%=tar("id") %>)" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Marcar como finalizada.">
-                    <i class="fa fa-check text-success"></i>
+                    <i class="far fa-check text-success"></i>
                     </button>
                 <%else%>
                     <button type="button" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Aguardando confirmação.">
-                    <i class="fa fa-check text-warning"></i>
+                    <i class="far fa-check text-warning"></i>
                     </button>
                 <%end if%>
 
                 <button type="button" onclick="location.href='<%=link %>';" class="btn btn-default btn-xs light" data-rel="tooltip" data-placement="right" title="" data-original-title="Abrir tarefa.">
-                <i class="fa fa-edit"></i>
+                <i class="far fa-edit"></i>
                 </button>
             </div>
             </div>

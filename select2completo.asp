@@ -805,16 +805,16 @@
                 <div class="s2-example">
                     <p>
                         <select class="js-example-diacritics form-control">
-                            <option>Aeróbics</option>
-                            <option>Aeróbics en Agua</option>
-                            <option>Aerografía</option>
+                            <option>Aerï¿½bics</option>
+                            <option>Aerï¿½bics en Agua</option>
+                            <option>Aerografï¿½a</option>
                             <option>Aeromodelaje</option>
-                            <option>Águilas</option>
+                            <option>ï¿½guilas</option>
                             <option>Ajedrez</option>
                             <option>Ala Delta</option>
-                            <option>Álbumes de Música</option>
+                            <option>ï¿½lbumes de Mï¿½sica</option>
                             <option>Alusivos</option>
-                            <option>Análisis de Escritura a Mano</option>
+                            <option>Anï¿½lisis de Escritura a Mano</option>
                         </select>
                     </p>
                 </div>
@@ -1217,9 +1217,9 @@
             }
 
             markup += "<div class='select2-result-repository__statistics'>" +
-              "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
-              "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
-              "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
+              "<div class='select2-result-repository__forks'><i class='far fa-flash'></i> " + repo.forks_count + " Forks</div>" +
+              "<div class='select2-result-repository__stargazers'><i class='far fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
+              "<div class='select2-result-repository__watchers'><i class='far fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
             "</div>" +
             "</div></div>";
 

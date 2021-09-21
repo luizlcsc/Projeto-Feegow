@@ -121,10 +121,10 @@ else
 
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-primary mt20" onclick="AplicarCheckinAgendamentos(true)"><i class="fa fa-check"></i> Check in Múltiplo</button>
+            <button type="button" class="btn btn-primary mt20" onclick="AplicarCheckinAgendamentos(true)"><i class="far fa-check"></i> Check in Múltiplo</button>
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-success mt20" onclick="AplicarCheckinAgendamentos(false)"><i class="fa fa-check"></i> Finalizar Check in</button>
+            <button type="button" class="btn btn-success mt20" onclick="AplicarCheckinAgendamentos(false)"><i class="far fa-check"></i> Finalizar Check in</button>
         </div>
     </div>
     <script >

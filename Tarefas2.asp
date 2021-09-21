@@ -64,15 +64,15 @@ PermitirI = aut("tarefasgerenciarI")
 function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R=tarefas&I=<%= req("I")%>', function(data){$('#modal').html(data);})}
 
 $(".crumb-active a").html("Controle de Tarefa");
-$(".crumb-icon a span").attr("class", "fa fa-tasks");
+$(".crumb-icon a span").attr("class", "far fa-tasks");
 $(".crumb-link").removeClass("hidden").html("<%=subtitulo%>");
 <%
     btnIncluir = ""
     if PermitirI = 1 then
-        btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+        btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
     end if
 %>
-$("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn btn-sm btn-default\"><i class=\"fa fa-list\"></i></a> <a title=\"Histórico de Alterações\" href=\"javascript:log()\" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"fa fa-history\"></i></a><%=btnIncluir%>");
+$("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn btn-sm btn-default\"><i class=\"far fa-list\"></i></a> <a title=\"Histórico de Alterações\" href=\"javascript:log()\" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"far fa-history\"></i></a><%=btnIncluir%>");
 
 </script>
 
@@ -105,7 +105,7 @@ $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn
                 %>
                     <span class="panel-controls">
                         <%if De=session("User") or reg("sysUser")=session("User") or PermitirA=1 then %>
-                        <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
+                        <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
                         <%end if %>
                     </span>
             </div>
@@ -145,7 +145,7 @@ $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn
                     <div class="panel-heading">
                         <span class="panel-title">Solicitantes</span>
                         <span class="panel-controls">
-                            <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="fa fa-plus"></i></button>
+                            <button type="button" class="btn btn-xs btn-success mn" onclick="tsol('I');"><i class="far fa-plus"></i></button>
                         </span>
                     </div>
                     <div class="panel-body">
@@ -162,7 +162,7 @@ $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn
                 <br>
                 <div class="panel">
                     <div class="panel-heading">
-                        <span class="panel-title"><i class="fa fa-star-o blue"></i> Status desta Tarefa</span>
+                        <span class="panel-title"><i class="far fa-star-o blue"></i> Status desta Tarefa</span>
                     </div>
 
                     <div class="panel-body">
@@ -250,7 +250,7 @@ $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn
                     </div>
                     <div class="col-md-10"></div>
                     <div class="col-md-1" style="margin-top: 5px;">
-                        <button type="button" id="btnInteracao" class="btn btn-primary"><i class="fa fa-send"></i> Enviar</button>
+                        <button type="button" id="btnInteracao" class="btn btn-primary"><i class="far fa-send"></i> Enviar</button>
                     </div>
                 </div>
                 <div class="row" style="margin: 10px;" >
@@ -282,11 +282,11 @@ $("#rbtns").html("<a title=\"Lista\" href=\"?P=listatarefas&Pers=1\" class=\"btn
     $("#btnInteracao").click(function () {
         var frm = $("#frm").serialize();
         $("#msgInteracao").val('');
-        $("#btnInteracao").html("<center><i class='fa fa-circle-o-notch fa-spin'></i></center>");
+        $("#btnInteracao").html("<center><i class='far fa-circle-o-notch fa-spin'></i></center>");
 
         $.post("TarefasInteracoes2.asp?I=<%=req("I")%>", frm, function(data){
             $("#interacoes").html(data);
-            $("#btnInteracao").html("<i class='fa fa-send'></i> Enviar");
+            $("#btnInteracao").html("<i class='far fa-send'></i> Enviar");
         });
     });
 

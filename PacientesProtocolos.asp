@@ -31,7 +31,7 @@ end if
 
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
-        <li class="active"><a data-toggle="tab" href="#divprotocolos" id="btnprotocolos"><i class="fa fa-flask"></i> Protocolos</a></li>
+        <li class="active"><a data-toggle="tab" href="#divprotocolos" id="btnprotocolos"><i class="far fa-flask"></i> Protocolos</a></li>
 	</ul>
 </div>
 <form method="post" id="formProtocolos" name="formProtocolos" action="save.asp">
@@ -44,12 +44,12 @@ end if
             <div class="col-xs-8">
                 <div class="row">
                     <div class="col-md-2">
-                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('Protocolos', '<%=PacienteID%>', '0', '', '');"><i class="fa fa-plus"></i> Novo</button>
+                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('Protocolos', '<%=PacienteID%>', '0', '', '');"><i class="far fa-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-2">
-                        <!--<button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary "><i class="fa fa-save"></i></button> -->
+                        <!--<button type="button" onClick="saveProtocolo('<%=ID%>')" class="btn btn-primary "><i class="far fa-save"></i></button> -->
                         <button type="button" class="btn btn-info" onClick="prontPrint('Protocolos', <%=ID%>)">
-                            <i class="fa fa-print"></i>
+                            <i class="far fa-print"></i>
                         </button>
                     </div>
                     <div class='col-md-3'>
@@ -63,7 +63,7 @@ end if
                     <div class="btn-group text-left hidden">
 			            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
 				            Grupos
-				            <span class="fa fa-caret-down icon-on-right"></span>
+				            <span class="far fa-caret-down icon-on-right"></span>
 			            </button>
 
 			            <ul class="dropdown-menu dropdown-default">
@@ -83,9 +83,9 @@ end if
 			            </ul>
 		            </div>
                     <div class="col-md-4 hidden">
-                        <button type="button" class="btn btn-info btn btn-xs"><i class="fa fa-credit-card"></i></button> <span>Gerar Guia de Tratamento</span>
+                        <button type="button" class="btn btn-info btn btn-xs"><i class="far fa-credit-card"></i></button> <span>Gerar Guia de Tratamento</span>
                         <br>
-                        <button type="button" class="btn btn-success btn btn-xs mt5"><i class="fa fa-files-o"></i></button> <span>Gerar Proposta</span>
+                        <button type="button" class="btn btn-success btn btn-xs mt5"><i class="far fa-files-o"></i></button> <span>Gerar Proposta</span>
                     </div>
                 <br />
                 <div class="row">
@@ -99,7 +99,7 @@ end if
             <div class="panel">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <i class="fa fa-file-text-o"></i>
+                        <i class="far fa-file-text"></i>
                         Protocolos Sugeridos
                     </span>
                 </div>
@@ -109,7 +109,7 @@ end if
                     <input id="FiltroP" class="form-control input-sm refina" autocomplete="off" placeholder="Buscar..." type="text">
                     <span class="input-group-btn">
                     <button class="btn btn-sm btn-default" onclick="ListaProtocolos($('#FiltroP').val(), '')" type="button">
-                    <i class="fa fa-filter icon-filter bigger-110"></i>
+                    <i class="far fa-filter icon-filter bigger-110"></i>
                     Buscar
                     </button>
                     </span>
@@ -185,7 +185,7 @@ end if
     ListaProtocolos('', '');
 
     function GerarNovo(t, p, m, i, a) {
-        $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get("iPront.asp?t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
             $("#modal-form .panel").html(data);
         })

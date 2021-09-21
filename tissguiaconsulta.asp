@@ -445,7 +445,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Consulta");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 
@@ -465,6 +465,25 @@ end if
 <div class="admin-form theme-primary">
    <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
+            <% if True then %>
+                <% if reg("GuiaSimplificada") = 1 then%>
+                    <script>
+                        $(document).ready(function(){
+                            guiaSimplificada();
+                        });
+                    </script>
+                <% end if %>
+                <div class="row hidden">
+                    <div class="text-right">
+                        <label for="check-guia-simplificada">
+                            <input id="check-guia-simplificada" name="GuiaSimplificada" class="form-control" type="checkbox" value="1" style="height: 25px" <% if reg("GuiaSimplificada") = 1 then%>checked="checked"<% end if %>/> Convênio Simplificado
+                        </label>
+                    </div>
+                </div>
+            <% else %>
+                <input id="check-guia-simplificada" name="GuiaSimplificada" type="hidden" value="0" />
+            <% end if %>
+
             <div class="row">
     <div class="col-md-12">
 	<table width="100%" cellspacing="0" class="table" cellpading="0">
@@ -473,7 +492,7 @@ end if
         <span> Dados do Benefici&aacute;rio </span>
     </div>
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
+	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
 	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", "") %></td>
 	</tr></table></td></tr>
 
@@ -514,7 +533,7 @@ end if
 				<%= quickField("text", "IdentificadorBeneficiario", "Identificador - Código de barras da carteira", 12, IdentificadorBeneficiario, "", "", " readonly") %>
 			</td>
 			<td>
-				<button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+				<button type="button" class="btn btn-xs btn-warning far fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
 				</button>
 			</td>
 		</tr>
@@ -644,26 +663,26 @@ end if
     end if
 
     %>
-        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="far fa-save"></i> Salvar</button>
         <%
         if aut("repassesV")=1 then
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.GuiaConsultaID="& req("I") &" AND NOT ISNULL(rr.ItemContaAPagar)")
             if not vcaRep.eof then
-                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='fa fa-puzzle-piece'></i>  </button>"
+                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='far fa-puzzle-piece'></i>  </button>"
                 response.write( btnRepasse )
             end if
         end if
         %>
         <%if AutorizadorTiss then %>
-        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
-        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
-        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
+        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
+        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
+        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
         <%end if %>
-        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
+        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="far fa-history"></i></button>
 
 
-        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
-        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="fa fa-file"></i> Imprimir Guia</button>
+        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
+        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="far fa-file"></i> Imprimir Guia</button>
     </div>
     <input type="hidden" name="AtendimentoID" id="AtendimentoID" value="<%=AtendimentoID%>" />
     <input type="hidden" name="AgendamentoID" id="AgendamentoID" value="<%=AgendamentoID%>" />
@@ -694,17 +713,96 @@ function tissCompletaDados(T, I){
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			eval(data);
-			var convenio = $("#gConvenioID").val();
-            $.get(
-                'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
-                function(data){
-                    eval(data)
-                }
-            );
+
+			//não processa campos obrigatórios se for convênio simplificado
+			if (!$('#check-guia-simplificada').prop('checked')) {
+                var convenio = $("#gConvenioID").val();
+
+                $.get(
+                    'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
+                    function(data){
+                        eval(data);
+                    }
+                );
+            }
+
 		},
 
 	});
 }
+
+function simplificaElemento(el)
+{
+    let oldRequired =  $(el).attr('data-oldrequired');
+    if (!oldRequired) {
+        oldRequired = typeof $(el).attr('required') !== 'undefined' ? 1 : 0;
+    }
+    $(el).hide().attr('data-oldrequired', oldRequired).removeAttr('required').find('input, select').each(function() {
+        simplificaElemento(this);
+    });
+}
+
+function restauraElemento(el)
+{
+    const oldRequired = $(el).attr('data-oldrequired');
+    if (oldRequired === 1 || oldRequired === '1') {
+        $(el).attr('required', 'required');
+    }
+    $(el).show().removeAttr('data-oldrequired').find('input, select').each(function() {
+        restauraElemento(this);
+    });
+}
+
+function guiaSimplificada(restore)
+{
+    const isSimplificada = $('#check-guia-simplificada').prop('checked');
+
+    const elRegistroAns       = $('#qfregistroans').parent();
+    const elNGuiaOperadora    = $('#qfnguiaoperadora').parent();
+    const elTrCarteira        = $('#tr-carteira');
+    const elCodigoNaOperadora = $('#qfcodigonaoperadora').parent();
+    const elCodigoCnes        = $('#qfcodigocnes').parent();
+    const elCodigoCBO         = $('#qfcodigocbo').parent();
+    const elIndicacaoAcidente = $('#qfindicacaoacidenteid').parent();
+    const elTipoConsulta      = $('#qftipoconsultaid').parent();
+    const elTabela            = $('#qftabelaid').parent();
+    const elCodProcedimento   = $('#td-codprocedimento');
+    const elConselho          = $('#qfconselho').parent();
+    const elNConselho         = $('#qfdocumentoconselho').parent();
+    const elUFConselho        = $('#qfufconselho').parent();
+
+    if (isSimplificada && !restore) {
+        simplificaElemento(elRegistroAns);
+        simplificaElemento(elNGuiaOperadora);
+        simplificaElemento(elTrCarteira);
+        simplificaElemento(elCodigoNaOperadora);
+        simplificaElemento(elCodigoCnes);
+        simplificaElemento(elCodigoCBO);
+        simplificaElemento(elIndicacaoAcidente);
+        simplificaElemento(elTipoConsulta);
+        simplificaElemento(elTabela);
+        simplificaElemento(elCodProcedimento);
+        simplificaElemento(elConselho);
+        simplificaElemento(elNConselho);
+        simplificaElemento(elUFConselho);
+    } else {
+        restauraElemento(elRegistroAns);
+        restauraElemento(elNGuiaOperadora);
+        restauraElemento(elTrCarteira);
+        restauraElemento(elCodigoNaOperadora);
+        restauraElemento(elCodigoCnes);
+        restauraElemento(elCodigoCBO);
+        restauraElemento(elIndicacaoAcidente);
+        restauraElemento(elTipoConsulta);
+        restauraElemento(elTabela);
+        restauraElemento(elCodProcedimento);
+        restauraElemento(elConselho);
+        restauraElemento(elNConselho);
+        restauraElemento(elUFConselho);
+    }
+
+}
+
 $(document).ready(function(){
     <%if AutorizadorTiss then %>
 	Autorizador.bloqueiaBotoes(2);
@@ -752,6 +850,11 @@ $(document).ready(function(){
 	$("#Contratado, #UnidadeID").change(function(){
 //	    alert(1);
 		tissCompletaDados("Contratado", $(this).val());
+	});
+
+
+	$('#check-guia-simplificada').on('change', function() {
+	    guiaSimplificada();
 	});
 });
 

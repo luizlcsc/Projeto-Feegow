@@ -49,7 +49,7 @@ next
             </span>
         <% else %>
             <span class="panel-title">
-                <a href="./?P=Invoice&Pers=1&CD=C&I=<%= InvoiceID %>" class="btn btn-sm btn-success"><i class="fa fa-money"></i>VER CONTA</a>
+                <a href="./?P=Invoice&Pers=1&CD=C&I=<%= InvoiceID %>" class="btn btn-sm btn-success"><i class="far fa-money"></i>VER CONTA</a>
             </span>
         <% end if %>
     </div>

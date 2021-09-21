@@ -16,7 +16,7 @@ end if
 %>
 <div class="panel">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-history"></i> <b>Histórico do Campo</b></span>
+        <span class="panel-title"><i class="far fa-history"></i> <b>Histórico do Campo</b></span>
         <span style="color: #cccccc;"> / </span>
         <span style="font-size: 12px;"><b> <%=NomeCampo%> </b></span>
     </div>
@@ -25,7 +25,7 @@ end if
 
         <div class="row" style="display:none">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#HistoricoCampo').slideToggle()"><i class="fa fa-chevron-right"></i> Histórico de Ações</button>
+                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#HistoricoCampo').slideToggle()"><i class="far fa-chevron-right"></i> Histórico de Ações</button>
             </div>
         </div>
         <div class="row pt10" id="HistoricoCampo" style="display:">
@@ -76,7 +76,7 @@ end if
 
                                         %>
                                         <tr>
-                                            <td><button type="button" onClick="aplicarConteudoLog(<%=CampoId%>, <%=FormConteudoId%>, <%=TipoCampoId%>, '<%=Opcoes%>')" class="btn btn-xs btn-primary"><i class="fa fa-angle-right"></i> Aplicar</button></td>
+                                            <td><button type="button" onClick="aplicarConteudoLog(<%=CampoId%>, <%=FormConteudoId%>, <%=TipoCampoId%>, '<%=Opcoes%>')" class="btn btn-xs btn-primary"><i class="far fa-angle-right"></i> Aplicar</button></td>
                                             <td nowrap><%=DataAtendimento%></td>
                                             <td nowrap><%=Usuario%></td>
                                             <td id="conteudo-<%=FormConteudoId%>"><%=ConteudoAtendimento%></td>
@@ -285,7 +285,7 @@ end if
         <hr>
         <div class="row mt20" style="display:''">
             <div class="col-md-12">
-                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#HistoricoCID').slideToggle()"><i class="fa fa-chevron-right"></i> Histórico de CID</button>
+                <button class="btn btn-block btn-info text-left" type="button" onclick="$('#HistoricoCID').slideToggle()"><i class="far fa-chevron-right"></i> Histórico de CID</button>
             </div>
         </div>
         <div class="row pt10 col-md-12" id="HistoricoCID" style="display:''">

@@ -20,11 +20,11 @@
     <div class="hidden-print">
         <div class="col-md-1 pull-right">
             <label>&nbsp;</label><br />
-            <button class="btn btn-sm btn-info btn-block" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i> </button>
+            <button class="btn btn-sm btn-info btn-block" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> </button>
         </div>
         <div class="col-md-1 pull-right">
             <label>&nbsp;</label><br />
-            <button class="btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> </button>
+            <button class="btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> </button>
         </div>
     </div>
     <br>

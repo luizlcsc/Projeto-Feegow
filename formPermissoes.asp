@@ -9,11 +9,11 @@ FormID = req("F")
 <div class="modal-body">
     <div class="row">
       <div class="btn-group col-md-2">
-        <button class="btn btn-primary btn-sm btn-block dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Inserir Grupo <span class="fa fa-caret-down icon-on-right"></span></button>
+        <button class="btn btn-primary btn-sm btn-block dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Inserir Grupo <span class="far fa-caret-down icon-on-right"></span></button>
         <ul class="dropdown-menu dropdown-info">
-          <li><a href="javascript:addPerm('P');"><i class="fa fa-plus"></i> Profissionais</a></li>
-          <li><a href="javascript:addPerm('F');"><i class="fa fa-plus"></i> Funcionários</a></li>
-          <li><a href="javascript:addPerm('E');"><i class="fa fa-plus"></i> Especialidades</a></li>
+          <li><a href="javascript:addPerm('P');"><i class="far fa-plus"></i> Profissionais</a></li>
+          <li><a href="javascript:addPerm('F');"><i class="far fa-plus"></i> Funcionários</a></li>
+          <li><a href="javascript:addPerm('E');"><i class="far fa-plus"></i> Especialidades</a></li>
         </ul>
       </div>
     </div>
@@ -26,8 +26,8 @@ FormID = req("F")
 </div>
 
 <div class="modal-footer">
-	<button class="btn btn-sm btn-default" type="button" onClick="$('#modal-table').modal('hide');"><i class="fa fa-remove"></i> Cancelar</button>
-	<button class="btn btn-sm btn-success"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-default" type="button" onClick="$('#modal-table').modal('hide');"><i class="far fa-remove"></i> Cancelar</button>
+	<button class="btn btn-sm btn-success"><i class="far fa-save"></i> Salvar</button>
 </div>
 </form>
 

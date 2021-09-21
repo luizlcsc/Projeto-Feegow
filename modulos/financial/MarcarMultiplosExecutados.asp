@@ -87,7 +87,7 @@ if not ItensInvoiceSQL.eof then
                     <i data-toggle="tooltip"
                         style="color: orangered;"
                       title="<%=DescricaoPermiteSelecionar%>"
-                      class="fa fa-exclamation-circle"
+                      class="far fa-exclamation-circle"
                       aria-hidden="true"></i>
                     <%
                     end if

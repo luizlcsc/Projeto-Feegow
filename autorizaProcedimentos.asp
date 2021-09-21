@@ -40,7 +40,7 @@
             db_execute("update tissprocedimentossadt set statusAutorizacao=1 where id="&procs("id"))
             %>
             $.gritter.add({
-                title: '<i class="fa fa-check"></i> Solicitação enviada!',
+                title: '<i class="far fa-check"></i> Solicitaï¿½ï¿½o enviada!',
                 text: '',
                 class_name: 'gritter-success gritter-light'
             });

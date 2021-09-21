@@ -27,7 +27,7 @@ TelemedicinaAtiva = recursoAdicional(32) = 4
                 <div class="hidden-xs hidden-sm col-md-3">
                   <div class="btn-group">
                     <button type="button" class="btn btn-default light" onclick="atualizaLista()">
-                      <i class="fa fa-refresh"></i>
+                      <i class="far fa-refresh"></i>
                     </button>
 
                   </div>
@@ -115,7 +115,7 @@ if not AgendamentosOnlineSQL.eof then
         <div class="panel panel-primary panel-border  top mt30">
             <div class="panel-body bg-light p10">
               <div class="list-group list-group-links list-group-spacing-xs mbn">
-                  <div class="list-group-header"> Próximos atendimentos online <i data-toggle="tooltip" data-placement="left" title="Aqui você poderá acompanhar os próximos pacientes e enviar uma mensagem a ele solicitando que acesse o link da consulta online" class="fa fa-question-circle"></i> </div>
+                  <div class="list-group-header"> Próximos atendimentos online <i data-toggle="tooltip" data-placement="left" title="Aqui você poderá acompanhar os próximos pacientes e enviar uma mensagem a ele solicitando que acesse o link da consulta online" class="far fa-question-circle"></i> </div>
 
                   <table class="table mbn ">
                       <thead>
@@ -154,9 +154,9 @@ if not AgendamentosOnlineSQL.eof then
                             <strong><%=Hora%></strong>
                           </td>
 
-                          <td> <% if PacienteOnline then %><i class="fa fa-circle text-success"></i><% end if%> <a style="cursor: pointer" onclick="modalPaciente('<%=AgendamentosOnlineSQL("PacienteID")%>')"><%=AgendamentosOnlineSQL("NomePaciente")%></a></td>
+                          <td> <% if PacienteOnline then %><i class="far fa-circle text-success"></i><% end if%> <a style="cursor: pointer" onclick="modalPaciente('<%=AgendamentosOnlineSQL("PacienteID")%>')"><%=AgendamentosOnlineSQL("NomePaciente")%></a></td>
                             <td>
-                                <small class="badge badge-danger"><i class="fa fa-envelope"></i> <%=MensagensEnviadas%></small>
+                                <small class="badge badge-danger"><i class="far fa-envelope"></i> <%=MensagensEnviadas%></small>
                             </td>
                             <td>
 
@@ -172,7 +172,7 @@ if not AgendamentosOnlineSQL.eof then
                                         </button>
                                       <ul class="dropdown-menu" role="menu">
                                         <li>
-                                          <a onclick='enviaMensagemWhatsApp("<%=AgendamentosOnlineSQL("Cel1")%>", `<%=TextoWhatsApp%>`, `<%=AgendamentosOnlineSQL("id")%>`)'  href="#"><i class="fa fa-whatsapp"></i>  Enviar WhatsApp</a>
+                                          <a onclick='enviaMensagemWhatsApp("<%=AgendamentosOnlineSQL("Cel1")%>", `<%=TextoWhatsApp%>`, `<%=AgendamentosOnlineSQL("id")%>`)'  href="#"><i class="far fa-whatsapp"></i>  Enviar WhatsApp</a>
                                         </li>
 
                                         <%
@@ -181,7 +181,7 @@ if not AgendamentosOnlineSQL.eof then
                                         <li class="divider"></li>
                                         <li>
                                           <a href="#" onclick="if(confirm('Tem certeza que deseja iniciar este atendimento?')){window.location='?P=ListaEspera&Pers=1&Atender=<%=AgendamentosOnlineSQL("id")%>&PacienteID=<%=AgendamentosOnlineSQL("PacienteID")%>&isTelemedicina=true'}">
-                                              <i class="fa fa-play"></i> Iniciar atendimento
+                                              <i class="far fa-play"></i> Iniciar atendimento
                                           </a>
                                         </li>
                                         <%
@@ -245,7 +245,7 @@ splOrdens=split(Ordens, ", ")
 %>
 
 $(".crumb-active a").html("Sala de Espera");
-$(".crumb-icon a span").attr("class", "fa fa-clock-o");
+$(".crumb-icon a span").attr("class", "far fa-clock-o");
 $(".crumb-link").html("pacientes aguardando");
 $(".crumb-link").removeClass("hidden");
 var selectsTop = '<select name="StatusExibir" class="mr10" onChange="location.href=\'./?P=ListaEspera&Pers=1&StatusExibir=\'+this.value;"> <option <%if req("StatusExibir")="4" then%> selected="selected" <%end if%> value="4">Aguardando</option><option <%if req("StatusExibir")="3" then%> selected="selected" <%end if%> value="3">Atendido</option></select>';

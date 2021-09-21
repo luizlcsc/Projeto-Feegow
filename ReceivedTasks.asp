@@ -49,7 +49,7 @@ end if
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="far fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext
@@ -93,7 +93,7 @@ While Not PLista.EOF
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="far fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext
@@ -130,7 +130,7 @@ While Not PLista.EOF
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="far fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext
@@ -167,7 +167,7 @@ While Not PLista.EOF
     <td><%=nameInTable(PLista("De"))%><br /><em><%=PLista("staDe")%></em></td>
     <td><%=nameInTable(PLista("Para"))%><br /><em><%=PLista("staPara")%></em></td>
     <td><%=PLista("DtAbertura")%> - <%=cdate(hour(PLista("HrAbertura"))&":"&minute(PLista("HrAbertura")))%></td>
-    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button></td>
+    <td><button type="button" alt="Excluir" title="Excluir" onclick="excluiTarefa('./?P=ReceivedTasks&Pers=1&X=<%=PLista("id")%>');" class="btn btn-sm btn-danger"><i class="far fa-trash"></i></button></td>
   </tr>
   <%
 PLista.MoveNext

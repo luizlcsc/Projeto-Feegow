@@ -78,7 +78,7 @@ end if
     <div class="input-group">
     <input id="PaymentDate" class="form-control date-picker" type="text" data-date-format="dd/mm/yyyy" placeholder="" name="PaymentDate" value="<%= date() %>">
     <span class="input-group-addon">
-    <i class="fa fa-calendar bigger-110"></i>
+    <i class="far fa-calendar bigger-110"></i>
     </span>
     </div>
     </div>  

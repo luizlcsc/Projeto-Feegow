@@ -430,7 +430,7 @@ if session("y")="" then ctop="120px" else ctop=session("y")&"px" end if
     %>
     <div class="col-md-1">
     	<div class="btn-group">
-	        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Cadastrar <i class="fa fa-caret-down"></i></button>
+	        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Cadastrar <i class="far fa-caret-down"></i></button>
             <ul class="dropdown-menu dropdown-info">
             	<li><a href="./?P=Locais&Pers=Follow">Novo Local</a></li>
             	<li><a href="./?P=LocaisGrupos">Novo grupo de locais</a></li>

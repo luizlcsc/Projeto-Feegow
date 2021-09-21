@@ -177,7 +177,7 @@ function novoGeraReciboSplit(invoiceid)
                 end if
             end if
 
-            sqlSeqNum = "SELECT max(NumeroSequencial) as NumSeq FROM recibos WHERE UnidadeID="&UnidadeID&" ORDER BY NumeroSequencial"
+            sqlSeqNum = "SELECT NumeroSequencial as NumSeq FROM recibos WHERE UnidadeID="&UnidadeID&" ORDER BY NumeroSequencial DESC LIMIT 1"
             set resultNumSeq  = db.execute(sqlSeqNum)
             if not resultNumSeq.eof then
                 NumeroSequencial  = resultNumSeq("NumSeq")+1

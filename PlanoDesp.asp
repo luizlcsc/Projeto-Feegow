@@ -193,7 +193,7 @@ else
 	    <tr onClick="cd('0')">
 		    <td>0. Categoria não informada</td>
 		    <td class="text-right hidden">0</td>
-		    <td class="text-right"><% if ccur(temRateionvalSemCategoria("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %>  <%=fn(valSemCategoria("cTotal"))%></td>
+		    <td class="text-right"><% if ccur(temRateionvalSemCategoria("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="far fa-share-alt"></i></span> <% end if %>  <%=fn(valSemCategoria("cTotal"))%></td>
 	    </tr>
 	    <%
         sqlv = ""
@@ -246,7 +246,7 @@ else
 				' n68 = db.execute("select sum(if(isnull(numeroTotalCada), 0, numeroTotalCada)) as num from (select *, (select sum(if(isnull(Valor), 0, Valor)) Total from cliniccentral.rel_analise where UsuarioID = "&session("User")&" and CategoriaID in (numero)) as numeroTotalCada from ( select CONCAT(original.id, ',', IFNULL(filho1.id, '88888'), ',', IFNULL(filho2.id, '88888'), ',', IFNULL(filho3.id, '88888'), ',', IFNULL(filho4.id, '88888')) as numero from sys_financialexpensetype original left join sys_financialexpensetype filho1 on filho1.Category = original.id left join sys_financialexpensetype filho2 on filho2.Category = filho1.id left join sys_financialexpensetype filho3 on filho3.Category = filho2.id left join sys_financialexpensetype filho4 on filho4.Category = filho3.id where original.Category ="&n1("id")&  ") as x ) as z")
 
 				%>
-			    <td class="text-right"><% if ccur(temRateion70("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %> <strong><%=formatnumber(0&n70("valornum"),2)%></strong></td>
+			    <td class="text-right"><% if ccur(temRateion70("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="far fa-share-alt"></i></span> <% end if %> <strong><%=formatnumber(0&n70("valornum"),2)%></strong></td>
 		    </tr>
 		    <%
 		    c2 = 0
@@ -294,7 +294,7 @@ else
 				    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=c0 &"."& c1 &"."& c2%>. <%=n2("Name")%></td>
 					
 				    <td class="text-right hidden"><%=fn(valTotal("Total"))%></td>
-				    <td class="text-right"><% if ccur(temRateio2("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %> <%=fn(0&cTotal)%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				    <td class="text-right"><% if ccur(temRateio2("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="far fa-share-alt"></i></span> <% end if %> <%=fn(0&cTotal)%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			    </tr>
 			    <%
 			    c3 = 0
@@ -336,7 +336,7 @@ else
 				    <tr<%if (valRecursivo("cTotal")=0 or isnull(valRecursivo("cTotal"))) AND req("Ocultar")="S" then%> class="hidden"<%end if%> onClick="cd(<%=n3("id")%>)">
 					    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=c0 &"."& c1 &"."& c2 &"."& c3%>. <%=n3("Name")%></td>
 					    <td class="text-right hidden"><%=formatnumber(0&val("Total"),2)%></td>
-					    <td class="text-right"><% if ccur(temRateio3("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %> <%=formatnumber(0&valRecursivo("cTotal"),2)%></td>
+					    <td class="text-right"><% if ccur(temRateio3("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="far fa-share-alt"></i></span> <% end if %> <%=formatnumber(0&valRecursivo("cTotal"),2)%></td>
 				    </tr>
 				    <%
 				    c4 = 0
@@ -378,7 +378,7 @@ else
 					    <tr<%if (valRecursivo("cTotal")=0 or isnull(valRecursivo("cTotal"))) AND req("Ocultar")="S" then%> class="hidden"<%end if%> onClick="cd(<%=n4("id")%>)">
 						    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%=c0 &"."& c1 &"."& c2 &"."& c3 &"."& c4%>. <%=n4("Name")%></td>
                             <td class="text-right hidden"><%=formatnumber(0&val("Total"),2)%></td>
-                            <td class="text-right"><% if ccur(temRateio4("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> <% end if %> <%=formatnumber(0&valRecursivo("cTotal"),2)%></td>
+                            <td class="text-right"><% if ccur(temRateio4("total")) > 0 then %> <span title="Despesa Rateada" class="label label-warning"><i class="far fa-share-alt"></i></span> <% end if %> <%=formatnumber(0&valRecursivo("cTotal"),2)%></td>
 					    </tr>
 					    <%
 				    n4.movenext

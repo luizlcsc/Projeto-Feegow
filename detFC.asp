@@ -82,7 +82,7 @@ else
 					end if
 					%>
 					<tr>
-						<td width="1%"><a href="<%= t("Link") %>" target="_blank"><i class="fa fa-external-link"></i></a></td>
+						<td width="1%"><a href="<%= t("Link") %>" target="_blank"><i class="far fa-external-link"></i></a></td>
 						<td><%= t("Data") %></td>
 						<td><%= Pagador %></td>
 						<td><%= t("CompensacaoData") %></td>

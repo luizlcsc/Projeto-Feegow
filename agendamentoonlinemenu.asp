@@ -183,7 +183,7 @@ else
 							<%= quickfield("text", "Rotulo"& abaID, "Rótulo", 8, Rotulo, " frm ", "", " placeholder='"& Placeholder &"' ") %>
 							<%= quickfield("text", "Icone"& abaID, "Ícone", 3, Icone, " frm ", "", "  ") %>
 							<div class="col-md-1 pt25">
-								<i type="button" class="btn btn-md btn-danger fa fa-remove" onclick="if(confirm('Tem certeza de que deseja apagar esta aba?')) aoAba('X', <%= abaID %>)"></i>
+								<i type="button" class="btn btn-md btn-danger far fa-remove" onclick="if(confirm('Tem certeza de que deseja apagar esta aba?')) aoAba('X', <%= abaID %>)"></i>
 							</div>
 						</div>
 						<hr class="short alt">
@@ -227,14 +227,14 @@ else
 													set b = db.execute("select b.*, p.ProcedimentoTelemedicina tele from aoabasitensbotoes b left join procedimentos p on p.id=b.ProcedimentoID where b.ItemID="& pers("id"))
 													while not b.eof
 														if b("tele")="S" then
-															iconeTele = "<i class='fa fa-video-camera'></i> "
+															iconeTele = "<i class='far fa-video-camera'></i> "
 														else
 															iconeTele = ""
 														end if
 														%>
 														<button type="button" class="btn btn-default text-left" onclick="btnPers('E', <%= pers("id") %>, <%= b("id") %>)">
 															<%= iconeTele & b("Texto")%>
-															<i class="btn btn-xs btn-primary fa fa-edit"></i>
+															<i class="btn btn-xs btn-primary far fa-edit"></i>
 														</button>
 														<%
 													b.movenext
@@ -244,8 +244,8 @@ else
 													%>
 												</td>
 												<td nowrap>
-													<i class="btn btn-primary fa fa-plus" onclick="btnPers('I', <%= pers("id") %>, '')"></i>
-													<i class="fa fa-remove btn btn-md btn-danger" onclick="if(confirm('Deseja excluir este item da aba personalizada?')) aoAba('PX', <%= pers("id") %>)"></i>
+													<i class="btn btn-primary far fa-plus" onclick="btnPers('I', <%= pers("id") %>, '')"></i>
+													<i class="far fa-remove btn btn-md btn-danger" onclick="if(confirm('Deseja excluir este item da aba personalizada?')) aoAba('PX', <%= pers("id") %>)"></i>
 												</td>
 											</tr>
 											<%

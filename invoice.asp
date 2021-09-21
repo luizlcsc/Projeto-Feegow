@@ -351,97 +351,26 @@ end if
 
         <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
-        <%=quickField("datepicker", "sysDate", "Data", 2, sysDate, "input-mask-date", "", ""&dateReadonly)%>
-
         <%
-
-        sqlTabela = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' "&franquiaUnidade(" AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),true) ")&" order by NomeTabela"
-
-        set ValorPagoSQL = db_execute("SELECT ii.*, left(md5(ii.id), 7) as senha, SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement sf LEFT JOIN itensinvoice ii ON ii.InvoiceID = sf.InvoiceID WHERE sf.InvoiceID="&InvoiceID)
-
-        if not ValorPagoSQL.eof then
-            Executado = ValorPagoSQL("Executado")
-            camposBloqueados = ""
-            if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
-                camposBloqueados = "disabled"
-            end if
+        if scp()=1  then
+            call quickField("datepicker", "sysDate", "Data", 1, sysDate, "input-mask-date", "", ""&dateReadonly)
+            call quickField("text", "nroNFe", "N. Fiscal", 1, nroNFe, "text-right", "", "")
+            call quickField("datepicker", "dataNFe", "Data NF", 1, dataNFe, "text-right", "", "")
+            call quickField("text", "valorNFe", "Valor NF", 1, fn(valorNFe), "text-right input-mask-brl", "", "")
+        elseif scp()=2 then
+            %>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-block btn-default mt25" onclick="nfiscal(<%= InvoiceID %>)">N. Fiscal</button>
+            </div>
+            <%
+        else
+            call quickField("datepicker", "sysDate", "Data", 2, sysDate, "input-mask-date", "", ""&dateReadonly)
+            call quickField("text", "nroNFe", "N. Fiscal", 2, nroNFe, "text-right", "", "")
         end if
         %>
-        <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 2, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
-
         <div class="col-md-3">
             <%=quickField("memo", "Description", "", 1, data("Description"), "", "", " rows='2' placeholder='Observa&ccedil;&otilde;es...'")%>
         </div>
-        </div>
-        <div class="row">
-
-            <%
-             if session("Banco")="clinic6118" then
-                camposRequired=" required empty"
-            else
-                camposRequired=""
-            end if
-            %>
-
-            <% if aut("profissionalsolicitanteA")=1 then
-                    if getconfig("profissionalsolicitanteobrigatorio")=1 then
-                        SolicitanteRequired = " required empty "
-                    end if
-                    qInputProfissionais = " SELECT CONCAT('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem, '|0|' Unidades"&chr(13)&_
-                        " FROM empresa UNION ALL                                                          "&chr(13)&_
-                        " SELECT CONCAT('5_',id) id, NomeProfissional, 1 ordem, Unidades                  "&chr(13)&_
-                        " FROM profissionais                                                              "&chr(13)&_
-                        " WHERE sysActive=1 AND ativo='on' and (id in ( select ProfissionalID from profissionais_unidades where UnidadeID in ('"&session("UnidadeID")&"'))or nullif(Unidades, '') is null)UNION ALL "&chr(13)&_
-                        " SELECT CONCAT('8_',id) id, NomeProfissional, 2 ordem, ''                        "&chr(13)&_
-                        " FROM profissionalexterno                                                        "&chr(13)&_
-                        " WHERE sysActive=1                                                               "&chr(13)&_
-                        "                                                                                 "&chr(13)&_
-                        " ORDER BY ordem, NomeProfissional                                                "
-
-
-
-                    ' antiga
-                    qInputProfissionais = "SELECT * FROM ("&qInputProfissionais&") AS t "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
-
-
-
-                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, qInputProfissionais, "NomeProfissional", SolicitanteRequired ))
-
-              else %>
-            <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
-             <input type="hidden" name="ProfissionalSolicitante" value="<%=ProfissionalSolicitante%>">
-                <%
-                if ProfissionalSolicitante&""<>"" and ProfissionalSolicitante&""<>"0" then
-                %>
-              <span> <% response.write(accountName("", ProfissionalSolicitante)) %> </span>
-                <%
-                end if
-                %>
-            </div>
-            <% end if %>
-
-            <%
-            if scp()=1 or True then
-                call quickField("text", "nroNFe", "N. Fiscal", 2, nroNFe, "text-right", "", "")
-                call quickField("datepicker", "dataNFe", "Data NF", 2, dataNFe, "text-right", "", "")
-                call quickField("text", "valorNFe", "Valor NF", 2, fn(valorNFe), "text-right input-mask-brl", "", "")
-            elseif scp()=2 then
-                %>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-block btn-default mt25" onclick="nfiscal(<%= InvoiceID %>)">N. Fiscal</button>
-                </div>
-                <%
-            else
-                call quickField("text", "nroNFe", "N. Fiscal", 2, nroNFe, "text-right", "", "")
-            end if
-            %>
-            <%
-            if camposBloqueados<>"" then
-                %>
-                <input type="hidden" name="invTabelaID" value="<%=TabelaID%>">
-                <%
-            end if
-            %>
         </div>
         <%
         if getConfig("financeiroGuiaManual") = 1 then
@@ -558,6 +487,71 @@ end if
 %>&nbsp;
             </div>
 
+            <%
+             if session("Banco")="clinic6118" then
+                camposRequired=" required empty"
+            else
+                camposRequired=""
+            end if
+            %>
+
+            <% if aut("profissionalsolicitanteA")=1 then
+                    if getconfig("profissionalsolicitanteobrigatorio")=1 then
+                        SolicitanteRequired = " required empty "
+                    end if
+                    qInputProfissionais = " SELECT CONCAT('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem, '|0|' Unidades"&chr(13)&_
+                        " FROM empresa UNION ALL                                                          "&chr(13)&_
+                        " SELECT CONCAT('5_',id) id, NomeProfissional, 1 ordem, Unidades                  "&chr(13)&_
+                        " FROM profissionais                                                              "&chr(13)&_
+                        " WHERE sysActive=1 AND ativo='on' and (id in ( select ProfissionalID from profissionais_unidades where UnidadeID in ('"&session("UnidadeID")&"'))or nullif(Unidades, '') is null)UNION ALL "&chr(13)&_
+                        " SELECT CONCAT('8_',id) id, NomeProfissional, 2 ordem, ''                        "&chr(13)&_
+                        " FROM profissionalexterno                                                        "&chr(13)&_
+                        " WHERE sysActive=1                                                               "&chr(13)&_
+                        "                                                                                 "&chr(13)&_
+                        " ORDER BY ordem, NomeProfissional                                                "
+
+
+
+                    ' antiga
+                    qInputProfissionais = "SELECT * FROM ("&qInputProfissionais&") AS t "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
+
+
+
+                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, qInputProfissionais, "NomeProfissional", SolicitanteRequired ))
+
+              else %>
+            <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
+             <input type="hidden" name="ProfissionalSolicitante" value="<%=ProfissionalSolicitante%>">
+                <%
+                if ProfissionalSolicitante&""<>"" and ProfissionalSolicitante&""<>"0" then
+                %>
+              <span> <% response.write(accountName("", ProfissionalSolicitante)) %> </span>
+                <%
+                end if
+                %>
+            </div>
+            <% end if %>
+            <%
+                sqlTabela = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' "&franquiaUnidade(" AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),true) ")&" order by NomeTabela"
+
+                set ValorPagoSQL = db_execute("SELECT ii.*, left(md5(ii.id), 7) as senha, SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement sf LEFT JOIN itensinvoice ii ON ii.InvoiceID = sf.InvoiceID WHERE sf.InvoiceID="&InvoiceID)
+
+                if not ValorPagoSQL.eof then
+                    Executado = ValorPagoSQL("Executado")
+                    camposBloqueados = ""
+                    if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
+                        camposBloqueados = "disabled"
+                    end if
+                end if
+            %>
+            <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 3, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
+            <%
+            if camposBloqueados<>"" then
+                %>
+                <input type="hidden" name="invTabelaID" value="<%=TabelaID%>">
+                <%
+            end if
+            %>
         </div>
         <%
     end if

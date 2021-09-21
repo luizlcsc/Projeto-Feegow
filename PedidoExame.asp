@@ -34,7 +34,7 @@ response.Charset="utf-8"
     IF not verProc.EOF THEN
         PossuiExame = FALSE
     END IF
-    IF (getConfig("AssociarPorGrupos") AND NOT PossuiExame) THEN
+    IF (getConfig("AssociarPorGrupos") AND NO'T PossuiExame) THEN
         set ProcedimentosGruposSQL = db.execute("SELECT prg.id FROM pedidoexameprocedimentos pep INNER JOIN procedimentos pro ON pro.id = pep.ProcedimentoID LEFT JOIN procedimentosgrupos prg ON prg.id = pro.GrupoID WHERE pep.PedidoExameID = "&req("PedidoID")& " GROUP BY prg.id")
         WHILE NOT ProcedimentosGruposSQL.EOF
             %>

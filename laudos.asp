@@ -29,7 +29,7 @@ end if
     <div class="panel">
         <div class="panel-body mt20">
             <div class="row">
-                <%= quickfield("simpleSelect", "ProcedimentoID", "Procedimento", 2, "", "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg inner join procedimentos proc on proc.GrupoID=pg.id where proc.Laudo=1 and proc.sysActive UNION ALL select id, NomeProcedimento from procedimentos where ativo='on' and Laudo", "NomeProcedimento", "empty required=''") %>
+                <%= quickfield("simpleSelect", "ProcedimentoID", "Procedimento", 2, "", "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg inner join procedimentos proc on proc.GrupoID=pg.id where proc.Laudo=1 and proc.sysActive UNION ALL select id, NomeProcedimento from procedimentos where ativo='on' and Laudo", "NomeProcedimento", "empty ") %>
                 <div class="col-md-2">
                     <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
                 </div>

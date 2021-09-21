@@ -110,7 +110,7 @@ end if
             end if
 
 
-
+            statusIcon = imoon(pCons("StaID"))
             %>
             <tr class="row-<%=classe %>" onclick="">
                 <td class="pn">
@@ -118,7 +118,7 @@ end if
                         <%=left(staconsulta, 18) %>
                     </span>
                 </td>
-                <td><%="<img src=""assets/img/"&pCons("StaID")&".png"">"%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
+                <td><%=statusIcon%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
                 <td><%=left(pCons("NomeProfissional"), 30) %></td>
 				<td><%=left(pCons("NomeEquipamento"), 30) %></td>
                 <td><%=left(pCons("NomeEspecialidade"), 30) %></td>

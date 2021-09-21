@@ -515,8 +515,10 @@ while diaS<n
             end if
             FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
         end if
+        statusIcon = imoon(comps("StaID"))
+
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
-        "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+        "<td nowrap> "&statusIcon
         if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if

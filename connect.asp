@@ -4460,7 +4460,7 @@ function imoon(nome)
             cor = "dark"
             fornecedor = "imoon"
     end select
-    imoon = "<span class="""&fornecedor &" "& fornecedor &"-"& icone & " text-"& cor &""" style=""font-size:"& tamanho &"px""></span>"
+    imoon = "<span class="""&fornecedor &" "& fornecedor &"-"& icone & " text-"& cor &" badge-icon-status "" style=""font-size:"& tamanho &"px""></span>"
 end function
 
 function newrep()

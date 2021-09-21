@@ -13,8 +13,6 @@ if cbool(save) then
             GRUPOID = " GrupoID "
         END IF
 
-        dd(GRUPOID)
-
         sqlPacote = "SELECT group_concat(CONCAT('|',procedimentos.id,'|'))  as procedimentos,"&GRUPOID&" as pacote FROM procedimentos"&_
                     " WHERE procedimentos.id IN ("&ref("idsExames[]")&") "&_
                     " GROUP BY 2;"

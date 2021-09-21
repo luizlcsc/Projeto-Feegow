@@ -64,14 +64,14 @@ else
             <%=abreSpanTitulo %> <i class="far fa-calendar hidden"></i> <span class=""> Agenda </span> <%= fechaSpanTitulo %>
         </a>
         <ul class="dropdown-menu">
-            <li class="sub-menu-click-agenda-diaria"><a href="./?P=Agenda-1&Pers=1"><i class="far fa-calendar"></i> Diária</a></li>
+            <li class="sub-menu-click-agenda-diaria"><a href="./?P=Agenda-1&Pers=1"><i class="far fa-calendar-day"></i> Diária</a></li>
             <li class="sub-menu-click-agenda-semanal"><a href="./?P=Agenda-S&Pers=1"><i class="far fa-calendar-week"></i> Semanal</a></li>
             <%if Aut("|agenda")=1 then%>
             <li class="hidden sub-menu-click-agenda-multipla-por-locais"><a href="./?P=QuadroDisponibilidade&Pers=1"><i class="far fa-star"></i> Múltipla por Locais</a></li>
 		        <%
                 if Aut("|agendaV|")=1  then
                     %>
-                    <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1"><i class="far fa-calendar-star"></i> Múltipla</a></li>
+                    <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1"><i class="far fa-calendar-alt"></i> Múltipla</a></li>
                     <% IF getConfig("AcessoAgendamentoOnline") <> "0" AND getConfig("AcessoAgendamentoOnline") <> "0"  THEN %>
                         <li class="sub-menu-click-agenda-multipla"><a href="javascript:void(0)" onclick="openAgendamentoOnline()">Agedamento Online</a></li>
                         <script>
@@ -84,17 +84,15 @@ else
                     <% END IF %>
 		            <%
                 end if
-                if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710") then
+                ModuloCallCenter = recursoAdicional(41)=4  or True
+
+                if Aut("|agendaV|")=1 and ModuloCallCenter then
                     if aut("agendamultfiltros")=1 then
                     %>
-                    <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1">Múltipla por Filtros</a></li>
+                    <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1"><i class="far fa-calendar-star"></i> Múltipla por Filtros <span class="label label-alert label-xs fleft">Beta</span> </a></li>
                     <%
                     end if
-                    if aut("agendapendencias")=1 then
-                    %>
-                    <li  class="sub-menu-click-agenda-pendencias"><a href="./?P=Pendencias&Pers=1">Pendências</a></li>
-                    <%
-                    end if
+
                 end if
 		        if Aut("|agendaA|")=1 or Aut("agendaaheckin")=1  or Aut("confirmaragendamentos")=1 then %>
                 <li class="divider"></li>
@@ -117,13 +115,20 @@ else
                 %>
                 <li class="hidden sub-menu-click-agenda-consultar-valores"><a href="./?P=ConsultaDePrecos&Pers=1"> Consultar valores <span class="label label-system label-xs fleft">Novo</span> </a></li>
 		        <% end if %>
+		        <%
+		        if aut("agendapendencias")=1 and ModuloCallCenter then
+                %>
+                <li  class="sub-menu-click-agenda-pendencias"><a href="./?P=Pendencias&Pers=1"><i class="far fa-calendar-exclamation"></i> Pendências <span class="label label-alert label-xs fleft">Beta</span></a></li>
+                <%
+                end if
+                %>
             <%end if%>
             <li class="divider"></li>
             <%if aut("|agendaequipamentosV|")=1 or Aut("|agendaV|")=1 then %>
                 <li class="sub-menu-click-agenda-equipamentos-alocados"><a href="./?P=EquipamentosAlocados&Pers=1"><i class="far fa-laptop"></i> Equipamentos Alocados</a></li>
 		    <% end if
 		    if Aut("|agendaV|")=1 then %>
-                <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1"><i class="far fa-map"></i> Mapa de agenda <span class="label label-system label-xs fleft">Novo</span> </a></li>
+                <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1"><i class="far fa-map"></i> Mapa de agenda </a></li>
 		    <% end if
 
             if aut("agendaV")=1 then

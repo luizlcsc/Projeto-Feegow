@@ -35,7 +35,7 @@ end if
                         <%=quickfield("datepicker", "DataReferencia", "Data do saldo", 3, DataReferencia, "", "", "")%>
                     </div>
                 </form>
-                <h2 id="SaldoGeral">Carregando...</h2><br>
+                <h2 id="SaldoGeral" class="hidden">Carregando...</h2><br>
                 <div class="row">
                 <%
 				set unidadesSql = db.execute("select unidades from "&session("Table")&" where id="&session("idInTable"))

@@ -50,25 +50,7 @@
             </li>
 			<%
 			end if
-
-            if aut("solicitacao_compraV") = 1 then
-            %>
-                <li class="">
-                    <a href="./?P=SolicitacaoDeCompraLista&I=N&Pers=1">
-                        <i class="far fa-shopping-cart"></i>
-                        Solicitação de compra <span class="label label-system label-xs fleft">Novo</span>
-                    </a>
-                </li>
-            <% end if %>
-
-            <% if aut("aprovacompraV") = 1 then %>
-                <li class="">
-                    <a href="./?P=SolicitacaoDeCompraAprovacao&I=N&Pers=1">
-                        <i class="far fa-check"></i>
-                        Aprovação de compra <span class="label label-system label-xs fleft">Novo</span>
-                    </a>
-                </li>
-            <% end if %>
+			%>
         </ul>
     </li>
     <%

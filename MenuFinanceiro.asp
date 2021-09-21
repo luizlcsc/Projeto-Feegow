@@ -392,7 +392,7 @@
     </li>
     <%
     end if
-    if session("Admin")=1 and (session("Banco")="clinic5760" or session("Banco")="clinic100000") then
+    if session("Admin")=1 then
     %>
 
 	<li <% If req("P")="FechamentoData" Then %> class="active"<% End If %>>

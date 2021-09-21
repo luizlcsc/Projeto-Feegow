@@ -50,15 +50,32 @@ end if
 				SaldoGeral = 0
 				
 				set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType in(1, 2) and sysActive=1 "&whereUnidades)
+
+				CalcularSaldosAuto = False
+
 				while not contas.EOF
 					response.flush()
-					Saldo = accountBalancePerDate("1_"&contas("id"), 0, DataReferencia)
-					SaldoGeral = SaldoGeral+Saldo
+
+					if CalcularSaldosAuto then
+                        Saldo = accountBalancePerDate("1_"&contas("id"), 0, DataReferencia)
+                        SaldoGeral = SaldoGeral+Saldo
+                    end if
 					%>
                     <div class="col-xs-3 img-thumbnail" style="padding-left:42px">
                         <a href="?P=Extrato&Pers=1&T=1_<%=contas("id") %>">
                             <img style="position:absolute; left:5px; margin-top:2px" src="https://cdn.feegow.com/feegowclinic-v7/assets/banks/financeiro.png" width="32" height="32">
-                            <strong><%=left(contas("AccountName"),23)%></strong><br>R$ <%=formatnumber(Saldo, 2)%>
+                            <strong><%=left(contas("AccountName"),23)%></strong><br>
+                            <%
+                            if not CalcularSaldosAuto then
+                            %>
+                            <i class="far fa-eye-slash"></i>
+                            <%
+                            else
+                            %>
+                            <span class="saldo-conta">R$ <%=formatnumber(Saldo, 2)%></span>
+                            <%
+                            end if
+                            %>
                         </a>
                     </div>
                 <%

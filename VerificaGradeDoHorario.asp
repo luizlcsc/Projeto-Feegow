@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 Data=req("Data")
-ProfissionalID=req("ProfissionalID")
+ProfissionalID=replace(req("ProfissionalID")&"",",00","")
 UnidadeID=req("UnidadeID")
 DiaSemana=weekday(Data)
 Hora=req("Hora")

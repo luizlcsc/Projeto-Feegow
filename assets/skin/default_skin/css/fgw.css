@@ -30465,3 +30465,8 @@ select[tabindex="-1"], .multisel {
 .modal-pre-loading{
     padding: 25px;
 }
+
+.badge-icon-status{
+    font-size: 15px;
+    margin-right: 5px;
+}

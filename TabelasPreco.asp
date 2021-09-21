@@ -154,7 +154,11 @@ end if
                     sqlFiltros = sqlFiltros & " AND pt.Especialidades LIKE '%|"&replace(Especialidades, "|", "")&"|%'"
                 end if
                 if TipoTabela<>"" then
-                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&replace(TipoTabela,",","")&"'"
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&TipoTabela&"'"
+                end if
+
+                if tiposAutorizados<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo IN ("&tiposAutorizados&")"
                 end if
                 if TabelasParticulares<>"" then
                     sqlFiltros = sqlFiltros & " OR pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
@@ -217,7 +221,12 @@ end if
                     TabelasParticulares = t("TabelasParticulares")&""
                     if TabelasParticulares<>"" then
                         set tp = db.execute("select group_concat(NomeTabela separator ', ') tps from tabelaparticular where id in("& replace(TabelasParticulares, "|", "") &")")
-                        TabelasParticulares = tp("tps")&""
+
+                        if len(tp("tps")&"")>100 then
+                            TabelasParticulares = left(tp("tps"),100)&"<a href='#' data-toggle='tooltip' data-placement='right' data-original-title='"&tp("tps")&"' > <strong>...</strong></a>"
+                        else
+                            TabelasParticulares = tp("tps")&""
+                        end if
                     end if
 
                     LabelTabela = ""
@@ -280,10 +289,45 @@ end if
                 </tfoot>
             </tbody>
         </table>
+         <div class="mypage" style="display: flex;">
+
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
+<%
+buscaFiltro = replace(replace(request.querystring()&"","'","''"),"&pagNumber="&req("pagNumber"),"")
+%>
+    function changePagination(numberPag){
+        location.href = `?<%=buscaFiltro%>&pagNumber=${numberPag}`
+    }
+
+    function paginationHtml(page_number,numberPages) {
+        let html = `<ul class="pagination justify-content-center" style="margin: 20px auto;">`;
+
+        for(let i = page_number-3;i < page_number;i++){
+            if(i<1){
+                continue;
+            }
+
+            html += `<li class="page-item" onclick="changePagination(${i});"><a class="page-link" href="#">${i}</a></li>`
+        }
+
+        html += `<li class="page-item active"  ><a class="page-link" href="#">${page_number}</a></li>`
+
+        for(let i = page_number+1;i < page_number+1+3;i++){
+            if(i>numberPages)
+            {
+               break;
+            }
+             html += `<li class="page-item" onclick="changePagination(${i});"><a class="page-link" href="#">${i}</a></li>`
+        }
+        html += `</ul>`;
+        return html;
+    }
+
+    $(".mypage").html(paginationHtml(<%=pagNumber %>,<%=count("qtd")&""%>));
     $(".crumb-active a").html("Preços de Custo e Venda");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("cadastro de preços de custo e venda por vigência");

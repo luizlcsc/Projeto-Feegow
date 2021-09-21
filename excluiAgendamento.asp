@@ -13,7 +13,7 @@ if req("Confirma")="0" then
 
 <div class="panel-heading">
 <span class="panel-title">Tem certeza de que deseja excluir este agendamento?</span>
-    <div class="panel-controls" onclick="af('f');" type="button"><i class="fa fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
+    <div class="panel-controls" onclick="af('f');" type="button"><i class="far fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
     </div>
 </div>
 
@@ -61,7 +61,7 @@ if req("Confirma")="0" then
 	</div>
     <div class="panel-footer">
         <button class="btn btn-sm btn-danger" id="btnConfirmarExclusao" data-bb-handler="danger">
-            <i class="fa fa-trash"></i> Confirmar Exclus&atilde;o
+            <i class="far fa-trash"></i> Confirmar Exclus&atilde;o
         </button>
     </div>
 </div>

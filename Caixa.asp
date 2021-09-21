@@ -5,7 +5,7 @@ set caixa = db.execute("select * from caixa where sysUser="&session("User")&" an
 if caixa.eof then
 	%>
     <div class="modal-header">
-	    <h3 class="lighter blue"><i class="fa fa-inbox"></i> Abertura de Caixa</h3>
+	    <h3 class="lighter blue"><i class="far fa-inbox"></i> Abertura de Caixa</h3>
     </div>
     <div class="modal-body">
         <div class="panel">
@@ -58,7 +58,7 @@ if caixa.eof then
     </div>
     <input type="hidden" name="Acao" value="Abrir">
     <div class="modal-footer">
-    	<button class="btn btn-success pull-right" id="btnAbrirCaixa" <% if TemCaixa =0 then %> disabled <% end if %>><i class="fa fa-inbox"></i> ABRIR CAIXA</button>
+    	<button class="btn btn-success pull-right" id="btnAbrirCaixa" <% if TemCaixa =0 then %> disabled <% end if %>><i class="far fa-inbox"></i> ABRIR CAIXA</button>
     </div>
     <%
 
@@ -118,7 +118,7 @@ else
       <table class="table table-striped table-bordered">
       	<thead>
           <tr class="danger">
-          	<th class="red" width="59%"><i class="fa fa-exclamation-circle"></i> Pend&ecirc;ncias</th>
+          	<th class="red" width="59%"><i class="far fa-exclamation-circle"></i> Pend&ecirc;ncias</th>
             <th class="red" width="20%">Valor</th>
             <th class="red" width="20%">Pendente</th>
             <th class="red" width="1%"></th>
@@ -140,7 +140,7 @@ else
             <td><%=pen("NomePaciente")%></td>
             <td class="text-right"><%=formatnumber(pen("Value"),2)%></td>
             <td class="text-right"><%=formatnumber(pen("Value")-ValorPago,2)%></td>
-            <td><a href="?P=invoice&I=<%=pen("InvoiceID")%>&A=&Pers=1&T=C" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a></td>
+            <td><a href="?P=invoice&I=<%=pen("InvoiceID")%>&A=&Pers=1&T=C" class="btn btn-xs btn-success"><i class="far fa-edit"></i></a></td>
           </tr>
 		  <%
 		pen.movenext
@@ -247,21 +247,21 @@ else
             <%
             if aut("aberturacaixinhaI")=1 or aut("|movementI|")=1 then
                 %>
-			    <button type="button" class="btn btn-warning btn-sm" onclick="transferir()"><i class="fa fa-exchange"></i> Transferir</button>
-			    <a href="./?P=invoice&T=D&I=N&Pers=1" class="btn btn-primary btn-sm"><i class="fa fa-plus"></i> Despesa</a>
+			    <button type="button" class="btn btn-warning btn-sm" onclick="transferir()"><i class="far fa-exchange"></i> Transferir</button>
+			    <a href="./?P=invoice&T=D&I=N&Pers=1" class="btn btn-primary btn-sm"><i class="far fa-plus"></i> Despesa</a>
 			    <%
 			end if
             if aut("aberturacaixinhaV")=1 then
 			%>
-			<a href="./?P=MeuCaixa&Pers=1" class="btn btn-info btn-sm"><i class="fa fa-reorder"></i> Detalhes</a>
+			<a href="./?P=MeuCaixa&Pers=1" class="btn btn-info btn-sm"><i class="far fa-reorder"></i> Detalhes</a>
 			<%
 			end if
 			%>
 		<% 
         if getConfig("DetalharFechamentoCaixa")="1" or getConfig("PermitirFechamentoDeCaixaValorAbaixo")<>"1" then %>
-        	<button class="btn btn-success btn-sm" type="button" onclick="location.href='./?P=PreFechaCaixa&Pers=1'"><i class="fa fa-inbox"></i> Fechar Caixa</button>
+        	<button class="btn btn-success btn-sm" type="button" onclick="location.href='./?P=PreFechaCaixa&Pers=1'"><i class="far fa-inbox"></i> Fechar Caixa</button>
         <% else %>
-        	<button class="btn btn-success btn-sm"><i class="fa fa-inbox"></i> Fechar Caixa</button>
+        	<button class="btn btn-success btn-sm"><i class="far fa-inbox"></i> Fechar Caixa</button>
         <% end if %>
 
     </div>

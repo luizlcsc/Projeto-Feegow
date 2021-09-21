@@ -73,7 +73,7 @@ ProcedimentoID = ref("filtroProcedimentoID")
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(formatdatetime(Data,1))%>");
@@ -363,7 +363,7 @@ end if
 set comGrade = db.execute( sql )
 if comGrade.eof then
     %>
-    <div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
+    <div class="alert alert-warning text-center mt20"><i class="far fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
     <%
 end if
 cProf = 0
@@ -430,8 +430,36 @@ while not comGrade.eof
         </script>
 
 
-    <%
-    end if
+             <td valign="top" align="center" id="pf<%= comGrade("ProfissionalID") %>"><i class="far fa-circle-o-notch fa-spin"></i></td>
+
+            <script type="text/javascript">
+                window.requestsAgenda = window.requestsAgenda || [];
+                
+                window.requestsAgenda.push($.post("namAgenda.asp", {
+                    Especialidades: '<%= Especialidades %>',
+                    ProfissionalID: '<%= comGrade("ProfissionalID") %>',
+                    Data: '<%= Data %>',
+                    NomeProfissional: "<%= comGrade("NomeProfissional") %>",
+                    Cor: '<%= CorTitulo %>',
+                    NomeEspecialidade: '<%= NomeEspecialidade %>',
+                    ProcedimentoID: "<%= ProcedimentoID %>",
+                    Locais: "<%= ref("Locais") %>",
+                    ObsAgenda: "<%= ObsAgenda %>",
+                    strAB: '<%= strAB %>'
+                }, function (data) {
+                        $('#pf<%= comGrade("ProfissionalID") %>').html(data)
+
+                        let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
+                        conteudo = conteudo.trim();
+                        if(conteudo === ""){
+                            $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="far fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
+                        }
+                }));
+            </script>
+
+
+<%
+
 comGrade.movenext
 wend
 comGrade.close

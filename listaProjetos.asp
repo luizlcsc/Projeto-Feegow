@@ -4,12 +4,12 @@
     $(".crumb-active a").html("Gerenciar Projetos");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("lista de projetos");
-    $(".crumb-icon a span").attr("class", "fa fa-th-large");
+    $(".crumb-icon a span").attr("class", "far fa-th-large");
     <%
     if aut("tarefasI")=1 or aut("tarefasgerenciarI")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=projetos&I=N&Pers=1"><i class="fa fa-th-large"></i><span class="menu-text"> Inserir projeto</span></a>&nbsp;&nbsp;' +
-     '<a class="btn btn-sm btn-primary" href="./?P=listaTarefas&Pers=1"><i class="fa fa-tasks"></i><span class="menu-text"> Tarefas</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=projetos&I=N&Pers=1"><i class="far fa-th-large"></i><span class="menu-text"> Inserir projeto</span></a>&nbsp;&nbsp;' +
+     '<a class="btn btn-sm btn-primary" href="./?P=listaTarefas&Pers=1"><i class="far fa-tasks"></i><span class="menu-text"> Tarefas</span></a>');
     <%
     end if
     %>
@@ -76,7 +76,7 @@
                         <td class="text-center"><%=Participantes%></td>
                         <td class="text-center"><%=Responsaveis%></td>
                         <td class="text-center"><%=projetos("DataPrazo")%></td>
-                        <td class="text-center"><a href="./?P=projetos&Pers=1&I=<%=projetos("id") %>" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a></td>
+                        <td class="text-center"><a href="./?P=projetos&Pers=1&I=<%=projetos("id") %>" class="btn btn-success btn-xs"><i class="far fa-edit"></i></a></td>
                     </tr>
                 <%
                    projetos.movenext

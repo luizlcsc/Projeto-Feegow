@@ -6,8 +6,8 @@ Tipo = req("Tipo")
 
 <div class="btn-group pull-right">
     <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
-        <i class="fa fa-history"></i> Hist&oacute;rico de Formul&aacute;rios
-        <span class="fa fa-caret-down icon-on-right"></span>
+        <i class="far fa-history"></i> Hist&oacute;rico de Formul&aacute;rios
+        <span class="far fa-caret-down icon-on-right"></span>
     </button>
     <ul class="dropdown-menu dropdown-warning">
 
@@ -37,7 +37,7 @@ while not preen.eof
     
     if autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User") then
 		%>
-        <li><a href="javascript:callForm(<%=preen("PacienteID")%>, <%=preen("ModeloID")%>, <%=preen("idpreen")%>);"><i class="fa fa-edit"></i> <%=em&left(preen("DataHora"),10)&" "&preen("Nome") &" "& por%></a></li>
+        <li><a href="javascript:callForm(<%=preen("PacienteID")%>, <%=preen("ModeloID")%>, <%=preen("idpreen")%>);"><i class="far fa-edit"></i> <%=em&left(preen("DataHora"),10)&" "&preen("Nome") &" "& por%></a></li>
 	    <%
 		end if
 	end if

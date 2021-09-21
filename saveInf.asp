@@ -303,7 +303,7 @@ if req("Origem")="Atendimento" then
 			%>
 			$("#modal-table").modal("hide");
             $.gritter.add({
-                title: '<i class="fa fa-share-square"></i> Solicitação enviada...',
+                title: '<i class="far fa-share-square"></i> Solicitação enviada...',
                 text: '',
                 class_name: 'gritter-success gritter-light'
             });

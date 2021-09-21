@@ -32,7 +32,7 @@
     <div class="panel">
       <div class="panel-heading">
         <span class="panel-icon">
-          <i class="fa fa-gear text-primary"></i>
+          <i class="far fa-gear text-primary"></i>
         </span>
         <span class="panel-title"> Theme Options</span>
       </div>
@@ -210,21 +210,21 @@
         <li class="dropdown menu-merge">
           <div class="navbar-btn btn-group">
             <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle">
-              <span class="fa fa-bell-o fs14 va-m"></span>
+              <span class="far fa-bell-o fs14 va-m"></span>
               <span class="badge badge-danger">9</span>
             </button>
             <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">  
               <div class="panel mbn">
                   <div class="panel-menu">
-                     <span class="panel-icon"><i class="fa fa-clock-o"></i></span>
+                     <span class="panel-icon"><i class="far fa-clock-o"></i></span>
                      <span class="panel-title fw600"> Recent Activity</span>
-                     <button class="btn btn-default light btn-xs pull-right" type="button"><i class="fa fa-refresh"></i></button>
+                     <button class="btn btn-default light btn-xs pull-right" type="button"><i class="far fa-refresh"></i></button>
                   </div>
                   <div class="panel-body panel-scroller scroller-navbar scroller-overlay scroller-pn pn">
                       <ol class="timeline-list">
                         <li class="timeline-item">
                           <div class="timeline-icon bg-dark light">
-                            <span class="fa fa-tags"></span>
+                            <span class="far fa-tags"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Michael</b> Added to his store:
@@ -234,7 +234,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-dark light">
-                            <span class="fa fa-tags"></span>
+                            <span class="far fa-tags"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Sara</b> Added his store:
@@ -244,7 +244,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-success">
-                            <span class="fa fa-usd"></span>
+                            <span class="far fa-usd"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Admin</b> created invoice for:
@@ -254,7 +254,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-success">
-                            <span class="fa fa-usd"></span>
+                            <span class="far fa-usd"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Admin</b> created invoice for:
@@ -264,7 +264,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-success">
-                            <span class="fa fa-usd"></span>
+                            <span class="far fa-usd"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Admin</b> created invoice for:
@@ -274,7 +274,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-success">
-                            <span class="fa fa-usd"></span>
+                            <span class="far fa-usd"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Admin</b> created invoice for:
@@ -284,7 +284,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-dark light">
-                            <span class="fa fa-tags"></span>
+                            <span class="far fa-tags"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Michael</b> Added his store:
@@ -294,7 +294,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-system">
-                            <span class="fa fa-fire"></span>
+                            <span class="far fa-fire"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Admin</b> created invoice for:
@@ -304,7 +304,7 @@
                         </li>
                         <li class="timeline-item">
                           <div class="timeline-icon bg-dark light">
-                            <span class="fa fa-tags"></span>
+                            <span class="far fa-tags"></span>
                           </div>
                           <div class="timeline-desc">
                             <b>Sara</b> Added to his store:
@@ -352,10 +352,10 @@
                             <div class="media-response"> Approve?</div>
                             <div class="btn-group">
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-check text-success"></i>
+                                <i class="far fa-check text-success"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-remove"></i>
+                                <i class="far fa-remove"></i>
                               </button>
                             </div>
                           </div>
@@ -371,10 +371,10 @@
                             <div class="media-response"> Confirm?</div>
                             <div class="btn-group">
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-check text-success"></i>
+                                <i class="far fa-check text-success"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-print"></i>
+                                <i class="far fa-print"></i>
                               </button>
                             </div>
                           </div>
@@ -390,10 +390,10 @@
                             <div class="media-response text-right"> Moderate?</div>
                             <div class="btn-group">
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-pencil"></i>
+                                <i class="far fa-pencil"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-check text-success"></i>
+                                <i class="far fa-check text-success"></i>
                               </button>
                             </div>
                           </div>
@@ -409,10 +409,10 @@
                             <div class="media-response"> Approve?</div>
                             <div class="btn-group">
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-check text-success"></i>
+                                <i class="far fa-check text-success"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-remove"></i>
+                                <i class="far fa-remove"></i>
                               </button>
                             </div>
                           </div>
@@ -428,10 +428,10 @@
                             <div class="media-response"> Approve?</div>
                             <div class="btn-group">
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-check text-success"></i>
+                                <i class="far fa-check text-success"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-remove"></i>
+                                <i class="far fa-remove"></i>
                               </button>
                             </div>
                           </div>
@@ -459,10 +459,10 @@
                             <div class="media-response"> Confirm?</div>
                             <div class="btn-group">
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-check text-success"></i>
+                                <i class="far fa-check text-success"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs light">
-                                <i class="fa fa-print"></i>
+                                <i class="far fa-print"></i>
                               </button>
                             </div>
                           </div>
@@ -715,7 +715,7 @@
 	        </div>
 				</li>
         <li class="menu-divider hidden-xs">
-          <i class="fa fa-circle"></i>
+          <i class="far fa-circle"></i>
         </li>
         <li class="dropdown menu-merge">
           <a href="#" class="dropdown-toggle fw600 p15" data-toggle="dropdown">
@@ -747,27 +747,27 @@
             </li>
             <li class="list-group-item">
               <a href="#" class="animated animated-short fadeInUp">
-                <span class="fa fa-envelope"></span> Messages
+                <span class="far fa-envelope"></span> Messages
                 <span class="label label-warning">2</span>
               </a>
             </li>
             <li class="list-group-item">
               <a href="#" class="animated animated-short fadeInUp">
-                <span class="fa fa-user"></span> Friends
+                <span class="far fa-user"></span> Friends
                 <span class="label label-warning">6</span>
               </a>
             </li>
             <li class="list-group-item">
               <a href="#" class="animated animated-short fadeInUp">
-                <span class="fa fa-bell"></span> Notifications </a>
+                <span class="far fa-bell"></span> Notifications </a>
             </li>
             <li class="list-group-item">
               <a href="#" class="animated animated-short fadeInUp">
-                <span class="fa fa-gear"></span> Settings </a>
+                <span class="far fa-gear"></span> Settings </a>
             </li>
             <li class="dropdown-footer">
               <a href="#" class="">
-              <span class="fa fa-power-off pr5"></span> Logout </a>
+              <span class="far fa-power-off pr5"></span> Logout </a>
             </li>
           </ul>
         </li>
@@ -819,17 +819,17 @@
               </div>
               <div class="col-xs-4">
                 <a href="pages_timeline.html" class="text-system" data-toggle="tooltip" data-placement="top" title="Activity">
-                  <span class="fa fa-desktop"></span>
+                  <span class="far fa-desktop"></span>
                 </a>
               </div>
               <div class="col-xs-4">
                 <a href="pages_profile.html" class="text-danger" data-toggle="tooltip" data-placement="top" title="Settings">
-                  <span class="fa fa-gears"></span>
+                  <span class="far fa-gears"></span>
                 </a>
               </div>
               <div class="col-xs-4">
                 <a href="pages_gallery.html" class="text-warning" data-toggle="tooltip" data-placement="top" title="Cron Jobs">
-                  <span class="fa fa-flask"></span>
+                  <span class="far fa-flask"></span>
                 </a>
               </div>
             </div>
@@ -839,7 +839,7 @@
           <div class="sidebar-widget search-widget hidden">
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-search"></i>
+                <i class="far fa-search"></i>
               </span>
               <input type="text" id="sidebar-search" class="form-control" placeholder="Search...">
             </div>
@@ -853,7 +853,7 @@
           <li class="sidebar-label pt20">Menu</li>
           <li>
             <a href="pages_calendar.html">
-              <span class="fa fa-calendar"></span>
+              <span class="far fa-calendar"></span>
               <span class="sidebar-title">Calendar</span>
               <span class="sidebar-title-tray">
                 <span class="label label-xs bg-primary">New</span>
@@ -875,14 +875,14 @@
           <li class="sidebar-label pt15">Exclusive Tools</li>
           <li>
             <a class="accordion-toggle" href="#">
-              <span class="fa fa-columns"></span>
+              <span class="far fa-columns"></span>
               <span class="sidebar-title">Layout Templates</span>
               <span class="caret"></span>
             </a>
             <ul class="nav sub-nav">
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa fa-arrows-h"></span>
+                  <span class="fa far fa-arrows-h"></span>
                   Sidebars
                   <span class="caret"></span>
                 </a>
@@ -923,7 +923,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-arrows-v"></span>
+                  <span class="far fa-arrows-v"></span>
                   Navbar
                   <span class="caret"></span>
                 </a>
@@ -952,7 +952,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-hand-o-up"></span>
+                  <span class="far fa-hand-o-up"></span>
                   Topbar
                   <span class="caret"></span>
                 </a>
@@ -973,7 +973,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-arrows-v"></span>
+                  <span class="far fa-arrows-v"></span>
                   Content Body
                   <span class="caret"></span>
                 </a>
@@ -998,7 +998,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-pause"></span>
+                  <span class="far fa-pause"></span>
                   Content Trays
                   <span class="caret"></span>
                 </a>
@@ -1031,7 +1031,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-plus-square-o"></span>
+                  <span class="far fa-plus-square-o"></span>
                   Boxed Layout
                   <span class="caret"></span>
                 </a>
@@ -1048,7 +1048,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-arrow-circle-o-up"></span>
+                  <span class="far fa-arrow-circle-o-up"></span>
                   Horizontal Menu
                   <span class="caret"></span>
                 </a>
@@ -1131,11 +1131,11 @@
               </li>
               <li>
                 <a href="admin_forms-layouts.html">
-                  <span class="fa fa-desktop"></span> Admin Layouts </a>
+                  <span class="far fa-desktop"></span> Admin Layouts </a>
               </li>
               <li>
                 <a href="admin_forms-wizard.html">
-                  <span class="fa fa-clipboard"></span> Admin Wizard </a>
+                  <span class="far fa-clipboard"></span> Admin Wizard </a>
               </li>
             </ul>
           </li>
@@ -1143,26 +1143,26 @@
           <li class="sidebar-label pt20">Systems</li>
           <li>
             <a class="accordion-toggle" href="#">
-              <span class="fa fa-diamond"></span>
+              <span class="far fa-diamond"></span>
               <span class="sidebar-title">Widget Packages</span>
               <span class="caret"></span>
             </a>
             <ul class="nav sub-nav">
               <li>
                 <a href="widgets_tile.html">
-                  <span class="fa fa-cube"></span> Tile Widgets</a>
+                  <span class="far fa-cube"></span> Tile Widgets</a>
               </li>
               <li>
                 <a href="widgets_panel.html">
-                  <span class="fa fa-desktop"></span> Panel Widgets </a>
+                  <span class="far fa-desktop"></span> Panel Widgets </a>
               </li>
               <li>
                 <a href="widgets_scroller.html">
-                  <span class="fa fa-columns"></span> Scroller Widgets </a>
+                  <span class="far fa-columns"></span> Scroller Widgets </a>
               </li>
               <li>
                 <a href="widgets_data.html">
-                  <span class="fa fa-dot-circle-o"></span> Admin Widgets </a>
+                  <span class="far fa-dot-circle-o"></span> Admin Widgets </a>
               </li>
             </ul>
           </li>
@@ -1185,21 +1185,21 @@
               </li>
               <li>
                 <a href="ecommerce_orders.html">
-                  <span class="fa fa-money"></span> Orders </a>
+                  <span class="far fa-money"></span> Orders </a>
               </li>
               <li>
                 <a href="ecommerce_customers.html">
-                  <span class="fa fa-users"></span> Customers </a>
+                  <span class="far fa-users"></span> Customers </a>
               </li>
               <li>
                 <a href="ecommerce_settings.html">
-                  <span class="fa fa-gears"></span> Store Settings </a>
+                  <span class="far fa-gears"></span> Store Settings </a>
               </li>
             </ul>
           </li>
           <li>
             <a href="email_templates.html">
-              <span class="fa fa-envelope-o"></span>
+              <span class="far fa-envelope-o"></span>
               <span class="sidebar-title">Email Templates</span>
             </a>
           </li>
@@ -1215,39 +1215,39 @@
             <ul class="nav sub-nav">
               <li>
                 <a href="ui_alerts.html">
-                  <span class="fa fa-warning"></span> Alerts </a>
+                  <span class="far fa-warning"></span> Alerts </a>
               </li>
               <li>
                 <a href="ui_animations.html">
-                  <span class="fa fa-spinner"></span> Animations </a>
+                  <span class="far fa-spinner"></span> Animations </a>
               </li>
               <li>
                 <a href="ui_buttons.html">
-                  <span class="fa fa-plus-square-o"></span> Buttons </a>
+                  <span class="far fa-plus-square-o"></span> Buttons </a>
               </li>
               <li>
                 <a href="ui_typography.html">
-                  <span class="fa fa-text-width"></span> Typography </a>
+                  <span class="far fa-text-width"></span> Typography </a>
               </li>
               <li>
                 <a href="ui_portlets.html">
-                  <span class="fa fa-archive"></span> Portlets </a>
+                  <span class="far fa-archive"></span> Portlets </a>
               </li>
               <li>
                 <a href="ui_progress-bars.html">
-                  <span class="fa fa-bars"></span> Progress Bars </a>
+                  <span class="far fa-bars"></span> Progress Bars </a>
               </li>
               <li>
                 <a href="ui_tabs.html">
-                  <span class="fa fa-toggle-off"></span> Tabs </a>
+                  <span class="far fa-toggle-off"></span> Tabs </a>
               </li>
               <li>
                 <a href="ui_icons.html">
-                  <span class="fa fa-hand-o-right"></span> Icons </a>
+                  <span class="far fa-hand-o-right"></span> Icons </a>
               </li>
               <li>
                 <a href="ui_grid.html">
-                  <span class="fa fa-th-large"></span> Grid </a>
+                  <span class="far fa-th-large"></span> Grid </a>
               </li>
             </ul>
           </li>
@@ -1260,43 +1260,43 @@
             <ul class="nav sub-nav">
               <li>
                 <a href="form_inputs.html">
-                  <span class="fa fa-magic"></span> Basic Inputs </a>
+                  <span class="far fa-magic"></span> Basic Inputs </a>
               </li>
               <li>
                 <a href="form_plugins.html">
-                  <span class="fa fa-bell-o"></span> Plugin Inputs
+                  <span class="far fa-bell-o"></span> Plugin Inputs
                   <span class="label label-xs bg-primary">New</span>
                 </a>
               </li>
               <li>
                 <a href="form_editors.html">
-                  <span class="fa fa-clipboard"></span> Editors </a>
+                  <span class="far fa-clipboard"></span> Editors </a>
               </li>
               <li>
                 <a href="form_treeview.html">
-                  <span class="fa fa-tree"></span> Treeview </a>
+                  <span class="far fa-tree"></span> Treeview </a>
               </li>
               <li>
                 <a href="form_nestable.html">
-                  <span class="fa fa-tasks"></span> Nestable </a>
+                  <span class="far fa-tasks"></span> Nestable </a>
               </li>
               <li>
                 <a href="form_image-tools.html">
-                  <span class="fa fa-cloud-upload"></span> Image Tools
+                  <span class="far fa-cloud-upload"></span> Image Tools
                   <span class="label label-xs bg-primary">New</span>
                 </a>
               </li>
               <li>
                 <a href="form_uploaders.html">
-                  <span class="fa fa-cloud-upload"></span> Uploaders </a>
+                  <span class="far fa-cloud-upload"></span> Uploaders </a>
               </li>
               <li>
                 <a href="form_notifications.html">
-                  <span class="fa fa-bell-o"></span> Notifications </a>
+                  <span class="far fa-bell-o"></span> Notifications </a>
               </li>
               <li>
                 <a href="form_content-sliders.html">
-                  <span class="fa fa-exchange"></span> Content Sliders </a>
+                  <span class="far fa-exchange"></span> Content Sliders </a>
               </li>
             </ul>
           </li>
@@ -1329,7 +1329,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-area-chart"></span> Charts
+                  <span class="far fa-area-chart"></span> Charts
                   <span class="caret"></span>
                 </a>
                 <ul class="nav sub-nav">
@@ -1346,7 +1346,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-table"></span> Tables
+                  <span class="far fa-table"></span> Tables
                   <span class="caret"></span>
                 </a>
                 <ul class="nav sub-nav">
@@ -1369,7 +1369,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-flask"></span> Misc
+                  <span class="far fa-flask"></span> Misc
                   <span class="caret"></span>
                 </a>
                 <ul class="nav sub-nav">
@@ -1395,7 +1395,7 @@
             <ul class="nav sub-nav">
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-gears"></span> Utility
+                  <span class="far fa-gears"></span> Utility
                   <span class="caret"></span>
                 </a>
                 <ul class="nav sub-nav">
@@ -1459,7 +1459,7 @@
               </li>
               <li>
                 <a class="accordion-toggle" href="#">
-                  <span class="fa fa-desktop"></span> Basic
+                  <span class="far fa-desktop"></span> Basic
                   <span class="caret"></span>
                 </a>
                 <ul class="nav sub-nav">
@@ -1504,25 +1504,25 @@
           <li class="sidebar-label pt20">Projects</li>
           <li class="sidebar-proj">
             <a href="#projectOne">
-              <span class="fa fa-dot-circle-o text-primary"></span>
+              <span class="far fa-dot-circle-o text-primary"></span>
               <span class="sidebar-title">Website Redesign</span>
             </a>
           </li>
           <li class="sidebar-proj">
             <a href="#projectTwo">
-              <span class="fa fa-dot-circle-o text-info"></span>
+              <span class="far fa-dot-circle-o text-info"></span>
               <span class="sidebar-title">Ecommerce Panel</span>
             </a>
           </li>
           <li class="sidebar-proj">
             <a href="#projectTwo">
-              <span class="fa fa-dot-circle-o text-danger"></span>
+              <span class="far fa-dot-circle-o text-danger"></span>
               <span class="sidebar-title">Adobe Mockup</span>
             </a>
           </li>
           <li class="sidebar-proj">
             <a href="#projectThree">
-              <span class="fa fa-dot-circle-o text-warning"></span>
+              <span class="far fa-dot-circle-o text-warning"></span>
               <span class="sidebar-title">SSD Upgrades</span>
             </a>
           </li>
@@ -1531,7 +1531,7 @@
           <li class="sidebar-label pt25 pb10">User Stats</li>
           <li class="sidebar-stat">
             <a href="#projectOne" class="fs11">
-              <span class="fa fa-inbox text-info"></span>
+              <span class="far fa-inbox text-info"></span>
               <span class="sidebar-title text-muted">Email Storage</span>
               <span class="pull-right mr20 text-muted">35%</span>
               <div class="progress progress-bar-xs mh20 mb10">
@@ -1543,7 +1543,7 @@
           </li>
           <li class="sidebar-stat">
             <a href="#projectOne" class="fs11">
-              <span class="fa fa-dropbox text-warning"></span>
+              <span class="far fa-dropbox text-warning"></span>
               <span class="sidebar-title text-muted">Bandwidth</span>
               <span class="pull-right mr20 text-muted">58%</span>
               <div class="progress progress-bar-xs mh20">
@@ -1559,7 +1559,7 @@
 	      <!-- Start: Sidebar Collapse Button -->
 	      <div class="sidebar-toggle-mini">
 	        <a href="#">
-	          <span class="fa fa-sign-out"></span>
+	          <span class="far fa-sign-out"></span>
 	        </a>
 	      </div>
 	      <!-- End: Sidebar Collapse Button -->
@@ -1601,7 +1601,7 @@
           </div>
           <div class="col-xs-4 col-sm-2">
             <a href="#" class="metro-tile bg-warning light">
-              <span class="fa fa-gears text-muted"></span>
+              <span class="far fa-gears text-muted"></span>
               <span class="metro-title">Settings</span>
             </a>
           </div>
@@ -1646,7 +1646,7 @@
           </div>
           <div class="ml15 ib va-m" id="toggle_sidemenu_r">
             <a href="#" class="pl5">
-              <i class="fa fa-sign-in fs22 text-primary"></i>
+              <i class="far fa-sign-in fs22 text-primary"></i>
               <span class="badge badge-hero badge-danger">3</span>
             </a>
           </div>
@@ -1673,25 +1673,25 @@
                 <div class="row">
                   <div class="col-xs-3 col-sm-6">
                     <a class="holder-style p15 holder-active mb20" href="#modal-image">
-                      <span class="fa fa-picture-o fs40 holder-icon"></span>
+                      <span class="far fa-picture-o fs40 holder-icon"></span>
                       <br> Image
                     </a>
                   </div>
                   <div class="col-xs-3 col-sm-6">
                     <a class="holder-style p15 mb20" href="#modal-text">
-                      <span class="fa fa-text-height fs40 holder-icon"></span>
+                      <span class="far fa-text-height fs40 holder-icon"></span>
                       <br> Text
                     </a>
                   </div>
                   <div class="col-xs-3 col-sm-6">
                     <a class="holder-style p15 mb20" href="#modal-form">
-                      <span class="fa fa-pencil-square-o fs40 holder-icon"></span>
+                      <span class="far fa-pencil-square-o fs40 holder-icon"></span>
                       <br> Form
                     </a>
                   </div>
                   <div class="col-xs-3 col-sm-6">
                     <a class="holder-style p15 mb20" href="#modal-panel">
-                      <span class="fa fa-map-marker fs40 holder-icon"></span>
+                      <span class="far fa-map-marker fs40 holder-icon"></span>
                       <br> Panel
                     </a>
                   </div>
@@ -1762,7 +1762,7 @@
           <div class="panel">
             <div class="panel-heading">
               <span class="panel-icon">
-                <i class="fa fa-pencil"></i>
+                <i class="far fa-pencil"></i>
               </span>
               <span class="panel-title"> A Super Awesome Panel</span>
             </div>
@@ -1783,7 +1783,7 @@
           <div class="panel">
             <div class="panel-heading">
               <span class="panel-title">
-                <i class="fa fa-rocket"></i>Leave a comment</span>
+                <i class="far fa-rocket"></i>Leave a comment</span>
             </div>
             <!-- end .panel-heading section -->
 
@@ -1794,7 +1794,7 @@
                     <label for="firstname" class="field prepend-icon">
                       <input type="text" name="firstname" id="firstname" class="gui-input" placeholder="First name...">
                       <label for="firstname" class="field-icon">
-                        <i class="fa fa-user"></i>
+                        <i class="far fa-user"></i>
                       </label>
                     </label>
                   </div>
@@ -1804,7 +1804,7 @@
                     <label for="lastname" class="field prepend-icon">
                       <input type="text" name="lastname" id="lastname" class="gui-input" placeholder="Last name...">
                       <label for="lastname" class="field-icon">
-                        <i class="fa fa-user"></i>
+                        <i class="far fa-user"></i>
                       </label>
                     </label>
                   </div>
@@ -1818,7 +1818,7 @@
                     <label for="email" class="field prepend-icon">
                       <input type="email" name="email" id="email" class="gui-input" placeholder="Email address">
                       <label for="email" class="field-icon">
-                        <i class="fa fa-envelope"></i>
+                        <i class="far fa-envelope"></i>
                       </label>
                     </label>
                   </div>
@@ -1828,7 +1828,7 @@
                     <label for="website" class="field prepend-icon">
                       <input type="url" name="website" id="lastname" class="gui-input" placeholder="Website url...">
                       <label for="website" class="field-icon">
-                        <i class="fa fa-globe"></i>
+                        <i class="far fa-globe"></i>
                       </label>
                     </label>
                   </div>
@@ -1841,7 +1841,7 @@
                   <label for="comment" class="field prepend-icon">
                     <textarea class="gui-textarea" id="comment" name="comment" placeholder="Your comment"></textarea>
                     <label for="comment" class="field-icon">
-                      <i class="fa fa-comments"></i>
+                      <i class="far fa-comments"></i>
                     </label>
                     <span class="input-footer">
                       <strong>Hey You:</strong> We expect a great comment...</span>
@@ -1891,7 +1891,7 @@
 
               <h5 class="title-divider text-muted mb20"> Server Statistics
                 <span class="pull-right"> 2013
-                  <i class="fa fa-caret-down ml5"></i>
+                  <i class="far fa-caret-down ml5"></i>
                 </span>
               </h5>
               <div class="progress mh5">
@@ -1917,7 +1917,7 @@
                 </div>
                 <div class="col-xs-7 text-right">
                   <h3 class="text-success-dark mn">
-                    <i class="fa fa-caret-up"></i> 13.2% </h3>
+                    <i class="far fa-caret-up"></i> 13.2% </h3>
                 </div>
               </div>
 
@@ -1928,7 +1928,7 @@
                 </div>
                 <div class="col-xs-7 text-right">
                   <h3 class="text-success-dark mn">
-                    <i class="fa fa-caret-up"></i> 25.6% </h3>
+                    <i class="far fa-caret-up"></i> 25.6% </h3>
                 </div>
               </div>
 
@@ -1939,7 +1939,7 @@
                 </div>
                 <div class="col-xs-7 text-right">
                   <h3 class="text-danger mn">
-                    <i class="fa fa-caret-down"></i> 17.9% </h3>
+                    <i class="far fa-caret-down"></i> 17.9% </h3>
                 </div>
               </div>
 

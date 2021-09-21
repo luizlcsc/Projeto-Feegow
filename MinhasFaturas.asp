@@ -5,8 +5,8 @@
     $(".crumb-active a").html("Minhas Faturas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("boletos disponíveis para impressão");
-    $(".crumb-icon a span").attr("class", "fa fa-barcode");
-    $("#rbtns").html('<a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-primary btn-sm pull-right"><i class="fa fa-envelope"></i> EXTRATO DE SMS</a>');
+    $(".crumb-icon a span").attr("class", "far fa-barcode");
+    $("#rbtns").html('<a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-primary btn-sm pull-right"><i class="far fa-envelope"></i> EXTRATO DE SMS</a>');
 </script>
 
 <hr>
@@ -85,7 +85,7 @@ if not baf.EOF then
 			end if
 		  %>
 		  <a class="btn btn-default btn-sm" href="<%=boletoURL%>" target="_blank">
-		  <i class="fa fa-barcode"></i> IMPRIMIR BOLETO
+		  <i class="far fa-barcode"></i> IMPRIMIR BOLETO
 		  </a>
 		  </strong></td>
 		</tr>

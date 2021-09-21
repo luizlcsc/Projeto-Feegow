@@ -91,6 +91,21 @@ if tipo="PacienteID" then
 	    Response.End
 	end if
 
+    QuantidadeFaltasPagtoPrevio = getConfig("QuantidadeFaltasPagtoPrevio")&""
+    if isnumeric(QuantidadeFaltasPagtoPrevio) then
+        QuantidadeFaltasPagtoPrevio = ccur(QuantidadeFaltasPagtoPrevio)
+        if QuantidadeFaltasPagtoPrevio>0 then
+            set contaFaltas = db.execute("select IFNULL(count(*),0) Faltas from agendamentos where PacienteID="& PacienteID &" And StaID=6")
+            Faltas = ccur(contaFaltas("Faltas"))
+            if Faltas>=QuantidadeFaltasPagtoPrevio then
+                %>
+                alert("ATENÇÃO: ESTE PACIENTE NÃO COMPARECEU <%= Faltas%> VEZES. SOLICITA-SE O PAGAMENTO ANTECIPADO.");
+                <%
+            end if
+        end if
+    end if
+
+
 	set pac = db.execute("select * from pacientes where id="&PacienteID&" limit 1")
 	if not pac.eof then
         LembrarPendencias = pac("lembrarPendencias")
@@ -116,7 +131,7 @@ if tipo="PacienteID" then
 			if splCamposPedir(i)="Tel1" then
 				if pac("Tel1")<>"" and not isnull(pac("Tel1")) then
 					%>
-					$('#qfagetel1').html('<label for="ageTel1">Telefone</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-phone bigger-110"></i></span><input id="ageTel1" class="form-control" type="text" maxlength="150" name="ageTel1" value="<%= pac("Tel1") %>" placeholder=""></div></div>');
+					$('#qfagetel1').html('<label for="ageTel1">Telefone</label><br><div class="input-group"><span class="input-group-addon"><i class="far fa-phone bigger-110"></i></span><input id="ageTel1" class="form-control" type="text" maxlength="150" name="ageTel1" value="<%= pac("Tel1") %>" placeholder=""></div></div>');
 					<%
 				else
 					%>
@@ -127,7 +142,7 @@ if tipo="PacienteID" then
 				if pac("Cel1")<>"" and not isnull(pac("Cel1")) then
 					%>
 					if($('#qfagecel1').length > 0){
-					    $('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="fa fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
+					    $('#qfagecel1').html('<label for="ageCel1">Celular</label><br><div class="input-group"><span class="input-group-addon"><i class="far fa-mobile-phone bigger-110"></i></span><input id="ageCel1" class="form-control" type="text" maxlength="150" name="ageCel1" value="<%= pac("Cel1") %>" placeholder=""></div></div>');
 					}else{
 					    $("#ageCel1").val("<%=pac("Cel1")%>");
 					}
@@ -187,13 +202,13 @@ if tipo="PacienteID" then
                               "ORDER BY Prioridade")
 
 		if not conv.EOF then
-			QueryGradeSQL = "SELECT Convenios FROM assperiodolocalxprofissional WHERE ProfissionalID="&ProfissionalID
+			QueryGradeSQL = "SELECT Convenios FROM assperiodolocalxprofissional WHERE ProfissionalID="&treatvalzero(ProfissionalID)
             set GradeSQL = db.execute(QueryGradeSQL)
             conveniosGrade = ""
             if not GradeSQL.eof then
                 conveniosGrade = GradeSQL("Convenios")
             else
-                QueryGradeSQL = "SELECT Convenios FROM assfixalocalxprofissional WHERE ProfissionalID="&ProfissionalID
+                QueryGradeSQL = "SELECT Convenios FROM assfixalocalxprofissional WHERE ProfissionalID="&treatvalzero(ProfissionalID)
                 set GradeSQL = db.execute(QueryGradeSQL)
                 if not GradeSQL.eof then
                     conveniosGrade = GradeSQL("Convenios")
@@ -233,7 +248,7 @@ if tipo="PacienteID" then
 
                 if ObsConvenio&""<>"" then
                 %>
-                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=conv("id")%>)"><i class="fa fa-align-justify"></i></button>';
+                var btnObs = '<button title="Observações do convênio" id="ObsConvenios" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=conv("id")%>)"><i class="far fa-align-justify"></i></button>';
                 $("#ConvenioID").before(btnObs);
                 <%
                 end if
@@ -466,7 +481,7 @@ if left(tipo, 14)="ProcedimentoID" then
             UnidadeID=LocalSQL("UnidadeID")
         end if
 
-        ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID)
+        ValorAgendamento = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ref("ProfissionalID"), ref("EspecialidadeID"), GrupoID, 0)
 		if Checkin&"" <> "1" then 
 
         tempoProcedimento = getTempoProcedimento(procedimentoId, profissionalID)
@@ -567,7 +582,7 @@ if tipo="Equipamento" then
             text: '<%=msgEquip %>',
             type: 'danger',
             delay: 3000,
-            icon: 'fa fa-times'
+            icon: 'far fa-times'
         });
         $("#btnSalvarAgenda").attr("disabled", true);
         <%
@@ -606,7 +621,7 @@ if left(tipo, 10)="ConvenioID" then
 
         if ObsConvenio&""<>"" then
             %>
-            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="fa fa-align-justify"></i></button>';
+            var btnObs = '<button title="Observações do convênio" id="ObsConvenios<%=apID%>" style="z-index: 99;position: absolute;left:-16px" class="btn btn-system btn-xs" type="button" onclick="ObsConvenio(<%=ConvenioID%>)"><i class="far fa-align-justify"></i></button>';
             $("#ConvenioID<%=apID%>").before(btnObs);
             <%
         else

@@ -35,7 +35,7 @@ if req("De")="" then
             <%=quickField("empresaMulti", "UnidadeID", "Unidade", 4, session("Unidades"), " input-sm", "", "")%>
             <div class="col-md-1">
                 <label>&nbsp;</label><br />
-                <button type="submit" class="btn btn-sm btn-primary" name="Gerar" value="Gerar"><i class="fa fa-search"></i>Gerar</button>
+                <button type="submit" class="btn btn-sm btn-primary" name="Gerar" value="Gerar"><i class="far fa-search"></i>Gerar</button>
             </div>
         </div>
         <br />

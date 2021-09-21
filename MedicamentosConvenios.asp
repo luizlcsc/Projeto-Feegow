@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Medicamentos por Convênios</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-sitemap");
+    $(".crumb-icon a span").attr("class", "far fa-sitemap");
     $(".crumb-trail").removeClass("hidden");
 </script>
 <%
@@ -30,8 +30,8 @@ set getMedicamentosItens = db.execute("SELECT * FROM medicamentosconvenios WHERE
                         Cadastro de Medicamentos por Convênios
                     </span>
                     <span class="panel-controls">
-                        <button type="button" class="btn btn-success btn-sm" id="inserir" onclick="inserirRegras()"> <i class="fa fa-plus"></i> Inserir </button>
-                        <button type="button" class="btn btn-primary btn-sm" id="salvar" onclick="salvarRegras()"><i class="fa fa-save"></i> Salvar </button>
+                        <button type="button" class="btn btn-success btn-sm" id="inserir" onclick="inserirRegras()"> <i class="far fa-plus"></i> Inserir </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="salvar" onclick="salvarRegras()"><i class="far fa-save"></i> Salvar </button>
                     </span>
                 </div>
                 <div class="panel-body">
@@ -46,8 +46,8 @@ set getMedicamentosItens = db.execute("SELECT * FROM medicamentosconvenios WHERE
                         <%=quickfield("multiple", "Convenios_"&id, "Convênios", 3, Convenios, "select id, NomeConvenio from convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", "") %>
                         <%=quickField("simpleSelect", "MedicamentoOriginalID_"&id, "Medicamento", 3, MedicamentoOriginalID, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4 order by NomeProduto", "NomeProduto", "")%>
                         <%=quickField("simpleSelect", "MedicamentoSubstitutoID_"&id, "Medicamento Substituto", 3, MedicamentoSubstitutoID, "select id, NomeProduto from produtos where sysActive=1 and TipoProduto=4 order by NomeProduto", "NomeProduto", "")%>
-                        <button type="button" class="btn btn-warning btn-sm mt25" id="adicionarplanos" onclick="RegraPlanos('<%=id%>')"> <i class="fa fa-lock"></i> Planos </button>
-                        <button type="button" class="btn btn-danger btn-sm mt25" id="remover" onclick="excluirLinha('<%=id%>')"> <i class="fa fa-remove"></i></button>
+                        <button type="button" class="btn btn-warning btn-sm mt25" id="adicionarplanos" onclick="RegraPlanos('<%=id%>')"> <i class="far fa-lock"></i> Planos </button>
+                        <button type="button" class="btn btn-danger btn-sm mt25" id="remover" onclick="excluirLinha('<%=id%>')"> <i class="far fa-remove"></i></button>
 
                         </div>
                         <%

@@ -80,11 +80,11 @@ else
             </div>
             <div class="col-xs-2">
                 &nbsp;<br />
-                <button class="mt5 btn btn-block btn-md btn-primary" type="submit"><i class="fa fa-barcode"></i> Gerar</button>
+                <button class="mt5 btn btn-block btn-md btn-primary" type="submit"><i class="far fa-barcode"></i> Gerar</button>
             </div>
             <div class="col-xs-2">
                 &nbsp;<br />
-                <button onclick="print()" class="mt5 btn btn-block btn-md btn-system" type="button"><i class="fa fa-print"></i>&nbsp;</button>
+                <button onclick="print()" class="mt5 btn btn-block btn-md btn-system" type="button"><i class="far fa-print"></i>&nbsp;</button>
             </div>
             <input type="hidden" name="etiqueta" value="<%=req("Etiquetas") %>" />
             <hr />

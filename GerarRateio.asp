@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Gerar Rateio");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("calcular e lançar rateio de despesas");
-    $(".crumb-icon a span").attr("class", "fa fa-th");
+    $(".crumb-icon a span").attr("class", "far fa-th");
 </script>
 
 	<%
@@ -49,7 +49,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button class="btn btn-primary pull-right"><i class="fa fa-search"></i> Buscar</button>
+                    <button class="btn btn-primary pull-right"><i class="far fa-search"></i> Buscar</button>
                 </div>
             </div>
         </div>

@@ -114,13 +114,20 @@ if not Horarios.eof then
 
 <table class="table table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
 
-    <%if MostraGrade then%>
-        <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
-            <span class="panel-title">
-                <%=left(ucase(NomeProfissional),20)%> <br /><small><%= NomeEspecialidade %></small>
-            </span>
-                <div style="position:absolute; top:0; right:0; width:22px">
-                    <%
+
+    <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
+        <span class="panel-title">
+            <%=left(ucase(NomeProfissional),20)%> <br /><small><%= NomeEspecialidade %></small>
+        </span>
+            <div style="position:absolute; top:0; right:0; width:22px">
+                <%
+                if aut("horarios")=1 then
+                    %>
+                    <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
+                        <span class="far fa-cog"></span>
+                    </a>
+
+<%
                     if aut("horarios")=1 then
                         %>
                         <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
@@ -139,17 +146,20 @@ if not Horarios.eof then
                             GradePadraoID=Horarios("id")
                         end if
                     %>
-                        <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= GradePadraoID %>');">
-                                <span class="fa fa-external-link"></span>
-                            </a>
+                    <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
                     <%
                     end if
-                    %>
-                </div>
-        </div>
-        </th></tr></thead><tbody><tr class="hidden l<%=LocalID%>" id="0000"></tr>
-    <%
-    end if
+                %>
+                    <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= GradePadraoID %>');">
+                            <span class="far fa-external-link"></span>
+                        </a>
+		        <%
+                end if
+                %>
+            </div>
+    </div>
+    </th></tr></thead><tbody><tr class="hidden l<%=LocalID%>" id="0000"></tr><%
+
     sqlUnidadesBloqueio= ""
 
     while not Horarios.EOF
@@ -245,7 +255,7 @@ if not Horarios.eof then
                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                 <td colspan="4">
                     <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>', '<%=ProfissionalID%>','<%=Data%>', '<%=LocalID%>'); $('#buscar').click();" class="btn btn-xs btn-primary">
-                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                        <i class="far fa-chevron-left"></i> Agendar Aqui
                     </button>
                 </td>
             </tr>
@@ -258,7 +268,7 @@ if not Horarios.eof then
                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                     <td colspan="4">
                         <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                            <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                            <i class="far fa-chevron-left"></i> Remarcar Aqui
                         </button>
                     </td>
                 </tr>
@@ -271,7 +281,7 @@ if not Horarios.eof then
                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                 <td colspan="4">
                     <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                        <i class="fa fa-chevron-left"></i> Repetir Aqui
+                        <i class="far fa-chevron-left"></i> Repetir Aqui
                     </button>
                 </td>
             </tr>
@@ -319,7 +329,7 @@ if not Horarios.eof then
                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                         <td colspan="4">
                             <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>', '<%=ProfissionalID%>','<%=Data%>', '<%=LocalID%>'); $('#buscar').click();" class="btn btn-xs btn-primary">
-                                <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                <i class="far fa-chevron-left"></i> Agendar Aqui
                             </button>
                         </td>
                     </tr>
@@ -332,7 +342,7 @@ if not Horarios.eof then
                             <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                             <td colspan="4">
                                 <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                                    <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                    <i class="far fa-chevron-left"></i> Remarcar Aqui
                                 </button>
                             </td>
                         </tr>
@@ -345,7 +355,7 @@ if not Horarios.eof then
                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                         <td colspan="4">
                             <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                                <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                <i class="far fa-chevron-left"></i> Repetir Aqui
                             </button>
                         </td>
                     </tr>
@@ -491,7 +501,7 @@ while not comps.EOF
         
         iconRetorno = ""
         if comps("Retorno") then
-            iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""pull-right fa fa-undo text-warning pt10""></i>"
+            iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""pull-right far fa-undo text-warning pt10""></i>"
         end if
     	Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) & "</span>  <span class=""pull-right"">"& sinalAgenda(FormaPagto) & "</span> "&iconRetorno&" </td></tr>"
     else
@@ -616,7 +626,7 @@ $( ".ocu<%=ProfissionalID%>" ).each(function(){
         if( $(this).attr("data-id")>='<%=HoraDe%>' && $(this).attr("data-id")<'<%=HoraA%>' )
         {
             var $slot = $(this).find(".slot-cor");
-            $slot.removeClass("btn-warning").addClass("btn-danger").append("&nbsp; <i class='fa fa-lock'></i>");
+            $slot.removeClass("btn-warning").addClass("btn-danger").append("&nbsp; <i class='far fa-lock'></i>");
         }
     }
 });
@@ -625,7 +635,7 @@ $( ".p<%=ProfissionalID%> .btn-comp" ).each(function(){
     {
         $(this).removeClass("btn-default");
         $(this).addClass("btn-danger");
-        $(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+        $(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
     }
 });
 <%

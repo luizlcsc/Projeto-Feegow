@@ -173,5 +173,5 @@
     $(".crumb-active a").html("Baixa de Retorno");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Demonstrativo / análise de conta");
-    $(".crumb-icon a span").attr("class", "fa fa-upload");
+    $(".crumb-icon a span").attr("class", "far fa-upload");
 </script>

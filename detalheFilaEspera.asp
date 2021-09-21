@@ -35,18 +35,18 @@ end if
 <div class="panel">
     <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
-            <li class="active"><a data-toggle="tab" href="#tabFila"><i class="fa fa-calendar"></i> <span class="hidden-xs">Fila de espera</span></a></li>
-            <li id="abaFicha" class="abasAux"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
-            <li class="abasAux"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); crumbAgenda();" href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
+            <li class="active"><a data-toggle="tab" href="#tabFila"><i class="far fa-calendar"></i> <span class="hidden-xs">Fila de espera</span></a></li>
+            <li id="abaFicha" class="abasAux"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="far fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
+            <li class="abasAux"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); crumbAgenda();" href="#divHistorico"><i class="far fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
 
-    	        <li class="abasAux"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); crumbAgenda();$('#alertaAguardando').removeClass('hidden');" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
+    	        <li class="abasAux"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); crumbAgenda();$('#alertaAguardando').removeClass('hidden');" href="#divHistorico"><i class="far fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
 
     	</ul>
 
 
 
     <span class="panel-controls" onclick="javascript:af('f'); crumbAgenda();">
-        <i class="fa fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
+        <i class="far fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
     </span>
     </div>
     <div class="panel-body">
@@ -97,8 +97,8 @@ end if
                                                     <div class="btn-toolbar">
                                                         <div class="btn-group">
                                                             <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-                                                                <i class="fa fa-dollar"></i>
-                                                                <span class="fa fa-caret-down icon-on-right"></span>
+                                                                <i class="far fa-dollar"></i>
+                                                                <span class="far fa-caret-down icon-on-right"></span>
                                                             </button>
                                                             <ul class="dropdown-menu dropdown-warning">
                                                                 <li>
@@ -132,7 +132,7 @@ end if
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-sm btn-primary" id="btnSalvarFila">
-                                <i class="fa fa-save"></i>Salvar
+                                <i class="far fa-save"></i>Salvar
                             </button>
                         </div>
                     </form>
@@ -185,7 +185,7 @@ $("#formFila").submit(function() {
 	$("#btnSalvarFila").attr('disabled', 'disabled');
 	$.post("saveFila.asp", $("#formFila").serialize())
 	.done(function(data) {
-	  $("#btnSalvarFila").html('<i class="fa fa-save"></i> Salvar');
+	  $("#btnSalvarFila").html('<i class="far fa-save"></i> Salvar');
 	  $("#btnSalvarFila").removeAttr('disabled');
 	  eval(data);
 	});

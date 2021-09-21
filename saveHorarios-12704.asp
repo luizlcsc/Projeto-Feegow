@@ -14,7 +14,7 @@ end if
 if erro<>"" then
 %>
     $.gritter.add({
-        title: '<i class="fa fa-thumbs-down"></i> Erro no horário de <%=weekdayname(Dia)%>!',
+        title: '<i class="far fa-thumbs-down"></i> Erro no horário de <%=weekdayname(Dia)%>!',
         text: '<%=erro1%><br><%=erro2%><br><%=erro3%>',
         class_name: 'gritter-error gritter-light'
     });

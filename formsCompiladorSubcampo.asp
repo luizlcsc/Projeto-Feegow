@@ -1,7 +1,7 @@
 <li id="<%=CampoID%>" class="campo" data-row="<%=pTop%>" style="text-align:left" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>"><span class="botoes"><% If TipoCampoID=13 Then 
-	%><button onClick="menu(<%=CampoID%>)" class="btn btn-xs btn-warning" style="z-index:500; width:17px; margin-top:-20px;"><i class="fa fa-plus"></i></button>&nbsp;<button onClick="editField(<%=CampoID%>)" class="btn btn-xs btn-primary" style="z-index:500; width:17px; margin-top:-20px;"><i class="fa fa-edit"></i></button>&nbsp;<button onClick="removeCampo(<%=CampoID%>, 0)" class="btn btn-xs btn-danger" style="z-index:500; width:17px; margin-top:-20px;"><i class="fa fa-remove"></i></button><% 
+	%><button onClick="menu(<%=CampoID%>)" class="btn btn-xs btn-warning" style="z-index:500; width:17px; margin-top:-20px;"><i class="far fa-plus"></i></button>&nbsp;<button onClick="editField(<%=CampoID%>)" class="btn btn-xs btn-primary" style="z-index:500; width:17px; margin-top:-20px;"><i class="far fa-edit"></i></button>&nbsp;<button onClick="removeCampo(<%=CampoID%>, 0)" class="btn btn-xs btn-danger" style="z-index:500; width:17px; margin-top:-20px;"><i class="far fa-remove"></i></button><%
 else
-	%><i class="fa fa-edit blue" onClick="editField(<%=CampoID%>)"></i>&nbsp;&nbsp;&nbsp;<i class="fa fa-remove red" onClick="removeCampo(<%=CampoID%>, <%=GrupoID%>);"></i><%
+	%><i class="far fa-edit blue" onClick="editField(<%=CampoID%>)"></i>&nbsp;&nbsp;&nbsp;<i class="far fa-remove red" onClick="removeCampo(<%=CampoID%>, <%=GrupoID%>);"></i><%
 End If
 	%></span><%
 	  select case TipoCampoID
@@ -14,12 +14,12 @@ End If
 			end if
 	  	case 2'Data
 			if LadoALado="S" then
-				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
+				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control" name="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control" name="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="imagem"></div><div><button type="button" class="btn btn-xs btn-warning btn-20 pull-right"><i class="fa fa-plus"></i></button><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="imagem"></div><div><button type="button" class="btn btn-xs btn-warning btn-20 pull-right"><i class="far fa-plus"></i></button><%
 				%></div><%
 	  	case 4'checkbox
 			if Checado="S" then
@@ -83,7 +83,7 @@ End If
 				%><th><input name="<%=CampoID&"_t"&contaLargura%>" value="<%=pTit("c"&contaLargura)%>" class="tabTit" /></th><%
 			wend
 
-			%><th width="1%"><button type="button" onClick="addRow(<%=CampoID%>, 0, 'Add')" class="btn btn-xs btn-primary btn-20"><i class="fa fa-plus"></i></button></th></thead><tbody><%
+			%><th width="1%"><button type="button" onClick="addRow(<%=CampoID%>, 0, 'Add')" class="btn btn-xs btn-primary btn-20"><i class="far fa-plus"></i></button></th></thead><tbody><%
 			
 			set pMod = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
 			while not pMod.EOF
@@ -93,7 +93,7 @@ End If
 					contaLargura = contaLargura+1
 					%><td><input class="campoInput form-control" name="<%=CampoID&"_t"&contaLargura%>" value="<%=pMod("c"&contaLargura)%>" /></td><%
 				wend
-				%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRow(<%=pMod("id")%>, 0, 'Remove')"><i class="fa fa-remove"></i></button></td></tr><%
+				%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRow(<%=pMod("id")%>, 0, 'Remove')"><i class="far fa-remove"></i></button></td></tr><%
 			pMod.movenext
 			wend
 			pMod.close

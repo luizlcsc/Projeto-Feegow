@@ -109,22 +109,22 @@ end if
                     <td><%= ac("NomeConvenio") %></td>
                     <td><%= ac("Cirurgiao") %></td>
                     <td width="1%" nowrap>
-                        <a class="btn btn-xs btn-primary" href="./?P=AgendaCirurgica&I=<%= ac("id") %>&Pers=1"><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-xs btn-primary" href="./?P=AgendaCirurgica&I=<%= ac("id") %>&Pers=1"><i class="far fa-edit"></i></a>
                     </td>
                     <td width="1%">
                         <%
                             if ac("rdValorPlano")="V" then 
                                 if not isnull(ac("IDFaturamento")) then
                                 %>
-                                <a href="./?P=invoice&Pers=1&I=<%= ac("IDfaturamento") %>" target="_blank" class="btn btn-xs btn-success btn-block"><i class="fa fa-money"></i></a>
+                                <a href="./?P=invoice&Pers=1&I=<%= ac("IDfaturamento") %>" target="_blank" class="btn btn-xs btn-success btn-block"><i class="far fa-money"></i></a>
                                 <% else %>
-                                <a class="btn btn-xs btn-system btn-block" href="javascript:void(0)" onclick="if(confirm('Confirma o faturamento particular desta cirurgia?'))location.href='./?P=lAgendaCirurgica&Faturar=<%= ac("id") %>&Tipo=Invoice&Pers=1';"><i class="fa fa-money"></i></a>
+                                <a class="btn btn-xs btn-system btn-block" href="javascript:void(0)" onclick="if(confirm('Confirma o faturamento particular desta cirurgia?'))location.href='./?P=lAgendaCirurgica&Faturar=<%= ac("id") %>&Tipo=Invoice&Pers=1';"><i class="far fa-money"></i></a>
                                 <% end if
                             else
                                 if isnull(ac("IDFaturamento")) then
                                 %>
                                 <div class="btn-group">
-                                    <button class="btn btn-xs btn-system dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-credit-card"></i>  <i class="fa fa-angle-down icon-on-right"></i></button>
+                                    <button class="btn btn-xs btn-system dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="far fa-credit-card"></i>  <i class="far fa-angle-down icon-on-right"></i></button>
                                     <ul class="dropdown-menu dropdown-danger pull-right">
                                         <li><a href="javascript:void(0)" onclick="if(confirm('Confirma o faturamento desta cirurgia em Guia de Honorários?'))location.href='./?P=lAgendaCirurgica&Faturar=<%= ac("id") %>&Tipo=Honorarios&Pers=1';">Guia de Honorários</a></li>
                                         <li><a href="javascript:void(0)" onclick="if(confirm('Confirma o faturamento desta cirurgia em Guia de SP/SADT?'))location.href='./?P=lAgendaCirurgica&Faturar=<%= ac("id") %>&Tipo=SADT&Pers=1';">Guia de SP/SADT</a></li>
@@ -133,14 +133,14 @@ end if
                                 <%
                                 else
                                     %>
-                                    <a href="./?P=<%= ac("Tabela") %>&Pers=1&I=<%= ac("IDFaturamento") %>" class="btn btn-xs btn-success btn-block"><i class="fa fa-credit-card"></i></a>
+                                    <a href="./?P=<%= ac("Tabela") %>&Pers=1&I=<%= ac("IDFaturamento") %>" class="btn btn-xs btn-success btn-block"><i class="far fa-credit-card"></i></a>
                                     <%
                                 end if
                             end if
                         %>
                     </td>
                     <td width="1%">
-                        <a class="btn btn-xs btn-danger" href="javascript:void()" onclick="if(confirm('Tem certeza de que deseja excluir esta cirurgia?'))location.href='./?P=lAgendaCirurgica&X=<%= ac("id") %>&Pers=1'"><i class="fa fa-remove"></i></a>
+                        <a class="btn btn-xs btn-danger" href="javascript:void()" onclick="if(confirm('Tem certeza de que deseja excluir esta cirurgia?'))location.href='./?P=lAgendaCirurgica&X=<%= ac("id") %>&Pers=1'"><i class="far fa-remove"></i></a>
                     </td>
                 </tr>
                 <%

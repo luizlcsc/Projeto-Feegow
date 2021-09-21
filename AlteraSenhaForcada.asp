@@ -35,7 +35,7 @@ if not usr.eof then
             </div><br><br>
           </div>
           <div class="modal-footer mt70">
-            <button class="btn btn-primary"><i class="fa fa-save"></i> Salvar</button>
+            <button class="btn btn-primary"><i class="far fa-save"></i> Salvar</button>
           </div>
         </div>
     </form>

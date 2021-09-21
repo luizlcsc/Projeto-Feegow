@@ -66,7 +66,7 @@ if Unidades="" then
 end if
 
 
-set nun = db.execute("select group_concat(NomeFantasia) NomeFantasia from (select '0' id, NomeFantasia from empresa UNION ALL select id, NomeFantasia from sys_financialcompanyunits) t WHERE id IN ("& Unidades &")")
+set nun = db_execute("select group_concat(NomeFantasia) NomeFantasia from (select '0' id, NomeFantasia from empresa UNION ALL select id, NomeFantasia from sys_financialcompanyunits) t WHERE id IN ("& Unidades &")")
 if not nun.eof then
     NomeFantasia = nun("NomeFantasia")
 end if
@@ -100,7 +100,7 @@ end if
     <%
     response.Buffer
 
-    set grupo = db.execute("select distinct ifnull(proc.GrupoID, 0) GrupoID, ifnull(pg.NomeGrupo, 'Sem grupo') NomeGrupo FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN procedimentosgrupos pg ON pg.id=proc.GrupoID WHERE ii.Tipo='S' AND ii.DataExecucao BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") ORDER BY pg.NomeGrupo")
+    set grupo = db_execute("select distinct ifnull(proc.GrupoID, 0) GrupoID, ifnull(pg.NomeGrupo, 'Sem grupo') NomeGrupo FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN procedimentosgrupos pg ON pg.id=proc.GrupoID WHERE ii.Tipo='S' AND ii.DataExecucao BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") ORDER BY pg.NomeGrupo")
     while not grupo.eof
         response.Flush()
         QtdGrupo = 0
@@ -118,11 +118,11 @@ end if
             dataWhere = " DATE_FORMAT(ii.DataExecucao, '%Y-%m')="&dataWhere
             'response.write("<script>console.log(`"&dataWhere&"`)</script>")
 
-            set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
-            set vqtdinv = db.execute("select count(t.id) Qtd from (select i.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id)t")
-            set vval = db.execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+            set vqtd = db_execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+            set vqtdinv = db_execute("select count(t.id) Qtd from (select i.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id)t")
+            set vval = db_execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
             sqlRep = "select ifnull(sum(rr.Valor), 0) Repasses from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND "&dataWhere&" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
-            set vrep = db.execute( sqlRep )
+            set vrep = db_execute( sqlRep )
             Qtd = ccur(vqtd("Qtd"))
             QtdInvoice = 0
             if not vqtdinv.eof  then
@@ -158,12 +158,30 @@ end if
             Data = De
             while Data<=Ate
 
-                set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+                set vqtd = db_execute("select COALESCE(count(ii.id), 0) Qtd from itensinvoice ii USE INDEX(DataExecucao) "&_
+                                      "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID  "&_
+                                      "INNER JOIN procedimentos proc ON proc.id=ii.ItemID  "&_
+                                      "WHERE COALESCE(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
 
-                set vqtdinv = db.execute("select count(t.id) Qtd from (select i.id from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id)t")
-                set vval = db.execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
-                sqlRep = "select ifnull(sum(rr.Valor), 0) Repasses from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ifnull(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
-                set vrep = db.execute( sqlRep )
+                set vqtdinv = db_execute("select count(t.id) Qtd from "&_
+                                        "(select i.id from itensinvoice ii USE INDEX(DataExecucao) "&_
+                                        "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                                        "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                                        "WHERE COALESCE(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") GROUP BY i.id)t")
+
+                set vval = db_execute("select COALESCE(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor "&_
+                                    "FROM itensinvoice ii USE INDEX(DataExecucao) "&_
+                                    "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                                    "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                                    "WHERE COALESCE(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+
+                sqlRep = "select COALESCE(sum(rr.Valor), 0) Repasses from itensinvoice ii USE INDEX(DataExecucao) "&_
+                         "INNER JOIN rateiorateios rr ON ii.id=rr.ItemInvoiceID  "&_
+                         "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID  "&_
+                         "INNER JOIN procedimentos proc ON proc.id=ii.ItemID  "&_
+                         "WHERE COALESCE(proc.GrupoID, 0)="& grupo("GrupoID") &" AND ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
+
+                set vrep = db_execute( sqlRep )
                 Qtd = ccur(vqtd("Qtd"))
                 QtdInvoice = 0
                 if not vqtdinv.eof  then
@@ -223,11 +241,32 @@ end if
             Data = De
 
             while Data<=Ate
-                set vqtd = db.execute("select ifnull(count(ii.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
-                set vqtdinv = db.execute("select ifnull(count(i.id), 0) Qtd from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
-                set vval = db.execute("select ifnull(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor from itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE  ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
-                sqlRep = "select ifnull(sum(rr.Valor), 0) Repasses from rateiorateios rr LEFT JOIN itensinvoice ii ON ii.id=rr.ItemInvoiceID LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
-                set vrep = db.execute( sqlRep )
+                set vqtd = db_execute("select COALESCE(count(ii.id), 0) Qtd "&_
+                "from itensinvoice ii USE INDEX(DataExecucao) "&_
+                "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                "WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+                
+                set vqtdinv = db_execute("select COALESCE(count(i.id), 0) Qtd "&_
+                "from itensinvoice ii USE INDEX(DataExecucao) "&_
+                "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                "WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+
+                set vval = db_execute("select COALESCE(sum((ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo))), 0) Valor "&_
+                "from itensinvoice ii USE INDEX(DataExecucao) "&_
+                "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                "WHERE  ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &")")
+
+                sqlRep = "select COALESCE(sum(rr.Valor), 0) Repasses "&_
+                "from itensinvoice ii USE INDEX(DataExecucao) "&_
+                "INNER JOIN rateiorateios rr ON ii.id=rr.ItemInvoiceID "&_
+                "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                "INNER JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+                "WHERE ii.DataExecucao = "& mydatenull(Data) &" AND ii.Executado='S' AND i.CompanyUnitID IN("& Unidades &") AND ContaCredito LIKE '%\_%'"
+
+                set vrep = db_execute( sqlRep )
                 Qtd = ccur(vqtd("Qtd"))
                 QtdInvoiceGrupoTotal = ccur(vqtdinv("Qtd"))
                 Valor = ccur(vval("Valor"))

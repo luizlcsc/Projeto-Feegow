@@ -2,7 +2,7 @@
         <div class="widget-header header-color-green">
             <h5><%if Data=date() then%>HOJE<%else%><%=Data%><%end if%></h5>
             <div class="widget-toolbar hidden">
-                <a data-action="collapse" href="#"><i class="1 fa fa-chevron-up bigger-125"></i></a>
+                <a data-action="collapse" href="#"><i class="1 far fa-chevron-up bigger-125"></i></a>
             </div>
             <div class="widget-toolbar no-border">
             </div>
@@ -22,7 +22,7 @@
 			  if not atend.eof then
 			  	AtendimentoID = atend("id")
 			  %>
-              <h4 class="lighter blue no-margin header"><i class="fa fa-star"></i> Procedimentos Realizados</h4>
+              <h4 class="lighter blue no-margin header"><i class="far fa-star"></i> Procedimentos Realizados</h4>
                 <table class="table table-condensed table-striped table-bordered table-hover">
                 <thead>
                     <tr>
@@ -168,7 +168,7 @@
                         <div class="btn-group btn-block">
                             <button class="btn btn-xs btn-primary btn-block dropdown-toggle" data-toggle="dropdown">
                                 Usar Cr&eacute;dito - <%=itensCredito%>
-                                <span class="fa fa-caret-down icon-on-right"></span>
+                                <span class="far fa-caret-down icon-on-right"></span>
                             </button>
                         	<ul class="dropdown-menu dropdown-info">
                             <%

@@ -79,7 +79,7 @@ next
         <div class="row">
             <div class="col-md-2">
                 <label>&nbsp;</label><br>
-                <button type="submit" class="btn btn-success btn-block"><i class="fa fa-search"></i> Buscar</button>
+                <button type="submit" class="btn btn-success btn-block"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>

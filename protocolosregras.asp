@@ -245,7 +245,7 @@ camposFormJson = camposFormJson & "}"
         template: `<div>
                         <input tabindex="-1" class="input-hidden" :id="name" :value="value" :required="required" />
                         <button type="button" class="btn btn-default btn-block">
-                            <i class="fa fa-plus"></i> {{buttonLabel}} <span></span>
+                            <i class="far fa-plus"></i> {{buttonLabel}} <span></span>
                         </button>
                     </div>`,
         computed: {
@@ -593,7 +593,7 @@ camposFormJson = camposFormJson & "}"
 
     <div class="modal-header ">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h3 class="modal-title"><i class="fa fa-lock"></i>  Regra de Sugestão do Protocolo</h3>
+        <h3 class="modal-title"><i class="far fa-lock"></i>  Regra de Sugestão do Protocolo</h3>
     </div>
 
     <div class="modal-body">
@@ -647,17 +647,17 @@ camposFormJson = camposFormJson & "}"
             </div>
             <div class="col-md-2">
                 <button type="button" class="btn btn-xs btn-convenio btn-danger" v-on:click="excluirConvenio(index)" title="Excluir regra de Convênio">
-                    <i class="fa fa-trash"></i>
+                    <i class="far fa-trash"></i>
                 </button>
                 <button type="button" class="btn btn-xs btn-convenio btn-success" v-on:click="addConvenio" title="Adicionar regra de Convênio">
-                    <i class="fa fa-plus"></i>
+                    <i class="far fa-plus"></i>
                 </button>
             </div>
         </div>
         <div class="row">
             <p class="text-right">
                 <button type="button" class="btn btn-sm btn-primary" v-on:click="inserirRegra">
-                    <i class="fa fa-plus"></i> Adicionar nova regra
+                    <i class="far fa-plus"></i> Adicionar nova regra
                 </button>
             </p>
         </div>
@@ -670,17 +670,17 @@ camposFormJson = camposFormJson & "}"
                             <th colspan="3">REGRA {{index+1}}</th>
                             <th class="text-center">
                                 <button type="button" class="btn btn-sm btn-alert" v-on:click="copiarRegra(regra)" title="Copiar Regra">
-                                    <i class="fa fa-copy"></i>
+                                    <i class="far fa-copy"></i>
                                 </button>
                             </th>
                             <th class="text-center">
                                 <button type="button" class="btn btn-sm btn-success" v-on:click="inserirCondicao(regra)" title="Inserir Condição">
-                                    <i class="fa fa-plus"></i>
+                                    <i class="far fa-plus"></i>
                                 </button>
                             </th>
                             <th class="text-center">
                                 <button type="button" class="btn btn-sm btn-dark" v-on:click="excluirRegra(index)" title="Excluir Regra">
-                                    <i class="fa fa-close"></i>
+                                    <i class="far fa-close"></i>
                                 </button>
                             </th>
                         </tr>
@@ -716,7 +716,7 @@ camposFormJson = camposFormJson & "}"
                                 </app-select2>
 
                                 <div class="bloco-campos-form" v-if="condicao.FormID && camposForm[condicao.FormID]">
-                                    <i class="fa fa-chevron-right"></i>
+                                    <i class="far fa-chevron-right"></i>
                                     <div>
                                         <app-select2 v-model="condicao.FormCampoID" :key="index2 + condicao.FormID + 'campos'"
                                             v-on:input="onChangeFormCampo(condicao)" required>
@@ -814,7 +814,7 @@ camposFormJson = camposFormJson & "}"
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-danger" v-if="regra.length > 1"
                                     v-on:click="excluirCondicao(regra, index2)" title="Excluir Condição">
-                                    <i class="fa fa-minus"></i>
+                                    <i class="far fa-minus"></i>
                                 </button>
                             </td>
                         </tr>
@@ -834,6 +834,6 @@ camposFormJson = camposFormJson & "}"
     </div>
 
     <div class="modal-footer no-margin-top">
-        <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+        <button type="submit" class="btn btn-sm btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>

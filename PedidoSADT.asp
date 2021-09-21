@@ -59,7 +59,7 @@ end if
 
 <table class="table table-condensed">
     <thead>
-        <tr>
+        <tr class="primary">
             <th width="10%">Código</th>
             <th width="80%">Descrição</th>
             <th width="5%">Qte</th>
@@ -77,7 +77,7 @@ end if
                     <td><%= pprocs("Descricao") %></td>
                     <td><%= quickfield("number", "Quantidade_"&pprocs("id"), "", 1, pprocs("Quantidade"), " quantidade", "", "") %></td>
                     <td>
-                        <button onclick="xPedidoSADT(<%= pprocs("id") %>)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                        <button onclick="xPedidoSADT(<%= pprocs("id") %>)" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                     </td>
                 </tr>
                 <%

@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Compra");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Configuração para Aprovação de Compras");
-    $(".crumb-icon a span").attr("class", "fa fa-shopping-cart");
+    $(".crumb-icon a span").attr("class", "far fa-shopping-cart");
 </script>
 
 <div class="panel mt20 mtn">
@@ -25,7 +25,7 @@
                          <%= quickfield("multiple", "Usuarios[0]", "Usuários", 3, Usuarios,sql, "users", "") %>
                          <%= quickfield("number"  , "MinProvacao[0]", "Mín. Usuários para Aprovação", 3, 1," ", "users", "") %>
                          <div  class="mt25 col-md-1">
-                            <button type="button" style="width: 100%" class="btn btn-success" onclick="addNotificados()"> <i class="fa fa-plus"></i></button>
+                            <button type="button" style="width: 100%" class="btn btn-success" onclick="addNotificados()"> <i class="far fa-plus"></i></button>
                          </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@ function addNotificados(valorInserido){
                             ${MinProvacao}
                         </div>
                         <div  class=" col-md-1">
-                            <button type="submit" style="width: 100%" class="btn btn-danger" onclick="removerRow(this)"> <i class="fa fa-times"></i></button>
+                            <button type="submit" style="width: 100%" class="btn btn-danger" onclick="removerRow(this)"> <i class="far fa-times"></i></button>
                         </div>
                      </div>
                   </div>`;

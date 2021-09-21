@@ -140,7 +140,7 @@ SomenteEspecialidades = reg("SomenteEspecialidades")
                 <%=quickField("simpleSelect", "KitID", "Selecione um kit", 5, "", "select * from produtoskits where sysActive=1 order by NomeKit", "NomeKit", "") %>
                 <div class="col-md-3">
                     <label>&nbsp;</label><br />
-                    <button type="button" class="btn btn-success" onclick="kit('I', $('#KitID').val(), 0)"><i class="fa fa-plus"></i> Adicionar Kit</button>
+                    <button type="button" class="btn btn-success" onclick="kit('I', $('#KitID').val(), 0)"><i class="far fa-plus"></i> Adicionar Kit</button>
                 </div>
             </div>
             <hr class="short alt" />

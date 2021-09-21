@@ -1394,7 +1394,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
 
-                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
+                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" data-toggle="tooltip" data-placement="top"  title="Central de ajuda" class="btn btn-xs btn-default">
                           <i class="far fa-question-circle"></i> Suporte
                       </button>
                       <%end if%>
@@ -1402,7 +1402,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                         <%
                         Versao = session("Versao")
                         if Versao="" then
-                          Versao=" 8"
+                          Versao="8.0"
                         end if
                         %>
                           Feegow  <%=Versao%>
@@ -1431,7 +1431,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                             <% IF False THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+
+                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:'<%=Request.QueryString()%>'}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
+                              <span class="far fa-bug"></span> Reportar bug
+                            </button>
+
+                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -1470,6 +1475,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               end if
               %>
             <span class="footer-meta"><b><%=session("NomeEmpresa")%></b></span>
+
             <a href="#content" class="footer-return-top">
               <span class="far fa-arrow-up"></span>
             </a>

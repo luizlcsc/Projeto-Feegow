@@ -132,16 +132,9 @@ if not Horarios.eof then
                     </a>
 
 <%
-                    if aut("horarios")=1 then
-                        %>
-                        <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
-                            <span class="fa fa-cog"></span>
-                        </a>
-                        <%
-                    end if
                     if ref("ObsAgenda")="1" then
                         %>
-                        <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="fa fa-info-circle"></i></a>
+                        <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
                         <%
                     end if
                     if aut("|agendaI|")=1 then
@@ -149,9 +142,6 @@ if not Horarios.eof then
                         if Horarios("GradePadrao")="1" then
                             GradePadraoID=Horarios("id")
                         end if
-                    %>
-                    <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
-                    <%
                     end if
                 %>
                     <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= GradePadraoID %>');">

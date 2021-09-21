@@ -452,8 +452,6 @@ while not comGrade.eof
 
 
 
-             <td valign="top" align="center" id="pf<%= comGrade("ProfissionalID") %>"><i class="far fa-circle-o-notch fa-spin"></i></td>
-
             <script type="text/javascript">
                 window.requestsAgenda = window.requestsAgenda || [];
                 
@@ -471,7 +469,8 @@ while not comGrade.eof
                     strAB: '<%= strAB %>'
                 }, function (data) {
                         $('#pf<%= comGrade("ProfissionalID") %>').html(data)
-
+                }));
+            </script>
     <%
     end if
 

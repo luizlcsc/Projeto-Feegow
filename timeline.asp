@@ -63,7 +63,7 @@ end if
 }
 .inativo-marca{
     width: 100%;
-    max-height: 80%;
+    height: 80%;
     background-color: rgba(173,173,173,0.57);
     position:absolute;
     z-index: 999;

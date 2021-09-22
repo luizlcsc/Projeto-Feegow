@@ -12889,7 +12889,10 @@ input[type="button"].btn-block {
     font-weight: 600;
     text-decoration: none;
     background-color: #fbfbfb;
-    border-radius: 1px;
+    border-radius: 6px;
+
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
     border: 1px solid #EEE;
     border-left: 4px solid #EEE;
     -webkit-transition: opacity 0.1s ease;

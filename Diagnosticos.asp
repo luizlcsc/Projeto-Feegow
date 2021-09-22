@@ -74,10 +74,10 @@ Diagn&oacute;sticos
     </div>
 </div>
 <script type="text/javascript">
-    $(".btn-fechar-diagnostico").click("click", function () {
-        $(".mfp-close").click();
-        $("#tabDiagnosticos").click();
-    });
+ $(".btn-fechar-diagnostico").click("click", function () {
+    $(".mfp-close").click();
+    $("#tabDiagnosticos").click();
+});
 
 $("#btnDiagnostico").click(function(){
 	$.ajax({

@@ -53,7 +53,7 @@ else%>
                 <% if recursoAdicional(37) = 4 then %>
                 <button style="margin-bottom: 10px" type="button" class="btn btn-xs btn-success" onclick="openCalculator(<%=pdiag("CidID")%>, <%=PacienteID%>)"><i class="far fa-calculator"></i></button>
                 <% end if %>
-                <button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))cid10(<%=pdiag("id")%>);"><i class="far fa-trash"></i></button>
+                <button type="button" class="hidden btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))cid10(<%=pdiag("id")%>);"><i class="far fa-trash"></i></button>
             </tr>
             <%
         pdiag.movenext

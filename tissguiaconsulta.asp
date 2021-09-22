@@ -492,20 +492,20 @@ end if
         <span> Dados do Benefici&aacute;rio </span>
     </div>
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
+	<td width="60%"><div class="col-md-12"><%= selectInsert("Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-link' type='button' style=""position:absolute; top:-5px""><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
 	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", "") %></td>
 	</tr></table></td></tr>
 
 	<tr><td><table class="table table-bordered"><tr>
 
-	<td width="20%"><%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 12, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %></td>
+	<td width="20%"><%= quickField("simpleSelect", "gConvenioID", "Conv&ecirc;nio", 12, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %></td>
     <td width="20%">
     	<div class="col-md-12" id="tissplanosguia">
 	    	<!--#include file="tissplanosguia.asp"-->
         </div>
     </td>
-	<td width="20%"><%= quickField("text", "RegistroANS", "* Registro ANS", 12, RegistroANS, "", "", " required") %></td>
-	<td width="20%"><%= quickField("text", "NGuiaPrestador", "* N&deg; da Guia no Prestador", 12, NGuiaPrestador, "", "", " required") %></td>
+	<td width="20%"><%= quickField("text", "RegistroANS", "Registro ANS", 12, RegistroANS, "", "", " required") %></td>
+	<td width="20%"><%= quickField("text", "NGuiaPrestador", "N&deg; da Guia no Prestador", 12, NGuiaPrestador, "", "", " required") %></td>
     <%
     if RepetirNumeroOperadora=1 then
         fcnRepetirNumeroOperadora = " onkeyup=""$('#NGuiaPrestador').val( $(this).val() )"" "
@@ -518,7 +518,7 @@ end if
 	<tr>
     <td><table width="100%"><tr>
 	<td width="35%">
-	    <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %>
+	    <%= quickField("text", "NumeroCarteira", "N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %>
 	    <div class="col-md-12 pt5">
 	        <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position:absolute;width: 80%;">
 
@@ -542,7 +542,7 @@ end if
 	<td width="15%"><%= quickField("datepicker", "ValidadeCarteira", "Validade da Carteira", 12, ValidadeCarteira, "", "", "") %></td>
 	<td width="15%">
       <div class="col-md-12">
-        <label>* Atendimento a RN</label><br>
+        <label>Atendimento a RN *</label><br>
 	    <select name="AtendimentoRN" id="AtendimentoRN" class="form-control" required>
 	    <option value=""></option>
 	    <option value="S"<%if AtendimentoRN="S" then%> selected="selected"<%end if%>>Sim</option>
@@ -563,19 +563,19 @@ end if
 		<input type="hidden" id="ContratadoID" name="Contratado">
 		<% server.Execute("listaContratado.asp") %>
 	</td>
-	<td width="20%"><%= quickField("text", "CodigoNaOperadora", "* C&oacute;digo na Operadora", 12, CodigoNaOperadora, "", "", " required='required'") %></td>
-	<td width="20%"><%= quickField("text", "CodigoCNES", "* C&oacute;digo CNES", 12, CodigoCNES, "", "", " required='required'") %></td>
+	<td width="20%"><%= quickField("text", "CodigoNaOperadora", "C&oacute;digo na Operadora", 12, CodigoNaOperadora, "", "", " required='required'") %></td>
+	<td width="20%"><%= quickField("text", "CodigoCNES", "C&oacute;digo CNES", 12, CodigoCNES, "", "", " required='required'") %></td>
 	</tr></table></td></tr>
 
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="40%"><%= quickField("simpleSelect", "gProfissionalID", "* Nome do Profissional Executante <a class='btn btn-xs btn-default btn-efetivo'>+</a>", 12, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' required='required' no-select2") %></td>
-	<td width="15%"><%= quickField("simpleSelect", "Conselho", "* Conselho", 12, Conselho, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
-	<td width="15%"><%= quickField("text", "DocumentoConselho", "* N&deg; no Conselho", 12, DocumentoConselho, "", "", "empty='' required='required'") %></td>
-	<td width="10%"><%= quickField("text", "UFConselho", "* UF", 12, UFConselho, "", "", "empty='' required='required' maxlength=""2"" ") %></td>
+	<td width="40%"><%= quickField("simpleSelect", "gProfissionalID", "Nome do Profissional Executante <a class='btn btn-xs btn-default btn-efetivo'>+</a>", 12, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' required='required' no-select2") %></td>
+	<td width="15%"><%= quickField("simpleSelect", "Conselho", "Conselho", 12, Conselho, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+	<td width="15%"><%= quickField("text", "DocumentoConselho", "N&deg; no Conselho", 12, DocumentoConselho, "", "", "empty='' required='required'") %></td>
+	<td width="10%"><%= quickField("text", "UFConselho", "UF", 12, UFConselho, "", "", "empty='' required='required' maxlength=""2"" ") %></td>
 	<td width="20%">
 		<%
-		'quickField("text", "CodigoCBO", "* C&oacute;digo CBO", 12, CodigoCBO, "", "", "empty='' required='required'")
-		 response.write(quickField("simpleSelect", "CodigoCBO", "* C&oacute;digo CBO", 12, CodigoCBO, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' "))
+		'quickField("text", "CodigoCBO", "C&oacute;digo CBO", 12, CodigoCBO, "", "", "empty='' required='required'")
+		 response.write(quickField("simpleSelect", "CodigoCBO", "C&oacute;digo CBO", 12, CodigoCBO, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' "))
 		%>
 	</td>
 	</tr></table></td></tr>
@@ -600,25 +600,25 @@ end if
 	<tr><td>
         <table width="100%" border="0">
             <tr>
-                <td width="33%"><%= quickField("simpleSelect", "IndicacaoAcidenteID", "* Indica&ccedil;&atilde;o de acidente", 12, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
-                <td width="34%"><%= quickField("datepicker", "DataAtendimento", "* Data do atendimento", 12, DataAtendimento, "", "", " empty='' required='required'") %></td>
+                <td width="33%"><%= quickField("simpleSelect", "IndicacaoAcidenteID", "Indica&ccedil;&atilde;o de acidente", 12, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+                <td width="34%"><%= quickField("datepicker", "DataAtendimento", "Data do atendimento", 12, DataAtendimento, "", "", " empty='' required='required'") %></td>
                 <%
                 if SemprePrimeiraConsulta then
                     sqlPrimeiraConsulta = " where id=1"
                 end if
                 %>
-                <td width="33%"><%= quickField("simpleSelect", "TipoConsultaID", "* Tipo de Consulta", 12, TipoConsultaID, "select * from tisstipoconsulta "&sqlPrimeiraConsulta&" order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+                <td width="33%"><%= quickField("simpleSelect", "TipoConsultaID", "Tipo de Consulta", 12, TipoConsultaID, "select * from tisstipoconsulta "&sqlPrimeiraConsulta&" order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
             </tr>
         </table>
 	</td>
 	</tr></table></td></tr>
 	
 	<tr><td><table cellpadding="0" cellspacing="0"><tr>
-	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
-	<td width="25%"><%= quickField("simpleSelect", "TabelaID", "* Tabela", 12, TabelaID, "select id, concat(id, ' - ', descricao) descricao from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
+	<td width="25%"><%= quickField("simpleSelect", "TabelaID", "Tabela", 12, TabelaID, "select id, concat(id, ' - ', descricao) descricao from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
 	<td nowrap="nowrap" width="30%">
 <br>
-        <%=selectProc("* Código do Procedimento", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "", " required='required' ", "", "", "") %>
+        <%=selectProc("Código do Procedimento", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "", " required='required' ", "", "", "") %>
         <%'= quickField("text", "CodigoProcedimento", "C&oacute;digo do procedimento", 12, CodigoProcedimento, "", "", " required='required'") %></td>
 	<td nowrap="nowrap" width="15%" class="<% if aut("valordoprocedimentoV")=0 then %>hidden<%end if%>"><%
 	if not isnull(reg("ValorProcedimento")) then
@@ -626,7 +626,7 @@ end if
 	end if
 
 	if aut("valorprocedimentoguiaA") then
-	    response.Write(quickField("currency", "ValorProcedimento", "* Valor", 12, ValorProcedimento, "", "", " required='required'"))
+	    response.Write(quickField("currency", "ValorProcedimento", "Valor", 12, ValorProcedimento, "", "", " required='required'"))
     elseif aut("valorprocedimentoguiaV") then
         %>
         <div class="col-md-12">

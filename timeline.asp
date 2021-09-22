@@ -628,7 +628,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
-                                <li ><a <% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>href="javascript:openMemed(true)"><i class="far fa-plus"></i> Pedido MEMED</a></li>
+                                <li ><a <% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>href="javascript:openMemed(true)"><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
                                 <%
                             end if
                             %>

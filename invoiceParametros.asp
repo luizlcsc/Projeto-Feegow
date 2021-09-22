@@ -65,7 +65,7 @@ if lote = "S" then
 			EspecialidadeID=ref("EspecialidadeID"&elemID)
 			PacoteID=ref("PacoteID"&elemID)
 
-			Valor = calcValorProcedimento(ProcID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+			Valor = calcValorProcedimento(ProcID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, 0)
 
 			Subtotal = Valor*ccur(ref("Quantidade"&elemID))
 			%>
@@ -131,7 +131,7 @@ else
 		ProfissionalID=replace(ref("ProfissionalID"&Row), "5_", "")
 		EspecialidadeID=ref("EspecialidadeID"&Row)
 
-		Valor = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+		Valor = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, 0)
 
 
 	'<VARIACAO DE PRECO

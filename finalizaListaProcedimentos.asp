@@ -98,7 +98,7 @@ while not proc.eof
 
 	    ExibirLancar = 1
         ValorFinal = proc("Valor")
-        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, "")
 
 		if not isnull(ValorFinal) and ValorFinal<>0 then
 			Valor =  formatnumber(ValorFinal, 2)

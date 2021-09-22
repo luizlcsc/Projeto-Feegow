@@ -61,7 +61,7 @@ else
             if Aut("|agenda")=1 or session("Table")="profissionais" then%>
     <li class="<%=classMenu %>">
         <a href="#" class="dropdown-toggle menu-click-agenda" onclick="return false;" data-toggle="dropdown">
-            <%=abreSpanTitulo %> <i class="far fa-calendar hidden"></i> <span class=""> Agenda </span> <%= fechaSpanTitulo %>
+            <%=abreSpanTitulo %> <i class="far fa-calendar hidden"></i> <span class=""> Agenda </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
         </a>
         <ul class="dropdown-menu">
             <li class="sub-menu-click-agenda-diaria"><a href="./?P=Agenda-1&Pers=1"><i class="far fa-calendar-day"></i> Diária</a></li>
@@ -84,7 +84,7 @@ else
                     <% END IF %>
 		            <%
                 end if
-                ModuloCallCenter = recursoAdicional(41)=4  or True
+                ModuloCallCenter = recursoAdicional(41)=4
 
                 if Aut("|agendaV|")=1 and ModuloCallCenter then
                     if aut("agendamultfiltros")=1 then
@@ -176,7 +176,7 @@ else
     if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
     %>
     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-pacientes" data-toggle="dropdown">
-        <%=abreSpanTitulo %> <i class="far fa-user hidden"></i> <span class=""> Pacientes </span> <%= fechaSpanTitulo %>
+        <%=abreSpanTitulo %> <i class="far fa-user hidden"></i> <span class=""> Pacientes </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
     
                 
 
@@ -208,7 +208,7 @@ else
                 else
                     %>
                     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-estoque" data-toggle="dropdown">
-                        <%=abreSpanTitulo %> <i class="far fa-medkit hidden"></i> <span class=""> Estoque </span> <%= fechaSpanTitulo %>
+                        <%=abreSpanTitulo %> <i class="far fa-medkit hidden"></i> <span class=""> Estoque </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
                 
 
                                                               </a>
@@ -278,7 +278,7 @@ else
 		    if aut("guias")=1 or aut("faturas")=1 then
     %>
     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-tiss" data-toggle="dropdown">
-        <%=abreSpanTitulo %> <i class="far fa-credit-card hidden"></i> <span class=""> Faturamento</span> <%= fechaSpanTitulo %>
+        <%=abreSpanTitulo %> <i class="far fa-credit-card hidden"></i> <span class=""> Faturamento</span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
                                               </a>
         <ul class="dropdown-menu">
             <%

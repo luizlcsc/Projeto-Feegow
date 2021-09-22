@@ -1154,7 +1154,7 @@ $(".form-control").change(function(){
                 if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
                     $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
                 }
-					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(' *');
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(` <i class='fas fa-asterisk text-danger input-required-asterisk' ></i>`);
             }, 500);
 			<%
         next

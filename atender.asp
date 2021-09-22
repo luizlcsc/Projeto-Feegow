@@ -765,7 +765,7 @@ if Conteudo="Play" then
             <% end if %>
           </div>
           <%
-          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 then
+          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 or True then
 
             set AssinaturaDigitalConfiguradaSQL = db_execute("select id from dc_pdfstampconfigs WHERE UsuarioID="&treatvalzero(session("User")))
 
@@ -774,9 +774,9 @@ if Conteudo="Play" then
                 <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.js"></script>
 
                 <div class="col-md-12">
-                    <div style="float: left;">
+                    <div style="float: left; opacity: 0.4; cursor: default" id="content-assinatura" data-toggle="tooltip" data-placement="bottom" title="Carregando...">
                         <div class="switch round switch-xs " style="float: left;">
-                            <input onchange="persistAssinaturaAuto(this)" name="AssinaturaAuto" id="AssinaturaAuto" type="checkbox">
+                            <input disabled onchange="persistAssinaturaAuto(this)" name="AssinaturaAuto" id="AssinaturaAuto" type="checkbox">
                             <label for="AssinaturaAuto"></label>
                         </div>
                         <span style="position: relative; top: 3px;" class="ml10 ">Assinatura digital</span>
@@ -792,6 +792,37 @@ if Conteudo="Play" then
                         if(assinaturaAuto == "1"){
                             $("#AssinaturaAuto").attr("checked", "checked")
                         }
+
+                        function lacunaNotAvailable(){
+                            const $contentAssinatura = $("#content-assinatura");
+
+                            $contentAssinatura.attr("data-original-title", "Você precisa instalar a extensão WebPki para usar o certificado digital.");
+                            $contentAssinatura.tooltip();
+                        }
+
+                        function lacunaIsAvailable(){
+                            const $contentAssinatura = $("#content-assinatura");
+                            const $inputAssinar = $("#AssinaturaAuto");
+
+                            $inputAssinar.attr("disabled", false);
+                            $contentAssinatura.css("opacity", 1);
+                            $contentAssinatura.attr("data-original-title", "");
+                            $contentAssinatura.tooltip();
+                        }
+
+                        try{
+                            var pki = new LacunaWebPKI();
+                            function start() {
+                                pki.init({
+                                    ready: lacunaIsAvailable,
+                                    notInstalled: lacunaNotAvailable
+                                });
+                            }
+                            start();
+                        }catch (e){
+                            lacunaNotAvailable();
+                        }
+
                     })
                 </script>
             <%

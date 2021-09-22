@@ -378,25 +378,25 @@ function DefaultForm(tableName, id)
 
 
                         if session("SepararPacientes") and aut("vistodospacsV")=0 and lcase(session("Table"))="profissionais" then
-                            sqlReg = "select * from pacientes where (trim(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &") and (Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%') and sysActive=1 LIMIT 100"
+                            sqlReg = "select * from pacientes where (trim(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "& sqlNasc &") and (Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%') and sysActive=1 ORDER BY sysActive DESC LIMIT 100"
                         else
     						sqlReg = "select * from pacientes where (False "&sqlBuscaNome&" "&sqlBuscaNumerica& sqlNasc &") LIMIT 100"
                         end if
 
-                        sqlReg = "SELECT * FROM ("&sqlReg&") as T ORDER BY 2"
+                        sqlReg = "SELECT * FROM ("&sqlReg&") as T ORDER BY IF(sysActive=1,0,1), 2"
 
                     elseif lcase(tableName)="profissionais" or lcase(tablename)="funcionarios" then
-    					sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by "&initialOrder
+    					sqlReg = "select * from "&tableName&" where sysActive=1 and ("&initialOrder&" like '%"&q&"%' "& sqlNasc &") "&franquia(" AND Unidades like '%|[UnidadeID]|%' ")&" order by IF(ativo='on' and sysActive=1,0,1), "&initialOrder
 						' response.write(sqlReg)
 
 					elseif lcase(tableName)="procedimentos" then
-						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR Sigla LIKE '%"&q&"%' OR Codigo LIKE '%"&q&"%' order by "&initialOrder
+						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR Sigla LIKE '%"&q&"%' OR Codigo LIKE '%"&q&"%' order by IF(ativo='on' and sysActive=1,0,1), "&initialOrder
 					elseif lcase(tableName)="fornecedores" then
-                        sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR replace(replace(replace(CPF,'.',''),'-',''),'/','') like replace(replace(replace('"&q&"%','.',''),'-',''),'/','') order by "&initialOrder
+                        sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR replace(replace(replace(CPF,'.',''),'-',''),'/','') like replace(replace(replace('"&q&"%','.',''),'-',''),'/','') order by IF(ativo='on' and sysActive=1,0,1),"&initialOrder
 					elseif lcase(tableName)="produtos" then
-                        sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR id = '"&q&"' order by "&initialOrder
+                        sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' OR id = '"&q&"' order by IF(sysActive=1,0,1), "&initialOrder
 					else
-						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' order by "&initialOrder
+						sqlReg = "select * from "&tableName&" where sysActive=1 and "&initialOrder&" like '%"&q&"%' order by IF(sysActive=1,0,1), "&initialOrder
 					end if
 				end if
 				

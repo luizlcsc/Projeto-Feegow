@@ -434,9 +434,11 @@ else
             fLinha = ""
             rowspan = ""
         end if
+
+        statusIcon = imoon(Sta)
         %>
     <tr <%= fLinha %>>
-    <td nowrap <%= rowspan %> ><img src="assets/img/<%=Sta%>.png" /> <%=Hora%></td>
+    <td nowrap <%= rowspan %> ><%=statusIcon%> <%=Hora%></td>
     <td <%= rowspan %> ><%= HoraSta %></td>
     <%
 
@@ -596,9 +598,12 @@ else
                                     end if
 
                                     idsExibidos = idsExibidos&","&vcaag("id")
+
+
+                                    statusIcon = vcaag("StaID")
                                     %>
                                     <a data-toggle="tooltip" title="<%=vcaag("StaConsulta")%>" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%= vcaag("id") %>" class="btn btn-block btn-<%= classeBtnEsp %> btn-xs">
-                                        <img src="./assets/img/<%= vcaag("StaID") %>.png" /> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>
+                                        <%=statusIcon%> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>
                                     </a>
                                     <%
                                 end if

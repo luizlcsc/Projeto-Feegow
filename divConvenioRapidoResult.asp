@@ -3,11 +3,11 @@
 txt = replace(req("txt"), " ", "%")
 
 IF ModoFranquia THEN
-    sqlAM = "select id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID, registroans from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')"
+    sqlAM = "select RegistroANS, id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID, registroans from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')"
     sqlAM = "SELECT * FROM ("&sqlAM&") as T "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
     set conv = db.execute(sqlAM)
 ELSE
-    set conv = db.execute("select id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')")
+    set conv = db.execute("select RegistroANS, id, NomeConvenio, RazaoSocial, Unidades, CamposObrigatorios, TipoAtendimentoID from convenios where sysActive=1 and Ativo='on' and (NomeConvenio like '%"& txt &"%' or id like '%"& txt &"%')")
 END IF
 if not conv.eof then
 

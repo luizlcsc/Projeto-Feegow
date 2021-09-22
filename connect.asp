@@ -5697,14 +5697,14 @@ function verificaIntegracaoLaboratorial(tabela, id)
     set rs1 = db.execute(sql)
     if not rs1.eof then
         'Verifica se a Unidade Possui credencial cadastrada
-        sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"'"
+        sqlAutenticacao = "SELECT id, versao FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"'"
         set rs2 = db.execute(sqlAutenticacao)
         if not rs2.eof then
             'Verifica se já existe integracao feita para a conta 
             sqlTabela = "SELECT * FROM slabs_solicitacoes AS sls WHERE sls.tabelaid = '"&id&"' AND  sls.tabela ='"&tabela&"' AND sls.success = 'S' AND sls.statusid=1 and sls.tiposolicitacao='1';"
             set rs3 = db.execute(sqlTabela)
             if not rs3.eof then
-                verificaIntegracaoLaboratorial = "2|"&rs3("id")
+                verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&rs2("versao")
             else
                 select case tabela
                     ' Verifica se existem procedimentos possíveis de serem integrados na conta
@@ -5730,22 +5730,22 @@ function verificaIntegracaoLaboratorial(tabela, id)
                         exit function                
                 end select 
                 if sqlTable = "" then
-                    verificaIntegracaoLaboratorial = "0|Não foi possível determinar a tabela de origem da integração" 
+                    verificaIntegracaoLaboratorial = "0|Não foi possível determinar a tabela de origem da integração|" &rs2("versao")
                 else
                     set rs4 = db.execute(sqlTable)
                     'response.write (sqlTable)
                     if not rs4.eof then
-                        verificaIntegracaoLaboratorial = "1|0"
+                        verificaIntegracaoLaboratorial = "1|0|"&rs2("versao")
                     else
-                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial. Verifique se existem ítens executados e se estão todos vinculados a exames no laboratório." 'Não existem procedimentos para integrar
+                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial. Verifique se existem ítens executados e se estão todos vinculados a exames no laboratório."&rs2("versao") 'Não existem procedimentos para integrar
                     end if
                 end if
             end if 
         else
-            verificaIntegracaoLaboratorial = "0|Não existem credenciais cadastradas para integração Laboratorial" ' Não possui credenciais para integracao
+            verificaIntegracaoLaboratorial = "0|Não existem credenciais cadastradas para integração Laboratorial|0" ' Não possui credenciais para integracao
         end if
     else    
-         verificaIntegracaoLaboratorial = "X|0" ' Não possui o serviço habilitado
+         verificaIntegracaoLaboratorial = "X|0|0" ' Não possui o serviço habilitado
     end if
 end function 
 
@@ -5762,11 +5762,11 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
                                                  "<i class=""fa fa-flask""></i> </button></div>"
        
         case "1"
-            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial""> "&_
+            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
                                                  "<i class=""fa fa-flask""></i></button></div>"
             
         case "2"
-            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração"">"&_
+            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
                                                  "<i class=""fa fa-flask""></i></button></div>"
             
         case else

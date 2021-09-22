@@ -441,12 +441,26 @@ function replicarRegistro(id,tabela){
     });
 }
 
-function abrirSelecaoLaboratorio(vartabela, varid){
-    openComponentsModal("labs-integration/modal-lab-select", {microservico:'integracaolaboratorial', tabela:vartabela, id: varid },'',false,false,'md');
+function abrirSelecaoLaboratorio(vartabela, varid, versao){
+    if (versao !='2')
+    {
+        openComponentsModal("labs-integration/modal-lab-select", {microservico:'x', tabela:vartabela, id: varid },'',false,false,'md');
+    }
+    else
+    {
+        openComponentsModal("labs-integration/modal-lab-select", {microservico:'integracaolaboratorial', tabela:vartabela, id: varid },'',false,false,'md');
+    }
 }
 
-function abrirSolicitacao(varid){
-    openComponentsModal("labs-integration/modal-detalhes-solicitacao", {microservico:'integracaolaboratorial', id: varid },'',false,false,'md');
+function abrirSolicitacao(varid, versao){
+    if (versao !='2')
+    {
+        openComponentsModal("labs-integration/modal-detalhes-solicitacao", {microservico:'x', id: varid },'',false,false,'md');
+    }
+    else
+    {
+        openComponentsModal("labs-integration/modal-detalhes-solicitacao", {microservico:'integracaolaboratorial', id: varid },'',false,false,'md');
+    }
 }
 
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {

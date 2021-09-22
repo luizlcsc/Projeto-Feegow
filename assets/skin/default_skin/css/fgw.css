@@ -30493,3 +30493,10 @@ select[tabindex="-1"], .multisel {
     font-size: 15px;
     margin-right: 5px;
 }
+
+.input-required-asterisk {
+    color: #d10000;
+    font-size: 7px;
+    bottom: 3px;
+    position: relative;
+}

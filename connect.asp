@@ -875,7 +875,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 	end if
 	if label<>"" then
         if instr(additionalTags, "required")>0 then
-            ast = " *"
+            ast = " <i class='fas fa-asterisk input-required-asterisk' ></i>"
         else
             ast = ""
         end if

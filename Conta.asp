@@ -385,7 +385,7 @@ function btnToggleLoading(target,state, force, waitMessage="Aguarde...") {
           if(state){
               $el.attr('disabled', false).html("<i class='far fa-save'></i> Salvar", false);
           }else{
-              $el.attr('disabled', true).html("<i class='far fa-spinner fa-spin'></i> "+waitMessage, true);
+              $el.attr('disabled', true).html("<i class='far fa-circle-o-notch fa-spin'></i> "+waitMessage, true);
           }
       }
   }, timeout);

@@ -4414,60 +4414,64 @@ end function
 
 function imoon(nome)
     tamanho = 17
+    corFixa=""
+
     select case nome
         case 1
-            icone = "question-circle"
+            icone = "fa-question-circle"
             cor = "alert"
-            fornecedor = "fa"
-            tamanho = 20
+            fornecedor = "fas"
         case 2
-            icone = "play2"
+            icone = "fa-play-circle"
             cor = "system"
-            fornecedor = "imoon"
+            fornecedor = "fas"
         case 3
-            icone = "happy2"
+            icone = "fa-smile-wink"
             cor = "success"
-            fornecedor = "imoon"
+            fornecedor = "fas"
         case 4
-            icone = "neutral2"
+            icone = "fa-meh"
             cor = "warning"
-            fornecedor = "imoon"
+            fornecedor = "fas"
+            corFixa = "#FF9832"
         case 5
-            icone = "volume-up"
+            icone = "fa-volume-up"
             cor = "primary"
-            fornecedor = "fa"
+            fornecedor = "fas"
         case 6
-            icone = "wondering2"
+            icone = "fa-frown"
             cor = "danger"
-            fornecedor = "imoon"
+            fornecedor = "fas"
         case 7, 9, 10
-            icone = "grin2"
+            icone = "fa-grin"
             cor = "warning"
-            fornecedor = "imoon"
+            fornecedor = "fas"
+            corFixa = "#FFCC00"
         case 8
-            icone = "eye"
+            icone = "fa-eye"
             cor = "primary"
-            fornecedor = "fa"
+            fornecedor = "fas"
         case 11
-            icone = "minus-circle"
+            icone = "fa-minus-circle"
             cor = "danger"
-            fornecedor = "fa"
-            tamanho = 20
+            fornecedor = "fas"
         case 12
             icone = "arrow-right3"
             cor = "primary"
             fornecedor = "imoon"
         case 15
-            icone = "refresh"
-            cor = "info"
-            fornecedor = "fa"
-            tamanho = 18
-        case 16
-            icone = "cancel-circle"
+            icone = "fa-exchange"
             cor = "dark"
-            fornecedor = "imoon"
+            fornecedor = "fas"
+        case 16
+            icone = "fa-times-circle"
+            cor = "dark"
+            fornecedor = "fas"
     end select
-    imoon = "<span class="""&fornecedor &" "& fornecedor &"-"& icone & " text-"& cor &" badge-icon-status "" style=""font-size:"& tamanho &"px""></span>"
+    if corFixa<>"" then
+        styleColor = " color: "&corFixa&" !important;"
+    end if
+    imoon = "<span data-val="""&nome&""" class="""&fornecedor &" "& icone & " text-"& cor &" badge-icon-status "" style=""font-size:"& tamanho &"px; " &styleColor& " ""></span>"
 end function
 
 function newrep()

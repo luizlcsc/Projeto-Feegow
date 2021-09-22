@@ -84,7 +84,7 @@ else
                     <% END IF %>
 		            <%
                 end if
-                ModuloCallCenter = recursoAdicional(41)=4  or True
+                ModuloCallCenter = recursoAdicional(41)=4
 
                 if Aut("|agendaV|")=1 and ModuloCallCenter then
                     if aut("agendamultfiltros")=1 then

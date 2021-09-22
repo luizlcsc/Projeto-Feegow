@@ -76,18 +76,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           background-color: red;
       }
 
-      .select-insert li {
-        cursor:pointer;
-        list-style-type:none;
-        margin:0;
-        padding:3px;
-        font-size:14px;
-        color:#000;
-        background-color:#FFF;
-      }
-      .select-insert li:hover {
-        background-color:#999;
-      }
       a[href]:after {
         content: ""!important;
       }

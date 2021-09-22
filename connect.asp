@@ -1918,9 +1918,9 @@ function selectInsertOLD(label, name, value, resource, showColumn, othersToSelec
     function si<%=replace(name, "-", "_")%>(){
 //        if($("#search<%=name%>").val().length>=0){
             $("#resultSelect<%=name%>").fadeIn();
-            $("#resultSelect<%=name%>").html("buscando...");
+            $("#resultSelect<%=name%>").html("Buscando...");
 			$("#spin<%=name%>").removeClass("fa-search");
-			$("#spin<%=name%>").addClass("fa-spinner fa-spin");
+			$("#spin<%=name%>").addClass("fa-circle-o-notch fa-spin");
             clearTimeout(typingTimer<%=replace(name, "-", "_")%>);
             if ($("#search<%=name%>").val) {
                 typingTimer<%=replace(name, "-", "_")%> = setTimeout(f_<%=replace(name, "-", "_")%>, 400);
@@ -2014,13 +2014,13 @@ function selectList(label, name, value, resource, showColumn, othersToSelect, ot
         </span>
 		<input type="text" class="form-control" id="<%=name%>" name="<%=name%>" value="<%=value%>" autocomplete="off" <%= othersToInput %>>
 	</div>
-	<div id="resultSelect<%=name%>" style="position:absolute; display:none; background-color:#f3f3f3; z-index:10000; padding:5px">
+	<div id="resultSelect<%=name%>" class="ResultSearchInput">
         <div>
-            <button class="btn btn-xs btn-default pull-right" style="padding-bottom:5px;" onclick="$('#resultSelect<%=name%>').css('display', 'none')" type="button">Fechar sugestões</button>
+            <button class="btn btn-xs btn-link pull-right" style="padding-bottom:5px;" onclick="$('#resultSelect<%=name%>').css('display', 'none')" type="button"><i class="far fa-close"></i> Fechar sugestões</button>
         </div>
         <div>
             <div id="contentresultSelect<%=name%>" style="width:400px; height:300px; overflow-y:scroll; z-index:1000;">
-        	    buscando...
+        	    <i class="far fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
             </div>
         </div>
     </div>
@@ -2044,7 +2044,7 @@ $(document).ready(function(){
   $("#<%=name%>").keyup(function(){
 	if($("#<%=name%>").val().length>0){
 		$("#resultSelect<%=name%>").css("display", "block");
-		$("#contentresultSelect<%=name%>").html("buscando...");
+		$("#contentresultSelect<%=name%>").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> Buscando...`);
 		clearTimeout(typingTimer<%=replace(name, "-", "_")%>);
 		if ($("#<%=name%>").val) {
 			typingTimer<%=replace(name, "-", "_")%> = setTimeout(f_<%=replace(name, "-", "_")%>, 400);

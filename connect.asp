@@ -915,7 +915,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                    <div class="checkbox-custom checkbox-warning">
                         <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
 
-                        <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; padding-top: 6px; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
+                        <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
                     </div>
                 </span>
             </div>

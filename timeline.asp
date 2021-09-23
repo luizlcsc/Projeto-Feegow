@@ -261,9 +261,22 @@ select case Tipo
             <div class="panel-body" style="overflow: inherit!important;">
 
                 <div class="col-md-3">
-                        <br>
                         <%
-                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by Nome"
+                         set UltimosFormsSQL = db.execute("SELECT GROUP_CONCAT(DISTINCT ModeloID) modelos FROM ( "&_
+                         "SELECT bp.ModeloID, COUNT(bp.id) qtd from buiformspreenchidos bp join buiforms b on b.id=ModeloID WHERE bp.DataHora >= DATE_SUB(NOW(), INTERVAL 30 DAY) and bp.sysUser="&session("User")&" and   "&sqlForm&"  "&_
+                         "GROUP BY bp.ModeloID "&_
+                         "ORDER BY qtd desc "&_
+                         "LIMIT 5 "&_
+                         ")t ")
+
+                        if not UltimosFormsSQL.eof then
+                            favoritos = UltimosFormsSQL("modelos")
+                            if favoritos<> "" then
+                                sqlOrderFavoritos = " IF(id in ("&favoritos&"),0,1),"
+                            end if
+                        end if
+
+                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by "&sqlOrderFavoritos&" Nome"
                         nForms = 0
 			            set forms = db.execute(sqlBuiforms)
 			            while not forms.eof
@@ -290,9 +303,16 @@ select case Tipo
 
 			                while not forms.eof
 				                if autForm(forms("id"), "IN", "") then
+
+				                    badgeFavorito = ""
+
+				                    if instr(favoritos, forms("id")) then
+				                        badgeFavorito = " <i class='fas fa-star text-warning'></i>"
+                                    end if
+
                                 %>
                                 <li  <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%>><a  <% if EmAtendimento=1 then%>
-                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%></a></li>
+                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%> <%=badgeFavorito%></a> </li>
                                 <%
 				                end if
 			                forms.movenext

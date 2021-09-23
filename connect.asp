@@ -2158,6 +2158,14 @@ END FUNCTION
 function autForm(FormID, TipoAut, PreenchedorID)
 	autForm = false
 	set perm = db.execute("select * from buipermissoes where FormID="&FormID)
+
+	if session("table")="profissionais" then
+	    set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
+        if not esp.eof then
+            EspecialidadeIDPreenchedor = esp("EspecialidadeID")
+        end if
+    end if
+
 	if perm.eof then
         if session("table")="profissionais" then
             autForm = true
@@ -2178,12 +2186,9 @@ function autForm(FormID, TipoAut, PreenchedorID)
 						autForm = true
 					end if
 					if autForm=false and perm("Tipo")="E" then
-						set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
-						if not esp.eof then
-							if instr(perm("Grupo"), "|"&esp("EspecialidadeID")&"|")>0 then
-								autForm = true
-							end if
-						end if
+                        if instr(perm("Grupo"), "|"&EspecialidadeIDPreenchedor&"|")>0 then
+                            autForm = true
+                        end if
 					end if
 				end if
 			end if
@@ -4425,11 +4430,11 @@ function imoon(nome)
             icone = "fa-play-circle"
             cor = "system"
             fornecedor = "fas"
-        case 3
+        case 3,115
             icone = "fa-smile-wink"
             cor = "success"
             fornecedor = "fas"
-        case 4
+        case 4,101,116
             icone = "fa-meh"
             cor = "warning"
             fornecedor = "fas"
@@ -4451,7 +4456,7 @@ function imoon(nome)
             icone = "fa-eye"
             cor = "primary"
             fornecedor = "fas"
-        case 11
+        case 11,22,16
             icone = "fa-minus-circle"
             cor = "danger"
             fornecedor = "fas"

@@ -366,7 +366,7 @@ function DefaultForm(tableName, id)
                            q = replace(UCASE(q),UCASE("Francisco%"),"Francisco ")
                            q = replace(UCASE(q),UCASE("Silva%"),"Silva ")
 
-					        sqlBuscaNome = " OR NomePaciente like '"&q&"%' "
+					        sqlBuscaNome = " OR NomePaciente like '%"&q&"%' "
                             if isnumeric(q) then
                                 sqlBuscaNumerica = " OR CPF = '"&q&"' OR id = '"&q&"' "
                                 sqlBuscaNome = ""

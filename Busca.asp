@@ -93,7 +93,7 @@ end if
 			q = replace(UCASE(q),UCASE("Silva%"),"Silva ")
 
 			if isstr then
-				sqlBuscaNome = " OR NomePaciente like '"&q&"%' or NomeSocial like '"&q&"%'"
+				sqlBuscaNome = " OR NomePaciente like '%"&q&"%' or NomeSocial like '"&q&"%'"
 			end if
 
 			set contaPac = db_execute("select count(*) as Pacientes from pacientes where sysActive=1 AND (FALSE "&sqlBuscaNome&" "&sqlBuscaCPF&sqlBuscaID & sqlNasc &")")

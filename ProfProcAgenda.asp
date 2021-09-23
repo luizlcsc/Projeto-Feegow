@@ -32,15 +32,9 @@
                 db.execute("update procedimentos set "&campo&"=concat( ifnull("&campo&", ''), if("&campo&" is null or "&campo&"='', '', ', ') ,'|"&ProfissionalID&"|' ) where id in("& replace(ref("ProcedimentosAgenda"), "|", "") &")")
             end if
 
-updatesTESTE = "update procedimentos set "&campo&"=replace("&campo&", ', |"&ProfissionalID&"|', '') where "&campo&" like '%, |"& ProfissionalID &"|%'"&chr(13)
-updatesTESTE = updatesTESTE& "update procedimentos set "&campo&"=replace("&campo&", '|"&ProfissionalID&"|, ', '') where "&campo&" like '%|"& ProfissionalID &"|, %'"&chr(13)        
-updatesTESTE = updatesTESTE& "update procedimentos set "&campo&"=replace("&campo&", '|"&ProfissionalID&"|', '') where "&campo&" like '%|"& ProfissionalID &"|%'"  &chr(13)         
-
-updatesTESTE = updatesTESTE& "update procedimentos set "&campo&"=concat( ifnull("&campo&", ''), if("&campo&" is null or "&campo&"='', '', ', ') ,'|"&ProfissionalID&"|' ) where id in("& replace(ref("ProcedimentosAgenda"), "|", "") &")"
             %>
 <script >
 $(document).ready(function() {
-    console.log(`<%=updatesTESTE%>`)
     showMessageDialog("Procedimentos salvos.", "success");
 });
 </script>

@@ -292,7 +292,8 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                 <tr data-id="<%=ag("id")%>">
                     <td>
                     <%
-                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&ag("StaConsulta")&"' src='assets/img/"&ag("StaID")&".png' /></span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+                    statusIcon = imoon(ag("StaID"))
+                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
                     set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116, 22)")
                     while not StatusSQL.eof
                         Active=""
@@ -300,7 +301,9 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                             Active=" active "
                         end if
 
-                        StatusSelect = StatusSelect&"<li class='"&Active&"'><a data-value='"&StatusSQL("id")&"' onclick=""AlterarStatus('"&StatusSQL("id")&"','"&ag("id")&"')"" style='cursor:pointer' class='muda-status'><img src='assets/img/"&StatusSQL("id")&".png'> "&StatusSQL("StaConsulta")&"</a></option>"
+                        statusOptionIcon = imoon(StatusSQL("id"))
+
+                        StatusSelect = StatusSelect&"<li class='"&Active&"'><a data-value='"&StatusSQL("id")&"' onclick=""AlterarStatus('"&StatusSQL("id")&"','"&ag("id")&"')"" style='cursor:pointer' class='muda-status'>"&statusOptionIcon&" "&StatusSQL("StaConsulta")&"</a></option>"
                     StatusSQL.movenext
                     wend
                     StatusSQL.close
@@ -324,7 +327,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     if PermitirSelecionarModeloWhatsApp = 0 then
                     FormatTextoWhatsApp = replace(TextoWhatsApp, "'", "&apos;")
                     %>
-                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick='AlertarWhatsapp(`<%=CelularFormatadado%>`, `<%=FormatTextoWhatsApp%>`, `<%=ag("id")%>`)' <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='fa fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
+                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick='AlertarWhatsapp(`<%=CelularFormatadado%>`, `<%=FormatTextoWhatsApp%>`, `<%=ag("id")%>`)' <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='far fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
                     <%
                     else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional
@@ -366,7 +369,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                         %>
                         <div class="dropdown">
                         <button id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class='fa fa-whatsapp' style="color:#128C7E"></i> <%=msgWhatsApp_numero%>
+                            <i class='far fa-whatsapp' style="color:#128C7E"></i> <%=msgWhatsApp_numero%>
                             <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -384,7 +387,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                         set msgconfirma = db.execute(sqlmsg)
                         if isnull(ag("RespostaID")) or msgconfirma("ConfirmarPorSMS")="S" then
                         %>
-                        <span data-toggle="tooltip" title="<%=ag("Resposta")%>"><i class='fa fa-envelope pink'></i></span>
+                        <span data-toggle="tooltip" title="<%=ag("Resposta")%>"><i class='far fa-envelope pink'></i></span>
                         <%
                         end if
                     end if

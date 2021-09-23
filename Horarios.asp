@@ -6,7 +6,7 @@
         <h1>
             Dias e Hor&aacute;rios de Atendimento
             <small>
-                <i class="fa fa-double-angle-right"></i>
+                <i class="far fa-double-angle-right"></i>
                 <%
                 id=req("I")
                 set pdr=db.execute("select * from profissionais where id="&id)
@@ -20,7 +20,7 @@
         if aut("horariosA")=1 then
 		%>
         <button class="btn btn-block btn-primary" id="salvarHorarios">
-            <i class="fa fa-save"></i> Salvar
+            <i class="far fa-save"></i> Salvar
         </button>
         <%
 		end if
@@ -100,7 +100,7 @@
 		$("#salvarHorarios").attr('disabled', 'disabled');
         $.post("saveHorarios.asp?ProfissionalID=<%=ProfissionalID%>", $("#formHorarios").serialize())
         .done(function(data) {
-          $("#salvarHorarios").html('<i class="fa fa-save"></i> Salvar');
+          $("#salvarHorarios").html('<i class="far fa-save"></i> Salvar');
 		  $("#salvarHorarios").removeAttr('disabled');
           	eval(data);
         });

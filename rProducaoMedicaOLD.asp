@@ -186,7 +186,7 @@ if erro="" then
 				        %>
 				        <tr class="linhaPac">
 					        <td><%=Prontuario%></td>
-					        <td><a class="btn btn-xs btn-primary btnPac hidden-print" href="./?P=Pacientes&Pers=1&I=<%=PacienteID %>&Ct=1" target="_blank"><i class="fa fa-external-link"></i></a> <%=left(NomePaciente&" ", 24)%>
+					        <td><a class="btn btn-xs btn-primary btnPac hidden-print" href="./?P=Pacientes&Pers=1&I=<%=PacienteID %>&Ct=1" target="_blank"><i class="far fa-external-link"></i></a> <%=left(NomePaciente&" ", 24)%>
                         
                                 <%'="<br /> ;"& ProcedimentoID &"|"&  PacienteID &"|"& Data &"|"& rdValorPlano &";" %>
 					        </td>

@@ -71,6 +71,7 @@ if not reg.eof then
 	CodigoCNES = reg("CodigoCNES")
 	ContratadoLocalCodigoNaOperadora = reg("ContratadoLocalCodigoNaOperadora")
 	ContratadoLocalNome = reg("ContratadoLocalNome")
+	LocalExternoID = reg("LocalExternoID")
 	ContratadoLocalCNES = reg("ContratadoLocalCNES")
 	DataInicioFaturamento = reg("DataInicioFaturamento")
 	DataFimFaturamento = reg("DataFimFaturamento")
@@ -236,7 +237,7 @@ if not reg.eof then
 						    've se há valor definido pra este procedimento neste convênio
 
                             if splAEA(1)="agendamento" then
-                                set ProcedimentosSQL = db.execute("SELECT a.TipoCompromissoID from agendamentos a where a.id like '"&splAEA(0)&"' UNION ALL select ap.TipoCompromissoID from agendamentosprocedimentos ap where ap.agendamentoid like '"&splAEA(0)&"' ")
+                                set ProcedimentosSQL = db.execute("SELECT a.TipoCompromissoID from agendamentos a where a.id like '"&splAEA(0)&"' UNION ALL select ap.TipoCompromissoID from agendamentosprocedimentos ap where ap.agendamentoid = '"&splAEA(0)&"' ")
                             else
                                 set ProcedimentosSQL = db.execute("select ap.ProcedimentoID TipoCompromissoID FROM atendimentosprocedimentos ap LEFT JOIN atendimentos at on at.id=ap.AtendimentoID where ap.id like '"&splAEA(0)&"' ")
                             end if
@@ -402,7 +403,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Honorários Individuais");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <form id="GuiaHonorarios" action="" method="post">
 		<div class="row">
@@ -442,7 +443,8 @@ end if
             </div>
 				<div class="row">
 					<%= quickField("text", "ContratadoLocalCodigoNaOperadora", "* C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", " required ") %>
-					<%= quickField("text", "ContratadoLocalNome", "* Nome do Hospital/Local", 7, ContratadoLocalNome, "", "", " required ") %>
+					<input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
+					<%= quickField("simpleSelect", "LocalExternoID", "* Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
 					<%= quickField("text", "ContratadoLocalCNES", "* C&oacute;digo CNES", 2, ContratadoLocalCNES, "", "", " required='required'") %>
 				</div>
 			<br />
@@ -491,8 +493,8 @@ end if
 				</div>
 			<br />
 				<div class="clearfix form-actions no-margin">
-					<button class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
-					<button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaHonorarios', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+					<button class="btn btn-primary btn-md"><i class="far fa-save"></i> Salvar</button>
+					<button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaHonorarios', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
 				</div>
 			</div>
 		</div>
@@ -517,12 +519,15 @@ function tissCompletaDados(T, I){
     });
 
     $("#Contratado, #UnidadeID").change(function(){
-        //	    alert(1);
         tissCompletaDados("Contratado", $(this).val());
     });
 
     $("#ContratadoSolicitanteID").change(function(){
         tissCompletaDados("ContratadoSolicitante", $(this).val());
+    });
+
+	$("#LocalExternoID").change(function(){
+        tissCompletaDados("LocalExterno", $(this).val());
     });
 
 

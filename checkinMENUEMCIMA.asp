@@ -8,7 +8,7 @@
 <div class="panel mt15">
     <form id="frm">
         <div class="panel-heading">
-            <span class="panel-title"><i class="fa fa-filter"></i> Filtros</span>
+            <span class="panel-title"><i class="far fa-filter"></i> Filtros</span>
             <span class="panel-controls">
                 <button class="btn btn-sm btn-primary">FILTRAR</button>
             </span>
@@ -34,7 +34,7 @@
     $(".crumb-active a").html("Checkin");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("<%= date() %>");
-    $(".crumb-icon a span").attr("class", "fa fa-check");
+    $(".crumb-icon a span").attr("class", "far fa-check");
 
 
     $("#frm").submit(function(){
@@ -55,7 +55,7 @@
 
     function abreAgenda(horario, id, data, LocalID, ProfissionalID, EquipamentoID) {
 
-        $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
         af('a');
         $.ajax({
             type: "POST",

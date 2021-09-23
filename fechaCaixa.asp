@@ -13,9 +13,9 @@ else
     DinheiroInformado = 0
 end if
 
-Cheque = ccur(ref("Cheque"))
-Credito = ccur(ref("Credito"))
-Debito = ccur(ref("Debito"))
+Cheque = ccur(nullToZero(ref("Cheque")))
+Credito = ccur(nullToZero(ref("Credito")))
+Debito = ccur(nullToZero(ref("Debito")))
 
 Diferenca = Dinheiro-DinheiroInformado
 PermitirFechamentoDeCaixaValorAbaixo = getConfig("PermitirFechamentoDeCaixaValorAbaixo")

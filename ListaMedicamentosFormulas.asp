@@ -37,7 +37,7 @@ while not listaFormulas.EOF
 	<td >
         <div class="row">
             <div class="col-md-1"><a href="javascript:aplicarFormula(<%=listaFormulas("id")%>, '<%=listaFormulas("Tipo")%>', '<%=listaFormulas("Uso") %>');">
-                <i class="fa fa-hand-o-left"></i>
+                <i class="far fa-hand-o-left"></i>
                 </a>
             </div>
 
@@ -47,13 +47,13 @@ while not listaFormulas.EOF
             <%if aut("prescricoesA")=1 then%>
 
             <a class="btn btn-xs btn-success tooltip-info" href="javascript:modalMedicamento('<%=listaFormulas("Tipo") %>', '<%=listaFormulas("id") %>')">
-                <i class="fa fa-edit icon-edit bigger-125"></i>
+                <i class="far fa-edit icon-edit bigger-125"></i>
             </a>
             <%
             elseif (aut("prescricoesA")=0 and aut("modelosprontuarioA")=1 and listaFormulas("sysUser")=session("User")) then
             %>
             <a class="btn btn-xs btn-success tooltip-info" href="javascript:modalMedicamento('<%=listaFormulas("Tipo") %>', '<%=listaFormulas("id") %>')">
-                <i class="fa fa-edit icon-edit bigger-125"></i>
+                <i class="far fa-edit icon-edit bigger-125"></i>
             </a>
             <%
             end if
@@ -61,20 +61,20 @@ while not listaFormulas.EOF
             if aut("prescricoesX")=1 then
             %>
             <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaMedicamentosFormulas('<%=listaFormulas("Tipo") %>', <%=listaFormulas("id")%>)" class="btn btn-xs btn-danger tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
-                <i class="fa fa-remove icon-remove bigger-125"></i>
+                <i class="far fa-remove icon-remove bigger-125"></i>
             </a>
             <%elseif (aut("prescricoesX")=0 and aut("modelosprontuarioA")=1 and listaFormulas("sysUser")=session("User")) then
             %>
             <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaMedicamentosFormulas('<%=listaFormulas("Tipo") %>', <%=listaFormulas("id")%>)" class="btn btn-xs btn-danger tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
-                <i class="fa fa-remove icon-remove bigger-125"></i>
+                <i class="far fa-remove icon-remove bigger-125"></i>
             </a>
             <%end if%>
 
             <a href="#" class="btn btn-xs tooltip-info btnfavoritos" title="Favoritos" data-tipo="<%=listaFormulas("Tipo")%>" data-id="<%=listaFormulas("id")%>" data-placement="top" data-rel="tooltip" data-original-title="Favoritos">
             <% if listaFormulas("TipoID")<>"99999999" then %>
-                <i class="fa fa-star bigger-125" data-favorito="0"></i>
+                <i class="fas fa-star bigger-125" data-favorito="0"></i>
             <% else %>
-                <i class="fa fa-star-o bigger-125" data-favorito="1"></i>
+                <i class="far fa-star bigger-125" data-favorito="1"></i>
             <% end if %>
             </a>
             </div>

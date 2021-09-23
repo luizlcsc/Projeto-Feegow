@@ -339,11 +339,11 @@ end if
       </div>
 	<div class="modal-footer no-margin-top">
 		<button class="btn btn-sm btn-success pull-right" data-dismiss="modal">
-			<i class="fa fa-remove"></i>
+			<i class="far fa-remove"></i>
 			Fechar
 		</button>
 		<button  id="btnSaveTransaction" class="btn btn-sm btn-primary pull-right">
-        <i class="fa fa-check"></i>
+        <i class="far fa-check"></i>
         Salvar</button>
 	</div>
 </form>

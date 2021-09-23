@@ -61,7 +61,7 @@ Campos = "|id|NomePaciente|Nascimento|Bairro|Tel1|Cel1|ConvenioID1|"
         <div class="col-xs-2">
         	<label>&nbsp;</label><br>
             <div class="btn-group btn-block">
-                <button class="btn btn-block btn-success dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus align-top bigger-125"></i> Mais Filtros <span class="fa fa-caret-down icon-on-right"></span></button>
+                <button class="btn btn-block btn-success dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus align-top bigger-125"></i> Mais Filtros <span class="far fa-caret-down icon-on-right"></span></button>
                 <ul class="dropdown-menu dropdown-info">
                     <li id="liCaracteristicasFisicas"><a href="javascript:rpComp('CaracteristicasFisicas')">Características Físicas</a></li>
                     <li id="liAniversario"><a href="javascript:rpComp('Aniversario')">Período de Aniversário</a></li>
@@ -84,7 +84,7 @@ Campos = "|id|NomePaciente|Nascimento|Bairro|Tel1|Cel1|ConvenioID1|"
 
 <script>
 function rpComp(Filtro){
-	$("#"+Filtro).html("<center><i class=\"fa fa-spinner fa-spin green bigger-125\"></i> Carregando...</center>");
+	$("#"+Filtro).html("<center><i class=\"far fa-spinner fa-spin green bigger-125\"></i> Carregando...</center>");
 	$("#li"+Filtro).addClass("hidden");
 	$.get("rpPerfilComplete.asp?Filtro="+Filtro, function(data, status){ $('#'+Filtro).html(data) });
 }

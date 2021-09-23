@@ -8,8 +8,41 @@ if ref("AlterarNumeracao")="1" then
     db.execute("INSERT INTO tissguiaconsulta (ConvenioID, NGuiaPrestador, sysActive) VALUES ("&ConvenioID&", '"&ref("Numeracao")&"', 2)")
 end if
 
-sqlMaiorGuia = "SELECT numero, tipo FROM ((SELECT cast(gc.NGuiaPrestador as signed integer)  numero, 'tissguiaconsulta' as tipo, sysDate FROM tissguiaconsulta gc WHERE gc.ConvenioID LIKE '"&ConvenioID&"' order by sysDate DESC, numero desc limit 1) UNION ALL (SELECT cast(gs.NGuiaPrestador as signed integer)  numero, 'tissguiasadt' as tipo,sysDate FROM tissguiasadt gs WHERE gs.ConvenioID LIKE '"&ConvenioID&"' order by sysDate DESC, numero desc limit 1) UNION ALL (SELECT cast(gh.NGuiaPrestador as signed integer)  numero, 'tissguiahonorarios' as tipo,sysDate FROM tissguiahonorarios gh WHERE gh.ConvenioID LIKE '"&ConvenioID&"' order by sysDate DESC, numero desc limit 1)) as numero ORDER BY sysDate DESC LIMIT 1"
-
+' sqlMaiorGuia = "SELECT numero, tipo FROM ((SELECT cast(gc.NGuiaPrestador as signed integer)  numero, 'tissguiaconsulta' as tipo, sysDate FROM tissguiaconsulta gc WHERE gc.ConvenioID LIKE '"&ConvenioID&"' order by sysDate DESC, numero desc limit 1) UNION ALL (SELECT cast(gs.NGuiaPrestador as signed integer)  numero, 'tissguiasadt' as tipo,sysDate FROM tissguiasadt gs WHERE gs.ConvenioID LIKE '"&ConvenioID&"' order by sysDate DESC, numero desc limit 1) UNION ALL (SELECT cast(gh.NGuiaPrestador as signed integer)  numero, 'tissguiahonorarios' as tipo,sysDate FROM tissguiahonorarios gh WHERE gh.ConvenioID LIKE '"&ConvenioID&"' order by sysDate DESC, numero desc limit 1)) as numero ORDER BY sysDate DESC LIMIT 1"
+sqlMaiorGuia = "SELECT numero, tipo "&_
+                " FROM (( "&_
+                " 	SELECT CAST(gc.NGuiaPrestador AS signed INTEGER) numero, 'tissguiaconsulta' AS tipo, SYSDATE "&_
+                " 	FROM tissguiaconsulta gc "&_
+                " 	WHERE gc.ConvenioID LIKE '"&ConvenioID&"'"&_
+                " 	ORDER BY SYSDATE DESC, numero DESC "&_
+                " 	LIMIT 1) "&_
+                " UNION ALL ( "&_
+                " 	SELECT CAST(gs.NGuiaPrestador AS signed INTEGER) numero, 'tissguiasadt' AS tipo, SYSDATE "&_
+                " 	FROM tissguiasadt gs "&_
+                " 	WHERE gs.ConvenioID LIKE '"&ConvenioID&"'"&_
+                " 	ORDER BY SYSDATE DESC, numero DESC "&_
+                " 	LIMIT 1) "&_
+                " UNION ALL ( "&_
+                " 	SELECT CAST(gh.NGuiaPrestador AS signed INTEGER) numero, 'tissguiahonorarios' AS tipo, SYSDATE "&_
+                " 	FROM tissguiahonorarios gh "&_
+                " 	WHERE gh.ConvenioID LIKE '"&ConvenioID&"'"&_
+                " 	ORDER BY SYSDATE DESC, numero DESC "&_
+                " 	LIMIT 1) "&_
+                " UNION ALL ( "&_
+                " 	SELECT CAST(gh.NGuiaPrestador AS signed INTEGER) numero, 'tissguiainternacao' AS tipo, SYSDATE "&_
+                " 	FROM tissguiainternacao gh "&_
+                " 	WHERE gh.ConvenioID LIKE '"&ConvenioID&"'"&_
+                " 	ORDER BY SYSDATE DESC, numero DESC "&_
+                " 	LIMIT 1) "&_
+                " UNION ALL ( "&_
+                " 	SELECT CAST(gh.NGuiaPrestador AS signed INTEGER) numero, 'tissguiaquimioterapia' AS tipo, SYSDATE "&_
+                " 	FROM tissguiaquimioterapia gh "&_
+                " 	WHERE gh.ConvenioID LIKE '"&ConvenioID&"'"&_
+                " 	ORDER BY SYSDATE DESC, numero DESC "&_
+                " 	LIMIT 1) "&_
+                " ) AS numero "&_
+                " ORDER BY SYSDATE DESC "&_
+                " LIMIT 1"
 
 set UltimaGuiaSQL = db.execute(sqlMaiorGuia)
 
@@ -30,7 +63,7 @@ end if
     <div class="col-md-4">
         <br>
         <button class="btn btn-warning" onclick="AlterarNumeracaoDasGuias()">
-            <i class="fa fa-exclamation-triangle"></i> Alterar sequência
+            <i class="far fa-exclamation-triangle"></i> Alterar sequência
         </button>
     </div>
 </div>
@@ -55,6 +88,8 @@ end if
                         " ( (SELECT id, sysDate, sysUser, 'Consulta' Tipo, PacienteID, NGuiaPrestador FROM tissguiaconsulta WHERE ConvenioID="&ConvenioID&" AND sysActive=1 ORDER BY sysDate DESC LIMIT 30) "&_
                         " UNION ALL (SELECT id, sysDate, sysUser, 'SADT' Tipo, PacienteID, NGuiaPrestador FROM tissguiasadt WHERE ConvenioID="&ConvenioID&" AND sysActive=1 ORDER BY sysDate DESC LIMIT 30) "&_
                         " UNION ALL (SELECT id, sysDate, sysUser, 'Honorarios' Tipo, PacienteID, NGuiaPrestador FROM tissguiahonorarios WHERE ConvenioID="&ConvenioID&" AND sysActive=1 ORDER BY sysDate DESC LIMIT 30) "&_
+                        " UNION ALL (SELECT id, sysDate, sysUser, 'Internacao' Tipo, PacienteID, NGuiaPrestador FROM tissguiainternacao WHERE ConvenioID="&ConvenioID&" AND sysActive=1 ORDER BY sysDate DESC LIMIT 30) "&_
+                        " UNION ALL (SELECT id, sysDate, sysUser, 'Quimioterapia' Tipo, PacienteID, NGuiaPrestador FROM tissguiaquimioterapia WHERE ConvenioID="&ConvenioID&" AND sysActive=1 ORDER BY sysDate DESC LIMIT 30) "&_
 
                         ")guia "&_
                         " LEFT   JOIN pacientes pac ON pac.id= guia.PacienteID"&_

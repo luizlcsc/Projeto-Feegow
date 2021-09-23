@@ -112,7 +112,7 @@ if Data<>"" then
     <div class="panel-footer">
         <div class="row">
             <div class="col-md-12 text-right">
-                <button class="btn btn-primary" type="button" onclick="transMassa()"><i class="fa fa-exchange"></i> Transferir</button>
+                <button class="btn btn-primary" type="button" onclick="transMassa()"><i class="far fa-exchange"></i> Transferir</button>
             </div>
         </div>
     </div>

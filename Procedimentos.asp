@@ -74,7 +74,7 @@ TipoGuia = reg("TipoGuia")
                         <%= quickField("text", "TempoProcedimento", "Tempo", 1, reg("TempoProcedimento"), " text-right", "", " placeholder='minutos'")%>
 
                         <div class="col-md-1 qf" style="width:auto; margin-top: 10px; display:block"><br>
-                            <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus"></i></button>
+                            <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#exampleModal"><i class="far fa-plus"></i></button>
 			            </div>
 
                         <%=quickField("cor", "Cor", "Cor", 2, reg("Cor"), "select * from cliniccentral.Cores order by id desc", "Cor", "")%>
@@ -334,7 +334,7 @@ TipoGuia = reg("TipoGuia")
                 <%=quickField("simpleSelect", "KitID", "Selecione um kit", 5, "", "select * from produtoskits where sysActive=1 order by NomeKit", "NomeKit", "") %>
                 <div class="col-md-3">
                     <label>&nbsp;</label><br />
-                    <button type="button" class="btn btn-success" onclick="kit('I', $('#KitID').val(), 0)"><i class="fa fa-plus"></i> Adicionar Kit</button>
+                    <button type="button" class="btn btn-success" onclick="kit('I', $('#KitID').val(), 0)"><i class="far fa-plus"></i> Adicionar Kit</button>
                 </div>
             </div>
             <hr class="short alt" />
@@ -426,7 +426,7 @@ TipoGuia = reg("TipoGuia")
                     
         <form id="form-procedimento-tempo-profissional">
             <div style="margin: 0px 0px 24px 0px;">           
-                <label><button type="button" onclick="duplicateElements()" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
+                <label><button type="button" onclick="duplicateElements()" class="btn btn-xs btn-success"><i class="far fa-plus"></i></button>
                 Adicionar</label>
             </div>
 
@@ -454,7 +454,7 @@ TipoGuia = reg("TipoGuia")
 
 
                     <div class="form-group col-md-2">                           
-                        <div><button type="button" onclick='removeProfisionalTempoProcedimento(this, <%=CollectionProcedimentoTempoProfissional("id")%>)' class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></div>
+                        <div><button type="button" onclick='removeProfisionalTempoProcedimento(this, <%=CollectionProcedimentoTempoProfissional("id")%>)' class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></div>
                     </div>                 
                 </div>
             <% 
@@ -520,7 +520,7 @@ duplicateElements = _ => {
                                 <%=quickField("simpleSelect", "profissionalId", "", 8, "", "select id, NomeProfissional from profissionais where sysActive=1 and Ativo = 'on'", "NomeProfissional", "")%>
 
                                 <div class="form-group col-md-2">                                       
-                                    <div><button type="button" onclick="removeProfisionalTempoProcedimento(this)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></div>
+                                    <div><button type="button" onclick="removeProfisionalTempoProcedimento(this)" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></div>
                                 </div>                   
                             </div>
                         </div>`).html();
@@ -680,7 +680,7 @@ $(function() {
                                     <td>${j.Procedimento}</td>
                                     <td>${j.Descricao}</td>
                                     <td>
-                                        <button type="button" class="btn btn-sm btn-success" onclick="addItemTabela('${componentCodigo.attr("id")}',${j.id})"><i class="fa fa-plus"></i></button>
+                                        <button type="button" class="btn btn-sm btn-success" onclick="addItemTabela('${componentCodigo.attr("id")}',${j.id})"><i class="far fa-plus"></i></button>
                                     </td>
                                </tr>`
                    });
@@ -715,7 +715,7 @@ $(function() {
 
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
-          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="far fa-copy"></i> Replicar</button>`)
     <% end if %>
 
 	<%call formSave("frm", "save", "")%>

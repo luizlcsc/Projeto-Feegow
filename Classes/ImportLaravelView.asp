@@ -6,10 +6,10 @@ function importView(routeName, resourceName, resourceDescription, resourceIcon)
     $(".crumb-active a").html("<%=resourceName%>");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("<%=resourceDescription%>");
-    $(".crumb-icon a span").attr("class", "fa fa-<%=resourceIcon%>");
+    $(".crumb-icon a span").attr("class", "far fa-<%=resourceIcon%>");
 </script>
 <div class="app" style="padding-top: 11px;">
-<i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
+<i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i>
 </div>
 
 <script src="https://s3.amazonaws.com/cappta.api/v2/dist/cappta-checkout.js"></script>

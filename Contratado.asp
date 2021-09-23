@@ -9,7 +9,7 @@
 Atenciosamente,<br>
 Equipe Feegow Clinic
 </h5>
-<a href="http://www.feegowclinic.com.br/treinamento/" target="_blank" class="btn btn-info"><i class="fa fa-calendar"></i> AGENDAR TREINAMENTO</a>
+<a href="http://www.feegowclinic.com.br/treinamento/" target="_blank" class="btn btn-info"><i class="far fa-calendar"></i> AGENDAR TREINAMENTO</a>
 <hr>
 <%
 if req("Forma")="C" then
@@ -54,8 +54,8 @@ else
 			end if
 			%>
 			<div class="clearfix form-actions">
-				<h5><i class="fa fa-exclamation-triangle"></i> Sua licença estará disponível para uso logo que o pagamento de seu boleto for confirmado!</h5><br>
-				<a href="http://weegow.com.br/builder/boleto/boletoClinic.php?ValorCobrado=<%=formatnumber(pagto("Mensalidade"), 2)%>&Nome=<%=Nome%>&Endereco=<%=pagto("Endereco")%>&Cidade=<%=pagto("Cidade")%>&Estado=<%=pagto("Estado")%>&Cep=<%=pagto("Cep")%>&NumeroDocumento=<%=200000+CId%>&Vencto=<%=date()%>&VenctoOriginal=<%=date()%>" target="_blank" class="btn btn-success"><i class="fa fa-barcode"></i> IMPRIMIR BOLETO</a><br>
+				<h5><i class="far fa-exclamation-triangle"></i> Sua licença estará disponível para uso logo que o pagamento de seu boleto for confirmado!</h5><br>
+				<a href="http://weegow.com.br/builder/boleto/boletoClinic.php?ValorCobrado=<%=formatnumber(pagto("Mensalidade"), 2)%>&Nome=<%=Nome%>&Endereco=<%=pagto("Endereco")%>&Cidade=<%=pagto("Cidade")%>&Estado=<%=pagto("Estado")%>&Cep=<%=pagto("Cep")%>&NumeroDocumento=<%=200000+CId%>&Vencto=<%=date()%>&VenctoOriginal=<%=date()%>" target="_blank" class="btn btn-success"><i class="far fa-barcode"></i> IMPRIMIR BOLETO</a><br>
 				Caso queira antecipar a liberação do sistema para uso, pague o boleto contido no link acima e envie o comprovante para <a href="mailto:contato@feegowclinic.com.br">contato@feegowclinic.com.br</a>
 			</div>
 			<%

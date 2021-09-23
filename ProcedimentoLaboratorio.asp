@@ -2,7 +2,7 @@
 <!--#include file="modal.asp"-->
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Procedimentos x Laboratórios</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-th-list");
+    $(".crumb-icon a span").attr("class", "far fa-th-list");
     $(".crumb-trail").removeClass("hidden");
 </script>
 <br />
@@ -11,7 +11,7 @@
 <div class="panel">
         <div class="panel-body">
             <div class="app" style="padding-top: 11px;">
-            <i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
+            <i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i>
             </div>
         </div>
 </div>

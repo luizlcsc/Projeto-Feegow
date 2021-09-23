@@ -69,7 +69,7 @@ else
 
 
     <div class="modal-footer no-margin-top">
-	    <button id="saveInat" class="btn btn-sm btn-warning pull-right"  type="button"><i class="fa fa-save"></i> Salvar</button>
+	    <button id="saveInat" class="btn btn-sm btn-warning pull-right"  type="button"><i class="far fa-save"></i> Salvar</button>
     </div>
     <script>
         $("#saveInat").click(function(){

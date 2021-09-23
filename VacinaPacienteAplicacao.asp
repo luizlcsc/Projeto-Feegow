@@ -65,7 +65,7 @@ else
                             <div class="input-group">
                                 <input id="InputDataAplicacao" autocomplete="off" class="form-control input-mask-date date-picker" type="text" data-date-format="dd/mm/yyyy" value="<%=Right("00"&Day(date),2)&"/"&Right("00"&Month(date),2)&"/"&Year(date)%>">
                                 <span class="input-group-addon">
-                                <i class="fa fa-calendar bigger-110"></i>
+                                <i class="far fa-calendar bigger-110"></i>
                                 </span>
                             </div>	
                         </div>
@@ -184,7 +184,7 @@ else
 </div> 
 
 <div class="modal-footer no-margin-top">
-    <button class="btn btn-sm btn-primary pull-right" id="saveVacinaPacienteAplicacao"><i class="fa fa-save"></i> Salvar</button>
+    <button class="btn btn-sm btn-primary pull-right" id="saveVacinaPacienteAplicacao"><i class="far fa-save"></i> Salvar</button>
 </div>
 
 <script type="text/javascript">

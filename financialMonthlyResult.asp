@@ -8,7 +8,7 @@ end if
 %>
 <div class="page-header">
     <h1>
-        Resultado Mensal<small><i class="fa fa-double-angle-right"></i> sint&eacute;tico</small>
+        Resultado Mensal<small><i class="far fa-double-angle-right"></i> sint&eacute;tico</small>
         
     </h1>
 </div><!-- /.page-header -->

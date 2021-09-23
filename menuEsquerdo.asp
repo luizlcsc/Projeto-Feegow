@@ -14,17 +14,20 @@ select case lcase(req("P"))
             <div class="panel mt15">
                 <form id="frm-filtros">
                     <div class="panel-heading">
-                        <span class="panel-title"><i class="fa fa-filter"></i> Filtros</span>
+                        <span class="panel-title"><i class="far fa-filter"></i> Filtros</span>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <%= quickfield("multiple", "fStaID", "Status", 12, StaChk, "select id, StaConsulta from staconsulta", "StaConsulta", "") %>
                             <%= quickfield("text", "fNomePaciente", "Paciente", 12, "", "", "", "") %>
+
+                            <%= quickfield("simpleSelect", "fEspecialidadeID", "Especialidade", 12, "", "select esp.* from agendamentos a inner join especialidades esp on esp.id=a.EspecialidadeID where esp.sysActive=1 group by esp.id order by esp.NomeEspecialidade", "Especialidade", " empty ") %>
+
                             <%= quickfield("simpleSelect", "fProfissionalID", "Profissional", 12, "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", "") %>
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-sm btn-primary">FILTRAR</button>
+                        <button class="btn btn-sm btn-primary"><i class="far fa-search"></i> FILTRAR</button>
                     </div>
                 </form>
             </div>
@@ -40,7 +43,7 @@ select case lcase(req("P"))
             <div class="panel mt15">
                 <form id="frm-filtros">
                     <div class="panel-heading">
-                        <span class="panel-title"><i class="fa fa-filter"></i> Filtros</span>
+                        <span class="panel-title"><i class="far fa-filter"></i> Filtros</span>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -117,7 +120,7 @@ select case lcase(req("P"))
             if cpd>10 then
                 %>
             <li class="vertodos">
-                <a href="javascript:void(0)" onclick="$('.vertodos').addClass('hidden'); $('.pacdia').removeClass('hidden');"><span class="fa fa-chevron-down"></span> <span class="sidebar-title"> Ver Todos</span>
+                <a href="javascript:void(0)" onclick="$('.vertodos').addClass('hidden'); $('.pacdia').removeClass('hidden');"><span class="far fa-chevron-down"></span> <span class="sidebar-title"> Ver Todos</span>
                 <span class="sidebar-title-tray">
                 <span class="label label-xs bg-primary"><%= cpd %></span>
               </span>
@@ -160,7 +163,7 @@ select case lcase(req("P"))
                 <% if true and recursoAdicional(12)<>4 and lcase(req("P"))="home" then %>
                 <div class="panel-footer br-t p12">
                   <span class="fs11">
-                        <button onclick="location.href='./?P=AreaDoCliente&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="fa fa-question-circle"></i> ÁREA DO CLIENTE</button>
+                        <button onclick="location.href='./?P=AreaDoCliente&Pers=1&Helpdesk=1';" class="btn btn-sm btn-block btn-primary"><i class="far fa-question-circle"></i> ÁREA DO CLIENTE</button>
                   </span>
                 </div>
                 <% end if %>
@@ -175,13 +178,13 @@ end if
     if lcase(req("P"))="home" then
 %>
             <div class="col-sm-12">
-                <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="fa fa-plus"></i> VER NOVIDADES</button>
+                <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="far fa-plus"></i> VER NOVIDADES</button>
 
                 <a href='https://www.feegowclinic.com.br/blog-medico/?utm_source=software-feegow&utm_medium=referral&utm_campaign=botao-de-conteudo' target="_blank" class="btn btn-sm btn-block" style="background:#FF8C00;color:#fff">ACESSE O BLOG FEEGOW</a>
             </div>
 
             <div id="feedbackButton" style="margin-top: 10px; visibility: hidden" class="col-sm-12">
-                <button onclick="openPendingTables()" class="btn btn-sm btn-block btn-warning"><i class="fa fa-warning"></i> VER ALTERAÇÕES</button>
+                <button onclick="openPendingTables()" class="btn btn-sm btn-block btn-warning"><i class="far fa-warning"></i> VER ALTERAÇÕES</button>
             </div>
 
             <div class="panel hidden">
@@ -236,7 +239,7 @@ end if
                         %>
                     </select>
                     <span class="input-group-addon img-thumbnail" id="ObsAgenda" data-content="" title="" data-placement="right" data-rel="popover" class="btn btn-xs tooltip-info pull-right" data-original-title="Observações da Agenda">
-                        <i class='fa fa-info-circle'></i>
+                        <i class='far fa-info-circle'></i>
                     </span>
                     <%
             end if
@@ -252,7 +255,7 @@ end if
                     %>
                     <div class="col-xs-12">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:location.href='?P=Equipamentos&I='+$('#EquipamentoID').val()+'&Pers=1&Aba=Horarios';">
-                            <span class="fa fa-calendar"></span>
+                            <span class="far fa-calendar"></span>
                             <small class="">Grade</small>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -263,7 +266,7 @@ end if
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:imprimir();">
-                            <span class="fa fa-print"></span>
+                            <span class="far fa-print"></span>
                             <span class="sidebar-title">Imprimir</span>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -274,7 +277,7 @@ end if
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
-                            <span class="fa fa-external-link"></span>
+                            <span class="far fa-external-link"></span>
                             <span class="sidebar-title">Encaixe</span>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -285,7 +288,7 @@ end if
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:abreBloqueio(0, $('#Data').val(), '');">
-                            <span class="fa fa-lock"></span>
+                            <span class="far fa-lock"></span>
                             <span class="sidebar-title">Bloqueio</span>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -396,7 +399,7 @@ end if
                         %>
                     </select>
                     <span class="input-group-addon img-thumbnail" onclick="oa( $('#ProfissionalID').val() )" title="Observações da Agenda" style="cursor:pointer">
-                        <i class='fa fa-info-circle'></i>
+                        <i class='far fa-info-circle'></i>
                     </span>
                     <%
             else
@@ -415,6 +418,7 @@ end if
                 </div>
                 <input type="hidden" name="Data" id="Data" value="<%= iniData %>" />
             </div>
+                <br />
                 <hr class="hidden-xs" />
                 <br class="visible-xs" />
         </li>
@@ -424,7 +428,7 @@ end if
                     %>
                     <div class="col-xs-<%if req("P")<>"Agenda-S" then %>6<% else%>12<%end if%>">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:location.href='?P=Profissionais&I='+$('#ProfissionalID').val()+'&Pers=1&Aba=Horarios';">
-                            <span class="fa fa-calendar"></span>
+                            <span class="far fa-calendar"></span>
                             <small class="">Grade</small>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -435,7 +439,7 @@ end if
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:imprimir();">
-                            <span class="fa fa-print"></span>
+                            <span class="far fa-print"></span>
                             <span class="sidebar-title">Imprimir</span>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -446,7 +450,7 @@ end if
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
-                            <span class="fa fa-external-link"></span>
+                            <span class="far fa-external-link"></span>
                             <span class="sidebar-title">Encaixe</span>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -457,7 +461,7 @@ end if
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:abreBloqueio(0, $('#Data').val(), '');">
-                            <span class="fa fa-lock"></span>
+                            <span class="far fa-lock"></span>
                             <span class="sidebar-title">Bloqueio</span>
                             <span class="sidebar-title-tray"></span>
                         </a>
@@ -469,7 +473,7 @@ end if
                     %>
                         <div class="col-xs-12">
                             <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:altMult($('#ProfissionalID').val(), $('#Data').val());">
-                                <span class="fa fa-exchange"></span>
+                                <span class="far fa-exchange"></span>
                                 <span class="sidebar-title">Alterações em massa</span>
                                 <span class="sidebar-title-tray"></span>
                             </a>
@@ -493,10 +497,10 @@ end if
                         <div class="panel-heading">
                             <ul id="myTab" class="nav panel-tabs-border panel-tabs panel-tabs-left">
                                 <li class="active">
-                                    <a href="#notas" data-toggle="tab"><i class="green fa fa-file-text bigger-110"></i> Notas</a>
+                                    <a href="#notas" data-toggle="tab"><i class="green far fa-file-text bigger-110"></i> Notas</a>
                                 </li>
                                 <li>
-                                    <a href="#fila" data-toggle="tab" onclick="filaEspera('');"><i class="green fa fa-male bigger-110"></i> Espera</a>
+                                    <a href="#fila" data-toggle="tab" onclick="filaEspera('');"><i class="green far fa-male bigger-110"></i> Espera</a>
                                 </li>
                             </ul>
                         </div>
@@ -531,7 +535,7 @@ end if
                     %>
                         <div class="col-xs-6">
                             <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
-                                <span class="fa fa-external-link"></span>
+                                <span class="far fa-external-link"></span>
                                 <span class="sidebar-title">Encaixe</span>
                                 <span class="sidebar-title-tray"></span>
                             </a>
@@ -542,7 +546,7 @@ end if
                     %>
                         <div class="col-xs-6">
                             <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:abreBloqueio(0, $('#Data').val(), '');">
-                                <span class="fa fa-lock"></span>
+                                <span class="far fa-lock"></span>
                                 <span class="sidebar-title">Bloqueio</span>
                                 <span class="sidebar-title-tray"></span>
                             </a>
@@ -566,10 +570,10 @@ end if
                 <div class="panel-heading">
                     <ul id="myTab" class="nav panel-tabs-border panel-tabs panel-tabs-left">
                         <li class="active">
-                            <a href="#notas" data-toggle="tab"><i class="green fa fa-file-text bigger-110"></i> Notas</a>
+                            <a href="#notas" data-toggle="tab"><i class="green far fa-file-text bigger-110"></i> Notas</a>
                         </li>
                          <li>
-                            <a href="#fila" data-toggle="tab" onclick="filaEspera('',0);"><i class="green fa fa-male bigger-110"></i> Espera</a>
+                            <a href="#fila" data-toggle="tab" onclick="filaEspera('',0);"><i class="green far fa-male bigger-110"></i> Espera</a>
                         </li>
                     </ul>
                 </div>
@@ -638,36 +642,39 @@ end if
                 <input type="hidden" id="hData" name="hData" value="<%=date() %>" />
                 </form>
         <%
-    case "locais", "locaisgrupos", "mapasalas"
+    case "locais", "locaisgrupos", "mapasalas", "locaisexternos"
 
     %>
     <li>
-        <a href="?P=Locais&Pers=Follow"><span class="fa fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais de Atendimento</span></a>
+        <a href="?P=Locais&Pers=Follow"><span class="far fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais de Atendimento</span></a>
+    </li>
+    <li>
+        <a href="?P=locaisexternos&Pers=1"><span class="fa fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais Externos</span></a>
     </li>
     <li>
         <a href="?P=LocaisGrupos"><span class="fa fa-crosshairs bigger-110"></span> <span class="sidebar-title">Grupos de Locais</span></a>
     </li>
     <li>
-        <a href="?P=MapaSalas&Pers=1"><span class="fa fa-street-view bigger-110"></span> <span class="sidebar-title">Mapa de Locais</span></a>
+        <a href="?P=MapaSalas&Pers=1"><span class="far fa-street-view bigger-110"></span> <span class="sidebar-title">Mapa de Locais</span></a>
     </li>
     <%
     case "eventos_emailsms", "sys_smsemail", "configeventos"
         %>
         <li>
-            <a href="?P=eventos_emailsms&Pers=Follow"><span class="fa fa-calendar bigger-110"></span> <span class="sidebar-title">Eventos</span></a>
+            <a href="?P=eventos_emailsms&Pers=Follow"><span class="far fa-calendar bigger-110"></span> <span class="sidebar-title">Eventos</span></a>
         </li>
         <%
         if aut("sys_smsemail")=1 then
         %>
         <li>
-            <a href="?P=sys_smsemail&Pers=Follow"><span class="fa fa-files-o bigger-110"></span> <span class="sidebar-title">Modelos</span></a>
+            <a href="?P=sys_smsemail&Pers=Follow"><span class="far fa-files-o bigger-110"></span> <span class="sidebar-title">Modelos</span></a>
         </li>
         <%
         end if
         if session("Admin")=1 then
         %>
         <li>
-            <a href="?P=ConfigEventos&Pers=1"><span class="fa fa-cogs bigger-110"></span> <span class="sidebar-title">Configurações</span></a>
+            <a href="?P=ConfigEventos&Pers=1"><span class="far fa-cogs bigger-110"></span> <span class="sidebar-title">Configurações</span></a>
         </li>
 
         <%
@@ -684,14 +691,14 @@ end if
             </li>
             <li>
                 <a data-toggle="tab" class="mainTab menu-aba-pacientes-dados-principais" href="#Dados">
-                    <span class="blue fa fa-user bigger-110"></span>
+                    <span class="blue far fa-user bigger-110"></span>
                     <span class="sidebar-title">Dados Principais</span>
                 </a>
             </li>
             <% IF session("Banco")="clinic5459" or session("Banco")="clinic100000" or session("Banco")="clinic105" THEN %>
              <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
-                    <span class="fa fa-heart-o bigger-110"></span>
+                    <span class="far fa-heart-o bigger-110"></span>
                     <span class="sidebar-title">Resumo Clínico</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totallf"></span>
@@ -704,7 +711,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|`);'>
-                    <span class="fa fa-bar-chart bigger-110"></span>
+                    <span class="far fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Medicina ocupacional</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalaso"></span>
@@ -717,7 +724,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-anamneses" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AE|`);'>
-                    <span class="fa fa-bar-chart bigger-110"></span>
+                    <span class="far fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Anamnese e Evolu&ccedil;&otilde;es</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalae"></span>
@@ -734,7 +741,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|`);'>
-                    <span class="fa fa-align-justify bigger-110"></span>
+                    <span class="far fa-notes-medical bigger-110"></span>
                     <span class="sidebar-title">Laudos e Formul&aacute;rios</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totallf"></span>
@@ -747,7 +754,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-diagnosticos" id="tabDiagnosticos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Diagnostico|`);'>
-                    <span class="fa fa-stethoscope bigger-110"></span>
+                    <span class="far fa-stethoscope bigger-110"></span>
                     <span class="sidebar-title">Diagn&oacute;sticos &raquo; <small>CID-10</small></span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totaldiagnosticos"></span>
@@ -761,7 +768,7 @@ end if
 
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|`);'>
-                    <span class="fa fa-flask bigger-110"></span>
+                    <span class="far fa-pills bigger-110"></span>
                     <span class="sidebar-title">Prescrições Medicamentosas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalprescricoes"></span>
@@ -775,7 +782,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-textos-e-atestados" id="abaAtestados" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Atestado|`);'>
-                    <span class="fa fa-file-text-o bigger-110"></span>
+                    <span class="far fa-file-medical-alt bigger-110"></span>
                     <span class="sidebar-title">Textos e Atestados</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalatestados"></span>
@@ -788,7 +795,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|`);'>
-                    <span class="fa fa-file-text-o bigger-110"></span> 
+                    <span class="far fa-tasks bigger-110"></span>
                     <span class="sidebar-title">Tarefas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totaltarefas"></span>
@@ -801,7 +808,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`);'>
-                    <span class="fa fa-hospital-o bigger-110"></span>
+                    <span class="far fa-hospital-o bigger-110"></span>
                     <span class="sidebar-title">Pedidos de Exame</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalpedidos"></span>
@@ -816,7 +823,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|`);'>
-                    <span class="fa fa-list-alt bigger-110"></span>
+                    <span class="far fa-list-alt bigger-110"></span>
                     <span class="sidebar-title">Resultados de Exames</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalresultadosexame"></span>
@@ -829,7 +836,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`);'>
-                    <span class="glyphicon glyphicon-pushpin"></span>
+                    <span class="far fa-syringe bigger-110"></span>
                     <span class="sidebar-title">Vacinas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalvacinas"></span>
@@ -842,7 +849,7 @@ end if
             %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|`);'>
-                    <span class="fa fa-medkit bigger-110"></span>
+                    <span class="far fa-medkit bigger-110"></span>
                     <span class="sidebar-title">Produtos Utilizados</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalprodutosutilizados"></span>
@@ -855,7 +862,7 @@ end if
             if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
             <li>
                 <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
-                    <span class="fa fa-file-text-o bigger-110"></span>
+                    <span class="far fa-file-text bigger-110"></span>
                     <span class="sidebar-title">Protocolos</span>
                     <span class="sidebar-title-tray">
                         <span class="label label-xs bg-primary" id="totalprotocolos"></span>
@@ -871,7 +878,7 @@ end if
                 %>
                 <li class="checkStatus">
                     <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`);'>
-                        <span class="fa fa-shield"></span>
+                        <span class="far fa-shield"></span>
                         <span class="sidebar-title">Assinatura digital
                             <span class="label label-system label-xs fleft">Novo</span>
                         </span>
@@ -886,7 +893,7 @@ end if
 		    %>
 		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`);'>
-                    <span class="fa fa-line-chart bigger-110"></span>
+                    <span class="far fa-book-medical bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary"></span>
@@ -901,7 +908,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-imagens" id="tabImagens" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Imagens|`);'>
-                    <span class="fa fa-camera bigger-110"></span>
+                    <span class="far fa-camera bigger-110"></span>
                     <span class="sidebar-title">Imagens</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalimagens"></span>
@@ -914,7 +921,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-arquivos" id="tabArquivos" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Arquivos|`);'>
-                    <span class="fa fa-file bigger-110"></span>
+                    <span class="far fa-file bigger-110"></span>
                     <span class="sidebar-title">Arquivos</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalarquivos"></span>
@@ -929,7 +936,7 @@ end if
                 %>
                 <li class="checkStatus">
                     <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">
-                        <span class="fa fa-life-bouy bigger-110"></span>
+                        <span class="far fa-life-bouy bigger-110"></span>
                         <span class="sidebar-title">Odontograma</span>
                     </a>
                 </li>
@@ -938,7 +945,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-agendamentos" href="#pront" onclick="pront('HistoricoPaciente.asp?PacienteID=<%=req("I")%>');">
-                    <span class="fa fa-calendar bigger-110"></span>
+                    <span class="far fa-calendar bigger-110"></span>
                     <span class="sidebar-title">Agendamentos</span>
                 </a>
             </li>
@@ -949,7 +956,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-recibos" href="#divRecibos" onclick="pront('Recibos.asp?PacienteID=<%=req("I")%>')">
-                    <span class="fa fa-edit bigger-110"></span>
+                    <span class="far fa-edit bigger-110"></span>
                     <span class="sidebar-title">Recibos</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalrecibos"></span>
@@ -962,7 +969,7 @@ end if
 		    %>
 		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-propostas" id="tabPropostas" href="#divPropostas" onclick="pront('ListaPropostas.asp?PacienteID=<%=req("I")%>')">
-                    <span class="fa fa-files-o"></span>
+                    <span class="far fa-files-o"></span>
                     <span class="sidebar-title">Propostas</span>
                 </a>
             </li>
@@ -972,7 +979,7 @@ end if
 		    %>
 		    <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-conta" id="tabExtrato" href="#divHistorico" onclick="ajxContent('divHistorico', '<%=req("I")%>&A=<%=req("A") %>', '1', 'pront')">
-                    <span class="fa fa-money"></span>
+                    <span class="far fa-money"></span>
                     <span class="sidebar-title">Conta</span>
                 </a>
             </li>
@@ -982,7 +989,7 @@ end if
                 %>
                 <li class="checkStatus">
                     <a data-toggle="tab" class="tab" href="#pacienteCalls" onclick="pront('pacienteCalls.asp?I=<%= req("I") %>&Contato=3_<%=req("I")%>')">
-                        <span class="fa fa-phone bigger-110"></span>
+                        <span class="far fa-phone bigger-110"></span>
                         <span class="sidebar-title">Interações</span>
                     </a>
                 </li>
@@ -1037,15 +1044,15 @@ end if
     case "laudos" , "frases", "laudoslab"
         %>
         <li>
-            <a  href="?P=Laudos&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
+            <a  href="?P=Laudos&Pers=1"><span class="far fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
         <%  if recursoAdicional(24)=4 then %>
         <li>
-            <a  href="?P=laudosLab&Pers=1"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <% end if %>
-        <li>
-            <a  href="?P=Frases&Pers=0"><span class="fa fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
+        <li class="hidden">
+            <a  href="?P=Frases&Pers=0"><span class="far fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
 
         <%
@@ -1072,59 +1079,59 @@ end if
         %>
         <li class="sidebar-label pt20"></li>
         <li class="active">
-            <a data-toggle="tab" href="#divCadastroPrincipal"><span class="fa fa-stethoscope bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
+            <a data-toggle="tab" href="#divCadastroPrincipal"><span class="far fa-stethoscope bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divOpcoesAgenda"><span class="fa fa-calendar"></span> <span class="sidebar-title">Opções de Agenda</span></a>
+            <a data-toggle="tab" href="#divOpcoesAgenda"><span class="far fa-calendar"></span> <span class="sidebar-title">Opções de Agenda</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divMateriais" onclick="ajxContent('procedimentoskits', <%=req("I") %>, 1, 'procedimentoskits')"><span class="fa fa-medkit"></span> <span class="sidebar-title">Kits</span></a>
+            <a data-toggle="tab" href="#divMateriais" onclick="ajxContent('procedimentoskits', <%=req("I") %>, 1, 'procedimentoskits')"><span class="far fa-medkit"></span> <span class="sidebar-title">Kits</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosdespesas', '<%=req("I") %>', 1, 'divEquipe')"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Despesas Anexas <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosdespesas', '<%=req("I") %>', 1, 'divEquipe')"><span class="far fa-credit-card"></span> <span class="sidebar-title">Despesas Anexas <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosequipe', '<%=req("I") %>', 1, 'divEquipe')"><span class="fa fa-users"></span> <span class="sidebar-title">Equipe e Participantes</span></a>
+            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosequipe', '<%=req("I") %>', 1, 'divEquipe')"><span class="far fa-users"></span> <span class="sidebar-title">Equipe e Participantes</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentospreparo', '<%=req("I") %>', 1, 'divEquipe')"><span class="fa fa-list-alt"></span> <span class="sidebar-title">Preparos</span></a>
+            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentospreparo', '<%=req("I") %>', 1, 'divEquipe')"><span class="far fa-list-alt"></span> <span class="sidebar-title">Preparos</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosrestricao', '<%=req("I") %>', 1, 'divEquipe')"><span class="fa fa-exclamation-circle"></span> <span class="sidebar-title">Restrições</span></a>
+            <a data-toggle="tab" href="#divEquipe" onclick="ajxContent('procedimentosrestricao', '<%=req("I") %>', 1, 'divEquipe')"><span class="far fa-exclamation-circle"></span> <span class="sidebar-title">Restrições</span></a>
         </li>
 
 
         <li>
-            <a data-toggle="tab" href="#divLaudos"><span class="fa fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
+            <a data-toggle="tab" href="#divLaudos"><span class="far fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divVacina"><span class="fa fa-calendar"></span> <span class="sidebar-title">Vacina <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <a data-toggle="tab" href="#divVacina"><span class="far fa-calendar"></span> <span class="sidebar-title">Vacina <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <%
         else
             %>
             <li>
-                <a href="./?P=Procedimentos&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
+                <a href="./?P=Procedimentos&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
             </li>
             <li>
-                <a href="./?P=Pacotes&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Pacotes</span></a>
+                <a href="./?P=Pacotes&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Pacotes</span></a>
             </li>
             <li>
                 <a href="?P=ProcedimentoLaboratorio&Pers=1" >
-                <span class="fa fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
+                <span class="far fa-flask"></span> <span class="sidebar-title">Procedimentos Laboratorios</a>
             </li>
             <%
             if aut("procedimentosgruposV") then
                 %>
                 <li>
-                    <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="fa fa-stethoscope"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
+                    <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
                 </li>
                 <%
             end if
             %>
             <% if recursoAdicional(37) = 4 and aut("protocolosV")=1 then%>
             <li>
-                <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
+                <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
             </li>
             <% end if%>
             <%
@@ -1132,25 +1139,53 @@ end if
     case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>
         <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
-            <a href="./?P=Protocolos&Pers=Follow"><span class="fa fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
         </li>
         <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
-            <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="fa fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
+            <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="far fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
         </li>
         <li <%if req("P")="tipos_de_arquivos" then%>class="active"<%end if%>>
-            <a href="./?P=tipos_de_arquivos&Pers=Follow"><span class="fa fa-file-o"></span> <span class="sidebar-title">Tipo de arquivos</span></a>
+            <a href="./?P=tipos_de_arquivos&Pers=Follow"><span class="far fa-file-o"></span> <span class="sidebar-title">Tipo de arquivos</span></a>
         </li>
         <%
+    case "sys_financialcurrentaccounts", "contasbancarias"
+            %>
+            <li <%if req("P")="sys_financialcurrentaccounts" then%>class="active"<%end if%>>
+                <a href="./?P=sys_financialcurrentaccounts&Pers=Follow"><span class="far fa-university"></span> <span class="sidebar-title">Contas Correntes</span></a>
+            </li>
+            <%
+            if aut("|sys_financialcurrentaccountsV|")=1  then
+            %>
+            <li <%if req("P")="contasbancarias" then%>class="active"<%end if%>>
+                <a href="./?P=contasbancarias&Pers=Follow"><span class="far fa-money-check-alt"></span> <span class="sidebar-title">Contas de fornecedores</span></a>
+            </li>
+            <%
+            end if
+            %>
+    <%
+    case "tabelaspreco", "autorizacaotabelapreco"
+            %>
+            <li>
+                <a href="?P=TabelasPreco&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Preços de custo e venda</span></a>
+            </li>
+            <%
+            if aut("|aprovacaotabelaprecoV|")=1 and ModoFranquia then
+            %>
+            <li>
+                <a href="?P=AutorizacaoTabelaPreco&Pers=1"><span class="fa fa-check"></span> <span class="sidebar-title">Solicitações de preço</span></a>
+            </li>
+            <%
+            end if
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>
 
             <li class="sidebar-label pt20"></li>
             <li class="active">
-                <a data-toggle="tab" href="#divCadastroPrincipal"><span class="fa fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
+                <a data-toggle="tab" href="#divCadastroPrincipal"><span class="far fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
             </li>
             <li>
-                <a data-toggle="tab" href="#divContratos" onclick="ajxContent('FornecedoresContratos&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divContratos')"><span class="fa fa-file"></span><span class="sidebar-title">Contratos</span></a>
+                <a data-toggle="tab" href="#divContratos" onclick="ajxContent('FornecedoresContratos&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divContratos')"><span class="far fa-file"></span><span class="sidebar-title">Contratos</span></a>
             </li>
             <%
             SplitStoneStatus = recursoAdicional(15)
@@ -1158,13 +1193,13 @@ end if
                 <% if aut("integracaostone")=1 then %>
                 <li>
                     <a   class="menu-aba-meu-perfil-integracao-stone" data-toggle="tab" href="#divAcesso" onclick="ajxContent('IntegracaoStone', '<%=req("I")%>', 1, 'divAcesso', '&associationId=2');">
-                        <span class="fa fa-code-fork"></span> <span class="sidebar-title">Integração Stone </span></a>
+                        <span class="far fa-code-fork"></span> <span class="sidebar-title">Integração Stone </span></a>
                 </li>
                 <% end if %>
                 <% if aut("splitpagamentoV")=1 then %>
                 <li>
                     <a   class="menu-aba-meu-perfil-splits-recebidos" data-toggle="tab" href="#divAcesso" onclick="ajxContent('Splits', '<%=req("I")%>', 1, 'divAcesso', '&associationId=2&accountId=<%=req("I")%>');">
-                        <span class="fa fa-usd"></span> <span class="sidebar-title">Splits recebidos</span></a>
+                        <span class="far fa-usd"></span> <span class="sidebar-title">Splits recebidos</span></a>
                 </li>
                 <% end if %>
             <%
@@ -1172,7 +1207,7 @@ end if
             %>
             <li>
                 <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('ProfProcAgenda', '<%=req("I")%>', 1, 'divPermissoes', '&tela=Fornecedores');">
-            	    <span class="fa fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
+            	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
             </li>
         <%
         end if
@@ -1182,18 +1217,18 @@ end if
             %>
             <li class="sidebar-label pt20"></li>
             <li <%=ativoCadastro%>>
-                <a data-toggle="tab" href="#divCadastroProfissional"><span class="fa fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro do Profissional</span></a>
+                <a data-toggle="tab" href="#divCadastroProfissional"><span class="far fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro do Profissional</span></a>
             </li>
             <li>
                 <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('ProfProcAgenda', '<%=req("I")%>', 1, 'divPermissoes');">
-            	    <span class="fa fa-stethoscope"></span> <span class="sidebar-title">Procedimentos da Agenda</span></a>
+            	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos da Agenda</span></a>
             </li>
             <%
 		    if aut("horarios")=1 then
 		    %>
             <li <%=ativoHorarios%>>
                 <a  class="menu-aba-meu-perfil-horarios" data-toggle="tab" href="#divHorarios" onclick="ajxContent('Horarios<%if versaoAgenda()=1 then%>-1<%end if%>', '<%=req("I")%>', 1, 'divHorarios');">
-            	    <span class="fa fa-clock-o"></span> <span class="sidebar-title">Hor&aacute;rios de Atendimento</span></a>
+            	    <span class="far fa-clock-o"></span> <span class="sidebar-title">Hor&aacute;rios de Atendimento</span></a>
             </li>
             <%
 		    end if
@@ -1201,7 +1236,7 @@ end if
 		    %>
             <li>
                 <a  class="menu-aba-meu-perfil-dados-acesso" data-toggle="tab" href="#divAcesso" onclick="ajxContent('DadosAcesso&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divAcesso');">
-            	    <span class="fa fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
+            	    <span class="far fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
             </li>
             <%
 		    end if
@@ -1210,7 +1245,7 @@ end if
             %>
             <li>
                 <a  class="menu-aba-meu-perfil-integracao-google" data-toggle="tab" href="#divAcesso" onclick="ajxContent('IntegracaoAgenda', '<%=req("I")%>', 1, 'divAcesso');">
-            	    <span class="fa fa-calendar"></span> <span class="sidebar-title">Integração Google</span></a>
+            	    <span class="far fa-calendar"></span> <span class="sidebar-title">Integração Google</span></a>
             </li>
             <%
     		    end if
@@ -1218,7 +1253,7 @@ end if
             %>
             <li>
                 <a  class="menu-aba-meu-perfil-integracao-memed" data-toggle="tab" href="#divAcesso" onclick="ajxContent('IntegracaoMemed', '<%=req("I")%>', 1, 'divAcesso');">
-                    <span class="fa fa-flask"></span> <span class="sidebar-title">Integração Memed <span class="label label-system label-xs fleft">Novo</span> </span></a>
+                    <span class="far fa-flask"></span> <span class="sidebar-title">Integração Memed <span class="label label-system label-xs fleft">Novo</span> </span></a>
             </li>
 
             <%
@@ -1228,11 +1263,11 @@ end if
 		    %>
             <li>
                 <a  class="menu-aba-meu-perfil-certificado-digital" data-toggle="tab" href="#divAcesso" onclick="ajxContent('ConfigCertificadoDigital', '<%=req("I")%>', 1, 'divAcesso');">
-                    <span class="fa fa-credit-card"></span> <span class="sidebar-title">Certificado digital <span class="label label-system label-xs fleft">Novo</span> </span></a>
+                    <span class="far fa-credit-card"></span> <span class="sidebar-title">Certificado digital <span class="label label-system label-xs fleft">Novo</span> </span></a>
             </li>
             <li>
                 <a  class="menu-aba-meu-perfil-assinatura-digital" data-toggle="tab" href="#divAcesso" onclick="ajxContent('AssinaturaLoteAtendimento', '<%=req("I")%>', 1, 'divAcesso');">
-                    <span class="fa fa-shield"></span> <span class="sidebar-title">Assinatura digital <span class="label label-system label-xs fleft">Novo</span> </span></a>
+                    <span class="far fa-shield"></span> <span class="sidebar-title">Assinatura digital <span class="label label-system label-xs fleft">Novo</span> </span></a>
             </li>
             <%
 		    end if
@@ -1242,13 +1277,13 @@ end if
                 <% if aut("integracaostone")=1 then %>
                 <li>
                     <a   class="menu-aba-meu-perfil-integracao-stone" data-toggle="tab" href="#divAcesso" onclick="ajxContent('IntegracaoStone', '<%=req("I")%>', 1, 'divAcesso', '&associationId=5');">
-                        <span class="fa fa-code-fork"></span> <span class="sidebar-title">Integração Stone </span></a>
+                        <span class="far fa-code-fork"></span> <span class="sidebar-title">Integração Stone </span></a>
                 </li>
                 <% end if %>
                 <% if aut("splitpagamentoV")=1 then %>
                 <li>
                     <a   class="menu-aba-meu-perfil-splits-recebidos" data-toggle="tab" href="#divAcesso" onclick="ajxContent('Splits', '<%=req("I")%>', 1, 'divAcesso', '&associationId=5&accountId=<%=req("I")%>');">
-                        <span class="fa fa-usd"></span> <span class="sidebar-title">Splits recebidos</span></a>
+                        <span class="far fa-usd"></span> <span class="sidebar-title">Splits recebidos</span></a>
                 </li>
                 <% end if %>
             <%
@@ -1258,17 +1293,17 @@ end if
 		    %>
             <li>
                 <a  class="menu-aba-meu-perfil-permissoes" data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('Permissoes&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
-            	    <span class="fa fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
+            	    <span class="far fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
             </li>
 
             <li class="">
                 <a class="menu-aba-meu-perfil-compartilhamento " data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('CompartilharProntuario&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
-            	    <span class="fa fa-share-alt"></span> <span class="sidebar-title">Compartilhamento </span><span class="label label-system label-xs fleft">Novo</span></a>
+            	    <span class="far fa-share-alt"></span> <span class="sidebar-title">Compartilhamento </span><span class="label label-system label-xs fleft">Novo</span></a>
             </li>
             <% IF session("banco") = "clinic9021" THEN %>
             <li class="">
                 <a class="menu-aba-meu-perfil-compartilhamento " data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('profissionalLicencasVinculadas&T=<%=request.QueryString("P")%>', '<%=request.QueryString("I")%>', 1, 'divPermissoes');">
-            	    <span class="fa fa-unlock"></span> <span class="sidebar-title">Licenças Vinculadas </span><span class="label label-system label-xs fleft">Novo</span></a>
+            	    <span class="far fa-unlock"></span> <span class="sidebar-title">Licenças Vinculadas </span><span class="label label-system label-xs fleft">Novo</span></a>
             </li>
             <% END IF %>
 
@@ -1282,11 +1317,11 @@ end if
 		    %>
             <li >
                 <a class="menu-aba-meu-perfil-extrato" href="./?P=Extrato&Pers=1&T=5_<%= req("I") %>" id="gtExtrato">
-            	    <span class="fa fa-money"></span> <span class="sidebar-title">Extrato</span></a>
+            	    <span class="far fa-money"></span> <span class="sidebar-title">Extrato</span></a>
             </li>
             <li >
                 <a class="menu-aba-meu-perfil-meus-repasses" href="./?P=RepassesAConferir&Pers=1&AccountID=5_<%= req("I") %>&B=1" id="gtRepasses">
-            	    <span class="fa fa-exchange"></span> <span class="sidebar-title">Meus repasses</span></a>
+            	    <span class="far fa-exchange"></span> <span class="sidebar-title">Meus repasses</span></a>
             </li>
             <%
 		    end if
@@ -1294,28 +1329,28 @@ end if
 
             %>
             <li>
-                <a class="menu-aba-meu-perfil-profissionais" href="?P=Profissionais&Pers=Follow"><span class="fa fa-user-md bigger-110"></span> <span class="sidebar-title">Profissionais</span></a>
+                <a class="menu-aba-meu-perfil-profissionais" href="?P=Profissionais&Pers=Follow"><span class="far fa-user-md bigger-110"></span> <span class="sidebar-title">Profissionais</span></a>
             </li>
             <li>
-                <a class="menu-aba-meu-perfil-profissionais-externos" href="?P=ProfissionalExterno&Pers=Follow"><span class="fa fa-user-times bigger-110"></span> <span class="sidebar-title">Profissionais Externos</span></a>
+                <a class="menu-aba-meu-perfil-profissionais-externos" href="?P=ProfissionalExterno&Pers=Follow"><span class="far fa-user-times bigger-110"></span> <span class="sidebar-title">Profissionais Externos</span></a>
             </li>
             <% if lcase(req("P"))="profissionalexterno" then %>
             <li>
                 <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('ProfProcAgenda', '<%=req("I")%>', 1, 'divPermissoes', '&tela=ProfissionalExterno');">
-            	    <span class="fa fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
+            	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
             </li>
             <% end if %>
             <%
             if aut("profissionaisgruposV") then
             %>
             <li>
-                <a class="menu-aba-meu-perfil-grupo-de-profissionais" href="?P=ProfissionaisGrupos&Pers=Follow"><span class="fa fa-users bigger-110"></span> <span class="sidebar-title">Grupos de Profissionais</span></a>
+                <a class="menu-aba-meu-perfil-grupo-de-profissionais" href="?P=ProfissionaisGrupos&Pers=Follow"><span class="far fa-users bigger-110"></span> <span class="sidebar-title">Grupos de Profissionais</span></a>
             </li>
             <%
             end if
             %>
             <li>
-                <a class="menu-aba-meu-perfil-especialidades" href="?P=Especialidades&Pers=Follow"><span class="fa fa-stethoscope bigger-110"></span> <span class="sidebar-title">Especialidades</span></a>
+                <a class="menu-aba-meu-perfil-especialidades" href="?P=Especialidades&Pers=Follow"><span class="far fa-stethoscope bigger-110"></span> <span class="sidebar-title">Especialidades</span></a>
             </li>
             <%
         end if
@@ -1324,14 +1359,14 @@ end if
             %>
             <li class="sidebar-label pt20"></li>
             <li class="active">
-                <a data-toggle="tab" href="#divCadastroFuncionario"><span class="fa fa-user"></span> <span class="sidebar-title">Cadastro do Funcion&aacute;rio</span></a>
+                <a data-toggle="tab" href="#divCadastroFuncionario"><span class="far fa-user"></span> <span class="sidebar-title">Cadastro do Funcion&aacute;rio</span></a>
             </li>
             <%
 		    if (session("Admin")=1) or (lcase(req("P"))=lcase(session("Table")) and session("idInTable")=ccur(req("I")) and aut("senhapA")=1) or (aut("usuariosA")=1) then
 		    %>
             <li>
                 <a data-toggle="tab" href="#divAcesso" onclick="ajxContent('DadosAcesso&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divAcesso');">
-                    <span class="fa fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
+                    <span class="far fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
             </li>
             <%
 		    end if
@@ -1339,7 +1374,7 @@ end if
 		    %>
             <li>
                 <a data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('Permissoes&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
-                    <span class="fa fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
+                    <span class="far fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
             </li>
             <%
 		    end if
@@ -1347,50 +1382,50 @@ end if
 		if aut("cargoI")=1 and false then
         %>
             <li><a href="./?P=cargo&Pers=Follow" >
-                <span class="fa fa-plus"></span> Cargos</a>
+                <span class="far fa-plus"></span> Cargos</a>
             </li>
         <% end if %>
         <% if aut("departamentoI")=1 and false then %>
             <li> <a  href="./?P=departamento&Pers=Follow">
-                <span class="fa fa-plus"></span> Departamentos</a></li>
+                <span class="far fa-plus"></span> Departamentos</a></li>
         <% end if %>
         <% if aut("funcoesI")=1  and false then %>
             <li><a href="./?P=funcoes&Pers=Follow">
-                <span class="fa fa-plus"></span> Funções</a></li>
+                <span class="far fa-plus"></span> Funções</a></li>
         <% end if %>
         <% if aut("agenciaintegradoraI")=1 and false then %>
             <li><a href="./?P=agenciaintegradora&Pers=Follow">
-             <span class="fa fa-plus"></span> Agências Integradoras</a></li>
+             <span class="far fa-plus"></span> Agências Integradoras</a></li>
         <% end if %>
     <%
     case "tabelasconvenios","tabelasportes","tabelasatualizacao","listaprodutostaxas","produtostaxas"
             %>
                 <li>
-                    <a href="?P=tabelasconvenios&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
+                    <a href="?P=tabelasconvenios&Pers=Follow"><span class="far fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
                 </li>
                 <li>
-                    <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                    <a href="?P=tabelasportes&Pers=Follow"><span class="far fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
                 </li>
                 <li>
-                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="fa fa-money"></span> <span class="sidebar-title">Taxas</span></a>
+                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="far fa-money"></span> <span class="sidebar-title">Taxas</span></a>
                 </li>
                 <li>
-                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
+                    <a href="?P=tabelasatualizacao&Pers=1"><span class="far fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
                 </li>
             <%
-    case "convenios"
+    case "convenios", "conveniossimplificado"
         if not (isnumeric(req("I")) and req("I")<>"")then %>
                 <li>
-                    <a href="?P=tabelasconvenios&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
+                    <a href="?P=tabelasconvenios&Pers=Follow"><span class="far fa-credit-card"></span> <span class="sidebar-title">Tabelas de Conv&ecirc;nio</span></a>
                 </li>
                  <li>
-                    <a href="?P=tabelasportes&Pers=Follow"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
+                    <a href="?P=tabelasportes&Pers=Follow"><span class="far fa-credit-card"></span> <span class="sidebar-title">Tabelas de Portes</span></a>
                 </li>
                 <li>
-                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="fa fa-money"></span> <span class="sidebar-title">Taxas</span></a>
+                    <a href="?P=ListaProdutosTaxas&Pers=1"><span class="far fa-money"></span> <span class="sidebar-title">Taxas</span></a>
                 </li>
                 <li>
-                    <a href="?P=tabelasatualizacao&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
+                    <a href="?P=tabelasatualizacao&Pers=1"><span class="far fa-table"></span> <span class="sidebar-title">Atualizar Tabela MAT / MED</span></a>
                 </li>
         <% end if
 
@@ -1398,43 +1433,48 @@ end if
             %>
             <li class="sidebar-label pt20"></li>
             <li class="active">
-                <a data-toggle="tab" href="#divCadastroConvenio"><span class="fa fa-credit-card"></span> <span class="sidebar-title">Cadastro do Conv&ecirc;nio</span></a>
+                <a data-toggle="tab" href="#divCadastroConvenio"><span class="far fa-credit-card"></span> <span class="sidebar-title">Cadastro do Conv&ecirc;nio</span></a>
             </li>
             <li>
                 <a data-toggle="tab" href="#divValores" onclick="ajxContent('ConveniosValoresProcedimentos&ConvenioID=<%=req("I")%>', '', '1', 'divValores')">
-                    <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
+                    <span class="far fa-usd"></span> <span class="sidebar-title">Valores por Procedimento</span></a>
             </li>
+            <% if  lcase(req("P")) <> "conveniossimplificado" THEN %>
             <li>
                 <a data-toggle="tab" href="#divValoresDespesas" onclick="ajxContent('ConveniosValoresDespesas&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divValoresDespesas')">
-                <span class="fa fa-usd"></span> <span class="sidebar-title">Valores por Despesas anexas</span></a>
+                <span class="far fa-usd"></span> <span class="sidebar-title">Valores por Despesas anexas</span></a>
             </li>
             <li>
                 <a data-toggle="tab" href="#divNumeracao" onclick="ajxContent('ConvenioSequenciaNumeracao&ConvenioID=<%=request.QueryString("I")%>', '', '1', 'divNumeracao')">
-                    <span class="fa fa-sort-numeric-asc"></span> <span class="sidebar-title">Numeração das guias</span></a>
+                    <span class="far fa-sort-numeric-asc"></span> <span class="sidebar-title">Numeração das guias</span></a>
             </li>
-            <li><a data-toggle="tab" href="#divRegras" onclick="setTimeout(function(){$('.select2-single').select2()}, 1000)"><span class="fa fa-cogs"></span> <span class="sidebar-title">Regras</span></a></li>
-            <li><a data-toggle="tab" href="#divWS"><span class="fa fa-plug"></span> <span class="sidebar-title">Webservices TISS</span></a></li>
+            <li><a data-toggle="tab" href="#divRegras" onclick="setTimeout(function(){$('.select2-single').select2()}, 1000)"><span class="far fa-cogs"></span> <span class="sidebar-title">Regras</span></a></li>
+            <li><a data-toggle="tab" href="#divWS"><span class="far fa-plug"></span> <span class="sidebar-title">Webservices TISS</span></a></li>
             <li><a data-toggle="tab" href="#divValoresPlanos" onclick="ajxContent('ValoresPlanosContratado&ConvenioID=<%=req("I")%>', '', '1', 'divValoresPlanos')">
-                    <span class="fa fa-money"></span> <span class="sidebar-title">Inflator / Deflator</span>
+                    <span class="far fa-money"></span> <span class="sidebar-title">Inflator / Deflator</span>
                 </a>
             </li>
             <li><a data-toggle="tab" href="#divValoresPlanos" onclick="ajxContent('EscalonamentosConvenio&ConvenioID=<%=req("I")%>', '', '1', 'divValoresPlanos')">
-                    <span class="fa fa-money"></span> <span class="sidebar-title">Escalonamento</span>
+                    <span class="far fa-money"></span> <span class="sidebar-title">Escalonamento</span>
                 </a>
             </li>
             <% IF getConfig("calculostabelas") = "1" THEN %>
                  <li><a data-toggle="tab" href="#divValoresPlanos" onclick="ajxContent('ImpostosConvenio&ConvenioID=<%=req("I")%>', '', '1', 'divValoresPlanos')">
-                        <span class="fa fa-money"></span> <span class="sidebar-title">Imposto por Operadora</span>
+                        <span class="far fa-money"></span> <span class="sidebar-title">Imposto por Operadora</span>
                     </a>
                 </li>
             <% END IF %>
 
             <% IF getConfig("calculostabelas") <> "1" THEN %>
                 <li><a data-toggle="tab" href="#divValoresImpostos"  onclick="ajxContent('ValoresImpostosConvenio&ConvenioID=<%=req("I")%>', '', '1', 'divValoresImpostos')">
-                        <span class="fa fa-money"></span> <span class="sidebar-title">Impostos</span>
+                        <span class="far fa-money"></span> <span class="sidebar-title">Impostos</span>
                     </a>
                 </li>
             <% END IF %>
+
+            <%
+            end if
+            %>
             <%
         end if
     case "equipamentos"
@@ -1443,14 +1483,14 @@ end if
             <li class="sidebar-label pt20"></li>
             <li class="active">
                 <a data-toggle="tab" href="#divCadastroEquipamento">
-                    <span class="fa fa-laptop"></span> <span class="sidebar-title">Cadastro do Equipamento</span></a>
+                    <span class="far fa-laptop"></span> <span class="sidebar-title">Cadastro do Equipamento</span></a>
             </li>
             <%
 	        if aut("horarios")=1 then
 	        %>
             <li<%=ativoHorarios%>>
                 <a data-toggle="tab" href="#divHorarios" onclick="ajxContent('Horarios<%if versaoAgenda()=1 then%>-1<%end if%>', '<%=req("I")*(-1)%>', 1, 'divHorarios');">
-                    <span class="fa fa-clock-o"></span> <span class="sidebar-title">Grade de Hor&aacute;rios</span></a>
+                    <span class="far fa-clock-o"></span> <span class="sidebar-title">Grade de Hor&aacute;rios</span></a>
             </li>
             <%
 	        end if
@@ -1459,23 +1499,23 @@ end if
         %>
         <li class="sidebar-label pt20"></li>
         <li class="active">
-            <a data-toggle="tab" href="#divPapelTimbrado"><span class="fa fa-file-o"></span><span class="sidebar-title"></span> Papel Timbrado</a>
+            <a data-toggle="tab" href="#divPapelTimbrado"><span class="far fa-file"></span><span class="sidebar-title"></span> Papel Timbrado</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divPrescricoes"><span class="fa fa-flask"></span><span class="sidebar-title"></span> Prescri&ccedil;&otilde;es</a>
+            <a data-toggle="tab" href="#divPrescricoes"><span class="far fa-pills"></span><span class="sidebar-title"></span> Prescri&ccedil;&otilde;es</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divAtestados"><span class="fa fa-foursquare"></span><span class="sidebar-title"></span> Atestados</a>
+            <a data-toggle="tab" href="#divAtestados"><span class="far fa-file-medical"></span><span class="sidebar-title"></span> Atestados</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divPedidos"><span class="fa fa-hospital-o"></span><span class="sidebar-title"></span> Pedidos de Exame</a>
+            <a data-toggle="tab" href="#divPedidos"><span class="far fa-flask"></span><span class="sidebar-title"></span> Pedidos de Exame</a>
         </li>
         <hr style="margin:10px !important;">
         <%
         if 0 then
         %>
         <li>
-            <a data-toggle="tab" href="#divRecibos"><span class="fa fa-edit"></span><span class="sidebar-title"></span> Recibos Avulsos</a>
+            <a data-toggle="tab" href="#divRecibos"><span class="far fa-edit"></span><span class="sidebar-title"></span> Recibos Avulsos</a>
         </li>
         <%
         end if
@@ -1483,51 +1523,51 @@ end if
 
         <% if recursoAdicional(15) then %>
         <li>
-            <a data-toggle="tab" href="#divRecibosHM"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Recibos de Honorário Médico (Split)</a>
+            <a data-toggle="tab" href="#divRecibosHM"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Recibos de Honorário Médico (Split)</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divRecibosRPS"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> RPS (Split)</a>
+            <a data-toggle="tab" href="#divRecibosRPS"><span class="far fa-file-text"></span><span class="sidebar-title"></span> RPS (Split)</a>
         </li>
 
         <% end if %>
         <li>
-            <a data-toggle="tab" href="#divRecibosIntegrados"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Recibos Integrados (A Receber)</a>
+            <a data-toggle="tab" href="#divRecibosIntegrados"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Recibos Integrados (A Receber)</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divRecibosIntegradosAPagar"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Recibos Integrados (A Pagar)</a>
+            <a data-toggle="tab" href="#divRecibosIntegradosAPagar"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Recibos Integrados (A Pagar)</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divAgendamentos"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Agendamentos</a>
+            <a data-toggle="tab" href="#divAgendamentos"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Agendamentos</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divProtocolo"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Protocolos</a>
+            <a data-toggle="tab" href="#divProtocolo"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Protocolos</a>
         </li>
-        <li><a data-toggle="tab" href="#divPropostas"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Propostas</a></li>
+        <li><a data-toggle="tab" href="#divPropostas"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Propostas</a></li>
         <li>
-            <a data-toggle="tab" href="#divLaudosProtocolo"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Protocolo dos Laudos</a>
-        </li>
-        <li>
-            <a data-toggle="tab" href="#divEtiquetaAgendamento"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Etiqueta dos Agendamentos</a>
+            <a data-toggle="tab" href="#divLaudosProtocolo"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Protocolo dos Laudos</a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divTermoCancelamento"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Termo de Cancelamento</a>
+            <a data-toggle="tab" href="#divEtiquetaAgendamento"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Etiqueta dos Agendamentos</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#divTermoCancelamento"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Termo de Cancelamento</a>
         </li>
         <hr style="margin:10px !important;">
 
-        <li><a data-toggle="tab" href="#divProcedimentos" onclick="ajxContent('procedimentosmodelosimpressos', '', 'Follow', 'divProcedimentos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Procedimentos</a></li>
-        <li><a data-toggle="tab" href="#divContratos" onclick="ajxContent('contratosmodelos', '', 'Follow', 'divContratos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Contratos</a></li>
-        <li><a data-toggle="tab" href="#divLaudos" onclick="ajxContent('laudosmodelos', '', 'Follow', 'divLaudos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Laudos</a></li>
-        <li><a data-toggle="tab" href="#divEncaminhamentos" onclick="ajxContent('encaminhamentosmodelos', '', 'Follow', 'divEncaminhamentos')"><span class="fa fa-files-o"></span><span class="sidebar-title"></span> Encaminhamentos</a></li>
+        <li><a data-toggle="tab" href="#divProcedimentos" onclick="ajxContent('procedimentosmodelosimpressos', '', 'Follow', 'divProcedimentos')"><span class="far fa-files-o"></span><span class="sidebar-title"></span> Procedimentos</a></li>
+        <li><a data-toggle="tab" href="#divContratos" onclick="ajxContent('contratosmodelos', '', 'Follow', 'divContratos')"><span class="far fa-files-o"></span><span class="sidebar-title"></span> Contratos</a></li>
+        <li><a data-toggle="tab" href="#divLaudos" onclick="ajxContent('laudosmodelos', '', 'Follow', 'divLaudos')"><span class="far fa-files-o"></span><span class="sidebar-title"></span> Laudos</a></li>
+        <li><a data-toggle="tab" href="#divEncaminhamentos" onclick="ajxContent('encaminhamentosmodelos', '', 'Follow', 'divEncaminhamentos')"><span class="far fa-files-o"></span><span class="sidebar-title"></span> Encaminhamentos</a></li>
 
         <%
     case "sys_financialcompanyunits", "empresa", "nfe_origens"
         %>
         <li class="sidebar-label pt20"></li>
         <li>
-            <a href="./?P=empresa&Pers=1"><span class="fa fa-hospital-o"></span><span class="sidebar-title"></span> Empresa Principal</a>
+            <a href="./?P=empresa&Pers=1"><span class="far fa-hospital-o"></span><span class="sidebar-title"></span> Empresa Principal</a>
         </li>
         <li>
-            <a href="./?P=sys_financialcompanyunits&Pers=Follow"><span class="fa fa-hospital-o"></span><span class="sidebar-title"></span> Unidades / Filiais</a>
+            <a href="./?P=sys_financialcompanyunits&Pers=Follow"><span class="far fa-hospital-o"></span><span class="sidebar-title"></span> Unidades / Filiais</a>
         </li>
         <%
         set RecursosAdicionaisSQL = db.execute("SELECT RecursosAdicionais FROM sys_config WHERE id=1")
@@ -1537,7 +1577,7 @@ end if
          %>
         <hr style="margin:10px !important;">
         <li>
-            <a href="./?P=nfe_origens&Pers=Follow"><span class="fa fa-file-text"></span><span class="sidebar-title"></span> Serviço Nota Fiscal</a>
+            <a href="./?P=nfe_origens&Pers=Follow"><span class="far fa-file-text"></span><span class="sidebar-title"></span> Serviço Nota Fiscal</a>
         </li>
         <%
             end if
@@ -1546,96 +1586,102 @@ end if
         %>
         <li class="sidebar-label pt20">Opções de Configurações</li>
         <li class="hidden">
-            <a data-toggle="tab" href="#divGeral"><span class="fa fa-cog"></span> <span class="sidebar-title">Geral</span> </a>
+            <a data-toggle="tab" href="#divGeral"><span class="far fa-cog"></span> <span class="sidebar-title">Geral</span> </a>
         </li>
         <li class="active">
             <a data-toggle="tab" href="#divIP">
-            	<span class="fa fa-street-view"></span> <span class="sidebar-title">Locais de Acesso</span></a>
+            	<span class="far fa-street-view"></span> <span class="sidebar-title">Locais de Acesso</span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divOmissao" onclick="ajxContent('omitirCampos', '', 1, 'divOmissao');">
-            	<span class="fa fa-eye-slash"></span> <span class="sidebar-title">Omissão de Dados</span></a>
+            	<span class="far fa-eye-slash"></span> <span class="sidebar-title">Omissão de Dados</span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divCamposObrigatorios" onclick="ajxContent('camposObrigatorios', '', 1, 'divCamposObrigatorios');">
-            	<span class="fa fa-asterisk"></span> <span class="sidebar-title">Campos Obrigatórios</span></a>
+            	<span class="far fa-asterisk"></span> <span class="sidebar-title">Campos Obrigatórios</span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divOmissao" onclick="ajxContent('conectados', '', 1, 'divOmissao');">
-            	<span class="fa fa-user"></span> <span class="sidebar-title">Usu&aacute;rios Conectados</span></a>
+            	<span class="far fa-user"></span> <span class="sidebar-title">Usu&aacute;rios Conectados</span></a>
         </li>
         <li style="display: none;">
             <a data-toggle="tab" href="#divPesquisaSatisfacao" onclick="ajxContent('PesquisaSatisfacao', '', 1, 'divPesquisaSatisfacao');">
-            	<span class="fa fa-smile-o"></span> <span class="sidebar-title">Pesquisa de satisfação  <span class="label label-system label-xs fleft">Novo</span></span></a>
+            	<span class="far fa-smile-o"></span> <span class="sidebar-title">Pesquisa de satisfação  <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divApiPublica" onclick="ajxContent('ApiPublica', '', 1, 'divApiPublica');">
-                <span class="fa fa-cloud-upload"></span> <span class="sidebar-title">API Pública  </span></a>
+                <span class="far fa-cloud-upload"></span> <span class="sidebar-title">API Pública  </span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divTriagem" onclick="ajxContent('ConfigTriagem', '', 1, 'divTriagem');">
-            	<span class="fa fa-stethoscope"></span> <span class="sidebar-title">Triagem  <span class="label label-system label-xs fleft">Novo</span></span></a>
+            	<span class="far fa-stethoscope"></span> <span class="sidebar-title">Triagem  <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divTotem" onclick="ajxContent('ConfigTotem', '', 1, 'divTotem');">
-                <span class="fa fa-laptop"></span> <span class="sidebar-title">Totem e Guichês <span class="label label-system label-xs fleft">Novo</span></span></a>
+                <span class="far fa-laptop"></span> <span class="sidebar-title">Totem e Guichês <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divIntegracoes" onclick="ajxContent('configGerais', '', 1, 'divIntegracoes');">
-            	<span class="fa fa-cogs"></span> <span class="sidebar-title">Configurações Gerais</span></a>
+            	<span class="far fa-cogs"></span> <span class="sidebar-title">Configurações Gerais</span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divChamadaTVConfiguracoes" onclick="ajxContent('ChamadaTVConfiguracoes', '', 1, 'divChamadaTVConfiguracoes');">
-                <span class="fa fa-bullhorn"></span> <span class="sidebar-title">Chamada de TV <span class="label label-system label-xs fleft">Novo</span></span></a>
+                <span class="far fa-bullhorn"></span> <span class="sidebar-title">Chamada de TV <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divChamadaTVConfiguracoes" onclick="ajxContent('chamadaPacsConfiguracoes', '', 1, 'divChamadaTVConfiguracoes');">
-                <span class="fa fa-laptop"></span> <span class="sidebar-title">Configurações Pacs <span class="label label-system label-xs fleft">Novo</span></span></a>
+                <span class="far fa-laptop"></span> <span class="sidebar-title">Configurações Pacs <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
             <a data-toggle="tab" href="#divLaudosOnline" onclick="ajxContent('LaudosOnline', '', 1, 'divLaudosOnline');">
-                <span class="fa fa-flask"></span> <span class="sidebar-title">Área do paciente <span class="label label-system label-xs fleft">Novo</span></span></a>
+                <span class="far fa-flask"></span> <span class="sidebar-title">Área do paciente <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <li>
          <a data-toggle="tab" href="#divIntegracoes" onclick="ajxContent('novasConfiguracoes', '', 1, 'divIntegracoes');">
-                <span class="fa fa-cogs"></span> <span class="sidebar-title">Outras configurações</span></a>
+                <span class="far fa-cogs"></span> <span class="sidebar-title">Outras configurações</span></a>
         </li>
         <% IF  recursoAdicional(21)  THEN %>
             <li>
                <a href="?P=chamadasmotivoscontato">
-                    <span class="fa fa-phone"></span> <span class="sidebar-title">Configuração PABX</span></a>
+                    <span class="far fa-phone"></span> <span class="sidebar-title">Configuração PABX</span></a>
             </li>
         <% END IF %>
         <% IF  true  THEN %>
             <li>
                <a href="?P=ConfiguracaoDeCompra&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Configuração de Compra</span></a>
+                    <span class="far fa-shopping-cart"></span> <span class="sidebar-title">Configuração de Compra</span></a>
             </li>
         <% END IF %>
         
         
          <li>
             <a data-toggle="tab" href="#divWhatsapp" onclick="ajxContent('IntegracaoWhatsapp', '', 1, 'divWhatsapp');" class="whats">
-            <span class="fa fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
+            <span class="fab fa-whatsapp"></span> <span class="sidebar-title">Integração Whatsapp <span class="label label-system label-xs fleft">Novo</span></span></a>
         </li>
         <% IF  aut("exames_laboratoriaisV")=1  THEN %>
             <li>
               <a href="?P=CadastroExamesLab&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
+                    <span class="far fa-shopping-cart"></span> <span class="sidebar-title">Cadastro de Exames (Lab)</span></a> 
     
             </li>
         <% END IF %>
+
+        <li>
+            <a data-toggle="tab" href="#divAutorizador" onclick="ajxContent('IntegracaoAutorizador', '', 1, 'divAutorizador');">
+            <span class="fa fa-exchange"></span> <span class="sidebar-title">Autorizador Online<span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+
         <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
             <li>
               <a href="?P=faixaetaria&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Faixas Etárias</span></a>
+                    <span class="far fa-shopping-cart"></span> <span class="sidebar-title">Faixas Etárias</span></a>
 
             </li>
         <% END IF %>
         <% IF  1=1 or aut("CadastroPontosCarteiraV")=1  THEN %>
             <li>
               <a href="?P=cadastropontoscarteira&Pers=1">
-                    <span class="fa fa-shopping-cart"></span> <span class="sidebar-title">Pontos por Carteira</span></a>
+                    <span class="far fa-shopping-cart"></span> <span class="sidebar-title">Pontos por Carteira</span></a>
             </li>
         <% END IF %>
 
@@ -1644,11 +1690,11 @@ end if
     %>
         <li>
            <a href="?P=chamadasmotivoscontato">
-                <span class="fa fa-phone"></span> <span class="sidebar-title">Motivo de Chamadas</span></a>
+                <span class="far fa-phone"></span> <span class="sidebar-title">Motivo de Chamadas</span></a>
         </li>
         <li>
            <a href="?P=chamadascategorias">
-                <span class="fa fa-phone"></span> <span class="sidebar-title">Categoria de Chamadas</span></a>
+                <span class="far fa-phone"></span> <span class="sidebar-title">Categoria de Chamadas</span></a>
         </li>
     <%
     case "produtos"
@@ -1656,35 +1702,35 @@ end if
             %>
             <li class="sidebar-label pt20">Opções de Configurações</li>
             <li class="active">
-                <a data-toggle="tab" href="#divCadastroProduto" onclick="atualizaLanctos();"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Cadastro</span></a>
+                <a data-toggle="tab" href="#divCadastroProduto" onclick="atualizaLanctos();"><span class="far fa-medkit"></span> <span class="sidebar-title"> Cadastro</span></a>
             </li>
 
             <%
             if aut("estoquemovimentacaoV")=1 then
             %>
             <li>
-                <a data-toggle="tab" href="#divLancamentos" onclick="ajxContent('Lancamentos', '<%=req("I")%>', 1, 'divLancamentos');"><span class="fa fa-exchange icon-rotate-90"></span> <span class="sidebar-title">Movimentação</span></a>
+                <a data-toggle="tab" href="#divLancamentos" onclick="ajxContent('Lancamentos', '<%=req("I")%>', 1, 'divLancamentos');"><span class="far fa-exchange icon-rotate-90"></span> <span class="sidebar-title">Movimentação</span></a>
             </li>
             <%
             end if
             %>
             <li>
-                <a data-toggle="tab" href="#divFaturamento" onclick="ajxContent('ProdutosFaturamento', '<%=req("I")%>', 1, 'divFaturamento');"><span class="fa fa-list-ol icon-rotate-90"></span> <span class="sidebar-title">Faturamento</span></a>
+                <a data-toggle="tab" href="#divFaturamento" onclick="ajxContent('ProdutosFaturamento', '<%=req("I")%>', 1, 'divFaturamento');"><span class="far fa-list-ol icon-rotate-90"></span> <span class="sidebar-title">Faturamento</span></a>
             </li>
             <li id="InteracoesEstoque" class="Modulo-Medicamento">
-                <a data-toggle="tab" href="#divInteracoesEstoque" onclick="ajxContent('InteracoesEstoque', '<%=req("I")%>', 1, 'divInteracoesEstoque');"><span class="fa fa-folder"></span> <span class="sidebar-title">Interações</span></a>
+                <a data-toggle="tab" href="#divInteracoesEstoque" onclick="ajxContent('InteracoesEstoque', '<%=req("I")%>', 1, 'divInteracoesEstoque');"><span class="far fa-folder"></span> <span class="sidebar-title">Interações</span></a>
             </li>
 
             <li id="ConversaoEstoque" class="Modulo-Medicamento">
-                <a data-toggle="tab" href="#divConversaoEstoque"><span class="fa fa-retweet"></span> <span class="sidebar-title">Conversão</span></a>
+                <a data-toggle="tab" href="#divConversaoEstoque"><span class="far fa-retweet"></span> <span class="sidebar-title">Conversão</span></a>
             </li>
 
             <li id="vincularMedicamento" class="Modulo-Medicamento">
-                <a data-toggle="tab" href="#divVincularMedicamento" onclick="ajxContent('produto/vincularMedicamento', '<%=req("I") %>', 1, 'divVincularMedicamento')"><span class="fa fa-link"></span> <span class="sidebar-title">Vincular medicamento</span></a>
+                <a data-toggle="tab" href="#divVincularMedicamento" onclick="ajxContent('produto/vincularMedicamento', '<%=req("I") %>', 1, 'divVincularMedicamento')"><span class="far fa-link"></span> <span class="sidebar-title">Vincular medicamento</span></a>
             </li>
             <%
         end if
-    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodedata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"
+    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse", "cartaoconcilia"
               %>
               <li class="sidebar-label pt20">Financeiro</li>
     	<!--#include file="MenuFinanceiro.asp"-->
@@ -1693,10 +1739,10 @@ end if
     if req("Pers")="1" then
         %>
         <li>
-            <a href="./?P=ListaFranquias&Pers=1"><span class="fa fa-hospital-o"></span> <span class="sidebar-title"> Lista de Licenciados</span></a>
+            <a href="./?P=ListaFranquias&Pers=1"><span class="far fa-hospital-o"></span> <span class="sidebar-title"> Lista de Licenciados</span></a>
         </li>
         <li>
-            <a href="./?P=ListaUsuarios&Pers=1"><span class="fa fa-user"></span> <span class="sidebar-title">Lista de Usuários</span></a>
+            <a href="./?P=ListaUsuarios&Pers=1"><span class="far fa-user"></span> <span class="sidebar-title">Lista de Usuários</span></a>
         </li>
         <%
     end if
@@ -1725,20 +1771,31 @@ end if
         <hr style="margin:10px !important;">
         <li class="sidebar-label pt20">Configurações</li>
         <li <%if req("P")="MedicamentoPorConvenio" then%>class="active"<%end if%>>
-            <a href="./?P=convenio/medicamentos&Pers=1"><span class="fa fa-heartbeat"></span> <span class="sidebar-title"> Medicamento Por Convenio</span></a>
+            <a href="./?P=convenio/medicamentos&Pers=1"><span class="far fa-heartbeat"></span> <span class="sidebar-title"> Medicamento Por Convenio</span></a>
         </li>
         <li <%if req("P")="ProdutosCategorias" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosCategorias&Pers=0"><span class="fa fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
+            <a href="./?P=ProdutosCategorias&Pers=0"><span class="far fa-puzzle-piece"></span> <span class="sidebar-title"> Categorias</span></a>
         </li>
         <li <%if req("P")="ProdutosLocalizacoes" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosLocalizacoes&Pers=0"><span class="fa fa-map-marker"></span> <span class="sidebar-title"> Localizações</span></a>
+            <a href="./?P=ProdutosLocalizacoes&Pers=0"><span class="far fa-map-marker"></span> <span class="sidebar-title"> Localizações</span></a>
         </li>
         <li <%if req("P")="ProdutosFabricantes" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="fa fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
+            <a href="./?P=ProdutosFabricantes&Pers=0"><span class="far fa-sitemap"></span> <span class="sidebar-title"> Fabricantes</span></a>
         </li>
         <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
-            <a href="./?P=ProdutosKits&Pers=Follow"><span class="fa fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
+            <a href="./?P=ProdutosKits&Pers=Follow"><span class="far fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
         </li>
+
+
+        <%
+    case "operadores", "operador","licenca", "licencas"
+            %>
+            <li <%if req("P")="Operadores" then%>class="active"<%end if%>>
+                <a href="./?P=Operadores&Pers=1"><span class="far fa-user-alt"></span> <span class="sidebar-title"> Operadores</span></a>
+            </li>
+            <li <%if req("P")="Licencas" then%>class="active"<%end if%>>
+                <a href="./?P=Licencas&Pers=1"><span class="far fa-hospital"></span> <span class="sidebar-title"> Licenças</span></a>
+            </li>
 
 
         <%
@@ -1756,7 +1813,7 @@ end if
 
          <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-star"></span>
+                <span class="far fa-star"></span>
                 <span class="sidebar-title"> Favoritos </span>
                 <span class="caret"></span>
             </a>
@@ -1768,14 +1825,14 @@ end if
 
             if catNome <> relatoriosFav("Ct") then
             %>
-            <li class="ml15"><i class="fa fa-tag"></i> <%=relatoriosFav("Ct")%> </li>
+            <li class="ml15"><i class="far fa-tag"></i> <%=relatoriosFav("Ct")%> </li>
             <%
             catNome = relatoriosFav("Ct")
             end if
             %>
                 <li>
                     <a href="javascript:openNewReport('<%=relatoriosFav("Arquivo")%>','<%=relatoriosFav("id")%>');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         <%=relatoriosFav("NomeModelo")%>
                     </a>
                 </li>
@@ -1790,7 +1847,7 @@ end if
         <%if aut("relatoriospacienteperfilV")=1 then %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-user"></span>
+                <span class="far fa-user"></span>
                 <span class="sidebar-title"> Pacientes </span>
 
                 <span class="caret"></span>
@@ -1799,7 +1856,7 @@ end if
             <ul class="nav sub-nav">
                 <li>
                     <a href="javascript:callReport('rpPerfil');">
-                                            <i class="fa fa-double-angle-right"></i>
+                                            <i class="far fa-double-angle-right"></i>
                                             Por Perfil
                                         </a>
                 </li>
@@ -1807,14 +1864,14 @@ end if
 
                 <li class="hidden">
                     <a href="javascript:callReport('CadastrosEfetuadosPorPeriodo');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Por Data de Cadastro
                     </a>
                 </li>
 
                 <li class="hidden">
                     <a href="javascript:callReport('rpSatisfacao');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Satisfação dos Pacientes <span class="label label-system label-xs fleft">Novo</span>
                     </a>
                 </li>
@@ -1824,7 +1881,7 @@ end if
         <%end if%>
         <li class="open hidden">
             <a href="#" class="dropdown-toggle">
-                <i class="fa fa-stethoscope"></i>
+                <i class="far fa-stethoscope"></i>
                 <span class="menu-text"> Prontuário </span>
 
                 <b class="arrow icon-angle-down"></b>
@@ -1833,7 +1890,7 @@ end if
             <ul class="submenu" style="display:block">
                 <li>
                     <a href="javascript:callReport('rpCID');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Por CID
                     </a>
                 </li>
@@ -1841,14 +1898,14 @@ end if
 
                 <li>
                     <a href="javascript:callReport('rpPrescricoes');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Prescrições
                     </a>
                 </li>
 
                 <li>
                     <a href="javascript:callReport('rpForms');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Filtros de Formulários
                     </a>
                 </li>
@@ -1856,7 +1913,7 @@ end if
         </li>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-calendar"></span>
+                <span class="far fa-calendar"></span>
                 <span class="sidebar-title"> Agenda </span>
 
                 <span class="caret"></span>
@@ -1869,20 +1926,20 @@ end if
 
                 <li>
                     <a href="#" onClick="callReport('DetalhesAtendimentos');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Agendamentos e Atendimentos
                     </a>
                 </li>
                 <li class="hidden">
                     <a href="#" onClick="callReport('rpAgendamentos');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Consultas e Retornos
                     </a>
                 </li>
 
                 <li>
                     <a href="#" onClick="callReport('OcupacaoMultipla');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Taxa de Ocupação
                     </a>
                 </li>
@@ -1891,7 +1948,7 @@ end if
                 %>
                 <li>
                     <a href="#" onClick="callReport('UraReport');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Relatório URA
                     </a>
                 </li>
@@ -1903,19 +1960,19 @@ end if
                     %>
                 <li>
                     <a href="#" onClick="callReport('RelatorioLabs');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Mapa Laboratório
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="callReport('ConferenciadeAmostras');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Conferência de Amostras
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="callReport('RelatorioRecoletas');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Relatório de Recoletas
                     </a>
                 </li>
@@ -1929,13 +1986,13 @@ end if
                 %>
                 <li class="hidden">
                     <a href="#" onClick="callReport('AgendamentosPorUsuario');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Agendamentos por usuário
                     </a>
                 </li>
                 <li class="hidden">
                     <a href="#" onClick="callReport('ProdutividadeSintetico');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Produtividade - Sintético
                     </a>
                 </li>
@@ -1947,7 +2004,7 @@ end if
         <%if aut("|relatoriosproducaoV|") then %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-area-chart"></span>
+                <span class="far fa-area-chart"></span>
                 <span class="sidebar-title"> Faturamento </span>
 
                 <span class="caret"></span>
@@ -1959,25 +2016,25 @@ end if
 				%>
                 <li>
                     <a href="#" onClick="javascript:callReport('ProducaoMedica');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Produção - Analítico
                     </a>
                 </li>
                 <li class="hidden">
                     <a href="#" onClick="javascript:callReport('ProducaoSintetico');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Produção - Sintético
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="javascript:callReport('ProducaoExterna');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Produção Externa
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="javascript:callReport('ProducaoPorGrupo');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Produção por Grupo
                     </a>
                 </li>
@@ -1987,7 +2044,7 @@ end if
                     %>
                     <li>
                         <a href="#" onClick="javascript:callReport('GuiasPagas');">
-                            <i class="fa fa-double-angle-right"></i>
+                            <i class="far fa-double-angle-right"></i>
                             Guias Pagas
                         </a>
                     </li>
@@ -1997,13 +2054,13 @@ end if
                     %>
                     <li>
                         <a href="#" onClick="javascript:callReport('VendasParticular');">
-                            <i class="fa fa-double-angle-right"></i>
+                            <i class="far fa-double-angle-right"></i>
                              Vendas - Particular
                         </a>
                     </li>
                     <li>
                         <a href="#" onClick="javascript:callReport('ServicosPorExecucao');">
-                            <i class="fa fa-double-angle-right"></i>
+                            <i class="far fa-double-angle-right"></i>
                              Serviços por Execução
                         </a>
                     </li>
@@ -2013,14 +2070,14 @@ end if
 
                 <li class="hidden">
                     <a href="javascript:callReport('rpAgrupado');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Faturamento Agrupado
                     </a>
                 </li>
                 <% if session("Banco")="clinic5459" then %>
                 <li>
                     <a href="javascript:callReport('rpOperador');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Produção por Operador
                     </a>
                 </li>
@@ -2031,7 +2088,7 @@ end if
         <%if aut("relatoriosfinanceiroV") or aut("relatoriosfinanceirocaixaV") then %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-inbox"></span>
+                <span class="far fa-inbox"></span>
                 <span class="sidebar-title"> Caixa </span>
 
                 <span class="caret"></span>
@@ -2043,31 +2100,31 @@ end if
 
                 <li>
                     <a href="javascript:callReport('CaixaSintetico', '&U=<%=session("Unidades")%>&Cx=S');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Caixa - Sintético
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="javascript:callReport('ParticularAnalitico');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Caixa - Analítico
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="javascript:callReport('RelatorioCaixa');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Relatório de Caixa
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="javascript:callReport('FCaixa');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Fechamento de Caixa
                     </a>
                 </li>
                 <li>
                     <a href="#" onClick="javascript:callReport('FCofreNovo');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Fechamento de Cofre
                     </a>
                 </li>
@@ -2075,14 +2132,14 @@ end if
                 <% if session("Banco")="clinic6118" or session("Banco")="clinic5760" or session("Banco")="clinic4285" or session("Banco")="clinic100000" then %>
                 <li>
                     <a href="#" onClick="javascript:callReport('AnaliseCompleta');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Análise Completa
                     </a>
                 </li>
                 <% end if %>
                 <li class="hidden">
                     <a href="#" onClick="javascript:callReport('CaixaPorUsuario');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Caixa por Usuário
                     </a>
                 </li>
@@ -2090,7 +2147,7 @@ end if
 
                 <li class="hidden">
                     <a href="javascript:callReport('rpDMed');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         D-Med
                     </a>
                 </li>
@@ -2098,7 +2155,7 @@ end if
         </li>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-money"></span>
+                <span class="far fa-money"></span>
                 <span class="sidebar-title"> Financeiro </span>
 
                 <span class="caret"></span>
@@ -2107,46 +2164,46 @@ end if
             <ul class="nav sub-nav">
                 <li>
                     <a href="javascript:callReport('rpFluxoCaixa');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Fluxo de Caixa
                     </a>
                 </li>
                 <li>
                     <a href="?P=fluxodecaixa&Pers=1" target="_blank">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Fluxo de Caixa <small><small>(Desenvolvimento)</small></small>
                     </a>
                 </li>
 
                 <li class="hidden">
                     <a href="javascript:callReport('rpFluxoCaixaMensal');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Fluxo de Caixa Mensal
                     </a>
                 </li>
 
                 <li>
                     <a href="javascript:callReport('CaixaSintetico', '&U=<%=session("Unidades")%>');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Movimentação - Sintético
                     </a>
                 </li>
 
                 <li class="hidden">
                     <a href="javascript:callReport('Plano', 'DESPESAS&U=<%=session("Unidades")%>');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Análise de Despesas
                     </a>
                 </li>
                 <li>
                     <a href="javascript:callReport('PlanoDesp', 'DESPESAS&U=<%=session("Unidades")%>');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Análise de Despesas
                     </a>
                 </li>
                 <li>
                     <a href="javascript:callReport('AnaliseReceitas', 'RECEITAS&U=<%=session("Unidades")%>');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Análise de Receitas
                     </a>
                 </li>
@@ -2154,48 +2211,48 @@ end if
 
                 <li>
                     <a href="javascript:callReport('rpCreditos');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Créditos Pendentes
                     </a>
                 </li>
 
                 <li>
                     <a href="javascript:callReport('rpDebitos');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Débitos Pendentes
                     </a>
                 </li>
                 <li>
                     <a href="javascript:callReport('aExecutar');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Serviços a Executar
                     </a>
                 </li>
                 <li>
                     <a href="javascript:callReport('repassesAnalitico');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Repasses - Analítico
                     </a>
                 </li>
                 <li>
                     <a href="javascript:callReport('DRE');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         DRE
                     </a>
                 </li>
                 <li class="hidden">
                     <a href="javascript:callReport('SCP');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Apuração de SCP <span class="label label-system label-xs fleft">Novo</span>
                     </a>
                 </li>
                 <li <% if scp()=0 then %>class="hidden"<% end if %>>
                     <a href="javascript:callReport('receitaPorTipo');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Receita por Tipo
                     </a>
                     <a href="javascript:callReport('servicosPorNota');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Serviços por Nota
                     </a>
                 </li>
@@ -2204,7 +2261,7 @@ end if
         <%end if %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-bar-chart"></span>
+                <span class="far fa-bar-chart"></span>
                 <span class="sidebar-title"> Formulários </span>
 
                 <span class="caret"></span>
@@ -2222,7 +2279,7 @@ end if
                 %>
                 <li>
                     <a href="javascript:callReport('relatorioForms','<%=reqdebug%>');">
-                        <i class="fa fa-document"></i>
+                        <i class="far fa-document"></i>
                         Formulários
                     </a>
                 </li>
@@ -2236,7 +2293,7 @@ end if
         %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-files-o"></span>
+                <span class="far fa-files-o"></span>
                 <span class="sidebar-title"> Propostas </span>
 
                 <span class="caret"></span>
@@ -2249,7 +2306,7 @@ end if
         %>
         <li>
             <a href="#" class="accordion-toggle menu-open">
-                <span class="fa fa-medkit"></span>
+                <span class="far fa-medkit"></span>
                 <span class="sidebar-title"> Estoque </span>
 
                 <span class="caret"></span>
@@ -2257,7 +2314,7 @@ end if
             <ul class="nav sub-nav">
                 <li>
                     <a href="javascript:callReport('rEstoquePosicao');">
-                        <i class="fa fa-double-angle-right"></i>
+                        <i class="far fa-double-angle-right"></i>
                         Posição
                     </a>
                 </li>
@@ -2298,7 +2355,7 @@ end if
                         end if
                     end if
                     %>
-                    <button class="btn-xs btn-link btn AlterarLocalAtual" type="button" title="Alterar local"><i class="fa fa-edit"></i> Alterar local</button>
+                    <button class="btn-xs btn-link btn AlterarLocalAtual" type="button" title="Alterar local"><i class="far fa-edit"></i> Alterar local</button>
             </li>
             <%
             end if
@@ -2362,16 +2419,16 @@ end if
         </li>
 
         <li class="active">
-            <a data-toggle="tab" href="#folha"><span class="fa fa-file-text bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
+            <a data-toggle="tab" href="#folha"><span class="far fa-file-text bigger-110"></span> <span class="sidebar-title">Cadastro Principal</span></a>
         </li>
         <li>
-            <a data-toggle="tab" href="#divAnexos" onclick="loadImagensLaudo()"><span class="fa fa-file"></span> <span class="sidebar-title">Anexos e Textos</span></a>
+            <a data-toggle="tab" href="#divAnexos" onclick="loadImagensLaudo()"><span class="far fa-file"></span> <span class="sidebar-title">Anexos e Textos</span></a>
         </li>
         <li>
-            <a href="javascript:entrega()"><span class="fa fa-print"></span> <span class="sidebar-title">Entrega</span></a>
+            <a href="javascript:entrega()"><span class="far fa-print"></span> <span class="sidebar-title">Entrega</span></a>
         </li>
         <li>
-            <a href="javascript:protocolo()"><span class="fa fa-print"></span> <span class="sidebar-title">Imprimir Protocolo</span></a>
+            <a href="javascript:protocolo()"><span class="far fa-print"></span> <span class="sidebar-title">Imprimir Protocolo</span></a>
         </li>
 
         <li class="divider mb10"></li>
@@ -2394,7 +2451,7 @@ end if
         </li>
         <li  class="p10">
             <button type="button" class="btn btn-default btn-sm" onclick="javascript:LogLaudos()">
-                <i class="fa fa-history"></i>
+                <i class="far fa-history"></i>
                  Logs
             </button>
         </li>
@@ -2403,16 +2460,16 @@ end if
             case "aso_empresa", "aso_categoria_risco_operacional", "aso_texto", "aso_funcao"
 %>
 		<li>
-            <a href="?P=aso_funcao&Pers=Follow"><span class="fa fa-users"></span> <span class="sidebar-title">Funções</span></a>
+            <a href="?P=aso_funcao&Pers=Follow"><span class="far fa-users"></span> <span class="sidebar-title">Funções</span></a>
         </li>
         <li>
-            <a href="?P=aso_categoria_risco_operacional&Pers=Follow"><span class="fa fa-exclamation-triangle"></span> <span class="sidebar-title">Riscos operacionais</span></a>
+            <a href="?P=aso_categoria_risco_operacional&Pers=Follow"><span class="far fa-exclamation-triangle"></span> <span class="sidebar-title">Riscos operacionais</span></a>
         </li>
         <li>
-            <a href="?P=aso_empresa&Pers=Follow"><span class="fa fa-building"></span> <span class="sidebar-title">Empresas</span></a>
+            <a href="?P=aso_empresa&Pers=Follow"><span class="far fa-building"></span> <span class="sidebar-title">Empresas</span></a>
         </li>
         <li>
-            <a href="?P=aso_texto&Pers=Follow"><span class="fa fa-align-justify"></span> <span class="sidebar-title">Texto padrão</span></a>
+            <a href="?P=aso_texto&Pers=Follow"><span class="far fa-align-justify"></span> <span class="sidebar-title">Texto padrão</span></a>
         </li>
 <%
     case "treinamentos"
@@ -2422,7 +2479,7 @@ end if
         if session("Admin")=1 then
             %>
             <li>
-                <a target="_blank" href="./?P=Treinamento"><span class="fa fa-list"></span> <span class="sidebar-title">Editar treinamento</span></a>
+                <a target="_blank" href="./?P=Treinamento"><span class="far fa-list"></span> <span class="sidebar-title">Editar treinamento</span></a>
             </li>
             <%
         end if
@@ -2490,7 +2547,7 @@ end if
                 ultimoGrupo=GrupoTreinamento&""
                 %>
                 <li <%= classActive %>>
-                    <a href="./?P=Treinamentos&Pers=1&T=<%= telas("id") %>"><span class="fa fa-file-text bigger-110"></span> <span class="sidebar-title"><%= telas("Recurso") %></span></a>
+                    <a href="./?P=Treinamentos&Pers=1&T=<%= telas("id") %>"><span class="far fa-file-text bigger-110"></span> <span class="sidebar-title"><%= telas("Recurso") %></span></a>
                 </li>
                 <%
                 Anterior = telas("id")
@@ -2503,13 +2560,13 @@ end if
         if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
     %>
     <li>
-        <a href="?P=labscadastrocredenciais&Pers=1"><span class="fa fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
+        <a href="?P=labscadastrocredenciais&Pers=1"><span class="far fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
     </li>
     <li>
-        <a href="?P=labsconfigintegracao&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
+        <a href="?P=labsconfigintegracao&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
     </li>
     <li>
-        <a href="?P=labslistagemexames&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
+        <a href="?P=labslistagemexames&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
     </li>
     <li>
         <a href="?P=labslistagemprocedimentos&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de procedimentos</span></a>
@@ -2518,7 +2575,7 @@ end if
         <a href="?P=procedimentolaboratorio&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Procedimentos x Laboratórios</span></a>
     </li>
     <li>
-        <a href="?P=labsimportardepara&Pers=1"><span class="fa fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
+        <a href="?P=labsimportardepara&Pers=1"><span class="far fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
     </li>
 
     <%
@@ -2527,7 +2584,7 @@ end if
         %>
         
         <li>
-            <a> <span class="fa fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
+            <a> <span class="far fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
         </li>
         <li>                
         <%
@@ -2539,7 +2596,7 @@ end if
             %>
             <li>
                 <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
-                    &nbsp;&nbsp;&nbsp;<span class="fa fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%></span>
+                    &nbsp;&nbsp;&nbsp;<span class="far fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%></span>
                 </a>
             </li>
             <% 
@@ -2553,10 +2610,10 @@ end if
     case "programasdesaude", "programasdesaudetipos"
     %>
     <li>
-        <a href="?P=programasdesaude&Pers=1"><span class="fa fa-medkit"></span> <span class="sidebar-title">Programas de Saúde</span></a>
+        <a href="?P=programasdesaude&Pers=1"><span class="far fa-medkit"></span> <span class="sidebar-title">Programas de Saúde</span></a>
     </li>
     <li>
-        <a href="?P=programasdesaudetipos&Pers=1"><span class="fa fa-list"></span> <span class="sidebar-title">Tipos de Programa</span></a>
+        <a href="?P=programasdesaudetipos&Pers=1"><span class="far fa-list"></span> <span class="sidebar-title">Tipos de Programa</span></a>
     </li>
     <%
 end select
@@ -2595,7 +2652,7 @@ function __loadMsgs(){
                  <div class="modal-content p10">
                    <div style="text-align: center; margin-bottom: 100px" class="row">
                            <div class="col-md-12">
-                               <i class="fa fa-2x fa-circle-o-notch fa-spin" style="color: rgba(0,0,0,0.2); margin-top: 50px"></i>
+                               <i class="far fa-2x fa-circle-o-notch fa-spin" style="color: rgba(0,0,0,0.2); margin-top: 50px"></i>
                            </div>
                        </div>
                  </div>

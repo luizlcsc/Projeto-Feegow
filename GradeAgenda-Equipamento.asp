@@ -94,7 +94,7 @@ if session("RemSol")<>"" then
             <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                    <i class="fa fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock-o bigger-110"></i>
                     Remarcar</button>
             </span>
             <span class="input-group-btn">
@@ -115,7 +115,7 @@ if session("RepSol")<>"" then
             <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRepetir">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" onclick="repetir(<%=session("RepSol")%>, 'Repetir', $('#HoraRepetir').val(), 'Search')">
-                    <i class="fa fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock-o bigger-110"></i>
                     Repetir</button>
             </span>
             <span class="input-group-btn">
@@ -132,7 +132,7 @@ end if
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=EquipamentosAlocados&Pers=1'>Agenda de Equipamentos</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(escreveData)%>");
@@ -207,7 +207,7 @@ end if
 						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
 						<td colspan="4">
 							<button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-								<i class="fa fa-chevron-left"></i> Agendar Aqui
+								<i class="far fa-chevron-left"></i> Agendar Aqui
 							</button>
 						</td>
 					</tr>
@@ -219,7 +219,7 @@ end if
 						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
 						<td colspan="4">
 							<button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-								<i class="fa fa-chevron-left"></i> Agendar Aqui
+								<i class="far fa-chevron-left"></i> Agendar Aqui
 							</button>
 						</td>
 					</tr>
@@ -231,7 +231,7 @@ end if
 						<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
 						<td colspan="4">
 							<button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-								<i class="fa fa-chevron-left"></i> Repetir Aqui
+								<i class="far fa-chevron-left"></i> Repetir Aqui
 							</button>
 						</td>
 					</tr>
@@ -264,7 +264,7 @@ end if
 									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
 									<td colspan="4">
 										<button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>')" class="btn btn-xs btn-primary">
-											<i class="fa fa-chevron-left"></i> Agendar Aqui
+											<i class="far fa-chevron-left"></i> Agendar Aqui
 										</button>
 									</td>
 								</tr>
@@ -276,7 +276,7 @@ end if
 									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
 									<td colspan="4">
 										<button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-											<i class="fa fa-chevron-left"></i> Agendar Aqui
+											<i class="far fa-chevron-left"></i> Agendar Aqui
 										</button>
 									</td>
 								</tr>
@@ -288,7 +288,7 @@ end if
 									<td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
 									<td colspan="4">
 										<button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HHoraPersora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-											<i class="fa fa-chevron-left"></i> Repetir Aqui
+											<i class="far fa-chevron-left"></i> Repetir Aqui
 										</button>
 									</td>
 								</tr>
@@ -433,13 +433,13 @@ end if
 					Conteudo = Conteudo & """ onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("EquipamentoID")&"\',\'GRADE_ID\')"">"&_ 
 					"<td width=""1%"">"
 					if not isnull(comps("Resposta")) then
-						Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
+						Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
 					end if
 					if comps("Primeira")=1 then
-                        Conteudo = Conteudo & "<i class=""fa fa-flag blue"" title=""Primeira vez""></i> "
+                        Conteudo = Conteudo & "<i class=""far fa-flag blue"" title=""Primeira vez""></i> "
                     end if
 					if comps("LocalID")<>LocalID then
-						Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey""  title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
+						Conteudo = Conteudo & "<i class=""far fa-exclamation-triangle grey""  title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
 					end if
 					Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"">"&compsHora&"</button></td>"&_ 
 					"<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
@@ -518,7 +518,7 @@ end if
 						{
 							$(this).removeClass("btn-default");
 							$(this).addClass("btn-danger");
-							$(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+							$(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
 						}
 					});
 					<%

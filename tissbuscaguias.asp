@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
     $(".crumb-active a").html("Buscar Guias");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <%
 Unidades = req("CompanyUnitID")
@@ -141,7 +141,7 @@ end if
             
             <div class="col-md-2">
         	    <label>&nbsp;</label><br />
-                <button class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                <button class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>
@@ -152,13 +152,13 @@ end if
     <div class="panel-heading">
 
         <div class="btn-group">
-            <button class="btn btn-sm btn-primary dropdown-toggle dropdown-status" data-toggle="dropdown"><i class="fa fa-plus"></i> Inserir Guia  <i class="fa fa-angle-down icon-on-right"></i></button>
+            <button class="btn btn-sm btn-primary dropdown-toggle dropdown-status" data-toggle="dropdown"><i class="far fa-plus"></i> Inserir Guia  <i class="far fa-angle-down icon-on-right"></i></button>
             <ul class="dropdown-menu dropdown-danger">
-            <li><a href="./?P=tissguiaconsulta&I=N&Pers=1"><i class="fa fa-plus"></i> Consulta</a></li>
-            <li><a href="./?P=tissguiasadt&I=N&Pers=1"><i class="fa fa-plus"></i> SP/SADT</a></li>
-            <li><a href="./?P=tissguiahonorarios&I=N&Pers=1"><i class="fa fa-plus"></i> Honorários</a></li>
-            <li><a href="./?P=tissguiainternacao&I=N&Pers=1"><i class="fa fa-plus"></i> Sol. Internação</a></li>
-            <li><a href="./?P=tissguiaquimioterapia&I=N&Pers=1"><i class="fa fa-plus"></i> Sol. Quimioterapia</a></li>
+            <li><a href="./?P=tissguiaconsulta&I=N&Pers=1"><i class="far fa-plus"></i> Consulta</a></li>
+            <li><a href="./?P=tissguiasadt&I=N&Pers=1"><i class="far fa-plus"></i> SP/SADT</a></li>
+            <li><a href="./?P=tissguiahonorarios&I=N&Pers=1"><i class="far fa-plus"></i> Honorários</a></li>
+            <li><a href="./?P=tissguiainternacao&I=N&Pers=1"><i class="far fa-plus"></i> Sol. Internação</a></li>
+            <li><a href="./?P=tissguiaquimioterapia&I=N&Pers=1"><i class="far fa-plus"></i> Sol. Quimioterapia</a></li>
             </ul>
         </div>
 
@@ -174,12 +174,12 @@ end if
         <%
         if aut("loteX")=1 then
         %>
-            <button type="button" disabled class="btn-acao-guias btn btn-sm btn-warning" onclick="retiraGuia( $('.guia:checked').serialize() )"><i class="fa fa-arrow-circle-o-left"></i> Retirar do Lote</button>
+            <button type="button" disabled class="btn-acao-guias btn btn-sm btn-warning" onclick="retiraGuia( $('.guia:checked').serialize() )"><i class="far fa-arrow-circle-left"></i> Retirar do Lote</button>
         <%
         end if
         %>
-            <button onclick="glosa('Pago', 'M');" disabled class=" btn-acao-guias btn btn-sm btn-success"><i class="fa fa-thumbs-up"></i> Pago</button>
-            <button onclick="glosa('Glosado', 'M');" disabled class=" btn-acao-guias btn btn-sm btn-danger"><i class="fa fa-thumbs-down"></i> Glosado</button>
+            <button onclick="glosa('Pago', 'M');" disabled class=" btn-acao-guias btn btn-sm btn-success"><i class="far fa-thumbs-up"></i> Pago</button>
+            <button onclick="glosa('Glosado', 'M');" disabled class=" btn-acao-guias btn btn-sm btn-danger"><i class="far fa-thumbs-down"></i> Glosado</button>
         </span>
     </div>
     <div class="panel-body">
@@ -193,7 +193,7 @@ if req("ConvenioID")<>"" then
     else
         desativar = "disabled"
     end if
-    StatusSelect = "<div class='btn-group mb10'><button class='btn btn-sm btn-COR-- dropdown-status dropdown-toggle "&desativar&"' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>LABEL--</span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+    StatusSelect = "<div class='btn-group mb10'><button class='btn btn-sm btn-COR-- dropdown-status dropdown-toggle "&desativar&"' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>LABEL--</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
     while not GuiaStatusSQL.eof
 
         StatusSelect = StatusSelect&"<li ><a data-value='"&GuiaStatusSQL("id")&"' style='cursor:pointer' class='StatusGuia'><div style='border-radius:50%;width:8px;height:8px;float:left;' class='mr5 mt5 btn-"&GuiaStatusSQL("Cor")&"'></div>"&GuiaStatusSQL("Status")&"</a></option>"
@@ -333,7 +333,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 
                     <input type="hidden" class="loteid_val" value="<%=guias("LoteID") %>" />
                     <%if not isnull(ItemInvoiceID) then %>
-                    <a title="Ir para conta" href="./?P=Invoice&T=C&I=<%=guias("InvoiceID") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-money"></i></a>
+                    <a title="Ir para conta" href="./?P=Invoice&T=C&I=<%=guias("InvoiceID") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-money"></i></a>
                     <strong>N&uacute;mero:</strong> <%= guias("NGuiaPrestador") %>
                     <%else %>
 
@@ -383,16 +383,16 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 
 
 				if guias("LoteID")=0 then
-					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""fa fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
+					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
 				else
                     if aut("loteX")=1 then
-					    response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""fa fa-arrow-circle-o-left""></i></button>")
+					    response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
 					end if
 					response.Write("<strong>Lote: </strong> "&guias("Lote"))
 				end if
 				%></div>
                     <div class="col-md-4">
-                     <button type="button" class="btn btn-info btn-sm" onclick="modalTissGuiaStatuslog(<%=guias("id") %>, '<%=req("T")%>')"><i class="fa fa-comment"></i></button>
+                     <button type="button" class="btn btn-info btn-sm" onclick="modalTissGuiaStatuslog(<%=guias("id") %>, '<%=req("T")%>')"><i class="far fa-comment"></i></button>
                     </div>
                 </div>
         		<div class="col-md-6"><strong>Executante: </strong><%= NomeProfissional %></div>
@@ -403,8 +403,8 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
              </td>
              <td width="150" class="divGlosa" id="dvp<%=guias("id")%>" nowrap>                            
                  <div class="btnGlosa">
-                     <button type="button" class="btn btn-xs btn-success" <%=disabled %> onclick="glosa('Pago', <%=guias("id") %>)" title="Pago"><i class="fa fa-thumbs-up"></i></button>
-                     <button type="button" class="btn btn-xs btn-danger" <%=disabled %> onclick="glosa('Glosado', <%=guias("id") %>)" title="Glosado"><i class="fa fa-thumbs-down"></i></button>
+                     <button type="button" class="btn btn-xs btn-success" <%=disabled %> onclick="glosa('Pago', <%=guias("id") %>)" title="Pago"><i class="far fa-thumbs-up"></i></button>
+                     <button type="button" class="btn btn-xs btn-danger" <%=disabled %> onclick="glosa('Glosado', <%=guias("id") %>)" title="Glosado"><i class="far fa-thumbs-down"></i></button>
                  </div>
                  
 
@@ -419,14 +419,14 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
                  %>
 
              </td>
-             <td><a href="./?P=tissguiaconsulta&Pers=1&I=<%=guias("id")%>" class="btn btn-success"><i class="fa fa-edit"></i> Editar</a></td>
-             <td><button type="button" class="btn btn-info" onclick="guiaTISS('GuiaConsulta', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="fa fa-print"></i></button></td>
+             <td><a href="./?P=tissguiaconsulta&Pers=1&I=<%=guias("id")%>" class="btn btn-success"><i class="far fa-edit"></i> Editar</a></td>
+             <td><button type="button" class="btn btn-info" onclick="guiaTISS('GuiaConsulta', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="far fa-print"></i></button></td>
 
              <td>
                 <%
                 if aut("|guiasX|")=1 then
                 %>
-                <a href="./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=req("LoteID")%>&NumeroGuia=<%=req("NumeroGuia")%>&PacienteID=<%=req("PacienteID")%>&searchPacienteID=<%=req("searchPacienteID")%>&DataDe=<%=req("DataDe")%>&DataAte=<%=req("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
+                <a href="./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=req("LoteID")%>&NumeroGuia=<%=req("NumeroGuia")%>&PacienteID=<%=req("PacienteID")%>&searchPacienteID=<%=req("searchPacienteID")%>&DataDe=<%=req("DataDe")%>&DataAte=<%=req("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-danger <%=bloquear%>"><i class="far fa-remove"></i></a>
                 <%  
                 end if
                 %>
@@ -472,8 +472,8 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
             <th width="100" nowrap></th>
             <%end if%>
             <th width="1%" class="text-center">Editar</th>
-            <th width="1%" class="text-center"><i class="fa fa-print"></i></th>
-            <th width="1%" class="text-center"><i class="fa fa-trash"></i></th>
+            <th width="1%" class="text-center"><i class="far fa-print"></i></th>
+            <th width="1%" class="text-center"><i class="far fa-trash"></i></th>
         </tr>
     </thead>
     <tbody>
@@ -629,7 +629,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                 <div class="col-md-3">
                     <input type="hidden" class="loteid_val" value="<%=guias("LoteID") %>" />
                     <%if not isnull(ItemInvoiceID) then %>
-                    <a title="Ir para conta" href="./?P=Invoice&T=C&I=<%=guias("InvoiceID") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-money"></i></a>
+                    <a title="Ir para conta" href="./?P=Invoice&T=C&I=<%=guias("InvoiceID") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-money"></i></a>
                     <span <% if AVencerAlerta<> "" then%>style="color:red" <% end if%> >
                     <strong>N&uacute;mero:</strong> <%= guias("NGuiaPrestador") %>
                     </span>
@@ -681,10 +681,10 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                     response.write(StatusSelectS)
                 'end if
 				if guias("LoteID")=0 then
-					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""fa fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
+					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
 				else
                     if aut("loteX")=1 then
-                        response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""fa fa-arrow-circle-o-left""></i></button>")
+                        response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
 				    end if
                         response.Write("<strong> Lote: </strong> "&guias("Lote")&"")
 
@@ -703,7 +703,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                 end if
 				%></div>
 				<div class="col-md-4">
-				 <button type="button" class="btn btn-info btn-sm" onclick="modalTissGuiaStatuslog(<%=guias("id") %>, '<%=req("T")%>')"><i class="fa fa-comment"></i></button>
+				 <button type="button" class="btn btn-info btn-sm" onclick="modalTissGuiaStatuslog(<%=guias("id") %>, '<%=req("T")%>')"><i class="far fa-comment"></i></button>
                 </div>
 				</div>
 				<%if req("T")<>"GuiaInternacao" or req("T")<>"GuiaQuimioterapia" then%>
@@ -716,7 +716,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
             		<div class="col-md-3">
                         <div class="row"><strong>Cód. Solicitante: </strong><%= guias("ContratadoSolicitanteCodigoNaOperadora") %></div>
                         <div class="row">
-                            <button type="button" class="btn btn-info btn-sm " onclick="guiaTISS('EspelhoConta', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="fa fa-print"> Espelho da Conta</i></button>
+                            <button type="button" class="btn btn-info btn-sm " onclick="guiaTISS('EspelhoConta', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="far fa-print"> Espelho da Conta</i></button>
                         </div>
                     </div>                    
                 <%end if %>
@@ -727,8 +727,8 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
              <td width="150" class="divGlosa" id="dvp<%=guias("id")%>" nowrap>
                  <%if req("T")<>"GuiaInternacao" or req("T")<>"GuiaQuimioterapia" then%>
                  <div class="btnGlosa">
-                     <button type="button" class="btn btn-xs btn-success" <%=disabled %> onclick="glosa('Pago', <%=guias("id") %>)" title="Pago"><i class="fa fa-thumbs-up"></i></button>
-                     <button type="button" class="btn btn-xs btn-danger" <%=disabled %> onclick="glosa('Glosado', <%=guias("id") %>)" title="Glosado"><i class="fa fa-thumbs-down"></i></button>
+                     <button type="button" class="btn btn-xs btn-success" <%=disabled %> onclick="glosa('Pago', <%=guias("id") %>)" title="Pago"><i class="far fa-thumbs-up"></i></button>
+                     <button type="button" class="btn btn-xs btn-danger" <%=disabled %> onclick="glosa('Glosado', <%=guias("id") %>)" title="Glosado"><i class="far fa-thumbs-down"></i></button>
                  </div>
                  <%end if%>
 
@@ -765,9 +765,9 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                             end if
 
                             if(ccur(valorPagoCheck) <> ccur(valorTotalCheck)) then  %>
-                                 <button id="procedimentos_button_<%= guiaIdCheck %>" style="text-align: center;display: flex; margin: 0px auto;" type="button" <%=disabledEdicaoProcedimento%> class="btn btn-success btn-sm " onclick="correcaoValoresProcedimentos(self, '<%= guiaIdCheck %>', '<%= valorTotalCheck %>', '<%= qualtabela %>')"><i class="fa fa-edit"> Procedimentos</i></button>
+                                 <button id="procedimentos_button_<%= guiaIdCheck %>" style="text-align: center;display: flex; margin: 0px auto;" type="button" <%=disabledEdicaoProcedimento%> class="btn btn-success btn-sm " onclick="correcaoValoresProcedimentos(self, '<%= guiaIdCheck %>', '<%= valorTotalCheck %>', '<%= qualtabela %>')"><i class="far fa-edit"> Procedimentos</i></button>
                             <% else %>
-                                <button id="procedimentos_button_<%= guiaIdCheck %>" style="text-align: center;display: flex; margin: 0px auto; display:none" type="button" <%=disabledEdicaoProcedimento%> class="btn btn-success btn-sm " onclick="correcaoValoresProcedimentos(self, '<%= guiaIdCheck %>', '<%= valorTotalCheck %>', '<%= qualtabela %>')"><i class="fa fa-edit"> Procedimentos</i></button>
+                                <button id="procedimentos_button_<%= guiaIdCheck %>" style="text-align: center;display: flex; margin: 0px auto; display:none" type="button" <%=disabledEdicaoProcedimento%> class="btn btn-success btn-sm " onclick="correcaoValoresProcedimentos(self, '<%= guiaIdCheck %>', '<%= valorTotalCheck %>', '<%= qualtabela %>')"><i class="far fa-edit"> Procedimentos</i></button>
                             <% end if
                          end if
 
@@ -777,13 +777,13 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                  %>
                  
                  </td>
-             <td><a href="./?P=<%=tabela %>&Pers=1&I=<%=guias("id")%>" class="btn btn-success btn-sm"><i class="fa fa-edit"></i> Editar</a></td>
-             <td><button type="button" class="btn btn-info btn-sm" onclick="guiaTISS('<%=req("T")%>', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="fa fa-print"></i></button></td>
+             <td><a href="./?P=<%=tabela %>&Pers=1&I=<%=guias("id")%>" class="btn btn-success btn-sm"><i class="far fa-edit"></i> Editar</a></td>
+             <td><button type="button" class="btn btn-info btn-sm" onclick="guiaTISS('<%=req("T")%>', <%=guias("id")%>,'<%=req("ConvenioID")%>')"><i class="far fa-print"></i></button></td>
              <td>
                 <%
                 if aut("|guiasX|")=1 then
                 %>
-                <a href="./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=req("LoteID")%>&NumeroGuia=<%=req("NumeroGuia")%>&PacienteID=<%=req("PacienteID")%>&searchPacienteID=<%=req("searchPacienteID")%>&DataDe=<%=req("DataDe")%>&DataAte=<%=req("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-sm btn-danger <%=bloquear%>"><i class="fa fa-remove"></i></a>
+                <a href="./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=req("LoteID")%>&NumeroGuia=<%=req("NumeroGuia")%>&PacienteID=<%=req("PacienteID")%>&searchPacienteID=<%=req("searchPacienteID")%>&DataDe=<%=req("DataDe")%>&DataAte=<%=req("DataAte")%>&X=<%=guias("id")%>" <%=disabled %> class="btn btn-sm btn-danger <%=bloquear%>"><i class="far fa-remove"></i></a>
                 <%
                 end if
                 %>

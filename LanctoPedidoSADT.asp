@@ -21,14 +21,14 @@ if not guia.eof then
     GuiaID = guia("id") + 1
 end if
 
-set pac = db.execute("select * from pacientes where id="&PacienteID)
+set pac = db.execute("select CNS, Matricula1, Validade1 from pacientes where id="&PacienteID)
 if not pac.eof then
     CNS = pac("CNS")
     Matricula = pac("Matricula1")
     Validade = pac("Validade1")
 end if
 
-set emp = db.execute("select * from empresa")
+set emp = db.execute("select CNES from empresa")
 if not emp.eof then
     CodigoCNES = emp("CNES")
 end if
@@ -58,7 +58,7 @@ end if
 NGuiaPrestador = numeroDisponivel(ConvenioID)
 
 
-set prof = db.execute("select * from profissionais where id="&session("idInTable"))
+set prof = db.execute("select Conselho, DocumentoConselho, EspecialidadeID, UFConselho from profissionais where id="&session("idInTable"))
 if not prof.eof then
     set esp = db.execute("select * from especialidades where id = '"&prof("EspecialidadeID")&"'")
     if not esp.eof then
@@ -116,7 +116,7 @@ if ProfissionalExecutante&""<>"" then
     ProfissionalSplt = split(ProfissionalExecutante,"_")
     set profexe = db.execute("select * from profissionais where id="&ProfissionalSplt(1))
     if not profexe.eof then
-        set espexe = db.execute("select * from especialidades where id = '"&profexe("EspecialidadeID")&"'")
+        set espexe = db.execute("select CodigoTISS from especialidades where id = '"&profexe("EspecialidadeID")&"'")
         if not espexe.eof then
             CodigoTISS = espexe("CodigoTISS")
         end if

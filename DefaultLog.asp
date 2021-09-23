@@ -51,7 +51,7 @@
     %>
     <div class="panel-heading">
         <button class="bootbox-close-button close" type="button" data-dismiss="modal">×</button>
-        <h4 class="modal-title"><i class="fa fa-history"></i> Histórico de Ações</h4>
+        <h4 class="modal-title"><i class="far fa-history"></i> Histórico de Ações</h4>
     </div>
     <div class="panel-body">
         <%
@@ -143,7 +143,7 @@
 <tr>
 <%if req("I")="" then %>
     <td class="p5 mn">
-        <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+        <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="far fa-external-link"></i></a>
     </td>
     <td>
         <%= NomeRegistro %>
@@ -203,7 +203,7 @@ end if
                                                     externalLinkDisabled=" disabled "
                                                 end if
                                                 %>
-                                                <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></a>
+                                                <a <%=externalLinkDisabled%> href="./?P=logRedir&LI=<%=plog("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="far fa-external-link"></i></a>
                                             </td>
                                             <td>
                                                 <%= NomeRegistro %>

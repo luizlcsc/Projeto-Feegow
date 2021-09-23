@@ -82,10 +82,10 @@ end if
                         </label>
                     </div>
                     <div class="col-md-1">
-                        <button type="button" id="travar" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="fa fa-lock"></i></button>
+                        <button type="button" id="travar" class="btn btn-warning btn-block mt20" onClick="RegraProtocolo('<%=I%>')"><i class="far fa-lock"></i></button>
                     </div>
                     <div class="col-md-2" title="Este protocolo está em uso e não pode ser alterado" >
-                        <button id='salvar' type="submit" class="btn btn-primary btn-block mt20"><i class="fa fa-save"></i> Salvar</button>
+                        <button id='salvar' type="submit" class="btn btn-primary btn-block mt20"><i class="far fa-save"></i> Salvar</button>
                     </div>
                 </div>
                 <div class="col-md-12 mt10">
@@ -105,29 +105,29 @@ end if
             <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab">
                 <li class="active">
                     <a data-toggle="tab" href="#Medicamentos" id="Medicamentos">
-                        <i class="fa fa-flask bigger-110"></i> Medicamentos
+                        <i class="far fa-flask bigger-110"></i> Medicamentos
                     </a>
                 </li>
 
                 <li>
                     <a data-toggle="tab" href="#Kits" id="Kits">
-                        <i class="fa fa-medkit bigger-110"></i> Kits
+                        <i class="far fa-medkit bigger-110"></i> Kits
                     </a>
                 </li>
                 <li>
                     <a data-toggle="tab" href="#Documentos" id="Documentos">
-                        <i class="fa fa-file bigger-110"></i> Documentos
+                        <i class="far fa-file bigger-110"></i> Documentos
                     </a>
                 </li>
                 <div style="float: right">
                     <button type="button" id="btnMedicamentos" class="btn btn-primary btn-sm m10" name="TipoBotao" onclick="addMedicamentos('<%=I%>')" value="Medicamentos">
-                        <i class="fa fa-plus"></i> Adicionar Medicamentos
+                        <i class="far fa-plus"></i> Adicionar Medicamentos
                     </button>
                     <button type="button" id="btnKits" class="btn btn-primary btn-sm m10 hidden" name="TipoBotao" onclick="addKits('<%=I%>')" value="Kits">
-                        <i class="fa fa-plus"></i> Adicionar Kits
+                        <i class="far fa-plus"></i> Adicionar Kits
                     </button>
                     <button type="button" id="btnDocumentos" class="btn btn-primary btn-sm m10 hidden" name="TipoBotao" onclick="addDocumentos('<%=I%>')" value="Documentos">
-                        <i class="fa fa-plus"></i> Documentos
+                        <i class="far fa-plus"></i> Documentos
                     </button>
                 </div>
             </ul>
@@ -248,7 +248,7 @@ end if
     }
 
     $(".crumb-active").html("<a href='#'>Cadastro de Protocolo</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-th-list");
+    $(".crumb-icon a span").attr("class", "far fa-th-list");
     $(".crumb-trail").removeClass("hidden");
-    $("#rbtns").html("<div class='topbar-right'><button class='btn btn-sm btn-alert' onclick='copiarProtocolo(<%=I%>)'><i class='fa fa-files-o'></i> COPIAR</button> <a class='btn btn-sm btn-success' href='./?P=Protocolos&I=N&Pers=1'><i class='fa fa-plus'></i> INSERIR</a></div>");
+    $("#rbtns").html("<div class='topbar-right'><button class='btn btn-sm btn-alert' onclick='copiarProtocolo(<%=I%>)'><i class='far fa-files-o'></i> COPIAR</button> <a class='btn btn-sm btn-success' href='./?P=Protocolos&I=N&Pers=1'><i class='far fa-plus'></i> INSERIR</a></div>");
 </script>

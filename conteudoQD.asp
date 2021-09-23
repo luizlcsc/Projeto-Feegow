@@ -20,9 +20,9 @@
                  <thead>
                     <tr>
                         <th colspan="3" style="min-width:200px" class="text-center">
-							<i title="Configura&ccedil;&otilde;es do Local" alt="Configura&ccedil;&otilde;es do Local" style="cursor:pointer" onClick="location.href='?P=EdiProfQD&Pers=1&LId=<%=pLoc("id")%>&Data=<%=Data%>';" class="fa fa-cog"></i> 
+							<i title="Configura&ccedil;&otilde;es do Local" alt="Configura&ccedil;&otilde;es do Local" style="cursor:pointer" onClick="location.href='?P=EdiProfQD&Pers=1&LId=<%=pLoc("id")%>&Data=<%=Data%>';" class="far fa-cog"></i>
 							<%=left(ucase(pLoc("NomeLocal")),20)%>
-   							<i title="Fechar" alt="Fechar" style="cursor:pointer" onClick="location.href='?P=QuadroDisponibilidade&Pers=1&Rx=<%=pLoc("id")%>&Data=<%=Data%>';" class="fa fa-remove"></i> 
+   							<i title="Fechar" alt="Fechar" style="cursor:pointer" onClick="location.href='?P=QuadroDisponibilidade&Pers=1&Rx=<%=pLoc("id")%>&Data=<%=Data%>';" class="far fa-remove"></i>
 
                         </th>
                     </tr>
@@ -71,7 +71,7 @@
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-                                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                        <i class="far fa-chevron-left"></i> Agendar Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -83,7 +83,7 @@
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                        <i class="far fa-chevron-left"></i> Agendar Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -95,7 +95,7 @@
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>', '<%=ProfissionalID%>')" class="btn btn-xs btn-warning">
-                                        <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                        <i class="far fa-chevron-left"></i> Repetir Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -227,7 +227,7 @@ if Profissionais<>"" then
 			{
 				//	$(this).replaceWith('<%= conteudo %>');
 				$(this).addClass("danger");
-				$(this).find("button").prepend("<i class='fa fa-lock'></i> ");
+				$(this).find("button").prepend("<i class='far fa-lock'></i> ");
 				$(this).find("button").removeClass("btn-info");
 				$(this).find("button").addClass("btn-danger");
 				$(this).attr("data-pro", "0");

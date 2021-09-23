@@ -37,7 +37,7 @@
                             <div class="input-group">
                                 <input id="NewVigenciaInicio${num}" autocomplete="off" class="form-control input-mask-date date-picker" type="text" value="" name="NewVigenciaInicio${num}" data-date-format="dd/mm/yyyy" />
                                 <span class="input-group-addon">
-                                <i class="fa fa-calendar bigger-110"></i>
+                                <i class="far fa-calendar bigger-110"></i>
                                 </span>
                             </div>
                         </td>
@@ -45,7 +45,7 @@
                             <div class="input-group">
                                 <input id="NewVigenciaFim${num}" autocomplete="off" class="form-control input-mask-date date-picker" type="text" value="" name="NewVigenciaFim${num}" data-date-format="dd/mm/yyyy" />
                                 <span class="input-group-addon">
-                                <i class="fa fa-calendar bigger-110"></i>
+                                <i class="far fa-calendar bigger-110"></i>
                                 </span>
                             </div>
                         </td>
@@ -199,6 +199,27 @@ call insertRedir("Convenios", req("I"))
 set reg = db.execute("select * from convenios where id="&req("I"))
 LimitarEscalonamento = reg("LimitarEscalonamento")&""
 
+registroAns = reg("registroAns")
+
+AlteraTipo = req("AlteraTipo")
+if AlteraTipo<>"" then
+    registroAns = ""
+    if AlteraTipo="simplificado" then
+        registroAns="simplificado"
+    end if
+
+    db_execute("UPDATE convenios SET RegistroANS='"&registroAns &"' WHERE id="&req("I"))
+
+    if AlteraTipo="normal" then
+        response.redirect("?P=Convenios&I="&req("I")&"&Pers=1")
+    end if
+
+end if
+
+if (registroAns="simplificado") then
+    response.redirect("?P=ConveniosSimplificado&I="&req("I")&"&Pers=1")
+end if
+
 
 function coalesce(valor1,valor2)
 
@@ -228,6 +249,7 @@ end function
 
                 <input type="hidden" name="I" value="<%=req("I")%>" />
                 <input type="hidden" name="P" value="<%=req("P")%>" />
+
                 <div class="row">
                     <div class="col-md-2" id="divAvatar">
                         <div class="row">
@@ -246,7 +268,7 @@ end function
                                 </div>
                                 <div id="divDisplayFoto" style="display: <%= divDisplayFoto %>">
                                     <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="far fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +291,7 @@ end function
                               </div>
                         </div>
                         <div class="row">
-                            <%=quickField("text", "RegistroANS", "Registro na ANS", 2, reg("RegistroANS"), "", "", "")%>
+                            <%=quickField("text", "RegistroANS", "Reg. na ANS", 2, reg("RegistroANS"), "", "", "")%>
                             <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
                             <div class="col-md-2 qf">
@@ -354,12 +376,29 @@ end function
                         $("#subformsPlanos [name^='ValorPlanoCH'],#subformsPlanos [name^='ValorPlanoFilme'],#subformsPlanos [name^='ValorPlanoUCO']").addClass("sql-mask-4-digits")
                     </script>
                 </div>
+                 <div class="row">
+                    <div class="col-md-12" id="subformsLocaisExternos">
+                        <%call Subform("convenios_local_externo", "convenioid", request.QueryString("I"), "frm")%>
+                    </div>
+                    <script>
+                        $("#subformsPlanos [name^='ValorPlanoCH'],#subformsPlanos [name^='ValorPlanoFilme'],#subformsPlanos [name^='ValorPlanoUCO']").addClass("sql-mask-4-digits")
+                    </script>
+                </div>
 <!--                <div class="row">-->
-                    <%'= quickField("memo", "Obs", "Observa&ccedil;&otilde;es "&"&nbsp;&nbsp;<button type=""button"" onclick="""" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""fa fa-plus""></i></button>", 11, "", "", "", "") %>
+                    <%'= quickField("memo", "Obs", "Observa&ccedil;&otilde;es "&"&nbsp;&nbsp;<button type=""button"" onclick="""" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""far fa-plus""></i></button>", 11, "", "", "", "") %>
 <!--                </div>-->
                 <div class="row">
-<!--                <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#modalConveniosObs"><i class="fa fa-plus"></i></button>-->
-                    <%= quickField("editor", "Obs", "Observações "&"&nbsp;&nbsp;<button type=""button"" onclick=""abrirModalObs()"" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""fa fa-plus""></i></button>", 12, reg("Obs"), "50", "", "")%>
+<!--                <button type="button" onclick="" class="btn btn-xs btn-success" data-toggle="modal" data-target="#modalConveniosObs"><i class="far fa-plus"></i></button>-->
+                    <%= quickField("editor", "Obs", "Observações "&"&nbsp;&nbsp;<button type=""button"" onclick=""abrirModalObs()"" class=""btn btn-xs btn-success"" data-toggle=""modal"" data-target=""#modalConveniosObs""><i class=""far fa-plus""></i></button>", 12, reg("Obs"), "50", "", "")%>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12" style="text-align: right; margin-bottom: 20px">
+                        <button type="button" class="btn btn-sm btn-warning" onclick="if(confirm('Tem certeza que deseja alterar este convênio para modo simples? Essa ação removerá o Registro ANS do convênio.')) { window.location.replace('?P=ConveniosSimplificado&AlteraTipo=simplificado&I=<%=req("I")%>&Pers=1') }"  style="margin: 2px;">
+                            <i class="far fa-exclamation-circle"></i> Alterar para convênio simplificado
+                        </button>
+                    </div>
+
                 </div>
               <button class="hidden" id="save" type="button"></button>
 
@@ -734,7 +773,7 @@ $("#DiasReceb").change(function()
                     <th style="width: 10%" class="text-center">Início da Vigência</th>
                     <th style="width: 10%" class="text-center">Fim da Vigência</th>
                     <th class="text-center">Observações</th>
-                    <th style="width: 5%" class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="fa fa-plus"></i></button></th>
+                    <th style="width: 5%" class="text-center"><button type="button" class="btn btn-xs btn-success mn" onclick="addRow();"><i class="far fa-plus"></i></button></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -763,7 +802,7 @@ end if
 <script>
 $(document).ready(function(e) {
     <% if (reg("sysActive")=1 AND session("Franqueador") <> "") then %>
-          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="fa fa-copy"></i> Replicar</button>`)
+          $('#rbtns').prepend(`&nbsp;<button class="btn btn-dark btn-sm" type="button" onclick="replicarRegistro(<%=reg("id")%>,'<%=req("P")%>')"><i class="far fa-copy"></i> Replicar</button>`)
     <% end if %>
 });
 </script>

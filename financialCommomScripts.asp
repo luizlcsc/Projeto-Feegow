@@ -1,7 +1,23 @@
 ﻿function xMov(I){
-    if(confirm('ATENÇÃO:\n\nAo excluir este pagamento, você removerá todos os lançamentos relativos a ele.\n\nTem certeza de que deseja prosseguir?')){
+    /*
+    if(confirm('ATENÇÃO:\n\nAo cancelar este pagamento, você removerá todos os lançamentos relativos a ele.\n\nTem certeza de que deseja prosseguir?')){
         $.post("xMov.asp", {I:I}, function(data){ eval(data) });
     }
+    $('.contratobt').attr("disabled", true);
+    $('.rgrec').attr("disabled", true)
+    */
+
+    /*
+    var jst = prompt("Descreva a justificativa para este cancelamento", "");
+    if(jst!=null){
+        $.post("xMov.asp", {I:I, jst:jst}, function(data){ eval(data) });
+    }
+    $('.contratobt').attr("disabled", true);
+    $('.rgrec').attr("disabled", true)
+    */
+
+    $.post("xMovVerify.asp?I="+I, '', function(data){ $('#pagar .modal-body').html(data); });
+
 }
 
 

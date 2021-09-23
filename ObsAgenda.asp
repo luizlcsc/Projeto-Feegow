@@ -4,7 +4,7 @@ set p = db.execute("select * from profissionais where id="&req("ProfissionalID")
 %>
 <div class="modal-header">
     <h4 class="modal-title">
-        <i class='fa fa-info-circle'></i> Informa&ccedil;&otilde;es do Profissional: <%= p("NomeProfissional") %>
+        <i class='far fa-info-circle'></i> Informa&ccedil;&otilde;es do Profissional: <%= p("NomeProfissional") %>
     </h4>
 </div>
 <div class="modal-body">

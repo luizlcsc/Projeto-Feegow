@@ -88,6 +88,7 @@ if not reg.eof then
     sysActive = reg("sysActive")
     sysDate = reg("sysDate")
     NomeHospitalSol = reg("NomeHospitalSol")
+    LocalExternoID = reg("LocalExternoID")
     DataSugInternacao = reg("DataSugInternacao")
     TipoInternacao = reg("TipoInternacao")
     RegimeInternacao = reg("RegimeInternacao")
@@ -342,7 +343,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Solicitação de Internação");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <style>
 .select2-container{
@@ -451,7 +452,8 @@ width: 100%!important;
                 <span> Dados do Hospital / Local Solicitado / Dados da Internação </span>
             </div>
             <div class="row">
-                <%= quickField("text", "NomeHospitalSol", "Nome do Hospital / Local Solicitado", 5, NomeHospitalSol, "", "", "") %>
+                <input type="hidden" id="NomeHospitalSol" value="<%=NomeHospitalSol%>"/>
+                <%= quickField("simpleSelect", "LocalExternoID", "Nome do Hospital / Local Solicitado", 5, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" ") %>
                 <%= quickField("text", "CodigoNaOperadora", "Código na Operadora / CNPJ", 2, CodigoNaOperadora, "", "", "") %>
                 <%= quickField("datepicker", "DataSugInternacao", "* Data sugerida para internação", 3, DataSugInternacao, "", "", "required='required'") %>
                 <%= quickField("simpleSelect", "AtendimentoRN", "* Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
@@ -525,21 +527,21 @@ width: 100%!important;
 
 <div class="clearfix form-actions no-margin">
     <div class="btn-group">
-        <button class="btn btn-primary btn-md" onclick="isPrint(0)"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" onclick="isPrint(0)"><i class="far fa-save"></i> Salvar</button>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu text-center" role="menu">
             <input type="hidden" id="print" value="0">
-            <li><button type="submit" class="btn" style="border:none; background-color:#fff!important;" id="GuiaInternacaoPrint" onclick="isPrint(1)"><i class="fa fa-print"></i> Salvar e imprimir</button></li>
+            <li><button type="submit" class="btn" style="border:none; background-color:#fff!important;" id="GuiaInternacaoPrint" onclick="isPrint(1)"><i class="far fa-print"></i> Salvar e imprimir</button></li>
         </ul>
     </div>
-    <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaInternacao', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+    <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaInternacao', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
     <% if AutorizadorTiss then %>
-        <!--<button type="button" onclick="Autorizador.autorizaInternacoes();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>-->
-        <button type="button" onclick="autorizadorguiainternacao()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
-        <button type="button" onclick="Autorizador.cancelarGuiaInternacao()" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
-        <button type="button" onclick="Autorizador.verificarStatusGuiaInternacao()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
+        <!--<button type="button" onclick="Autorizador.autorizaInternacoes();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>-->
+        <button type="button" onclick="autorizadorguiainternacao()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
+        <button type="button" onclick="Autorizador.cancelarGuiaInternacao()" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
+        <button type="button" onclick="Autorizador.verificarStatusGuiaInternacao()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
     <% end if %>
 </div>
 
@@ -605,6 +607,10 @@ $("#Contratado, #UnidadeID").change(function(){
 $("#ContratadoSolicitanteID").change(function(){
     tissCompletaDados("ContratadoSolicitante", $(this).val());
 });
+
+    $("#LocalExternoID").change(function(){
+        tissCompletaDados("LocalExterno", $(this).val());
+    });
 
 function isPrint(value){
     $('#print').val(value);

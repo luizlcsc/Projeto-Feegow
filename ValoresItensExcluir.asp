@@ -22,7 +22,7 @@ end if
 if req("PT")<>"" then
     db_execute("insert into tissprodutosvalores (ConvenioID, ProdutoTabelaID) values ("& req("C") &", '"& req("PT") &"')")
     set pv = db.execute("select pv.id, c.NomeConvenio, pv.Valor from tissprodutosvalores pv LEFT JOIN convenios c ON c.id=pv.ConvenioID where pv.ConvenioID="& req("C") &" order by pv.id desc limit 1")
-    btnx = " <button type='button' class='btn btn-xs btn-danger' onclick='xpv("& pv("id") &")'><i class='fa fa-remove'></i></button>"
+    btnx = " <button type='button' class='btn btn-xs btn-danger' onclick='xpv("& pv("id") &")'><i class='far fa-remove'></i></button>"
     call quickfield("currency", "pv"&pv("id"), pv("NomeConvenio") & btnx, 12, fn(pv("Valor")), "", "", "")
     %>
 <script >

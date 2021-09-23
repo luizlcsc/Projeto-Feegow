@@ -27,7 +27,7 @@ Dias = dom("Dias")
                 end if
 
                 %>
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divConPart').slideToggle()"><i class="fa fa-chevron-down"></i> Convênios</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divConPart').slideToggle()"><i class="far fa-chevron-down"></i> Convênios</button>
             </div>
         </div>
         <div class="row pt10" id="divConPart" style="display:none">
@@ -61,7 +61,7 @@ Dias = dom("Dias")
 
                 %>
 
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divFormaPart').slideToggle()"><i class="fa fa-chevron-down"></i> Formas de pagamento</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divFormaPart').slideToggle()"><i class="far fa-chevron-down"></i> Formas de pagamento</button>
             </div>
         </div>
         <div class="row pt10" id="divFormaPart" style="display:none">
@@ -131,7 +131,7 @@ Dias = dom("Dias")
                 end if
                 %>
 
-                <button <%=disabledTabela%> class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divTabs').slideToggle()"><i class="fa fa-chevron-down"></i> Tabelas Particulares</button>
+                <button <%=disabledTabela%> class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divTabs').slideToggle()"><i class="far fa-chevron-down"></i> Tabelas Particulares</button>
             </div>
         </div>
         <div class="row pt10" id="divTabs" style="display:none">
@@ -167,7 +167,7 @@ Dias = dom("Dias")
 
                 %>
 
-                <button class="btn btn-block btn-default text-left" type="button" onclick="$('#divEsp').slideToggle()"><i class="fa fa-chevron-down"></i> Especialidades</button>
+                <button class="btn btn-block btn-default text-left" type="button" onclick="$('#divEsp').slideToggle()"><i class="far fa-chevron-down"></i> Especialidades</button>
             </div>
         </div>
             <div class="row pt10" id="divEsp" style="display:none">
@@ -212,7 +212,7 @@ Dias = dom("Dias")
 
                 %>
 
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProf').slideToggle()"><i class="fa fa-chevron-down"></i> Profissionais</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProf').slideToggle()"><i class="far fa-chevron-down"></i> Profissionais</button>
             </div>
         </div>
             <div class="row pt10" id="divProf" style="display:none">
@@ -252,7 +252,7 @@ Dias = dom("Dias")
                     end if
                     %>
 
-                    <button <%=disabledGrupo%> class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divGProf').slideToggle()"><i class="fa fa-chevron-down"></i> Grupos de Profissionais</button>
+                    <button <%=disabledGrupo%> class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divGProf').slideToggle()"><i class="far fa-chevron-down"></i> Grupos de Profissionais</button>
                 </div>
             </div>
                 <div class="row pt10" id="divGProf" style="display:none">
@@ -293,7 +293,7 @@ Dias = dom("Dias")
                     disabledGrupo = "disabled "
                 end if
                 %>
-                <button class="btn btn-block btn-default text-left" type="button" onclick="$('#divGProc').slideToggle()"><i class="fa fa-chevron-down"></i> Grupos de Procedimentos</button>
+                <button class="btn btn-block btn-default text-left" type="button" onclick="$('#divGProc').slideToggle()"><i class="far fa-chevron-down"></i> Grupos de Procedimentos</button>
             </div>
         </div>
             <div class="row pt10" id="divGProc" style="display:none">
@@ -321,7 +321,7 @@ Dias = dom("Dias")
             %>
         <div class="row">
             <div class="col-md-12">
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProcs').slideToggle()"><i class="fa fa-chevron-down"></i> Procedimentos</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProcs').slideToggle()"><i class="far fa-chevron-down"></i> Procedimentos</button>
             </div>
         </div>
 
@@ -354,7 +354,7 @@ Dias = dom("Dias")
                 end if
 
                 %>
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divUnis').slideToggle()"><i class="fa fa-chevron-down"></i> Unidades</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divUnis').slideToggle()"><i class="far fa-chevron-down"></i> Unidades</button>
             </div>
         </div>
             <div class="row pt10" id="divUnis" style="display:none">
@@ -391,7 +391,7 @@ Dias = dom("Dias")
                 corBtn = "btn-info"
             end if
             %>
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divDias').slideToggle()"><i class="fa fa-chevron-down"></i> Dias da semana</button>
+                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divDias').slideToggle()"><i class="far fa-chevron-down"></i> Dias da semana</button>
             </div>
         </div>
             <div class="row pt10" id="divDias" style="display:none">
@@ -425,7 +425,7 @@ Dias = dom("Dias")
 
     </div>
     <div class="panel-footer">
-        <button class="btn btn-primary"><i class="fa fa-save"></i> SALVAR</button>
+        <button class="btn btn-primary"><i class="far fa-save"></i> SALVAR</button>
 </div>
 </form>
 

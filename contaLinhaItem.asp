@@ -7,7 +7,7 @@
               <td width="10%" nowrap class="text-center">
 			  <%
 			  if tipoLinha="s" then
-			  	response.Write( "<i class=""fa fa-angle-right""></i>" )
+			  	response.Write( "<i class=""far fa-angle-right""></i>" )
 			  else
 			  	response.Write( linkData )
 			  end if
@@ -26,7 +26,7 @@
                             desabilitar = " "
                         end if
 
-						checado = "<i class=""fa fa-check green""></i>  "
+						checado = "<i class=""far fa-check green""></i>  "
 						'set exec = db.execute("select * from profissionais where id="&treatvalzero(ProfissionalID))
 						'if not exec.eof then
                             if Associacao=0 or isnull(Associacao) then
@@ -64,7 +64,7 @@
               </td>
               <td>
                   <% if medkit=1 then %>
-                      <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="fa fa-medkit"></i></button>
+                      <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
                   <% end if %>
               </td>
               <td width="10%">
@@ -103,11 +103,11 @@
                     BoletoHtml = ""
 
                     IF (Boletos("aberto") > "0") THEN
-                       BoletoHtml = " <i class='fa fa-barcode text-primary'></i> "
+                       BoletoHtml = " <i class='far fa-barcode text-primary'></i> "
                     END IF
 
                     IF (Boletos("vencido") > "0") THEN
-                       BoletoHtml = " <i class='fa fa-barcode text-danger'></i> "
+                       BoletoHtml = " <i class='far fa-barcode text-danger'></i> "
                     END IF
               %>
               <%=BoletoHtml%>

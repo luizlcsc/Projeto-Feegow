@@ -35,14 +35,14 @@ end if
 if erro<>"" then
 	%>
     new PNotify({
-        title: '<i class="fa fa-thumbs-down"></i> ERRO!',
+        title: '<i class="far fa-thumbs-down"></i> ERRO!',
         text: '<%=erro%>',
         type: 'danger'
     });
 	<%
 else
 
-    sql = "update tissguiahonorarios set PacienteID='"&ref("gPacienteID")&"',  CNS='"&ref("CNS")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&ref("NGuiaPrestador")&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Senha='"&ref("Senha")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', AtendimentoRN='"&ref("AtendimentoRN")&"', NGuiaSolicitacaoInternacao='"&ref("NGuiaSolicitacaoInternacao")&"', Contratado='"&ref("Contratado")&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', ContratadoLocalCodigoNaOperadora='"&ref("ContratadoLocalCodigoNaOperadora")&"', ContratadoLocalNome='"&ref("ContratadoLocalNome")&"', ContratadoLocalCNES='"&ref("ContratadoLocalCNES")&"', DataInicioFaturamento="&mydatenull(ref("DataInicioFaturamento"))&", DataFimFaturamento="&mydatenull(ref("DataFimFaturamento"))&", DataEmissao="&mydatenull(ref("DataEmissao"))&", Observacoes='"&ref("Observacoes")&"', Procedimentos="&treatValZero(ref("vProcedimentos"))&", UnidadeID='"&ref("UnidadeID")&"', sysActive=1 where id="&I
+    sql = "update tissguiahonorarios set PacienteID='"&ref("gPacienteID")&"',  CNS='"&ref("CNS")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&ref("NGuiaPrestador")&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Senha='"&ref("Senha")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', AtendimentoRN='"&ref("AtendimentoRN")&"', NGuiaSolicitacaoInternacao='"&ref("NGuiaSolicitacaoInternacao")&"', Contratado='"&ref("Contratado")&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', ContratadoLocalCodigoNaOperadora='"&ref("ContratadoLocalCodigoNaOperadora")&"', ContratadoLocalNome='"&ref("ContratadoLocalNome")&"', ContratadoLocalCNES='"&ref("ContratadoLocalCNES")&"', DataInicioFaturamento="&mydatenull(ref("DataInicioFaturamento"))&", DataFimFaturamento="&mydatenull(ref("DataFimFaturamento"))&", DataEmissao="&mydatenull(ref("DataEmissao"))&", Observacoes='"&ref("Observacoes")&"', Procedimentos="&treatValZero(ref("vProcedimentos"))&", UnidadeID='"&ref("UnidadeID")&"', LocalExternoID='"&ref("LocalExternoID")&"', sysActive=1 where id="&I
 
 '	response.Write(sql)
 	db_execute(sql)

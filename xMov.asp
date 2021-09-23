@@ -25,6 +25,17 @@ set iinv=nothing
 RemoveMov = 1
 set MovementSQL = db.execute("SELECT * FROM sys_financialmovement WHERE id="&I)
 
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
+contabloqueadacred = verificaBloqueioConta(1, 1, MovementSQL("AccountIDCredit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
+contabloqueadadebt = verificaBloqueioConta(1, 1, MovementSQL("AccountIDDebit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+    retorno  = " alert('Esta conta ESTA BLOQUEADA e não pode ser alterada!'); "
+    response.write(retorno)
+    response.end
+end if
+' #####################################################################################
+
 IF MovementSQL.EOF THEN
    response.end
 END IF
@@ -133,6 +144,8 @@ db_execute("update rateiorateios set CreditoID=NULL where CreditoID="& I)
 if RemoveMov=1  then
     sqlDel = "delete from sys_financialmovement where id="&I
 
+    db.execute("insert into sys_financialmovement_removidos (id, Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate, MovementAssociatedID, InvoiceID, InstallmentNumber, sysUser, ValorPago, CaixaID, ChequeID, UnidadeID, sysDate, ConciliacaoID, CodigoDeBarras) select id, Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate, MovementAssociatedID, InvoiceID, InstallmentNumber, sysUser, ValorPago, CaixaID, ChequeID, UnidadeID, sysDate, ConciliacaoID, CodigoDeBarras from sys_financialmovement where id="& I)
+    db.execute("insert into xmovement_log (MovimentacaoID, sysUser, AutorizadoPor, Descricao, MovementsBill, Invoices) values ("& I &", "& session("User") &", "& treatvalnull(ref("AutID")) &", '"& ref("jst") &"', '', ( select group_concat( concat('|', ii.InvoiceID, '|') ) from itensdescontados idesc left join itensinvoice ii on ii.id=idesc.ItemID where idesc.PagamentoID="& I &" ) )")
     call gravaLogs(sqlDel, "AUTO", "Pagamento excluído", "")
     db_execute(sqlDel)
 

@@ -189,16 +189,16 @@ function getUrl(url, data, callback) {
 		//  xhr.setRequestHeader("My-First-Header", "first value");
 		//  xhr.setRequestHeader("My-Second-Header", "second value");
 		//}
+        error: function(data) {
+            if (callback) {
+                callback("ERROR");
+            }
+        }
 	}).done(function(data) {
 		if (callback) {
             callback(data);
         }
-    })
-    .fail(function(data) {
-		if (callback) {
-            callback(data);
-        }
-	});
+    });
 }
 
 function postUrl(url, data, callback) {
@@ -397,11 +397,11 @@ function showMessageDialog(message, messageType, title, delay=3000) {
 
     if (!title) {
         if (messageType === "danger") {
-            title = "ERRO!"
+            title = "Ocorreu um erro!"
         } else if (messageType === "success") {
-            title = "SUCESSO!"
+            title = "Sucesso!"
         } else if (messageType === "warning") {
-            title = "ATENÇÃO!"
+            title = "Atenção!"
         }
     }
 

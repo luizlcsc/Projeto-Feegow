@@ -51,7 +51,7 @@ Campos = "|id|NomePaciente|Nascimento|Bairro|Tel1|Cel1|ConvenioID1|"
 
 <script>
 function rpComp(Filtro){
-	$("#"+Filtro).html("<center><i class=\"fa fa-spinner fa-spin green bigger-125\"></i> Carregando...</center>");
+	$("#"+Filtro).html("<center><i class=\"far fa-spinner fa-spin green bigger-125\"></i> Carregando...</center>");
 	$("#li"+Filtro).addClass("hidden");
 	$.get("rpPerfilComplete.asp?Filtro="+Filtro, function(data, status){ $('#'+Filtro).html(data) });
 }

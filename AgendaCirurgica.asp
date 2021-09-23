@@ -68,6 +68,7 @@ if not reg.eof then
 	CodigoCNES = reg("CodigoCNES")
 	ContratadoLocalCodigoNaOperadora = reg("ContratadoLocalCodigoNaOperadora")
 	ContratadoLocalNome = reg("ContratadoLocalNome")
+    LocalExternoID = reg("LocalExternoID")
 	ContratadoLocalCNES = reg("ContratadoLocalCNES")
 	DataInicioFaturamento = reg("DataInicioFaturamento")
 	DataFimFaturamento = reg("DataFimFaturamento")
@@ -101,7 +102,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Agenda Cirúrgica");
-    $(".crumb-icon a span").attr("class", "fa fa-medkit");
+    $(".crumb-icon a span").attr("class", "far fa-medkit");
 </script>
 
 <form id="AgendaCirurgica" action="" method="post">
@@ -151,7 +152,8 @@ end if
 
             <div class="row">
                 <%= quickField("text", "ContratadoLocalCodigoNaOperadora", "C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", "") %>
-                <%= quickField("text", "ContratadoLocalNome", "* Nome do Hospital/Local", 7, ContratadoLocalNome, "", "", "") %>
+                <input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
+                <%= quickField("simpleSelect", "LocalExternoID", "* Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
                 <%= quickField("text", "ContratadoLocalCNES", "C&oacute;digo CNES", 2, ContratadoLocalCNES, "", "", "") %>
                 <%= quickField("datepicker", "DataEmissao", "* Data", 2, DataEmissao, "", "", " required ") %>
                 <%= quickField("timepicker", "Hora", "Hora", 2, reg("Hora"), "", "", "") %>
@@ -197,7 +199,7 @@ end if
 
             <br />
             <div class="clearfix form-actions no-margin">
-                <button class="btn btn-primary btn-md"><i class="fa fa-save"></i>Salvar</button>
+                <button class="btn btn-primary btn-md"><i class="far fa-save"></i>Salvar</button>
             </div>
         </div>
     </div>
@@ -226,6 +228,10 @@ function tissCompletaDados(T, I){
 
     $("#ContratadoSolicitanteID").change(function(){
         tissCompletaDados("ContratadoSolicitante", $(this).val());
+    });
+
+    $("#LocalExternoID").change(function(){
+        tissCompletaDados("LocalExterno", $(this).val());
     });
 
 

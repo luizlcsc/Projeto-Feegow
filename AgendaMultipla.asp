@@ -104,7 +104,7 @@ if ExibirFiltroPorLocalizacao then
 %>
 <div class="panel">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar por localização</span>
+        <span class="panel-title"><i class="far fa-filter"></i> Filtrar por localização</span>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -113,14 +113,14 @@ if ExibirFiltroPorLocalizacao then
             </div>
            <div class="col-md-2">
                <div class="input-group">
-                  <input type="text" placeholder="Máx. 10km" class="form-control" id="raio-busca" name="raio-busca" step="1" value="10" maxlength="2" autocomplete="off" required min="5" max="100">
+                  <input type="text" placeholder="Máx. 25km" class="form-control" id="raio-busca" name="raio-busca" step="1" value="25" maxlength="2" autocomplete="off" required min="5" max="100">
                   <span for="raio-busca" class="input-group-addon">
                      km
                  </span>
               </div>
             </div>
             <div class="col-md-2 text-center">
-                <button type="button" onclick="location.href='?P=AgendaMultipla&Pers=1&R=1&Data=<%=date()%>&Unidades=&Profissionais=&ProcedimentoID=';" class="btn bg-primary text-white"><i class="fa fa-filter text-white"></i> Limpar Filtros</button>
+                <button type="button" onclick="location.href='?P=AgendaMultipla&Pers=1&R=1&Data=<%=date()%>&Unidades=&Profissionais=&ProcedimentoID=';" class="btn bg-primary text-white"><i class="far fa-filter text-white"></i> Limpar Filtros</button>
             </div>
         </div>
     </div>
@@ -189,7 +189,7 @@ async function filtraUnidadesEndereco() {
     };
 
     $("#frmFiltros").html(`
-        <center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>
+        <center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>
     `);
 
     $(".multipla-step-2").fadeIn();
@@ -289,7 +289,7 @@ $(document).ready(function() {
   $("#raio-busca").change(function() {
 
     parametrosBuscaEndereco.raioBusca = $("#raio-busca").val();
-    (parametrosBuscaEndereco.raioBusca > 10 || parametrosBuscaEndereco.raioBusca==0 || parametrosBuscaEndereco.raioBusca == '') ? $("#raio-busca").val('10') : false;
+    (parametrosBuscaEndereco.raioBusca > 25 || parametrosBuscaEndereco.raioBusca==0 || parametrosBuscaEndereco.raioBusca == '') ? $("#raio-busca").val('25') : false;
     ($('#searchTextField').val() != "") ? filtraUnidadesEndereco() : false;
 
   });
@@ -336,7 +336,7 @@ $(document).ready(function () {
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-icon a span").attr("class", "far fa-calendar");
     $(".crumb-link").replaceWith("");
     $(".crumb-trail").removeClass("hidden");
     $("#rbtns").html("");
@@ -361,7 +361,7 @@ $(document).ready(function () {
     function setLoading() {
       $("#contQuadro").html(`<div class="p10">
                                 <center>
-                                     <i class="fa fa-2x fa-circle-o-notch fa-spin"></i> Carregando...
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i> Carregando...
                                  </center>
                             </div>`);
     }
@@ -462,7 +462,7 @@ $(document).ready(function () {
             ProcedimentoID = "";
         }
 
-        $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
         af('a');
 
         let UnidadeID="", UnidadesSelecionas = $("#Locais").val();
@@ -504,8 +504,8 @@ $(document).ready(function () {
 
     function imprimir() {
         $("#modal-agenda").modal("show");
-        //	$("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='fa fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgendaPrint.asp?Data="+$("#Data").val()+"&ProfissionalID="+$("#ProfissionalID").val()+"' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
-        $("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='fa fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgenda1Print.asp?Data=" + $("#Data").val() + "&ProfissionalID=" + $("#ProfissionalID").val() + "' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
+        //	$("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='far fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgendaPrint.asp?Data="+$("#Data").val()+"&ProfissionalID="+$("#ProfissionalID").val()+"' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
+        $("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='far fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgenda1Print.asp?Data=" + $("#Data").val() + "&ProfissionalID=" + $("#ProfissionalID").val() + "' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
     }
 
     <% if getConfig("ListarAgendasPorPadrao")<>"1"  then %>

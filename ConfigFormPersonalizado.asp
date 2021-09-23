@@ -64,7 +64,7 @@ end if
         <br>
     </div>
     <div class="modal-footer no-margin-top">
-        <button class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-sm btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
     </div>
 </form>
 
@@ -95,7 +95,7 @@ $(document).ready(function(){
       /* Alert the copied text */
     //      alert("Texto copiado: " + copyText.value);
             new PNotify({
-            title: '<i class="fa fa-copy"></i> Texto copiado!',
+            title: '<i class="far fa-copy"></i> Texto copiado!',
             text: copyText.value,
             type: 'success'
         });

@@ -63,7 +63,7 @@ else
                         %>
                         <h3>Esta vídeo-aula inda não está disponível para visualização. Volte em breve.</h3>
                         <div style="width:720px; height:480px; border:1px solid #111; background-color:#ccc; text-align:center; padding-top:220px">
-                            <i class="fa fa-spinner fa-spin"></i>
+                            <i class="far fa-spinner fa-spin"></i>
                         </div>
                         <%
                         else

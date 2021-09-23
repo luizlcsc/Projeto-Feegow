@@ -2,7 +2,7 @@
         <div class="widget-header header-color-green">
             <h5><%if Data=date() then%>HOJE<%else%><%=Data%><%end if%></h5>
             <div class="widget-toolbar hidden">
-                <a data-action="collapse" href="#"><i class="1 fa fa-chevron-up bigger-125"></i></a>
+                <a data-action="collapse" href="#"><i class="1 far fa-chevron-up bigger-125"></i></a>
             </div>
             <div class="widget-toolbar no-border">
             </div>
@@ -18,7 +18,7 @@
 				set atend = db.execute("select ap.rdValorPlano, ap.ValorPlano, agt.HoraInicio, agt.HoraFim, ap.id, p.NomeProfissional, proc.NomeProcedimento from atendimentosprocedimentos ap left join atendimentos agt on ap.AtendimentoID=agt.id left join sys_users u on u.id=agt.sysUser left join profissionais p on p.id=u.idInTable left join procedimentos proc on proc.id=ap.ProcedimentoID where agt.PacienteID="&PacienteID&" and agt.Data="&mydatenull(Data))
 			  if not atend.eof then
 			  %>
-              <h4 class="lighter blue no-margin header"><i class="fa fa-star"></i> Procedimentos Realizados pelo Profissional</h4>
+              <h4 class="lighter blue no-margin header"><i class="far fa-star"></i> Procedimentos Realizados pelo Profissional</h4>
                 <table class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>

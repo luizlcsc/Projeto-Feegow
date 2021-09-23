@@ -10,6 +10,6 @@
     <%=atendimento("NomePaciente")%>
 </div>
 <div class="modal-footer no-margin-top">
-	<button class="btn btn-sm btn-warning pull-right" type="button" onClick="atender(0, <%= atendimento("PacienteID") %>, 'Encerrar')"><i class="fa fa-stop"></i> Finalizar</button>
+	<button class="btn btn-sm btn-warning pull-right" type="button" onClick="atender(0, <%= atendimento("PacienteID") %>, 'Encerrar')"><i class="far fa-stop"></i> Finalizar</button>
     
 </div>

@@ -146,7 +146,7 @@ if session("Banco")="clinic3882" or session("Banco")="clinic100000" or session("
                     <td><%=quickField("simpleCheckbox", "Padrao"&procAnexo("id"), "Padrão", "1", procAnexo("ValorPadraoTratado"), " ValorPadrao ProcedimentoAnexoCampo ", "", "")%></td>
                     <td>
                         <input type="hidden" class="ProcAnexoID" value="<%=procAnexo("id")%>">
-                        <button onclick="xProcAnexo(<%= procAnexo("id") %>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                        <button onclick="xProcAnexo(<%= procAnexo("id") %>)" type="button" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                     </td>
                 </tr>
                 <%
@@ -222,7 +222,7 @@ function linhaMaterial(id, ValorUnitario, ProdutoID, CD, TabelaProdutoID, Codigo
 
 
 
-	<td><button type="button" class="btn btn-danger btn-xs" onClick="Remove(<%=id%>);"><i class="fa fa-remove"></i></button></td></tr>
+	<td><button type="button" class="btn btn-danger btn-xs" onClick="Remove(<%=id%>);"><i class="far fa-remove"></i></button></td></tr>
 
 <%
 end function
@@ -322,7 +322,7 @@ end if
     <tfoot>
       <tr>
     	<td colspan="6"><%=Numera%> itens</td>
-        <td colspan="2"><%if c>1 then%><button type="button" class="btn btn-danger btn-block btn-xs" onClick="removeItem('Grupo', <%=ItemID%>); $('#modal-table').modal('hide');"><i class="fa fa-remove"></i> Remover Todos</button><%end if%></td>
+        <td colspan="2"><%if c>1 then%><button type="button" class="btn btn-danger btn-block btn-xs" onClick="removeItem('Grupo', <%=ItemID%>); $('#modal-table').modal('hide');"><i class="far fa-remove"></i> Remover Todos</button><%end if%></td>
       </tr>
     </tfoot>
 </table>

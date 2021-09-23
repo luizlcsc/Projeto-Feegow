@@ -3,7 +3,7 @@
     $(".crumb-active a").html("Permissões");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Compartilhar Prontuário");
-    $(".crumb-icon a span").attr("class", "fa fa-share-alt");
+    $(".crumb-icon a span").attr("class", "far fa-share-alt");
 </script>
 
 <%
@@ -15,10 +15,10 @@ set tipoProntuario = db.execute("select id, NomeCategoria from cliniccentral.tip
     <div class="panel">
             <div class="panel-heading">
                 <span class="panel-title">
-                    <i class="fa fa-share-alt"></i>Compartilhar Prontuário
+                    <i class="far fa-share-alt"></i>Compartilhar Prontuário
                 </span>
                 <span class="panel-controls">
-                    <button id="btnSalvarCompartilharPront" type="submit" class="btn btn-sm btn-primary"> <i class="fa fa-save"></i> Salvar </button>
+                    <button id="btnSalvarCompartilharPront" type="submit" class="btn btn-sm btn-primary"> <i class="far fa-save"></i> Salvar </button>
                 </span>
             </div>
         <div class="panel-body">

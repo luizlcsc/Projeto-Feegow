@@ -7,7 +7,7 @@ set reg = db.execute("select * from Pacientes where id="&req("I"))
 	<input type="hidden" name="P" value="<%=req("P")%>" />
     <div class="row">
         <div class="col-md-8">
-           <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn"><i class="fa fa-external-link"></i> Ir para ficha completa</a>
+           <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn"><i class="far fa-external-link"></i> Ir para ficha completa</a>
         </div>
         <div class="col-md-2">
 			<%
@@ -33,7 +33,7 @@ set reg = db.execute("select * from Pacientes where id="&req("I"))
 		if (reg("sysActive")=1 and aut("pacientesA")=1) or (reg("sysActive")=0 and aut("pacientesI")=1) then
 		%>
             <button class="btn btn-block btn-primary" id="save">
-                <i class="fa fa-save"></i> Salvar
+                <i class="far fa-save"></i> Salvar
             </button>
         <%
 		end if
@@ -55,16 +55,16 @@ end if
             <div id="camera" class="camera"></div>  
             <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
                 <input type="file" name="Foto" id="Foto" />
-                <button type="button" id="clicar" class="btn btn-block btn-xs btn-info"><i class="fa fa-camera"></i></button>
+                <button type="button" id="clicar" class="btn btn-block btn-xs btn-info"><i class="far fa-camera"></i></button>
             </div>
             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
 	            <img id="avatarFoto" src="uploads/<%=reg("Foto")%>" class="img-thumbnail" width="100%" />
-                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
             <div class="row"><div class="col-xs-6">
-	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="fa fa-check"></i></button>
+	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
             </div><div class="col-xs-6">
-	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
             </div></div>
     </div>
     <div class="col-md-10">
@@ -160,7 +160,7 @@ end if
         <div class="row">
           <div class="col-md-2 pull-right">
             <button class="btn btn-block btn-primary">
-                <i class="fa fa-save"></i> Salvar
+                <i class="far fa-save"></i> Salvar
             </button>
           </div>
         </div>
@@ -234,7 +234,7 @@ if not isnull(reg("Nascimento")) and isdate(reg("Nascimento")) then
 <script language="javascript">
 $( document ).ready(function() {
 $.gritter.add({
-        icon: 'fa fa-birthday-cake',
+        icon: 'far fa-birthday-cake',
 	    title: 'ANIVERS&Aacute;RIO DO PACIENTE',
 	    text: '<%=txt%>',
 	    image: 'assets/img/birthday.gif',

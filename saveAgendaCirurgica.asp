@@ -35,14 +35,14 @@ end if
 if erro<>"" then
 	%>
     new PNotify({
-        title: '<i class="fa fa-thumbs-down"></i> ERRO!',
+        title: '<i class="far fa-thumbs-down"></i> ERRO!',
         text: '<%=erro%>',
         type: 'danger'
     });
 	<%
 else
 
-    sql = "update agendacirurgica set StatusID='"& ref("StatusID") &"', PacienteID="& treatvalzero(ref("gPacienteID")) &", ConvenioID="& treatvalnull(ref("gConvenioID")) &", PlanoID="& treatvalnull(ref("PlanoID")) &", RegistroANS='"&ref("RegistroANS")&"', rdValorPlano='"& ref("rdValorPlano") &"', Valor="& treatvalzero(ref("Valor")) &", Hora="& mytime(ref("Hora")) &", Senha='"&ref("Senha")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ContratadoLocalCodigoNaOperadora='"&ref("ContratadoLocalCodigoNaOperadora")&"', ContratadoLocalNome='"&ref("ContratadoLocalNome")&"', ContratadoLocalCNES='"&ref("ContratadoLocalCNES")&"', DataEmissao="& mydatenull(ref("DataEmissao")) &", Observacoes='"&ref("Observacoes")&"', Procedimentos="& treatValZero(ref("vProcedimentos")) &", UnidadeID="& treatvalzero(ref("UnidadeID")) &", sysActive=1 where id="&I
+    sql = "update agendacirurgica set StatusID='"& ref("StatusID") &"', PacienteID="& treatvalzero(ref("gPacienteID")) &", ConvenioID="& treatvalnull(ref("gConvenioID")) &", PlanoID="& treatvalnull(ref("PlanoID")) &", RegistroANS='"&ref("RegistroANS")&"', rdValorPlano='"& ref("rdValorPlano") &"', Valor="& treatvalzero(ref("Valor")) &", Hora="& mytime(ref("Hora")) &", Senha='"&ref("Senha")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ContratadoLocalCodigoNaOperadora='"&ref("ContratadoLocalCodigoNaOperadora")&"', ContratadoLocalNome='"&ref("ContratadoLocalNome")&"', ContratadoLocalCNES='"&ref("ContratadoLocalCNES")&"', DataEmissao="& mydatenull(ref("DataEmissao")) &", Observacoes='"&ref("Observacoes")&"', Procedimentos="& treatValZero(ref("vProcedimentos")) &", UnidadeID="& treatvalzero(ref("UnidadeID")) &", LocalExternoID =" & treatvalzero(ref("LocalExternoID")) &", sysActive=1 where id="&I
 
 '	response.Write(sql)
 	db.execute(sql)

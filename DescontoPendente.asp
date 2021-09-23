@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Financeiro</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-percentage");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("descontos pendentes");
 </script>
@@ -19,9 +19,13 @@ end if
 %>
 <br />
 	<div class="panel">
+	    <div class="panel-heading">
+            <span class="panel-title">
+                Descontos pendentes
+            </span>
+        </div>
         <div class="panel-body">
             <div class="col-md-12">
-                <h4>Descontos pendentes</h4>
                 <form id="form1" action="?P=DescontoPendente&Pers=1" method="post">
                     <%=quickfield("simpleSelect", "StatusDesconto", "Status do Desconto", 3, StatusDesconto, "select '0' id, 'PENDENTE' Tipo UNION ALL select '1' id, 'APROVADO' Tipo UNION ALL select '-1' id, 'RECUSADO' Tipo  ", "Tipo", "") %>
                     <%= quickField("datepicker", "De", "De", 2, De, "", "", "") %>
@@ -29,11 +33,16 @@ end if
 
                     <div class="col-xs-2">
                     <label>&nbsp;</label><br />
-                        <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                        <button type="submit" class="btn btn-sm btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
                     </div>
                 </form>
             </div>
         </div>
+
+    </div>
+
+    <div class="panel">
+
         <div class="panel-body">
             <div class="col-md-12">
                 <div class="row">
@@ -178,8 +187,8 @@ end if
                                         <%
                                             link = "./?P=DescontoPendente&I="&rsDescontoPendente("iddesconto")&"&Pers=1"
                                         %>
-                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="fa fa-check-square-o bigger-130"></i></a>
-                                        <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="rejeitarDesconto(this)"><i class="fa fa-times bigger-130"></i></a>
+                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="far fa-check-square bigger-130"></i></a>
+                                        <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="rejeitarDesconto(this)"><i class="far fa-times bigger-130"></i></a>
                                     </div>
                                 </td>
                                 <% end if %>

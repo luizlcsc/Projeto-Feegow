@@ -54,14 +54,14 @@
 
                             %>
 <tr>
-    <td><a class="hidden-print" href="?P=invoice&I=<%=FaturasSQL("id")%>&A=&Pers=1&T=D" target="_blank"><i class="fa fa-external-link"></i></a></td>
+    <td><a class="hidden-print" href="?P=invoice&I=<%=FaturasSQL("id")%>&A=&Pers=1&T=D" target="_blank"><i class="far fa-external-link"></i></a></td>
     <td><%=NomeCartao%></td>
     <td><%=FaturasSQL("Name")%></td>
     <td><%=DataVencimento%></td>
     <td><%=DataFechamento%></td>
     <td>R$ <%=fn(FaturasSQL("Value"))%></td>
     <td><%=Status%></td>
-    <td><button style="float: right;" type="button" onclick="location.href='?P=DetalhamentoFatura&Pers=1&Fatura=<%=FaturasSQL("id")%>'" title="Abrir detalhamento" class="btn-default btn btn-xs"><i class="fa fa-list"></i></button></td>
+    <td><button style="float: right;" type="button" onclick="location.href='?P=DetalhamentoFatura&Pers=1&Fatura=<%=FaturasSQL("id")%>'" title="Abrir detalhamento" class="btn-default btn btn-xs"><i class="far fa-list"></i></button></td>
 </tr>
                             <%
                             end if

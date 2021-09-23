@@ -103,7 +103,7 @@ END IF
 		        %>
                 <tr>
         	        <td><img height="32" width="32" src="<%=icone%>" /></td>
-                    <td><a target="_blank" <% if setOnclick then %>onclick="getFile('<%=arquivos("NomePasta")%>', '<%=arquivos("NomeArquivo")%>')" <% end if %> href="<%= fullFile %>" class="btn btn-info"><i class="fa fa-download"></i></a></td>
+                    <td><a target="_blank" <% if setOnclick then %>onclick="getFile('<%=arquivos("NomePasta")%>', '<%=arquivos("NomeArquivo")%>')" <% end if %> href="<%= fullFile %>" class="btn btn-info"><i class="far fa-download"></i></a></td>
                     <td><%=quickfield("text", "Desc"&arquivos("id"), "", 11, arquivos("Descricao"), " imgpac", "", " data-img-id='"&arquivos("id")&"'") %></td>
                     <td><%=quickfield("simpleSelect", "TipoArquivoID_"&arquivos("id"), "", 11, arquivos("TipoArquivoID"), " select * from tipoarquivo where sysActive=1 order by NomeArquivo", "NomeArquivo", " data-img-id='"&arquivos("id")&"'") %></td>
                     <td width="5%" nowrap><%=arquivos("DataHora")%></td>
@@ -114,21 +114,21 @@ END IF
 
 					<div class="btn-group dropleft" >
 						<a data-toggle="dropdown" class="btn btn-sm btn-warning dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-										<i class="fa fa-share-alt"></i>
+										<i class="far fa-share-alt"></i>
 						</a>
 						<ul class="dropdown-menu pull-right" role="menu" >
 							<li  class="dropdown-item">
-								<a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" > <i class="fa fa-users"></i> Publico </a>
+								<a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" > <i class="far fa-users"></i> Publico </a>
 							</li>
 							<li class="dropdown-item">
-								<a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" ><i class="fa fa-lock"></i> Privado</a>
+								<a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" ><i class="far fa-lock"></i> Privado</a>
 							</li>
 							<li class="dropdown-item">
-								<a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" ><i class="fa fa-eye-slash"></i> Restrito</a>
+								<a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" ><i class="far fa-eye-slash"></i> Restrito</a>
 							</li>
 								<li class="divider"></li>
 							<li class="dropdown-item">
-								<a href="javascript:saveCompartilhamento(0,'Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" > <i class="fa fa-asterisk"></i> Padrão </a>
+								<a href="javascript:saveCompartilhamento(0,'Arquivos',<%=arquivos("id") %>,<%=session("idInTable") %>)" > <i class="far fa-asterisk"></i> Padrão </a>
 							</li>
 						</ul>
 					</div>
@@ -137,7 +137,7 @@ END IF
 
                     <%if aut("arquivosX") then%>
                         <button type="button" class="btn btn-sm btn-danger pull-right" title="Excluir Arquivo" onclick="if(confirm('Tem certeza de que deseja excluir este arquivo?'))atualizaArquivos(<%=arquivos("id")%>);">
-                            <i class="fa fa-trash icon-trash"></i>
+                            <i class="far fa-trash icon-trash"></i>
                         </button>
                     <%end if%>
 					</div>

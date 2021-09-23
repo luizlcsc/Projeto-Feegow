@@ -8,5 +8,5 @@
     <td width="100%">
 	<input type="hidden" name="propostaFormas" value="<%=id%>">
 	<%=quickField("memo", "DescricaoFormas"&id, "", 4, Descricao, "", "", disabled&desabilitarProposta)%></td>
-    <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="aplicarProFormas('<%=id%>', 'X')"><i class="fa fa-remove"></i></button></td>
+    <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="aplicarProFormas('<%=id%>', 'X')"><i class="far fa-remove"></i></button></td>
 </tr>

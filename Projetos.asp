@@ -10,14 +10,14 @@
     <% else %>
         $(".crumb-link").html("editando projeto");
     <% end if %>
-    $(".crumb-icon a span").attr("class", "fa fa-th-large");
+    $(".crumb-icon a span").attr("class", "far fa-th-large");
     <%
         btnIncluir = ""
         if PermitirI = 1 then
-            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='fa fa-plus'></i></a> "
+            btnIncluir = " <a title='Novo' href='?P=tarefas&Pers=1&I=N' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
         end if
     %>
-    $("#rbtns").html('<a title="Lista" href="?P=listaProjetos&Pers=1" class="btn btn-sm btn-default"><i class="fa fa-list"></i></a> <a title="Histórico de Alterações" href="javascript:log()" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"fa fa-history\"></i></a>');
+    $("#rbtns").html('<a title="Lista" href="?P=listaProjetos&Pers=1" class="btn btn-sm btn-default"><i class="far fa-list"></i></a> <a title="Histórico de Alterações" href="javascript:log()" class=\"btn btn-sm btn-default hidden-xs\"><i class=\"far fa-history\"></i></a>');
 </script>
 
 <%
@@ -60,7 +60,7 @@ call insertRedir(req("P"), req("I"))
 <div class="row">
     <div class="col-md-11"></div>
     <div class="col-md-1">
-        <button class="btn btn-sm btn-primary" type="submit" id="Salvar" style="margin:20px 0;float: right;">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
+        <button class="btn btn-sm btn-primary" type="submit" id="Salvar" style="margin:20px 0;float: right;">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
     </div>
 </div>
 <div class="panel" >
@@ -93,7 +93,7 @@ call insertRedir(req("P"), req("I"))
 
 
 <hr class="short alt" />
-<h4 style="margin: 5px"><i class="fa fa-tasks"></i> Tarefas Vinculadas</h4>
+<h4 style="margin: 5px"><i class="far fa-tasks"></i> Tarefas Vinculadas</h4>
 <div id="tarefas" class="tab-pane chat-widget active" role="tabpanel">
     <%server.Execute("TarefasProjetos.asp") %>
 </div>

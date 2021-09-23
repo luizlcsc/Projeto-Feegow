@@ -136,7 +136,7 @@ end if
 <script type="text/javascript">
     $(document).ready(function(){
         $(".crumb-active a").html("<%=Titulo%>");
-        $(".crumb-icon a span").attr("class", "fa fa-<%=icone%>");
+        $(".crumb-icon a span").attr("class", "far fa-<%=icone%>");
     });
 </script>
 
@@ -145,7 +145,9 @@ end if
     <div class="col-xs-12">
 
         <form id="frmCD">
-            <div class="panel hidden-print">
+            <div class="panel mt10 hidden-print">
+            <input type="hidden" name="MotivoCancelamento" value="<%=ref("MotivoCancelamento")%>">
+
             <div class="panel-body">
                 <div class="col-sm-12">
                     <div class="row">
@@ -159,7 +161,7 @@ end if
                                 <option value="N" <% If Pagto = "N" Then %> selected="selected" <% End If %>>N&atilde;o quitadas</option>
                             </select>
                         </div>
-                        <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 4, session("Unidades"), "", "", "")%>
+                        <%=quickField("empresaMulti", "CompanyUnitID", "Unidades", 2, session("Unidades"), "", "", "")%>
                         <% if UnidadeSelecionada <> "" then%>
                             <script type="text/javascript">
                                 // a seleção de unidades default é feita por JS pq há um comportamento inesperado no default do quickField
@@ -171,11 +173,19 @@ end if
                             </script>
                         <% end if %>
                         <div class="col-md-2">
+                            <label>Tabela</label><br>
+                            <%=selectInsert("", "TabelaID", TabelaID, "TabelaParticular", "NomeTabela", "", "", "")%>
+                        </div>
+                        <div class="col-md-2">
                             <label>&nbsp;</label><br />
-                            <button class="btn btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="fa fa-search bigger-110"></i> Filtrar</button>
+                            <button class="btn btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i> Filtrar</button>
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-md-3">
+                            <label><%=tituloConta%></label><br />
+                            <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
+                        </div>
                         <div class="col-md-3">
                             <label>Categoria</label><br>
 
@@ -197,19 +207,16 @@ end if
                             <% end if %>
                         
                         </div>
-                        <div class="col-md-3">
-                            <label><%=tituloConta%></label><br />
-                            <%=selectInsertCA("", "AccountID", AccountID, "5, 4, 3, 2, 6, 1, 8", "", "", "")%>
-                        </div>
+
                         <%=quickField("text", "NotaFiscal", "Nota Fiscal", 2, NotaFiscal, "", "", " ")%>
                         <%=quickField("multiple", "AccountAssociation", "Limitar Tipo de Pagador", 2, AccountAssociation, "select * from cliniccentral.sys_financialaccountsassociation WHERE id NOT IN(1, 7)", "AssociationName", "")%>
                         <div class="col-md-1">
                             <label>&nbsp;</label><br />
-                            <button type="button" class="btn btn-block btn-info" title="Geral Impressão" onclick="print()"><i class="fa fa-print"></i></button>
+                            <button type="button" class="btn btn-block btn-info" title="Geral Impressão" onclick="print()"><i class="far fa-print"></i></button>
                         </div>
                         <div class="col-md-1">
                             <label>&nbsp;</label><br />
-                            <button type="button" class="btn btn-block btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="fa fa-table"></i></button>
+                            <button type="button" class="btn btn-block btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
                         </div>
                     </div>
                     <%
@@ -237,10 +244,7 @@ end if
                             <%
                             end if
                             %>
-                            <div class="col-md-2">
-                                <label>Tabela</label><br>
-                                <%=selectInsert("", "TabelaID", TabelaID, "TabelaParticular", "NomeTabela", "", "", "")%>
-                            </div>
+
                         </div>
                         <Div class="row">
                             <Div class="col-md-12 mt5">

@@ -18,14 +18,14 @@ else
 end if
 DeMax = cdate(dateadd("m", 12, DeMax))
 %>
-<form method="get" action="./PrintStatement.asp" target="_blank">
+<form class="panel mt20" method="get" action="./PrintStatement.asp" target="_blank">
 	<input type="hidden" name="R" value="fc">
-    <div class="page-header">
+    <div class="panel-heading">
         <h3 class="text-center">
             Fluxo de Caixa
         </h3>
     </div>
-    <div class="row">
+    <div class="panel-body">
         <div class="col-md-2 hidden">
             <label>Agrupar por:</label><br />
             <div class="radio-custom radio-primary"><input type="radio" name="Tipo" value="Diario" id="AgruparCategoria" checked /><label for="AgruparCategoria">Categoria</label></div>
@@ -65,11 +65,11 @@ DeMax = cdate(dateadd("m", 12, DeMax))
                 %>
             </select>
         </div>
-        <%=quickfield("empresa", "UnidadeID", "Unidade", 4, session("UnidadeID"), "", "", "")%>
+        <%=quickfield("empresa", "UnidadeID", "Unidade", 2, session("UnidadeID"), "", "", "")%>
         <div class="col-md-2">
             <label>&nbsp;</label>
             <br>
-            <button class="btn btn-primary btn-block"><i class="fa fa-chart"></i> Gerar</button>
+            <button class="btn btn-primary btn-block"><i class="far fa-chart"></i> Gerar</button>
         </div>
     </div>
 </form>

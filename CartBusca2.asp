@@ -29,22 +29,15 @@
 
 <div class="row mb20">
     <div class="col-md-4"></div>
-    <div class="col-md-2">
-        <button onclick="buscarDias('Manha')" type="button" class="btn btn-info btn-sm btn-block btnturno btnmanha"> Manha </button>
+    <div class="col-md-3">
+        <button onclick="buscarDias('Manha')" type="button" class="btn btn-primary btn-sm btnturno btnmanha"> Manhã </button>
+        <button onclick="buscarDias('Tarde')" type="button" class="btn btn-primary btn-sm btnturno btntarde"> Tarde </button>
     </div>
-
-    <div class="col-md-2">
-        <button onclick="buscarDias('Tarde')" type="button" class="btn btn-info btn-sm btn-block btnturno btntarde"> Tarde </button>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-1">
-        <button type="button" onclick="desistencia()" class="btn btn-warning btn-sm btn-block" title="Desistência"><i class="fa fa-remove"></i> Desistência</button>
-    </div>
-    <div class="col-md-1">
-        <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger btn-sm btn-block" title="Pendência"><i class="fa fa-puzzle-piece"></i> Pendência</button>
-    </div>
-    <div class="col-md-1">
-    <button onclick="FinalizarBusca()" type="button" class="btn btn-primary btn-sm btn-block" title="Finalizar busca"><i class="fa fa-check"></i> Finalizar</button>
+    <div class="col-md-2"></div>
+    <div class="col-md-3">
+        <button type="button" onclick="desistencia()" class="btn btn-warning btn-sm" title="Desistência"><i class="fa fa-remove"></i> Desistência</button>
+        <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger btn-sm" title="Pendência"><i class="fa fa-puzzle-piece"></i> Pendência</button>
+        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary btn-sm" title="Finalizar busca"><i class="fa fa-check"></i> Finalizar</button>   
     </div>
 </div>
 <%
@@ -100,25 +93,25 @@ if not procedimentoCarrinho.eof then
         " 	 )                                                                                                                            "&chr(13)&_
         " GROUP BY pro.id                                                                                                                "
     end if
-
     set agendasFuturas = db.execute(agendasFuturasSQL)
-    if ccur(agendasFuturas("total")) > 0 then
-        agendaDiponivelAviso =  "<strong>Há mais agendas disponíveis nas próximas semanas para:</strong> "
-        while not agendasFuturas.eof
+    if not agendasFuturas.eof then
+        if ccur(agendasFuturas("total")) > 0 then
+            agendaDiponivelAviso =  "<strong>Há mais agendas disponíveis nas próximas semanas para:</strong> "
+            while not agendasFuturas.eof
+                
+                NomeProcedimento = " <span class=""badge badge-warning"">"&agendasFuturas("NomeProcedimento")&"</span> "
+                agendaDiponivelAviso = agendaDiponivelAviso&NomeProcedimento
+
+            agendasFuturas.movenext
+            wend
             
-            NomeProcedimento = " <span class=""badge badge-warning"">"&agendasFuturas("NomeProcedimento")&"</span> "
-            agendaDiponivelAviso = agendaDiponivelAviso&NomeProcedimento
+            agendaDiponivelAviso = agendaDiponivelAviso
 
-        agendasFuturas.movenext
-        wend
-        agendasFuturas.close
-        set agendasFuturas = nothing
-
-        agendaDiponivelAviso = agendaDiponivelAviso
-
-        response.write(agendaDiponivelAviso)
-    end if                
-
+            response.write(agendaDiponivelAviso)
+        end if                
+    end if
+    agendasFuturas.close
+    set agendasFuturas = nothing
 end if
 
 while not ac.eof

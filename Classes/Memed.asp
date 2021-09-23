@@ -114,10 +114,6 @@
                 }
             }
         });
-
-        window.addEventListener("beforeunload", function (event) {
-            MdHub.command.send('plataforma.sdk', 'logout');
-        });
     }
 
     function updateMemedPrintTemplate() {

@@ -230,26 +230,36 @@ select case Tipo
             <div class="panel-heading">
                 <span class="panel-title "> <%=subTitulo %>
                 </span>
-            </div>
-            <div class="panel-body" style="overflow: inherit!important;">
-                <%
-                if req("Tipo")="|L|" then
-                %>
-                <div class="col-md-3">
+
+                <div class="panel-controls">
                     <%
-                    qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
-                                                " ORDER BY p.NomeProfissional ASC                    "
-                    
-                    if session("Table")="profissionais" then
-                        valorCheck = session("idInTable")
+                    set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
+                    restoreVisible = "none"
+                    if not exe.eof then
+                        restoreVisible = "inline"
                     end if
-                    response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", "", valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+
+                    %>
+                    <button type="button" class="btn btn-default" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-history"></i> Restaurar Formulário</button>
+                    <%
+                    if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
+                    %>
+                        <button class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</button>
+                    <%
+                    end if
+
+                    if Tipo = "|L|" then
+                        De = DateAdd("d", -7, date())
+                    %>
+                        <button type="button" class="btn btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="far fa-external-link"></i> Ir para Laudos</button>
+                     <%
+                    end if
                     %>
                 </div>
-                <%
-                end if 
-                %>
+
+            </div>
+            <div class="panel-body" style="overflow: inherit!important;">
+
                 <div class="col-md-3">
                         <br>
                         <%
@@ -309,37 +319,6 @@ select case Tipo
 	                else
 		                formTipo = " and bf.Tipo IN(1,2)"
 	                end if
-
-                set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
-                restoreVisible = "none"
-                if not exe.eof then
-                    restoreVisible = "block"
-                end if
-
-                %>
-                    <div class="col-md-3 col-xs-12">
-                        <br>
-                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-external-link"></i> Restaurar Formulário</a>
-                    </div>
-                <%
-                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
-                %>
-                    <div class="col-md-3">
-                        <br>
-                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</a>
-                    </div>
-                <%
-                end if
-
-                if Tipo = "|L|" then
-                    De = DateAdd("d", -7, date())
-                %>
-                <div class="col-md-3">
-                    <br>
-                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="far fa-external-link"></i> Ir para Laudos</a>
-                </div>
-                 <%
-                end if
                 %>
             </div>
         </div>
@@ -866,7 +845,23 @@ end select
     </script>
 
     <%
-    if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
+    if req("Tipo")="|L|" then
+    %>
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4"></div>
+        <%
+        qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
+                                    " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
+                                    " ORDER BY p.NomeProfissional ASC                    "
+
+        if session("Table")="profissionais" then
+            valorCheck = session("idInTable")
+        end if
+        response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", 4, valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+        %>
+    <%
+    elseif instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
     %>
     <div class="col-xs-12">
         <div class="row">

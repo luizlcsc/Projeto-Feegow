@@ -31,6 +31,7 @@
             if ref("ProcedimentosAgenda")<>"" then
                 db.execute("update procedimentos set "&campo&"=concat( ifnull("&campo&", ''), if("&campo&" is null or "&campo&"='', '', ', ') ,'|"&ProfissionalID&"|' ) where id in("& replace(ref("ProcedimentosAgenda"), "|", "") &")")
             end if
+
             %>
 <script >
 $(document).ready(function() {

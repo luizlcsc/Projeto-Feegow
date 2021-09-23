@@ -1129,6 +1129,56 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 				select2 = "select2-single"
                 additionalTags = replace(additionalTags, "no-select2", "")
 			end if
+
+            '=== <Para busca de registros com limit> ===
+            'Exemplo: 
+            'varSQL = "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo = 'on' AND "
+            'quickField("simpleSelect", "Procedimentos", "5", 12, Valor, varSQL, "NomeProcedimento", "limitSQL")
+
+            if instr(additionalTags, "limitSQL") then
+
+                if fieldValue&""<>"" then
+                    ItemSelected = " AND (id='"&fieldValue&"')"
+                else
+                    optionHTML = "<option value='' selected>Selecione</option>"
+                end if
+
+                itemSelectedSQL = sqlOrClass&ItemSelected
+                %>
+            <select name="<%= fieldName %>" id="<%= fieldName %>" class="select2Limit form-control"<%=additionalTags%> style="width:500px">
+                <%
+                ' Options gerado dinâmicamente pelo jsonQuickfields Script Abaixo
+                %>
+            </select>
+
+            <script type="text/javascript">
+                $('#<%= fieldName %>.select2Limit').select2({
+                    
+                    placeholder: 'Selecione',
+                    ajax: {
+                        url: './jsonQuickfields.asp',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (data) {
+                            return {
+                                searchTerm: data.term,
+                                searchTable:'<%= fieldName %>'
+                            };
+                        },
+                        processResults: function (response) {
+                            console.log(response)
+                            return {
+                                results:response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            </script>
+            <%
+            '=== </Para busca de registros com limit> ===            
+            else
+            '=== <Simpleselect Default> ===              
 			%>
             <select name="<%= fieldName %>" id="<%= fieldName %>" class="<%=select2 %> form-control"<%=additionalTags%>>
             <%if instr(additionalTags, "semVazio")=0 then%>
@@ -1150,6 +1200,8 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             %>
             </select>
             <%
+            '=== </Simpleselect Default> ===                   
+            end if
 		case "multiple"
 			response.Write(LabelFor)
 			%>

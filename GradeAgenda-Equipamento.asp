@@ -87,22 +87,27 @@ end if
 <%
 if session("RemSol")<>"" then
 	%>
-<div class="panel panel-footer row">
-	<div class="col-md-6">
-        <div class="input-group">
-            <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
-            <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                    <i class="far fa-clock-o bigger-110"></i>
-                    Remarcar</button>
-            </span>
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
-            </span>
+<div class="row">
+        <div class="panel  ">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                    <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
+
+                </div>
+                <p><i>*Selecione um hor&aacute;rio abaixo ou digite</i></p>
+            </div>
+            <div class="col-md-2">
+                <span class="btn-group">
+                    <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
+                        <i class="far fa-check bigger-110"></i>
+                        Remarcar</button>
+
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
+                </span>
+            </div>
         </div>
     </div>
-</div>
 
 	<%
 end if

@@ -99,6 +99,24 @@ if isdate(rfData) then
     rfData = cdate(rfData)
 end if
 
+if ref("LocalID")<>"" then
+    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(ref("LocalID")))
+
+    if not LocalSQL.eof then
+        AgendamentoUnidadeID=LocalSQL("UnidadeID")
+    end if
+end if
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+if AgendamentoUnidadeID <> "" then
+    contabloqueadacred = verificaBloqueioConta(2, 2, 0, AgendamentoUnidadeID,rfData)
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        erro ="Agenda bloqueada para edição retroativa (data fechada)."
+    end if
+end if
+' #####################################################################################
+
+
 rfProcedimento=ref("ProcedimentoID")
 rfrdValorPlano=ref("rdValorPlano")
 if rfrdValorPlano="V" then

@@ -163,7 +163,8 @@ if Acao="" then
                 if not isnull(HoraFim) and isdate(HoraFim) then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
-				if not integracaofeita.eof or not isnull(DataCancelamento) then
+
+				if not integracaofeita.eof or DataCancelamento&""<>"" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -236,7 +237,7 @@ if Acao="" then
 				end if
 				'response.write("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))			
 				
-				if not integracaofeita.eof or not isnull(DataCancelamento) then
+				if not integracaofeita.eof or DataCancelamento&"" <>"" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%

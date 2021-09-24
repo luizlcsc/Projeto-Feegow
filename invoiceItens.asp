@@ -94,7 +94,7 @@ if Acao="" then
 		Subtotal = 0
         response.Buffer
 
-		set itens = db_execute("select *, left(md5(id), 7) as senha from itensinvoice where InvoiceID="&InvoiceID&" order by id")
+		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, i.DataCancelamento from itensinvoice ii JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
 
 		if not itens.eof then
 		    set FornecedorSQL = db_execute("SELECT f.limitarPlanoContas FROM fornecedores f INNER JOIN sys_financialinvoices i ON i.AccountID=f.id WHERE i.AssociationAccountID=2 AND f.limitarPlanoContas != '' and f.limitarPlanoContas is not null AND i.id="&InvoiceID)
@@ -163,7 +163,7 @@ if Acao="" then
                 if not isnull(HoraFim) and isdate(HoraFim) then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
-				if not integracaofeita.eof then
+				if not integracaofeita.eof or not isnull(DataCancelamento) then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -236,7 +236,7 @@ if Acao="" then
 				end if
 				'response.write("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))			
 				
-				if not integracaofeita.eof then
+				if not integracaofeita.eof or not isnull(DataCancelamento) then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -366,7 +366,7 @@ elseif Acao="I" then
 	if ref("T")<>"P"  and ref("T")<>"K" then
 		ItemID = 0'id do procedimento
 		ValorUnitario = 0
-		if not integracaofeita.eof then
+		if not integracaofeita.eof or true then
 		%>
 			<!--#include file="invoiceLinhaItemRO.asp"-->
 		<%

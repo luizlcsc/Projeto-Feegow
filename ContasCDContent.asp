@@ -190,8 +190,8 @@ if req("X")<>"" then
     IF PodeApagar THEN %>
         <script>
                   new PNotify({
-                            title: 'Conta Excluída',
-                            text: 'Conta excluída com sucesso.',
+                            title: 'Conta cancelada',
+                            text: 'Conta cancelada com sucesso.',
                             type: 'success'
                         });
                          $("#btnSave").prop("disabled", false);

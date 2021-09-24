@@ -376,13 +376,13 @@ end if
                 <%
                 if ProfissionalID<> "" then
                     sqlEspecialidades = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
-                
+
                     if Associacao=8 then
                         sqlEspecialidades = "select e.id, e.especialidade FROM profissionalexterno p "&_
                                             "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
                                             "WHERE p.id="&ProfissionalID
                     end if
-                
+
                 else
                     sqlEspecialidades = "select * from especialidades order by especialidade"
                 end if
@@ -404,7 +404,7 @@ end if
                 if EspecialidadeID&""="" or EspecialidadeID&""="0" then
                     camposRequired=""
                 end if
-                
+
                 if Associacao<>2 then
                     response.write(quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired))
                 end if
@@ -603,24 +603,22 @@ if TemRepasse and aut("|repassesA|")=0 then
     </script>
     <%
 end if
-
-end if
 %>
 <script>
 
 $('.deletaGuia').on('click', function(){
     var itemGuiaId = $(this).data('id');
-    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]'); 
+    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]');
 
     if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
         $.post("deletaItemGuia.asp", { itemGuiaId: itemGuiaId }, function(data) {
             if(data){
                 linhaItem.fadeOut('fast', function (){
                     $('#totalGeral').html(data);
-                });              
+                });
             }
-        }) 
+        })
     };
-}) 
+})
 
 </script>

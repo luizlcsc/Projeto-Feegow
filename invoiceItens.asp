@@ -51,7 +51,6 @@ if not ValorPagoSQL.eof then
     end if
 end if
 
-
 ExecutantesTiposAjax = "5, 8, 2"
 if session("Banco")="clinic6118" then
     ExecutantesTiposAjax = "5"
@@ -89,6 +88,7 @@ if Acao="" then
 		</thead>
 		<tbody>
 		<%
+
 		conta = 0
 		Total = 0
 		Subtotal = 0
@@ -241,7 +241,7 @@ if Acao="" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
-				else 
+				else
 				%>
 					<!--#include file="invoiceLinhaItem.asp"-->				
 				<%
@@ -367,7 +367,7 @@ elseif Acao="I" then
 	if ref("T")<>"P"  and ref("T")<>"K" then
 		ItemID = 0'id do procedimento
 		ValorUnitario = 0
-		if not integracaofeita.eof or true then
+		if not integracaofeita.eof or DataCancelamento&"" <>"" then
 		%>
 			<!--#include file="invoiceLinhaItemRO.asp"-->
 		<%

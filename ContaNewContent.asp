@@ -71,6 +71,7 @@ end if
             <table class="table table-fixed">
                 <thead>
                     <tr class="info">
+                        <th width="3%"></th>
                         <th width="10%">DATA</th>
                         <th width="30%">DESCRIÇÃO</th>
                         <th width="20%">EXECUTADO</th>
@@ -120,8 +121,10 @@ end if
                     linkData=""
 
 				    if aut("areceberpacienteV")=1 or aut("contasareceberV")=1 then
-                        linkData = "<button type=""button"" class=""btn btn-xs btn-default"" onclick=""ajxContent('Invoice', '"&inv("id")&"&T=C&Ent=Conta', '1', 'divHistorico')""><i class=""far fa-edit blue""></i></button> "&sysDate
+				        btnVisualizar = "<button type=""button"" class=""btn btn-xs btn-default"" onclick=""ajxContent('Invoice', '"&inv("id")&"&T=C&Ent=Conta', '1', 'divHistorico')""><i class=""far fa-edit blue""></i></button> "
+                        linkData = sysDate
                     else
+                        btnVisualizar = ""
                         linkData = sysDate
                     end if
 				    if Itens=1 then

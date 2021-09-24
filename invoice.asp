@@ -586,7 +586,7 @@ end if
 
                 <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
                     <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
-                    <label for="VariosProcedimentos" id="lblprocedimentos">
+                    <label for="VariosProcedimentos" id="lblprocedimentos" style="margin-bottom:0px">
                         Adição Rápida
                     </label>
                 </span>
@@ -785,7 +785,7 @@ end if
             <%server.Execute("invoiceSelectPagto.asp")%>
         </div>
         <div id="NFeContent"></div>
-        <div class="panel-body pn">
+        <div class="panel-body pn mt10">
             <div class="bs-component" id="invoiceParcelas">
                 <%server.Execute("invoiceParcelas.asp")%>
             </div>
@@ -1473,6 +1473,8 @@ $("#TipoValor").on('change', function(){
     }
 });
 
+if(false){
+
     let selects = $('#invoiceItens select[id^="ItemID"]')
 
     if(selects.length>0){
@@ -1485,6 +1487,7 @@ $("#TipoValor").on('change', function(){
             parametrosInvoice(id,val,'S',true)
         })
     }
+
 
 function tabelaChange(){
     this.InvoiceAlterada = true;

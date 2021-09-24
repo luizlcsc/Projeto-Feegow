@@ -45,19 +45,34 @@ end if
       link.click();
       link.remove();
     }
+    $(".crumb-active a").html("Confirmação via WhatsApp");
+    $(".crumb-link").removeClass("hidden");
 </script>
 
-<div class="panel">
+<div class="panel mt15">
     <div class="panel-body">
-        <table class="table">
         <%
 
         set fila = db.execute("select sms.*  from cliniccentral.smsfila sms  "&_
-                              " "JOIN clientes_servicosadicionais sa ON sa.LicencaID=sms.LicencaID "&_
-                              " "where sms.WhatsApp=1 AND date(sms.DataHora)=CURDATE()  "&_
-                              " "AND sa.`Status`=4 AND sa.ServicoID=47 "&_
-                              " "AND length(mensagem)>10  "&_
-                              " "ORDER BY sms.DataHora LIMIT 100")
+                              "JOIN cliniccentral.clientes_servicosadicionais sa ON sa.LicencaID=sms.LicencaID "&_
+                              "where sms.WhatsApp=1 AND date(sms.DataHora)=CURDATE()  "&_
+                              "AND sa.`Status`=4 AND sa.ServicoID=47 "&_
+                              "AND length(mensagem)>10  and Mensagem like '%RESPONDA CONFIRMA OU CANCELA%' "&_
+                              "ORDER BY sms.DataHora LIMIT 100")
+
+        set CountSQL = db.execute("select count(sms.id)qtd  from cliniccentral.smsfila sms  "&_
+                                        "JOIN cliniccentral.clientes_servicosadicionais sa ON sa.LicencaID=sms.LicencaID "&_
+                                        "where sms.WhatsApp=1 AND date(sms.DataHora)=CURDATE()  "&_
+                                        "AND sa.`Status`=4 AND sa.ServicoID=47 "&_
+                                        "AND length(mensagem)>10  and Mensagem like '%RESPONDA CONFIRMA OU CANCELA%' ")
+        qtd = CountSQL("qtd")
+        %>
+        <div class="col-md-12">
+            <strong>Mensagens restantes:</strong> <%=qtd%>
+        </div>
+        <table class="table">
+        <%
+
         while not fila.eof
             AgendamentoID = fila("AgendamentoID")
             LicencaID = fila("LicencaID")
@@ -68,6 +83,7 @@ end if
                 msg = replace(msg, "&", "e")
                 msg = replace(msg, "[Profissional.Tratamento]", "")
             end if
+            msg = replace(msg, "RESPONDA CONFIRMA OU CANCELA", "")
             %>
             <tr id="div<%= fila("id") %>">
                 <td><%= fila("LicencaID") %></td>

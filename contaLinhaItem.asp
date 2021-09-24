@@ -4,9 +4,6 @@
                 end if
                 
                  %>>
-              <td>
-                <%=btnVisualizar%>
-            </td>
               <td width="10%" nowrap class="text-center">
 			  <%
 			  if tipoLinha="s" then

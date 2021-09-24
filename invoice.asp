@@ -1473,21 +1473,6 @@ $("#TipoValor").on('change', function(){
     }
 });
 
-if(false){
-
-    let selects = $('#invoiceItens select[id^="ItemID"]')
-
-    if(selects.length>0){
-        selects.map(function (key,select){
-            // $(select).change()
-
-            let id = $(select).attr('data-row')
-            let val = $(select).val()
-
-            parametrosInvoice(id,val,'S',true)
-        })
-    }
-
 
 function tabelaChange(){
     this.InvoiceAlterada = true;

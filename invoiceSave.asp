@@ -26,6 +26,39 @@ if not rsRateio.eof then
 	end if
 end if
 
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+if verificaBloqueioConta(1, 1, 1, session("UnidadeID"),ref("sysDate")) then
+ %>
+         showMessageDialog("Esta conta está BLOQUEADA e não pode ser alterada!");
+         $("#btnSave").prop("disabled", false);
+
+     saveExecutados();
+ <%
+        response.write(retorno)
+        response.end
+end if
+
+splPar = split(ref("ParcelasID"), ", ")
+for i=0 to ubound(splPar)
+    data = ref("Date"&splPar(i))
+
+    if verificaBloqueioConta(1, 1, 1, session("UnidadeID"),data) then
+     %>
+         new PNotify({
+         		title: 'Conta Bloqueada',
+         		text: 'Esta conta ESTA BLOQUEADA e não pode ser alterada!',
+         		type: 'danger'
+         	});
+             $("#btnSave").prop("disabled", false);
+     <%
+            response.write(retorno)
+            response.end
+    end if
+next
+
+' #####################################################################################
+
 if temregradesconto=1 then
 	'Validar se existe algum desconto cadastrado para o sistema
 	querydesconto = ""

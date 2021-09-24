@@ -6100,10 +6100,10 @@ ModoFranquiaUnidade = getConfig("ModoFranquia") = "1" AND session("UnidadeID") <
 
 function verificaBloqueioConta(lockTypeId, accountTypeId, AccountId, UnidadeId, datafechamento)
 
-   IF getConfig("FechamentoDeData")<>"1"  THEN
-         verificaBloqueioConta = 0
-         EXIT FUNCTION
-   END IF
+   'IF getConfig("FechamentoDeData")<>"1"  THEN
+   '      verificaBloqueioConta = 0
+   '      EXIT FUNCTION
+   'END IF
 
     if InStr(1, datafechamento, "/", 1)> 0 then
         arrayDatapagamento  = split(datafechamento,"/")

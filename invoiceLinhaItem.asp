@@ -480,7 +480,7 @@ end if
 
 
 
-
+if InvoiceSQL("CD")<>"C" then
 'set vcaRep = db.execute("select rr.*, rr.Funcao, rr.TipoValor, rr.Valor, p.NomeProcedimento, pac.NomePaciente, (ii.Quantidade * (ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal from rateiorateios rr LEFT JOIN itensinvoice ii on ii.id=rr.ItemInvoiceID LEFT JOIN procedimentos p on p.id=ii.ItemID LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN pacientes pac on pac.id=i.AccountID WHERE rr.ItemContaAPagar="&treatvalzero(id))
 set vcaRep = db.execute("select rr.* FROM rateiorateios rr WHERE rr.ItemContaAPagar="&treatvalzero(id)&" or  rr.ItemContaAReceber="&treatvalzero(id)&"")
 crr = 0
@@ -602,6 +602,8 @@ if TemRepasse and aut("|repassesA|")=0 then
         }, 100);
     </script>
     <%
+end if
+
 end if
 %>
 <script>

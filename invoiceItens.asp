@@ -269,7 +269,7 @@ if Acao="" then
 			%>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
-				<th><button type="button" class="btn btn-default btn-sm disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> Aplicar Descontos</button></th>
+				<th><button type="button" class="btn btn-default btn-xs disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> <i class="far fa-percentage"></i> Aplicar Descontos</button></th>
 				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <div id="totalGeral"><%=formatnumber(Total,2)%></div></th>
 				<th colspan="3"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>

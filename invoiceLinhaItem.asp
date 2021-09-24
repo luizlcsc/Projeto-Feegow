@@ -603,6 +603,8 @@ if TemRepasse and aut("|repassesA|")=0 then
     </script>
     <%
 end if
+
+end if
 %>
 <script>
 

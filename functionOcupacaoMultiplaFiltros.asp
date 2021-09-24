@@ -181,7 +181,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, idsProfiss
                                 sqlProfissionais &_
                 "      GROUP BY t.ProfissionalID"&_
                                 sqlOrder
-        response.write("<pre>"&sql&"</pre>")
+        'response.write("<pre>"&sql&"</pre>")
         set comGrade = db.execute(sql)
 
         cProf = 0

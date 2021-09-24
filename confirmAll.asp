@@ -104,7 +104,7 @@ end function
 
 Licencas = req("Licencas")
 
-if Licencas="" then
+if Licencas="" and LicenseId=5459 then
     %>
     <div class="alert alert-default"><i class="far fa-exclamation-circle"></i> Selecione uma licença acima.</div>
     <%

@@ -276,6 +276,7 @@ select case Tipo
                                     sqlOrderFavoritos = " IF(id in ("&favoritos&"),0,1),"
                                 end if
                             end if
+                        end if
 
 
                         sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by "&sqlOrderFavoritos&" Nome"

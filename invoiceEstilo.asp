@@ -5,13 +5,9 @@
         }
 
         .ulinha {
-            background-color: #f7f7f7 !important;
+            background-color: #fafafa !important;
         }
 
-            .ulinha td {
-                border-top: #ccc 2px groove !important;
-                background-color: #f7f7f7 !important;
-            }
 
         .detalheMetodo {
             display: none;

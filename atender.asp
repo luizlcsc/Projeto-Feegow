@@ -765,7 +765,7 @@ if Conteudo="Play" then
             <% end if %>
           </div>
           <%
-          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 or True then
+          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 then
 
             set AssinaturaDigitalConfiguradaSQL = db_execute("select id from dc_pdfstampconfigs WHERE UsuarioID="&treatvalzero(session("User")))
 

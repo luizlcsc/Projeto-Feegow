@@ -30500,3 +30500,26 @@ select[tabindex="-1"], .multisel {
     bottom: 3px;
     position: relative;
 }
+
+.navbar .dropdown-persist .panel-footer, .navbar .dropdown-persist .panel-body, .navbar .dropdown-persist .panel-menu{
+    border: none;
+}
+
+.navbar .nav > li.dropdown.menu-merge > .navbar-btn.open .dropdown-menu{
+    border-radius: 8px;
+}
+.navbar .dropdown-persist .panel{
+    border-radius: 8px;
+}
+
+.navbar .dropdown-persist  .panel-footer{
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: transparent;
+}
+
+.navbar .dropdown-persist .panel-menu{
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: transparent;
+}

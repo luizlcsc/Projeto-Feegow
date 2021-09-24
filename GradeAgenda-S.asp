@@ -137,17 +137,17 @@ if profissionalValido = true then
 end if
 
 	%>
-	<div class="alert alert-warning col-md-12 text-center" style="padding: 5px">
+	<div class="alert alert-default col-md-12 text-center" style="padding: 5px">
             Selecione um hor&aacute;rio disponível
-            <button type="button" class="btn btn-sm btn-danger" onClick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+            <button type="button" class="btn btn-sm btn-danger" onClick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
     </div>
 	<%
 end if
 if session("RepSol")<>"" then
 	%>
-	<div class="alert alert-success col-md-12 text-center" style="padding: 5px">
+	<div class="alert alert-default col-md-12 text-center" style="padding: 5px">
         Selecione um hor&aacute;rio disponível
-        <button type="button" class="btn btn-sm btn-danger" onClick="repetir(<%=session("RepSol")%>, 'Cancelar', '')">Parar Repeti&ccedil;&atilde;o</button>
+        <button type="button" class="btn btn-sm btn-danger" onClick="repetir(<%=session("RepSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Parar Repeti&ccedil;&atilde;o</button>
     </div>
 	<%
 end if

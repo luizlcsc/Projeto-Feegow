@@ -73,12 +73,8 @@ if req("X")<>"" then
 
         IF NOT PodeApagar THEN %>
             <script>
-                      new PNotify({
-                         		title: 'Conta Bloqueada',
-                         		text: 'Esta conta ESTA BLOQUEADA e não pode ser alterada!',
-                         		type: 'danger'
-                         	});
-                             $("#btnSave").prop("disabled", false);
+                  showMessageDialog('Esta conta está BLOQUEADA e não pode ser alterada!', 'danger', 'Conta Bloqueada');
+                 $("#btnSave").prop("disabled", false);
             </script>
         <% END IF
 

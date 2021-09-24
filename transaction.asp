@@ -54,7 +54,19 @@ if req("Save")="Save" then
 	splCreditAccount = split(creditAccount, "_")
 	splDebitAccount = split(debitAccount, "_")
 
-    if paymentMethodID&"" = "1" then 
+    ' ######################### BLOQUEIO FINANCEIRO ########################################
+    UnidadeID=session("UnidadeID")
+    contabloqueadacred = verificaBloqueioConta(1, 1, creditAccount, UnidadeID,myDate(ref("TransactionDate")))
+    contabloqueadadebt = verificaBloqueioConta(1, 1, debitAccount, UnidadeID,myDate(ref("TransactionDate")))
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        %>
+        showMessageDialog("Esta conta está BLOQUEADA e não pode ser alterada!");
+        <%
+        response.end
+    end if
+    ' #####################################################################################
+
+    if paymentMethodID&"" = "1" then
         'Se a transferencia for em dinheiro, validar se o valor transferido é permitido
         'SELECT Value FROM sys_financialmovement WHERE TYPE = 'Pay' AND CaixaID = 18 AND PaymentMethodID = 1
         sqlTotalEmCaixa = "SELECT " &_

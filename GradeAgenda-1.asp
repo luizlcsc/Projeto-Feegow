@@ -213,18 +213,23 @@ end if
 
     if existegradeval or getConfig("PermitirRemarcarSemGrade")=1 then
     %>
-    <div class="panel panel-footer row">
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
-                <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
-                <span class="input-group-btn">
+    <div class="row">
+        <div class="panel  ">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                    <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
+
+                </div>
+                <p><i>*Selecione um hor&aacute;rio abaixo ou digite</i></p>
+            </div>
+            <div class="col-md-2">
+                <span class="btn-group">
                     <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                        <i class="far fa-clock-o bigger-110"></i>
+                        <i class="far fa-check bigger-110"></i>
                         Remarcar</button>
-                </span>
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
                 </span>
             </div>
         </div>
@@ -903,22 +908,25 @@ $(document).ready(function(){
 			<%
 		end if
 	wend
-    ExcecaoMesAnoSplt = split(Data,"/")
-    ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
-    sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
-	set DiasComExcecaoSQL=db.execute(sExc)
-    while not DiasComExcecaoSQL.eof
-        diasAtende = DiasComExcecaoSQL("DataDe")
-        DataExcecaoClasseSplt = split(diasAtende,"/")
-        DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
-                    %>
-                    //cidiiddid
-    $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
-            <%
-    DiasComExcecaoSQL.movenext
-    wend
-    DiasComExcecaoSQL.close
-    set DiasComExcecaoSQL=nothing
+
+	if instr(Data,"/") then
+        ExcecaoMesAnoSplt = split(Data,"/")
+        ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
+        sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
+        set DiasComExcecaoSQL=db.execute(sExc)
+        while not DiasComExcecaoSQL.eof
+            diasAtende = DiasComExcecaoSQL("DataDe")
+            DataExcecaoClasseSplt = split(diasAtende,"/")
+            DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
+                        %>
+                        //cidiiddid
+        $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
+                <%
+        DiasComExcecaoSQL.movenext
+        wend
+        DiasComExcecaoSQL.close
+        set DiasComExcecaoSQL=nothing
+    end if
     call agendaOcupacoes(ProfissionalID, Data)
 	%>
 // Create the tooltips only when document ready

@@ -472,7 +472,7 @@ end if
             </div>
 
 
-            <div class="col-md-2">
+            <div class="col-md-4">
 <%
 if getConfig("CalculoReembolso") then
 
@@ -488,7 +488,7 @@ end if
             </div>
 
             <%
-             if session("Banco")="clinic6118" then
+             if getConfig("ObrigarTabelaParticular") then
                 camposRequired=" required empty"
             else
                 camposRequired=""
@@ -714,7 +714,7 @@ end if
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
                         <i class="far fa-plus"></i> Adicionar Item
-                        <span class="far fa-caret-down icon-on-right"></span>
+                        <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right">
                       <%
@@ -747,7 +747,7 @@ end if
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable<% If CD="D" Then %> hidden<% End If %>" data-toggle="dropdown">
                         <i class="far fa-plus"></i> Adicionar Pacote
-                        <span class="far fa-caret-down icon-on-right"></span>
+                        <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right" style="overflow-y: scroll; max-height: 400px;">
                           <%
@@ -807,7 +807,7 @@ end if
             <%
         end if
         %>
-        <button type='button' class='btn btn-default btn-sm ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='far fa-history bigger-110'></i></button>
+        <button type='button' class='btn btn-default btn-xs ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='far fa-history bigger-110'></i></button>
     </div>
 
     </form>

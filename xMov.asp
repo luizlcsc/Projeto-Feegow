@@ -29,8 +29,9 @@ set MovementSQL = db.execute("SELECT * FROM sys_financialmovement WHERE id="&I)
 UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
 contabloqueadacred = verificaBloqueioConta(1, 1, MovementSQL("AccountIDCredit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
 contabloqueadadebt = verificaBloqueioConta(1, 1, MovementSQL("AccountIDDebit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
+
 if contabloqueadacred = "1" or contabloqueadadebt = "1" then
-    retorno  = " alert('Esta conta ESTA BLOQUEADA e não pode ser alterada!'); "
+    retorno  = " alert('Esta conta está BLOQUEADA e não pode ser alterada!'); "
     response.write(retorno)
     response.end
 end if

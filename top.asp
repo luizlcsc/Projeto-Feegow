@@ -92,7 +92,6 @@ else
                     <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1"><i class="far fa-calendar-star"></i> Múltipla por Filtros <span class="label label-alert label-xs fleft">Beta</span> </a></li>
                     <%
                     end if
-
                 end if
 		        if Aut("|agendaA|")=1 or Aut("agendaaheckin")=1  or Aut("confirmaragendamentos")=1 then %>
                 <li class="divider"></li>
@@ -456,6 +455,18 @@ else
             <li><a href="./?P=buscaPropostas&Pers=1"  class="sub-menu-click-cadastro-propostas" ><i class="far fa-files-o"></i> Propostas</a></li>
             <%
             end if
+
+            if aut("sys_restricoesV")=1  then
+            %>
+            <li><a href="./?P=sys_restricoes&Pers=Follow"  class="sub-menu-click-cadastro-restricoes" ><i class="fa fa-exclamation-circle"></i> Restrições</a></li>
+            <%
+            end if
+            
+            if aut("sys_preparosV")=1  then
+            %>
+            <li><a href="./?P=sys_preparos&Pers=Follow"  class="sub-menu-click-cadastro-preparos" ><i class="fa fa-list-alt"></i> Preparos</a></li>
+            <%
+            end if            
 
             if aut("basedeconhecimento")=1 and False then
             %>

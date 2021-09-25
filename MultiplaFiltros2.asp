@@ -839,7 +839,12 @@ function abreAgenda(Hora, id,Data, ProfissionalID, EspecialidadeID, TabelaID, Pr
     window.Encaixe = Encaixe;
 
     if(PacienteID == "" || PacienteID == 0 || PacienteID == null){
-        alert("Paciente não selecionado");
+        new PNotify({
+            title: 'Erro!',
+            text: 'Selecione um Paciente',
+            type: 'danger',
+            delay: 2000
+        });
     }else{
         $.post("agendaVerificaDisponibilidade.asp",{pacienteID: PacienteID, profissionalID: ProfissionalID, hora: Hora, data: Data}, function(data){
             eval(data)

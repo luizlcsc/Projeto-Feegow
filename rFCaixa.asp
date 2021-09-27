@@ -454,7 +454,11 @@ setTimeout(function() {
             var id = $(this).data("id");
             var title = $(this).find("td").first().text();
 
-            $modal.find(".modal-body").html("Carregando...");
+            $modal.find(".modal-body").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
 
             changeModalTitle(title);
 

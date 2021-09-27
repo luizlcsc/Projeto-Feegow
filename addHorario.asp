@@ -191,7 +191,7 @@ end if
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                        <i class="fa fa-calendar"></i>
+                        <i class="far fa-calendar"></i>
                             Marque para duplicar a marcação para o dia da semana escolhido
                         </span>
                     </div>
@@ -248,7 +248,7 @@ end if
       <%= quickfield("datepicker", "InicioVigencia", "Vigente desde", 3, InicioVigencia, "", "", " placeholder='Sempre' ") %>
       <%= quickfield("datepicker", "FimVigencia", "até", 3, FimVigencia, "", "", " placeholder='Sempre' ") %>
       <div class="col-md-2">
-          <button type="button" data-toggle="collapse" data-target="#collapse-horarios" class="btn mt25 pull-right"> Mais opções <i class="fa fa-chevron-down"></i></button>
+          <button type="button" data-toggle="collapse" data-target="#collapse-horarios" class="btn mt25 pull-right"> Mais opções <i class="far fa-chevron-down"></i></button>
       </div>
  </div>
 
@@ -258,21 +258,19 @@ end if
       <%
       if ccur(req("ProfissionalID"))>0 then
       %>
-        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 12, Especialidades, "select id, especialidade from especialidades where sysActive=1 "&franquia("and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&")")&" order by especialidade", "especialidade", "")%>
+        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 3, Especialidades, "select id, especialidade from especialidades where sysActive=1 "&franquia("and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&")")&" order by especialidade", "especialidade", "")%>
       <%
       else
       %>
-        <%=quickField("multiple", "Profissionais", "Especificar profissionais que podem utilizar este equipamento neste período", 12, Profissionais, "select id, NomeProfissional from profissionais WHERE sysActive=1 AND Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
+        <%=quickField("multiple", "Profissionais", "Especificar profissionais que podem utilizar este equipamento neste período", 3, Profissionais, "select id, NomeProfissional from profissionais WHERE sysActive=1 AND Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
       <%
       end if
       %>
-      </div>
-      <div class="row mo">
-        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 12, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
+        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
         <%
         sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" order by NomeConvenio"
         %>
-        <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, sqlConvenios, "NomeConvenio", "")%>
+        <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 3, Convenios, sqlConvenios, "NomeConvenio", "")%>
         <% if getConfig("ExibirProgramasDeSaude") = 1 then %>
             <div class="col-md-12">
                 <label for="Programas">Limitar os programas de saúde aceitos neste período</label><br>
@@ -301,8 +299,8 @@ end if
           tituloHorarios = "<label><input type='checkbox' name='TipoGrade' value='1' "& tgCheck &" > Utilizar horários personalizados (preencha abaixo os horários separados por vírgula)</label>"
           %>
           <%if ProfissionalID>0 then %>
-          <%= quickfield("text", "Mensagem", "Mensagem de título", 4, Mensagem, "2", "", "") %>
-        <div class="col-md-4">
+          <%= quickfield("text", "Mensagem", "Mensagem de título", 3, Mensagem, "2", "", "") %>
+        <div class="col-md-3">
             <label for="FrequenciaSemanas">Frequência</label>
             <select name="FrequenciaSemanas" id="FrequenciaSemanas" class="form-control">
                 <option value="1" <% if FrequenciaSemanas=1 then %> selected <% end if %>>Semanal</option>
@@ -310,10 +308,10 @@ end if
             </select>
         </div>
         <% end if %>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
         </div>
-            <%=quickField("currency", "ValorHonorario", "Valor Hora", 2, ValorHonorario, "", "", "")%>
+            <%=quickField("currency", "ValorHonorario", "Valor Hora", 3, ValorHonorario, "", "", "")%>
             <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
       </div>
         <br />
@@ -355,7 +353,7 @@ end if
 
 </div>
 <div class="modal-footer">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> SALVAR</button>
+	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> SALVAR</button>
 </div>
 </form>
 <script>

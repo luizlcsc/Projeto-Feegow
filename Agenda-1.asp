@@ -231,7 +231,11 @@ end if
 
     function altMult(ProfissionalID, Data) {
         $("#modal-table").modal("show");
-        $("#div-table").html("Carregando...");
+        $("#div-table").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`);
         $.post("agendaAltMult.asp", {
             ProfissionalID: ProfissionalID,
             Data: Data

@@ -1377,7 +1377,11 @@ function itemSADT(T, I, II, A){
     if(A!='Cancela'){
 //	    $("#l"+T+II).fadeOut();
         $("#"+T+II).removeClass('hidden');
-//	    $("#"+T+II).html("Carregando...");
+//	    $("#"+T+II).html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
@@ -1486,7 +1490,11 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#gPacienteID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $.post("addContrato.asp?Tipo=SADT&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID=3_"+$("#gPacienteID").val(), "", function(data){
             $("#modal").html(data);
         });

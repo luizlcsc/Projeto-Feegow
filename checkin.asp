@@ -21,7 +21,11 @@
 
 
     $("#frm-filtros").submit(function(){
-        $("#GradeAgenda").html("Carregando...");
+        $("#GradeAgenda").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $.post("checkinContent.asp?AgendamentoID="+ $("#reqAgendamentoID").val(), $(this).serialize(), function(data){
             $("#GradeAgenda").html(data);
 

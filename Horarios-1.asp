@@ -75,15 +75,13 @@ end if
             <span class="panel-controls">
                 <button class="btn btn-default btn-sm" type="button" onclick="HistoricoAlteracoes()" title="Histórico de alterações"><i class="far fa-history"></i></button>
                 <button type="button" onclick="ajxContent('DiferencaGrade', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-alert btn-sm"><i class="far fa-calendar"></i> LISTAR GRADES POR DATA</button>
+                <button class="btn btn-primary btn-sm"><i class="far fa-save"></i> Salvar</button>
             </span>
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-11">
                     <h4><%= showDate %></h4>
-                </div>
-                <div class="col-md-1">
-                    <button class="btn btn-primary btn-ms"><i class="far fa-save"></i> Salvar</button>
                 </div>
             </div>
             <br>
@@ -216,7 +214,11 @@ end if
     });
 
     function addHorario(Dia){
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`);
         $("#modal-table").modal("show");
         $.post("addHorario.asp?addGrade=0&ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
@@ -225,7 +227,11 @@ end if
 
     function editGrade(H, ProfissionalID){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`);
         $.get("addHorario.asp?addGrade=1&H="+H+"&ProfissionalID="+ProfissionalID, function(data){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });

@@ -1364,7 +1364,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               function vidau(v){
                   dva = $("#videoaula");
                   dva.css("display", "block");
-                  dva.html("Carregando...");
+                  dva.html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
                   $.get(v, function(data){
                     dva.html( data );
                     });

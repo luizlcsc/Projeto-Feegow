@@ -32,6 +32,10 @@ if HorarioID<>"" then
         Mensagem = gh("Mensagem")
         Cor = gh("Cor")
         ValorHonorario = gh("ValorHonorario")
+        MarcarOrdem = gh("MarcarOrdem")
+        GradeEncaixe = gh("GradeEncaixe")
+        MarcarEmOrdemHoraA = mytime(gh("MarcarEmOrdemHoraA"))
+        TipoLimiteHorario = gh("TipoLimiteHorario")
     end if
 end if
 
@@ -117,12 +121,12 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
         diaSemanaArray = split(ref("diaSemanaArray[]"),",")
         numberArray = UBound(diaSemanaArray)
             For i = 0 To numberArray
-               sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios,Programas,Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor, ValorHonorario) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"', "& treatvalnull(ref("ValorHonorario")) &")"
+              sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios, Programas, Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor, ValorHonorario, MarcarOrdem, MarcarEmOrdemHoraA, TipoLimiteHorario, GradeEncaixe) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"', "& treatvalnull(ref("ValorHonorario")) &", '"& ref("MarcarOrdem") &"', '"& ref("MarcarEmOrdemHoraA") &"', '"& ref("TipoLimiteHorario") &"', '"& ref("GradeEncaixe)") &"')"
                call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
                db_execute(sqlGrade)
             Next
         else
-            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"', ValorHonorario="& treatvalnull(ref("ValorHonorario")) &" WHERE id="&req("H")
+            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"', ValorHonorario="& treatvalnull(ref("ValorHonorario")) &", MarcarOrdem='"& ref("MarcarOrdem") &"', MarcarEmOrdemHoraA='"& ref("MarcarEmOrdemHoraA") &"', TipoLimiteHorario='"& ref("TipoLimiteHorario") &"',GradeEncaixe='"& ref("GradeEncaixe") &"' WHERE id="&req("H")
             call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
             db_execute(sqlGrade)
         end if
@@ -254,22 +258,19 @@ end if
       <%
       if ccur(req("ProfissionalID"))>0 then
       %>
-        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 12, Especialidades, "select id, especialidade from especialidades where sysActive=1 "&franquia("and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&")")&" order by especialidade", "especialidade", "")%>
+        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 3, Especialidades, "select id, especialidade from especialidades where sysActive=1 "&franquia("and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&")")&" order by especialidade", "especialidade", "")%>
       <%
       else
       %>
-        <%=quickField("multiple", "Profissionais", "Especificar profissionais que podem utilizar este equipamento neste período", 12, Profissionais, "select id, NomeProfissional from profissionais WHERE sysActive=1 AND Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
+        <%=quickField("multiple", "Profissionais", "Especificar profissionais que podem utilizar este equipamento neste período", 3, Profissionais, "select id, NomeProfissional from profissionais WHERE sysActive=1 AND Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
       <%
       end if
       %>
-      </div>
-      <div class="row mo">
-        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 12, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
+        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
         <%
         sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" order by NomeConvenio"
         %>
-        <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 12, Convenios, sqlConvenios, "NomeConvenio", "")%>
-
+        <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 3, Convenios, sqlConvenios, "NomeConvenio", "")%>
         <% if getConfig("ExibirProgramasDeSaude") = 1 then %>
             <div class="col-md-12">
                 <label for="Programas">Limitar os programas de saúde aceitos neste período</label><br>
@@ -298,7 +299,7 @@ end if
           tituloHorarios = "<label><input type='checkbox' name='TipoGrade' value='1' "& tgCheck &" > Utilizar horários personalizados (preencha abaixo os horários separados por vírgula)</label>"
           %>
           <%if ProfissionalID>0 then %>
-          <%= quickfield("text", "Mensagem", "Mensagem de título", 4, Mensagem, "2", "", "") %>
+          <%= quickfield("text", "Mensagem", "Mensagem de título", 3, Mensagem, "2", "", "") %>
         <div class="col-md-3">
             <label for="FrequenciaSemanas">Frequência</label>
             <select name="FrequenciaSemanas" id="FrequenciaSemanas" class="form-control">
@@ -310,15 +311,41 @@ end if
         <div class="col-md-3">
             <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
         </div>
-        <%=quickField("currency", "ValorHonorario", "Valor Hora", 2, ValorHonorario, "", "", "")%>
+            <%=quickField("currency", "ValorHonorario", "Valor Hora", 3, ValorHonorario, "", "", "")%>
             <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>
       </div>
         <br />
       <div class="row mo">
         <%if ProfissionalID>0 then %>
-        <div class="col-md-12">
-            <label><input type="checkbox" class="ace" name="Compartilhada" value="S" <%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
+        <div class="col-md-6">
+            <label><input type="checkbox" class="ace" name="Compartilhada" value="S"<%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
         </div>
+        <div class="col-md-6">
+            <div class="col-sm-6">
+                <label><input type="checkbox" class="ace" id="GradeEncaixe" name="GradeEncaixe" value="S" <%if GradeEncaixe="S" then response.write(" checked ") end if %> /><span class="lbl"> Grade de encaixe</span></label>
+            </div>
+            <div class="col-sm-6">
+
+            <label>
+                <input type="checkbox" class="ace" id="MarcarOrdem" name="MarcarOrdem" value="S" <%if MarcarOrdem="S" then response.write(" checked ") end if %> /><span class="lbl"> Marcar em Ordem</span>
+            </label>     
+                            
+            </div>
+        </div>
+            <div class="col-md-6"></div>
+            <div class="col-md-6" id="marcarOrdemConfig" style="background:#e6e6e6; border:1px dotted #ebebeb; padding: 10px;">
+                <%=quickField("text", "MarcarEmOrdemHoraA", "Horário Inicial", 6, MarcarEmOrdemHoraA, " input-mask-l-time", "", " ")%>
+                <div class="col-md-6">
+                <label>Liberação dos horários </label>
+                <br>
+                <label>
+                    <input type="radio" class="ace" name="TipoLimiteHorario" value="I" <%if TipoLimiteHorario="I" or TipoLimiteHorario&""="" then response.write(" checked ") end if %> /><span class="lbl"> Progressivamente</span>
+                </label>
+                <label>
+                    <input type="radio" class="ace" name="TipoLimiteHorario" value="F" <%if TipoLimiteHorario="F" then response.write(" checked ") end if %> /><span class="lbl"> Regressivamente</span>
+                </label>
+                </div>
+            </div>
         <%end if %>
       </div>
     </div>
@@ -330,14 +357,32 @@ end if
 </div>
 </form>
 <script>
-$("#formAddHorario").submit(function(){
-	$.post("addHorario.asp?ProfissionalID=<%=ProfissionalID%>&Dia=<%=Dia%>&H=<%=req("H") %>", $(this).serialize(), function(data, status){ $("#modal").html(data) });
-	return false;
-});
+    $("#marcarOrdemConfig").hide();
+    var MarcarOrdem = $("#MarcarOrdem").is(":checked");
+    if(MarcarOrdem){
+        $("#marcarOrdemConfig").show();
+    }else{
+        $("#marcarOrdemConfig").hide();
+    }
+    $("#MarcarOrdem").on('click', function(){
+        var MarcarOrdem = $(this).is(":checked");
+        if(MarcarOrdem){
+            $("#marcarOrdemConfig").show();
+        }else{
+            $("#marcarOrdemConfig").hide();
+        }
+    });
+
+    
+
+    $("#formAddHorario").submit(function(){
+        $.post("addHorario.asp?ProfissionalID=<%=ProfissionalID%>&Dia=<%=Dia%>&H=<%=req("H") %>", $(this).serialize(), function(data, status){ $("#modal").html(data) });
+        return false;
+        
+    });
 
 function trataProgramasDoConvenio() {
     const convenios = ($("#Convenios").val() || []).map(conv => conv.replaceAll('|', ''));
-    console.log(convenios);
 
     const programasOptions = $('#Programas option');
     programasOptions.each(function() {
@@ -358,7 +403,6 @@ function trataProgramasDoConvenio() {
 }
 $("#Convenios").on('change', trataProgramasDoConvenio);
 trataProgramasDoConvenio();
-
-<!--#include file="jQueryFunctions.asp"-->
+    <!--#include file="jQueryFunctions.asp"-->
 </script>
 <!--#include file="disconnect.asp"-->

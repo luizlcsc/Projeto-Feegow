@@ -155,7 +155,11 @@ UnidadeID = ref("UnidadeID")
     $("tr td").click(function () {
         var LinhaID = $(this).attr("data-l");
         var Mes = $(this).attr("data-m");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $("#modal-table").modal("show");
         $.get("rDRE_detalhes.asp?LinhaID=" + LinhaID + "&Mes=" + Mes, function (data) {
             $("#modal").html(data);

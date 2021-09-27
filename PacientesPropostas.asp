@@ -787,13 +787,21 @@ function imprimirProposta(Agrupada){
             $.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>&Agrupada="+Agrupada, function(data){ $("#modal").html(data) });
         });
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
     }
 }
 
 function imprimirPropostaSV(){
 	$("#modal-table").modal("show");
-	$("#modal").html("Carregando...");
+	$("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
 	$.get("ImprimirPropostaSV.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });
 }
 
@@ -1196,7 +1204,11 @@ function MarDes(Pro, Che){
 
 function selRap(){
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
     $.post("ProcedimentosRapidos.asp", $(".PIs").serialize(), function(data){
         $("#modal").html(data);
     });

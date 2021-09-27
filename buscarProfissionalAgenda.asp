@@ -149,11 +149,12 @@ while not ocupacoes.eof
 
             set sqlUltimoHorarioAgendado = db.execute("select DISTINCT CarrinhoID, Hora, Encaixe, GradeID from agenda_horarios ro  where data = "&mydatenull(datas(i))&" and ro.ProfissionalID = "& ProfissionalID &"  AND CarrinhoID IS NULL" &_ 
                 " ORDER BY ro.Hora desc LIMIT 1 ") 
+            
             verificaLimiteAgendamento = false
-            if cint(getConfig("TotalDeAgendasLiberadas")) > 0 then
-                verificaLimiteAgendamento = true 
-            else
-                verificaLimiteAgendamento = false
+            if isnumeric(getConfig("TotalDeAgendasLiberadas")) then
+                if getConfig("TotalDeAgendasLiberadas") > 0 then
+                    verificaLimiteAgendamento = true 
+                end if
             end if
             
             sqlGradeEncaixe = "SELECT GradeEncaixe " &_
@@ -227,7 +228,12 @@ while not ocupacoes.eof
                 horarioInicio           = ""
                 horarioFim              = ""
                 TipoLimiteHorario       = ""
-                TotalDeAgendasLiberadas = cint(getConfig("TotalDeAgendasLiberadas"))
+                verificaLimiteAgendamento = false
+                if isnumeric(getConfig("TotalDeAgendasLiberadas")) then
+                    TotalDeAgendasLiberadas = getConfig("TotalDeAgendasLiberadas") 
+                else
+                    TotalDeAgendasLiberadas = 0
+                end if
 
                 sqlPossuiMarcarOrdem = "SELECT MarcarOrdem, IFNULL(MarcarEmOrdemHoraA,'') MarcarEmOrdemHoraA, COALESCE(TipoLimiteHorario, 'I') TipoLimiteHorario " &_
                     "FROM assfixalocalxprofissional ap " &_

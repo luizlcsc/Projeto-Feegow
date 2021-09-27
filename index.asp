@@ -1368,7 +1368,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               function vidau(v){
                   dva = $("#videoaula");
                   dva.css("display", "block");
-                  dva.html("Carregando...");
+                  dva.html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
                   $.get(v, function(data){
                     dva.html( data );
                     });
@@ -1777,7 +1781,11 @@ hash_chat: 'FFCHAT01'
   <!-- Widget Javascript -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
+  <!-- Notificações (Alerts, Confirms, etc)  -->
   <script src="./vendor/plugins/pnotify/pnotify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+
+
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/jquery.magnific-popup.js"></script>
 

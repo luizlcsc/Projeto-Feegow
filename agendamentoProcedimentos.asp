@@ -266,7 +266,11 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
 
             $( "#pagar" ).draggable();
 
-            $("#pagar").html("Carregando...");
+            $("#pagar").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
             $.post("Pagar.asp?T=C", {
                 Parcela: '|'+MovementID+'|'
                 }, function (data) {
@@ -536,7 +540,11 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                                 const divPagar = $('#pagar');
                                 divPagar.fadeIn();
                                 divPagar.draggable();
-                                divPagar.html("Carregando...");
+                                divPagar.html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
                                 $.post("Pagar.asp?T=C", {
                                     Parcela: '|' + MOVEMENT_ID + '|'
                                 }, function (data) {

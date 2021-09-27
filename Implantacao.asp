@@ -268,7 +268,11 @@ end if
 
     function ed(ClienteID) {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $.get("ImplantacaoEdicao.asp?ClienteID=" + ClienteID, function (data) {
             $("#modal").html(data);
         });

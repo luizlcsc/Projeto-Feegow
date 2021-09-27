@@ -28,16 +28,19 @@
 </style>
 
 <div class="row mb20">
+    <div class="col-md-12">
+        <hr class="short alt" />
+    </div>
     <div class="col-md-4"></div>
     <div class="col-md-3">
-        <button onclick="buscarDias('Manha')" type="button" class="btn btn-primary btn-sm btnturno btnmanha"> Manhã </button>
-        <button onclick="buscarDias('Tarde')" type="button" class="btn btn-primary btn-sm btnturno btntarde"> Tarde </button>
+        <button onclick="buscarDias('Manha')" type="button" class="btn btn-default btn-sm btnturno btnmanha"> Manhã </button>
+        <button onclick="buscarDias('Tarde')" type="button" class="btn btn-default btn-sm btnturno btntarde"> Tarde </button>
     </div>
     <div class="col-md-2"></div>
     <div class="col-md-3">
-        <button type="button" onclick="desistencia()" class="btn btn-warning btn-sm" title="Desistência"><i class="fa fa-remove"></i> Desistência</button>
-        <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger btn-sm" title="Pendência"><i class="fa fa-puzzle-piece"></i> Pendência</button>
-        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary btn-sm" title="Finalizar busca"><i class="fa fa-check"></i> Finalizar</button>   
+        <button type="button" onclick="desistencia()" class="btn btn-warning btn-sm" title="Desistência"><i class="far fa-remove"></i> Desistência</button>
+        <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger btn-sm" title="Pendência"><i class="far fa-puzzle-piece"></i> Pendência</button>
+        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary btn-sm" title="Finalizar busca"><i class="far fa-check"></i> Finalizar</button>   
     </div>
 </div>
 <%
@@ -96,7 +99,7 @@ if not procedimentoCarrinho.eof then
     set agendasFuturas = db.execute(agendasFuturasSQL)
     if not agendasFuturas.eof then
         if ccur(agendasFuturas("total")) > 0 then
-            agendaDiponivelAviso =  "<strong>Há mais agendas disponíveis nas próximas semanas para:</strong> "
+            agendaDiponivelAviso =  "<strong>* Há mais agendas disponíveis nas próximas semanas para:</strong> "
             while not agendasFuturas.eof
                 
                 NomeProcedimento = " <span class=""badge badge-warning"">"&agendasFuturas("NomeProcedimento")&"</span> "
@@ -429,15 +432,15 @@ end if
 
 <div class="row mt20">
 <div class="col-md-offset-2 col-md-2">
-    <button onclick="buscarDias('menosdias')" type="button" class="btn btn-danger btn-sm btn-block"> Menos Dias</button>
+    <button onclick="buscarDias('menosdias')" type="button" class="btn btn-default btn-xs btn-block"><i class="far fa-minus"></i> Menos Dias</button>
 </div>
 
 <div class="col-md-4">
-    <button onclick="buscarAllZonas()" type="button" class="btn btn-primary btn-sm btn-block"> Mais Zonas</button>
+    <button onclick="buscarAllZonas()" type="button" class="btn btn-primary btn-xs btn-block"> Mais Zonas</button>
 </div>
 
 <div class="col-md-2">
-    <button onclick="buscarDias()" type="button" class="btn btn-warning btn-sm btn-block"> Mais Dias</button>
+    <button onclick="buscarDias()" type="button" class="btn btn-default btn-xs btn-block"><i class="far fa-plus"></i> Mais Dias</button>
 </div>
 </div>
 
@@ -466,7 +469,7 @@ end if
                 
                 if(!elemBody.is(":visible")){
                     elemBody.show();
-                    elemBody.html('<tr><td class="text-center" colspan="8"><i class="fa fa-spinner fa-spin"></i> Carregando...</td></tr>');
+                    elemBody.html('<tr><td class="text-center" colspan="8"><i class="far fa-circle-o-notch fa-spin"></i> Carregando...</td></tr>');
                     elem.data('loading', true);
 
                     detalhesRequests[index] = $.post('buscarProfissionalAgenda.asp', {

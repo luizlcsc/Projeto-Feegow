@@ -539,7 +539,11 @@ $('#frmfiltros').submit(function(){
 
 function cd(CategoriaID) {
 	var empresas = ('<%=req("U")%>')
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
     $("#modal-table").modal("show");
     $.get("PlanoDespModal.asp?C=" + CategoriaID + "&Empresas=" + empresas, function (data) {
         $("#modal").html(data);

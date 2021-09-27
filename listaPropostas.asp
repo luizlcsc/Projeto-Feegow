@@ -61,7 +61,7 @@ end if
             <tbody>
     	        <%
 		        if req("PacienteID")<>"" then
-			        set p = db.execute("select p.id, p.InvoiceID, p.PacienteID,s.NomeStatus, p.DataProposta, p.Valor, (select group_concat( concat('<a class=""btn btn-xs btn-success"" href=""./?P=ListaPropostas&Pers=1&Acao=Agendamento&ProcedimentoID=', ip.ItemID, '&PacienteID=', p.PacienteID, '&ItemPropostaID=', ip.id, '"" target=""_blank""><i class=""far fa-calendar""></i></a> ', proc.NomeProcedimento ) SEPARATOR '<br> ') from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID where p.sysActive=1 AND PacienteID='"&req("PacienteID")&"' group by p.id order by p.DataProposta desc")
+			        set p = db.execute("select p.id, p.InvoiceID, p.PacienteID,s.NomeStatus, p.DataProposta, p.Valor, (select group_concat( concat('<a class=""btn btn-xs btn-success mt5"" href=""./?P=ListaPropostas&Pers=1&Acao=Agendamento&ProcedimentoID=', ip.ItemID, '&PacienteID=', p.PacienteID, '&ItemPropostaID=', ip.id, '"" target=""_blank""><i class=""far fa-calendar ""></i></a> ', proc.NomeProcedimento ) SEPARATOR '<br> ') from itensproposta ip left join procedimentos proc on proc.id=ip.ItemID where ip.PropostaID=p.id) procedimentos from propostas p LEFT JOIN propostasstatus s on s.id=p.StaID where p.sysActive=1 AND PacienteID='"&req("PacienteID")&"' group by p.id order by p.DataProposta desc")
 		        else
                     if ref("Procedimentos")<>"" then
                         leftProc = " LEFT JOIN itensproposta itens ON itens.PropostaID=p.id "

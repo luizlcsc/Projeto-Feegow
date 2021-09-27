@@ -328,7 +328,11 @@ var invoiceId = '<%=invoiceId%>';
   });
 
   $(".parcela").click(function() {
-      $("#pagar").html("Carregando...");
+      $("#pagar").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
       var clicked = $(".parcela:checked").length;
 	  if(clicked==0){
 		  $("#pagar").fadeOut();
@@ -341,7 +345,11 @@ var invoiceId = '<%=invoiceId%>';
 
 $("button[name=Executado]").click(function(){
     $("#pagar").fadeIn();
-    $("#pagar").html("Carregando...");
+    $("#pagar").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
     $.post("modalExecutado.asp?PacienteID=<%=PacienteID%>", {II:$(this).attr("data-value")}, function(data){
         $("#pagar").html(data);
     });
@@ -373,13 +381,21 @@ function modalSec(U){
 
 function infAten(I){
     if($('#modal-agenda').hasClass('in')==false){
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $("#modal-table").modal("show");
         $.post("modalInfAtendimento.asp?PacienteID=<%=PacienteID%>&btn=1&AtendimentoID="+I, "", function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 500);
         });
     }else{
-        $("#divHistorico").html("Carregando...");
+        $("#divHistorico").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $.post("modalInfAtendimento.asp?PacienteID=<%=PacienteID%>&AtendimentoID="+I+"&Retorno=Modal", "", function(data, status){
             $("#divHistorico").html(data);
         });

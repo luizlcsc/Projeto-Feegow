@@ -1073,9 +1073,9 @@ end if
         %>
         <li class="sidebar-label pt20"></li>
         <%
-    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras", "ProcedimentoLaboratorio"
+    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras", "ProcedimentoLaboratorio", "sys_preparos", "sys_restricoes"
         
-        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" and lcase(req("P"))<>"ProcedimentoLaboratorio" then
+        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" and lcase(req("P"))<>"ProcedimentoLaboratorio" and lcase(req("P"))<>"sys_restricoes"  and lcase(req("P"))<>"sys_preparos" then
         %>
         <li class="sidebar-label pt20"></li>
         <li class="active">
@@ -1114,7 +1114,7 @@ end if
                 <a href="./?P=Procedimentos&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
             </li>
             <li>
-                <a href="./?P=Pacotes&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Pacotes</span></a>
+                <a href="./?P=Pacotes&Pers=Follow"><span class="far fa-archive"></span> <span class="sidebar-title">Pacotes</span></a>
             </li>
             <li>
                 <a href="?P=ProcedimentoLaboratorio&Pers=1" >
@@ -1124,7 +1124,7 @@ end if
             if aut("procedimentosgruposV") then
                 %>
                 <li>
-                    <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
+                    <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="far fa-object-group"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
                 </li>
                 <%
             end if
@@ -1134,7 +1134,18 @@ end if
                 <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
             </li>
             <% end if%>
+
+            <li>
+                <a href="?P=sys_restricoes&Pers=Follow" >
+                <span class="far fa-exclamation-circle"></span> <span class="sidebar-title">Restrições</span></a>
+            </li>
+
+            <li>
+                <a href="?P=sys_preparos&Pers=Follow" >
+                <span class="far fa-list-alt"></span> <span class="sidebar-title">Preparo</span></a>
+            </li>
             <%
+
         end if
     case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>

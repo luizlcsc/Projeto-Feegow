@@ -23,6 +23,9 @@ sqlComboGrupo = " SELECT '0' id, "&_
                 "   FROM procedimentosgrupos "&_
                 "  WHERE sysActive=1 "&_ 
                 " ORDER BY 2"
+
+                
+                UnidadeSeleciona = session("UnidadeID")
 %>
 <div class="panel">
     <div class="panel-heading">
@@ -33,15 +36,15 @@ sqlComboGrupo = " SELECT '0' id, "&_
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6">
-                    <%=quickfield("simpleSelect", "id_unidade", "Unidades", 12, "", sqlComboEmpresa, "NomeFantasia", "")%>
+                <div class="col-md-6">            
+                    <%=quickfield("simpleSelect", "id_unidade", "Unidade", 12, UnidadeSeleciona, sqlComboEmpresa, "NomeFantasia", "")%>
                 </div>
                 <div class="col-md-6">
                     <%=quickfield("simpleSelect", "grupoid", "Grupo de procedimento", 9, "", sqlComboGrupo, "NomeGrupo", "")%>
                     <div class="col-md-3">
                         <br>
-                        <button type="button" class="btn btn-info" onclick="carregaProcedimentos()">
-                            Buscar procedimentos
+                        <button type="button" class="btn btn-primary" onclick="carregaProcedimentos()">
+                            <i class="far fa-search"></i> Buscar procedimentos
                         </button>
                     </div>
                 </div>
@@ -64,9 +67,19 @@ sqlComboGrupo = " SELECT '0' id, "&_
     function carregaProcedimentos() {
 
         if($("#id_unidade").val() == 0){
-            alert("Selecione uma unidade")
+            new PNotify({
+                title: 'Erro!',
+                text: 'Selecione uma unidade',
+                type: 'danger',
+                delay: 2000
+            });
         } else if ($("#grupoid").val() == 0) {
-            alert("Selecione um grupo de procedimento")
+            new PNotify({
+                title: 'Erro!',
+                text: 'Selecione um grupo de procedimento',
+                type: 'danger',
+                delay: 2000
+            });
         } else {
             $.post("procUnidProfProcedimentos.asp",{id_unidade:$("#id_unidade").val(),grupoid:$("#grupoid").val(),id_profissional:<%=ID%>},function(data){
                 $("#divProcedimentos").html(data)

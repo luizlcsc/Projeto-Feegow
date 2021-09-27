@@ -20,12 +20,11 @@
 <br>
 <div class="bs-component">
     <div class="alert alert-warning alert-dismissable">
-    <i class="fa fa-warning pr10"></i>
-    <strong>Permição negada!</strong> Este recurso não está disponível para sua licença.<br>
+    <i class="far fa-warning pr10"></i>
+    <strong>Permissão negada!</strong> Este recurso não está disponível para sua licença.<br>
     </div>
 </div>
 <%
-response.end()
 end if
 
 idcarrinho = req("Carrinho")
@@ -64,10 +63,10 @@ sessaoAgenda = req("sessaoAgenda")&""
                 <% ' quickfield("simpleSelect", "bageTabela", "Tabela", 2, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " no-select2 onchange='agfilParametros()' ") %>
                 <div class="col-md-4">
                     <div class="btn-group btn-block" role="group">
-                        <button style="width:25%" type="button" class="btn btn-default" onclick="profissionais()"><i class="fa fa-user-md"></i> <br /> Profissionais</button>
-                        <button style="width:20%" type="button" class="btn btn-default" onclick="paciente()"><i class="fa fa-user"></i> <br /> Paciente</button>
-                        <button style="width:25%" type="button" class="btn btn-default" onclick="propostas()"><i class="fa fa-calendar"></i> <br /> Laboratório</button>
-                        <button style="width:30%" onclick="Limpar(100)" class="btn btn-alert" type="button"><i class="fa fa-eraser"></i> <br /> Limpar</button>
+                        <button style="width:25%" type="button" class="btn btn-default" onclick="profissionais()"><i class="far fa-user-md"></i> <br /> Profissionais</button>
+                        <button style="width:20%" type="button" class="btn btn-default" onclick="paciente()"><i class="far fa-user"></i> <br /> Paciente</button>
+                        <button style="width:25%" type="button" class="btn btn-default" onclick="propostas()"><i class="far fa-calendar"></i> <br /> Laboratório</button>
+                        <button style="width:30%" onclick="Limpar(100)" class="btn btn-alert" type="button"><i class="far fa-eraser"></i> <br /> Limpar</button>
                     </div>
                 </div>
             </div>
@@ -106,7 +105,7 @@ sessaoAgenda = req("sessaoAgenda")&""
                 $('.class_especializacoes').select2();
                 </script>
                  <div class="col-md-1">
-                    <button type="button" class="btn btn-success btn-sm mt25 btn-block" onclick="cart('I');limparFiltros()"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-success btn-sm mt25 btn-block" onclick="cart('I');limparFiltros()"><i class="far fa-plus"></i></button>
                 </div>
                 <%= quickfield("simpleSelect", "bRegiao", "Zona", 2, "", "select '' id, 'Todas' Regiao UNION ALL select distinct Regiao id , Regiao  from sys_financialcompanyunits WHERE sysActive=1 AND Regiao is not null and Regiao!=''", "Regiao", " semVazio ") %>
             </div>
@@ -120,10 +119,10 @@ sessaoAgenda = req("sessaoAgenda")&""
                     <%= quickfield("text", "textHelp", "", 12, "", " input-sm ", "", " placeholder=""Digite um termo...""  ") %>
                 </div>
                 <div class="col-md-1">
-                    <button onclick="ajudar()" type="button" class="btn btn-info btn-sm btn-block"><i class="fa fa-life-ring"></i> Ajuda</button>
+                    <button onclick="ajudar()" type="button" class="btn btn-info btn-sm btn-block"><i class="far fa-life-ring"></i> Ajuda</button>
                 </div>
                 <div class="col-md-8">
-                    <button onclick="buscar()" type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-search"></i> Buscar por horários</button>
+                    <button onclick="buscar()" type="button" class="btn btn-primary btn-sm btn-block"><i class="far fa-search"></i> Buscar por horários</button>
                 </div>
             </div>
             <div class="row mt10">
@@ -311,7 +310,11 @@ function ajudar(){
     textHelpMin = 2;
     if(textHelp.length >= textHelpMin ){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $.get("Help.asp?text=" + textHelp, function (data) { $("#modal").html( data ); });
     }else{
         showMessageDialog("Digite ao menos "+ textHelpMin +" caracters", 'warning');
@@ -321,7 +324,7 @@ function ajudar(){
 function buscar() {
     if ($("#BuscaSelecionada").val() > 0) {
         $("#dataBusca").val($("#bData").val())
-        $("#divBusca").html("<div style='text-align:center'><i class='fa fa-circle-o-notch fa-spin'></i> Carregando...</div>");
+        $("#divBusca").html("<div style='text-align:center'><i class='far fa-circle-o-notch fa-spin'></i> Carregando...</div>");
         $.post("CartBusca2.asp?Regiao=" + $("#bRegiao").val(), {  Data: $("#bData").val(), Regiao: $("#bRegiao").val(), sessaoAgenda: sessionStorage.getItem("sessaoAgenda") }, function (data) {
             $("#divBusca").html(data);
         });
@@ -331,7 +334,7 @@ function buscar() {
 }
 
 function buscarAllZonas() {
-    $("#divBusca").html("<div style='text-align:center'><i class='fa fa-circle-o-notch fa-spin'></i> Carregando...</div>");
+    $("#divBusca").html("<div style='text-align:center'><i class='far fa-circle-o-notch fa-spin'></i> Carregando...</div>");
     $.post("CartBusca2.asp", {  Data: $("#bData").val(), Regiao: '', sessaoAgenda: sessionStorage.getItem("sessaoAgenda") }, function (data) {
         $("#divBusca").html(data);
     });
@@ -359,7 +362,7 @@ function buscarDias(turno) {
     var nData = (data.getDate()) + "/" + (data.getMonth() + 1) + "/" + data.getFullYear();
     
     $("#dataBusca").val(nData);
-    $("#divBusca").html("<div style='text-align:center'><i class='fa fa-circle-o-notch fa-spin'></i> Carregando...</div>");
+    $("#divBusca").html("<div style='text-align:center'><i class='far fa-circle-o-notch fa-spin'></i> Carregando...</div>");
     $.post("CartBusca2.asp", {  Data: nData, Regiao: $("#bRegiao").val(), turno: turno, sessaoAgenda: sessionStorage.getItem("sessaoAgenda") }, function (data) {
         $("#divBusca").html(data);
     });
@@ -423,7 +426,7 @@ var saveAgenda = function(){
         .done(function(data){
             
             eval(data);
-            $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
+            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
                 $("#btnSalvarAgenda").prop("disabled", false);
                 crumbAgenda();
 
@@ -672,7 +675,7 @@ function loadAgenda(){
     $(".crumb-active a").html("Agenda por Filtros");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-icon a span").attr("class", "far fa-calendar");
 
     function ModalProcedimentosComPrioridade(){
          openComponentsModal("ProcedimentosComPrioridade.asp", {}, "Procedimentos com prioridade", true, "Adicionar procedimentos");
@@ -785,7 +788,11 @@ function profissionais() {
     
     if( profissionalID > 0){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10">
+                                <center>
+                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
+                                 </center>
+                            </div>`)
         $.get("HistoricoProfissional.asp?ProfissionalID=" + profissionalID + "&Regiao=" + Regiao + "&Data="+dataHora,
             function (data) {
                 $("#modal").html( data );
@@ -839,7 +846,12 @@ function abreAgenda(Hora, id,Data, ProfissionalID, EspecialidadeID, TabelaID, Pr
     window.Encaixe = Encaixe;
 
     if(PacienteID == "" || PacienteID == 0 || PacienteID == null){
-        alert("Paciente não selecionado");
+        new PNotify({
+            title: 'Atenção!',
+            text: 'Selecione um Paciente',
+            type: 'warning',
+            delay: 2000
+        });
     }else{
         $.post("agendaVerificaDisponibilidade.asp",{pacienteID: PacienteID, profissionalID: ProfissionalID, hora: Hora, data: Data}, function(data){
             eval(data)

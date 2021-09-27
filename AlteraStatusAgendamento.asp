@@ -23,7 +23,7 @@ end if
 
 set AgendamentoSQL = db.execute("SELECT * FROM agendamentos WHERE id in ("&AgendamentosID&")")
 
-if AgendamentoSQL("StaID")=3 then
+if AgendamentoSQL("StaID")=3 or cdate(AgendamentoSQL("Data"))< date() then
     %>
     showMessageDialog("Alteração de status não permitida.");
     <%

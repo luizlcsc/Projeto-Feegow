@@ -1334,6 +1334,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                   end if
 								END IF
 
+								if req("Mod")<>"" then
+								    FileName = "modulos/"&req("Mod") &"/"& FileName
+								end if
+
 								server.Execute(FileName)
 								%>
 

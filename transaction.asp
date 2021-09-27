@@ -350,11 +350,11 @@ end if
         </div>
       </div>
 	<div class="modal-footer no-margin-top">
-		<button class="btn btn-sm btn-success pull-right" data-dismiss="modal">
+		<button class="btn btn-sm btn-default pull-right" data-dismiss="modal">
 			<i class="far fa-remove"></i>
 			Fechar
 		</button>
-		<button  id="btnSaveTransaction" class="btn btn-sm btn-primary pull-right">
+		<button  id="btnSaveTransaction" class="btn btn-sm btn-success pull-right mr10">
         <i class="far fa-check"></i>
         Salvar</button>
 	</div>

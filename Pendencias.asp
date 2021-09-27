@@ -8,8 +8,8 @@ if recursoAdicional(41)<>4 then%>
     <br>
     <div class="bs-component">
         <div class="alert alert-warning alert-dismissable">
-        <i class="fa fa-warning pr10"></i>
-        <strong>Permição negada!</strong> Este recurso não está disponível para sua licença.<br>
+        <i class="far fa-warning pr10"></i>
+        <strong>Permissão negada!</strong> Este recurso não está disponível para sua licença.<br>
         </div>
     </div>
     <%
@@ -96,7 +96,7 @@ end function
                 <%=quickfield("select", "StatusID", "Status", 2, StatusID, "SELECT id, NomeStatus FROM cliniccentral.pendencia_executante_status", "NomeStatus", "") %>
                 <div class="col-md-1">
                     <label>&nbsp;</label><br/>
-                    <button id="btnBuscar" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                    <button id="btnBuscar" class="btn btn-sm btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
                 </div>
             </form>
         </div>
@@ -231,7 +231,7 @@ end function
     $(".crumb-active a").html("Pendências");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-exclamation-circle");
+    $(".crumb-icon a span").attr("class", "far fa-exclamation-circle");
 
     function GerenciarPendencia(PendenciaID) {
         $("#redireciona").val("sim");

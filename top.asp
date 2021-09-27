@@ -456,17 +456,6 @@ else
             <%
             end if
 
-            if aut("sys_restricoesV")=1  then
-            %>
-            <li><a href="./?P=sys_restricoes&Pers=Follow"  class="sub-menu-click-cadastro-restricoes" ><i class="fa fa-exclamation-circle"></i> Restrições</a></li>
-            <%
-            end if
-            
-            if aut("sys_preparosV")=1  then
-            %>
-            <li><a href="./?P=sys_preparos&Pers=Follow"  class="sub-menu-click-cadastro-preparos" ><i class="fa fa-list-alt"></i> Preparos</a></li>
-            <%
-            end if            
 
             if aut("basedeconhecimento")=1 and False then
             %>

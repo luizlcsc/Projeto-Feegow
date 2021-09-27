@@ -362,11 +362,11 @@
                      <%
                         if ccur(restricaoObj.possuiRestricao(cart("ProcedimentoID"))) > 0 then
                         %>
-                     <button class="btn btn-warning btn-xs" type="button" onclick="abrirModalRestricao('',<%=ProcedimentoSQL("ProcedimentoId")%>,<%=PacienteID%>)"><i class="fa fa-caret-square-o-left"></i></button>
+                     <button class="btn btn-warning btn-xs" type="button" onclick="abrirModalRestricao('',<%=ProcedimentoSQL("ProcedimentoId")%>,<%=PacienteID%>)"><i class="far fa-caret-square-o-left"></i></button>
                      <%
                         end if
                         %>
-                     <button type="button" class="btn btn-xs btn-danger remove-item-subform remover-data" onclick="removerProcedimento(<%=cart("ppid")%>,'<%=cart("NomeProcedimento")%>')"><i class="fa fa-trash"></i></button>
+                     <button type="button" class="btn btn-xs btn-danger remove-item-subform remover-data" onclick="removerProcedimento(<%=cart("ppid")%>,'<%=cart("NomeProcedimento")%>')"><i class="far fa-trash"></i></button>
                   </td>
                </tr>
                <%
@@ -482,7 +482,7 @@
                                        </td>
                                        <td style="text-align: center">
                                           <button type="button" class="btn btn-sm btn-success" id="insereZona" onclick="$('#insereZona').prop('disabled', true);insereZona2()">
-                                             <li class="fa fa-plus"></li>
+                                             <li class="far fa-plus"></li>
                                           </button>
                                        </td>
                                     </tr>
@@ -505,7 +505,7 @@
          </td>
          <td>
          <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="removeZona(this)">
-         <i class="fa fa-trash"></i>
+         <i class="far fa-trash"></i>
          </button>
          </td>
          </tr>
@@ -536,7 +536,7 @@
                                                     </td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="removeZona(this)">
-                                                            <i class="fa fa-trash"></i>
+                                                            <i class="far fa-trash"></i>
                                                         </button>
                                                     </td>
                                                 </tr>`);
@@ -635,7 +635,7 @@
          </td>
          <td width="10%">
          <button type="button" class="btn btn-sm btn-danger remove-item-subform remover-data" remove-selected-day="<%=DiasSQL("Data")%>" onclick="$(this).parent().parent().remove();removeSelectedDay('<%=DiasSQL("Data")%>')">
-         <i class="fa fa-trash"></i>
+         <i class="far fa-trash"></i>
          </button>
          </td>
          </tr> 
@@ -767,7 +767,7 @@
                <div class="col-md-12 qf">
                   <label for="textGeral">Observação</label>
                   <textarea class="form-control" name="ObsGeral" id="ObsGeral" style="height:73px!im"></textarea>
-                  <a title='Histórico de Alterações' href='javascript:log(<%=PendenciaID%>)' class='btn btn-sm btn-default hidden-xs m5'><i class='fa fa-history'></i></a>
+                  <a title='Histórico de Alterações' href='javascript:log(<%=PendenciaID%>)' class='btn btn-sm btn-default hidden-xs m5'><i class='far fa-history'></i></a>
                   <button type="button" class="btn btn-primary pull-right m5" style="padding: 5px 7px;" onclick="SalvaObservacao()">Salvar</button>
                </div>
             </div>
@@ -1105,7 +1105,7 @@
    $(".crumb-active a").html("Administrar pendência");
    $(".crumb-link").removeClass("hidden");
    $(".crumb-link").html("");
-   $(".crumb-icon a span").attr("class", "fa fa-cog");
+   $(".crumb-icon a span").attr("class", "far fa-cog");
    
    var $form = $("#formPendencia");
    

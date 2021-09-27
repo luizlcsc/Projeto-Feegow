@@ -43,8 +43,8 @@ sqlComboGrupo = " SELECT '0' id, "&_
                     <%=quickfield("simpleSelect", "grupoid", "Grupo de procedimento", 9, "", sqlComboGrupo, "NomeGrupo", "")%>
                     <div class="col-md-3">
                         <br>
-                        <button type="button" class="btn btn-info" onclick="carregaProcedimentos()">
-                            Buscar procedimentos
+                        <button type="button" class="btn btn-primary" onclick="carregaProcedimentos()">
+                            <i class="far fa-search"></i> Buscar procedimentos
                         </button>
                     </div>
                 </div>

@@ -488,19 +488,19 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
             if(restricaoInicioFim != null) {
                 restricaoInicioFim.style.display = 'none';
                 restricaoInicioFim.removeAttribute("required");
-                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-success btn-xs"><li class="fa fa-check"></li></button>`);
+                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-success btn-xs"><li class="far fa-check"></li></button>`);
             }
 
             if(restricaoInicioFimInput != null) {
                 restricaoInicioFimInput.style.display = 'none';
                 restricaoInicioFimInput.removeAttribute("required");
-                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-success btn-xs"><li class="fa fa-check"></li></button>`);    
+                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-success btn-xs"><li class="far fa-check"></li></button>`);    
             }
             
             if(restricaoCheckObs != null) {
                 restricaoCheckObs.style.display = 'none';
                 restricaoCheckObs.removeAttribute("required");
-                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-success btn-xs"><li class="fa fa-check"></li></button>`);    
+                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-success btn-xs"><li class="far fa-check"></li></button>`);    
             }
         }
 
@@ -509,7 +509,7 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
                 let restricaoInicioFimInput = document.forms["procedimentos_restricoes_form"].elements[`restricao_inicio_fim_obs_${idRestricao}`];
                 restricaoInicioFimInput.style.display = "block";    
                 restricaoInicioFimInput.setAttribute("required", "");             
-                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-danger btn-xs"><li class="fa fa-remove"></li></button>`);
+                $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-danger btn-xs"><li class="far fa-remove"></li></button>`);
                 if(restricaoExcexao == "S") {
                     $(".btn-success").prop( "disabled", true );
                 }
@@ -523,7 +523,7 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
                 let restricaoInicioFimInput = document.forms["procedimentos_restricoes_form"].elements[`restricao_inicio_fim_obs_${idRestricao}`];
                 restricaoInicioFimInput.style.display = "block";
                 restricaoInicioFimInput.setAttribute("required", "");        
-                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-danger btn-xs"><li class="fa fa-remove"></li></button>`);
+                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-danger btn-xs"><li class="far fa-remove"></li></button>`);
                 if(restricaoExcexao == "S") {
                     $(".btn-success").prop( "disabled", true );
                 }
@@ -540,7 +540,7 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
                 restricaoCheckObs.style.display = "block";
                 restricaoCheckObs.setAttribute("required", "");         
 
-                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-danger btn-xs"><li class="fa fa-remove"></li></button>`);
+                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-danger btn-xs"><li class="far fa-remove"></li></button>`);
                 
                 if(restricaoExcexao == "S") {
                     $(".btn-success").prop( "disabled", true );
@@ -548,7 +548,7 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
             } else if ($(`#restricao_check_${idRestricao}_S`).is(":checked") && tipoRestricao != valorSelecionado) {
                 restricaoCheckObs.style.display = 'none';
                 restricaoCheckObs.removeAttribute("required");
-                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-success btn-xs"><li class="fa fa-check"></li></button>`);
+                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-success btn-xs"><li class="far fa-check"></li></button>`);
                 $(".btn-success").prop( "disabled", false );
             }
         }
@@ -559,14 +559,14 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
             if($(`#restricao_check_${idRestricao}_N`).is(":checked") && tipoRestricao == valorSelecionado) {
                 restricaoCheckObs.style.display = "block";
                 restricaoCheckObs.setAttribute("required", "");
-                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-danger btn-xs"><li class="fa fa-remove"></li></button>`);
+                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-danger btn-xs"><li class="far fa-remove"></li></button>`);
                 if(restricaoExcexao == "S") {
                     $(".btn-success").prop( "disabled", true );
                 }
             } else if ($(`#restricao_check_${idRestricao}_N`).is(":checked") && tipoRestricao != valorSelecionado) {
                 restricaoCheckObs.style.display = 'none';
                 restricaoCheckObs.removeAttribute("required");
-                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-success btn-xs"><li class="fa fa-check"></li></button>`);
+                $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-success btn-xs"><li class="far fa-check"></li></button>`);
                 $(".btn-success").prop( "disabled", false );
             }
         }
@@ -587,7 +587,7 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
             if(validation){
                 $.post("pendenciasUtilities.asp",{acao:'verificaRestricao',procedimentoID:'<%response.write(ProcedimentoID)%>',restricaoID:idRestricao,resposta:valor},function(data){
                     if(data == "S"){
-                        $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-danger btn-xs"><li class="fa fa-remove"></li></button>`);
+                        $(`#tdRestricao_${idRestricao}`).html(`<button type="button" class="btn btn-danger btn-xs"><li class="far fa-remove"></li></button>`);
 
                         if(self.type === "radio"){
                             let restricaoCheckObs = document.forms["procedimentos_restricoes_form"].elements[`restricao_check_obs_${idRestricao}`];
@@ -597,7 +597,7 @@ $('head').append('<style type="text/css">.modal .modal-body {max-height: ' + ($(
                             restricaoNumero.style.display = "block";
                         }   
                     } else {
-                        $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-success btn-xs"><li class="fa fa-check"></li></button>`);
+                        $("#tdRestricao_"+idRestricao).html(`<button type="button" class="btn btn-success btn-xs"><li class="far fa-check"></li></button>`);
                     } 
                 })
             }

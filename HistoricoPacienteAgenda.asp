@@ -30,10 +30,10 @@ end if
 	            <span class="panel-title" data-toggle="collapse" data-target="#demo" style="cursor: pointer;"> Dados Paciente - <%=LabelPaciente%> </span>
                 <a href='?P=Pacientes&I=<%=PacienteID%>&Pers=1' target='_blank'>Ver Cliente</a>
             </div>
-            <div id="demo" class="collapse in">
-                <div class="panel-body">
+            <div id="demo" class="collapse in panel-body">
+                <div >
                     <div class="alert alert-danger hidden" id="divComparaPacientes">
-                        <button class="close" data-dismiss="alert" type="button" onclick="fecharModal()"><i class="fa fa-remove"></i></button>
+                        <button class="close" data-dismiss="alert" type="button" onclick="fecharModal()"><i class="far fa-remove"></i></button>
                         <span></span>
                     </div>
 
@@ -73,7 +73,7 @@ end if
 
                     <div class="col-md-13 mr10 mt20 pull-right">
                        <!-- <button class="btn btn-sm btn-default" onclick="return false;" data-toggle="collapse" data-target="#demo">Fechar</button> -->
-                        <button class="btn btn-sm btn-primary btnsalvar" type="button"  data-toggle="collapse" data-target="#demo">Salvar</button>
+                        <button class="btn btn-sm btn-primary btnsalvar" type="button"  data-toggle="collapse" data-target="#demo"><i class="far fa-save"></i> Salvar</button>
                     </div>
                 </div>
             </div> 
@@ -82,7 +82,7 @@ end if
 </div>
 <div class="panel">
     <div class="panel-heading">
-	    <span class="panel-title"><i class="fa fa-calendar"></i> Detalhes dos Agendamentos</span>
+	    <span class="panel-title"><i class="far fa-calendar"></i> Detalhes dos Agendamentos</span>
     </div>
     <div class="panel-body">
 
@@ -95,7 +95,7 @@ end if
             <li><a data-toggle="tab" href="#contas" href="#">Contas <span class="badge badge-light badgecontas">0</span></a></li>
         </ul>
     
-    <div class="tab-content">
+    <div class="tab-content mt15">
     <div id="agdFuturo" class="active tab-pane">
     <form method="post" id="formAgdFut">
     <table class="table footable fw-labels" data-page-size="20">
@@ -186,18 +186,18 @@ end if
                         <%=left(pCons("StaConsulta"), 18) %>
                     </span>
                 </td>
-                <td><%="<img src=""assets/img/"&pCons("StaID")&".png"">"%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
+                <td><%=imoon(pCons("StaID"))%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
                 <td><%=left(pCons("NomeProfissional"), 30) %></td>
                 <td><%=left(pCons("NomeEspecialidade"), 30) %></td>
                 <td><%=left(NomeProcedimento, 30) %></td>
                 <td><%=Pagto%></td>
                 <td>
-                    <a data-toggle="tab" href="#recibosgerados"  onclick='$.get("listaRecibos.asp?Externo=true&InvoiceID=" +<%=InvoiceID%> , function (data) {$("#recibosgerados").html(data+"<div class=\"text-right\"><a data-toggle=\"tab\" href=\"#agdFuturo\" >Voltar</a></div>") });' class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>"><i class="fa fa-print"></i></a>
+                    <a data-toggle="tab" href="#recibosgerados"  onclick='$.get("listaRecibos.asp?Externo=true&InvoiceID=" +<%=InvoiceID%> , function (data) {$("#recibosgerados").html(data+"<div class=\"text-right\"><a data-toggle=\"tab\" href=\"#agdFuturo\" >Voltar</a></div>") });' class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>"><i class="far fa-print"></i></a>
                     <button class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
                     <% if jaTemValorPago = 0 then %>
                     <a class="btn btn-warning btn-xs" onclick="remarcar('<%=pCons("id")%>')" href="#">Remarcar </a>
                     <% end if %>
-                    <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="fa fa-external-link"></i></a>
+                    <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
                     <%
                         set sql = db.execute("SELECT PendenciaID FROM pendenciasagendamentos WHERE AgendamentoID ="&pCons("id"))
                         
@@ -240,7 +240,7 @@ end if
     <div id="propostas" class="tab-pane">
     <div class="text-right" style="margin:5px 0">
         <a href="#" class="btn btn-sm btn-primary" onclick="propostas()">
-            <i class="fa fa-plus"></i> Nova proposta
+            <i class="far fa-plus"></i> Nova proposta
         </a>
     </div>
     <table class="table footable fw-labels" data-page-size="20">
@@ -306,7 +306,7 @@ end if
                 <td><%= "R$ " & formatnumber(seisVezes) %></td>
                 <td>
                 <button class="btn btn-info btn-xs" data-propostaid="<%= propostaSQL("idproposta") %>" id="prophist2<%=propostaSQL("idproposta")%>">Detalhes</button>
-                <a class="btn btn-primary btn-xs" href="./?P=PacientesPropostas&Pers=1&I=&PropostaID=<%=propostaSQL("idproposta")%>" target="_blank" title="Ir para proposta"><i class="fa fa-external-link"></i></a>
+                <a class="btn btn-primary btn-xs" href="./?P=PacientesPropostas&Pers=1&I=&PropostaID=<%=propostaSQL("idproposta")%>" target="_blank" title="Ir para proposta"><i class="far fa-external-link"></i></a>
                 <div id="divhist2<%=propostaSQL("idproposta")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>
             </tr>
@@ -391,13 +391,13 @@ end if
                         <%=left(pCons("StaConsulta"), 18) %>
                     </span>
                 </td>
-                <td><%="<img src=""assets/img/"&pCons("StaID")&".png"">"%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
+                <td><%=imoon(pCons("StaID"))%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
                 <td><%=left(pCons("NomeProfissional"), 30) %></td>
                 <td><%=left(pCons("NomeEspecialidade"), 30) %></td>
                 <td><%=left(NomeProcedimento, 30) %></td>
                 <td><%=Pagto%></td>
                 <td><button class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
-                    <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="fa fa-external-link"></i></a>
+                    <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
                     <div id="divhist<%=pCons("id")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>
             </tr>
@@ -434,7 +434,7 @@ end if
         <% TiposFaturas = "Particular" %>
         <% NaoExibirPago = TRUE %>
         <% function ExecuteBotton(InvoiceID) %>
-            <a data-toggle="tab" href="#recibosgerados"  onclick='$.get("listaRecibos.asp?Externo=true&InvoiceID=" +<%=InvoiceID%> , function (data) {$("#recibosgerados").html(data+"<div class=\"text-right\"><a data-toggle=\"tab\" href=\"#agdFuturo\" >Voltar</a></div>") });' class="btn btn-info btn-xs"><i class="fa fa-print"></i></a>
+            <a data-toggle="tab" href="#recibosgerados"  onclick='$.get("listaRecibos.asp?Externo=true&InvoiceID=" +<%=InvoiceID%> , function (data) {$("#recibosgerados").html(data+"<div class=\"text-right\"><a data-toggle=\"tab\" href=\"#agdFuturo\" >Voltar</a></div>") });' class="btn btn-info btn-xs"><i class="far fa-print"></i></a>
         <% end function %>
         <% 
             ExecuteBottonStr = "ExecuteBotton" 
@@ -484,7 +484,7 @@ end if
                                 </div>
                                 <div class="col-xs-2">
                                     <%=Pagto%>
-                                    <i class="fa fa-angle-down bigger-110 pull-right" data-icon-hide="fa fa-angle-down" data-icon-show="fa fa-angle-right"></i>
+                                    <i class="far fa-angle-down bigger-110 pull-right" data-icon-hide="far fa-angle-down" data-icon-show="far fa-angle-right"></i>
                                 </div>
         
                               </div>
@@ -492,8 +492,8 @@ end if
                         </h4>
                     </div>
         
-                    <div class="panel-collapse collapse" id="collapse<%=logs("ConsultaID")%>">
-                        <div class="panel-body" id="hist<%=logs("ConsultaID")%>">
+                    <div class="panel-collapse collapse panel-body" id="collapse<%=logs("ConsultaID")%>">
+                        <div id="hist<%=logs("ConsultaID")%>">
                             Carregando...
                         </div>
                     </div>
@@ -565,7 +565,7 @@ end if
             <td><%=PendenciasSQL("Hora")%></td>
             <td><%=PendenciasSQL("NomeStatus") %></td>
             <td nowrap>
-                <button onclick="GerenciarPendencia('<%=PendenciasSQL("id")%>')" type="button" class="btn btn-xs btn-warning"><i class="fa fa-cog"></i></button>
+                <button onclick="GerenciarPendencia('<%=PendenciasSQL("id")%>')" type="button" class="btn btn-xs btn-warning"><i class="far fa-cog"></i></button>
             </td>
         </tr>
 
@@ -588,7 +588,7 @@ end if
     
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" id="btn-close-pacientes-modal" onClick="fecharModal()">Fechar</button>
+    <button type="button" class="btn btn-secondary" id="btn-close-pacientes-modal" onClick="fecharModal()"><i class="far fa-close"></i> Fechar</button>
 </div>
 
 <script type="text/javascript">

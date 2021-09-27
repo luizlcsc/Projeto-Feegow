@@ -840,9 +840,9 @@ function abreAgenda(Hora, id,Data, ProfissionalID, EspecialidadeID, TabelaID, Pr
 
     if(PacienteID == "" || PacienteID == 0 || PacienteID == null){
         new PNotify({
-            title: 'Erro!',
+            title: 'Atenção!',
             text: 'Selecione um Paciente',
-            type: 'danger',
+            type: 'warning',
             delay: 2000
         });
     }else{

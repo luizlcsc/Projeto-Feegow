@@ -1773,7 +1773,11 @@ hash_chat: 'FFCHAT01'
   <!-- Widget Javascript -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
+  <!-- Notificações (Alerts, Confirms, etc)  -->
   <script src="./vendor/plugins/pnotify/pnotify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+
+
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/jquery.magnific-popup.js"></script>
 

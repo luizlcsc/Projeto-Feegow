@@ -132,7 +132,7 @@ else
         call agendaUnificada("delete", ConsultaID, ProfissionalID)
 
         if cdate(pCon("Data"))< date() then
-            call registerEvent("exclui_agendamento_passado", ConsultaID, Obs)
+            call registraEventoAuditoria("exclui_agendamento_passado", ConsultaID, Obs)
         end if
         
         sqlDel = "update agendamentos set sysActive='-1' where id="&ConsultaID

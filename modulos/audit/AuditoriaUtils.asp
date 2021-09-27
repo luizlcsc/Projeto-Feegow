@@ -1,7 +1,7 @@
 <!--#include file="./../../connect.asp"-->
 <%
 
-function registerEvent(event_slug, id_audit, details)
+function registraEventoAuditoria(event_slug, id_audit, details)
     set AuditoriaEventoSQL = db_execute("select id, NivelID from cliniccentral.auditoria_eventos WHERE Slug='"&event_slug&"'")
 
     if not AuditoriaEventoSQL.eof then

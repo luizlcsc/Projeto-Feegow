@@ -407,9 +407,9 @@ if erro="" then
         if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and pCon("StaID")&"" <> rfStaID then
             'status de agendamento passado alterado para status em que o atendimento nao foi prestado.
 
-            call registerEvent("altera_status_agendamento_passado", ConsultaID, "")
+            call registraEventoAuditoria("altera_status_agendamento_passado", ConsultaID, "")
         else
-            call registerEvent("altera_agendamento_passado", ConsultaID, "")
+            call registraEventoAuditoria("altera_agendamento_passado", ConsultaID, "")
         end if
 
     end if

@@ -85,7 +85,7 @@ if MovementSQL("Name")="Fechamento Cx - Dinheiro" then
     end if
 
     AuditoriaRegistrada = True
-    call registerEvent("reabre_caixinha", CaixaID, ref("Jst"))
+    call registraEventoAuditoria("reabre_caixinha", CaixaID, ref("Jst"))
 
     db.execute("UPDATE caixa SET Reaberto='S',dtFechamento=null, Descricao=concat(Descricao, ' (Aberto)') WHERE id="&CaixaID)
 
@@ -130,12 +130,12 @@ end if
 
 if MovementSQL("Type")="Pay" and MovementSQL("CD")="D" and not AuditoriaRegistrada then
     AuditoriaRegistrada = True
-    call registerEvent("cancela_recebimento", I, ref("Jst"))
+    call registraEventoAuditoria("cancela_recebimento", I, ref("Jst"))
 end if
 
 
 if MovementSQL("Type")="Transfer" and not AuditoriaRegistrada then
-    call registerEvent("exclui_transferencia", I, ref("Jst"))
+    call registraEventoAuditoria("exclui_transferencia", I, ref("Jst"))
 end if
 
 

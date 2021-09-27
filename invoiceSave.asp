@@ -363,7 +363,7 @@ if erro="" then
         if not ItensExcluidosSQL.eof then
             while not ItensExcluidosSQL.eof
                 DescricaoExclusaoItem = "Descricao: "&ItensExcluidosSQL("Descricao")&" | Valor unit.: R$ "&fn(ItensExcluidosSQL("ValorUnitario"))&" | Desconto: R$ "&fn(ItensExcluidosSQL("Desconto"))&" | Executado: "&ItensExcluidosSQL("Executado")
-                call registerEvent("remove_item_fatura", InvoiceID, DescricaoExclusaoItem)
+                call registraEventoAuditoria("remove_item_fatura", InvoiceID, DescricaoExclusaoItem)
             ItensExcluidosSQL.movenext
             wend
             ItensExcluidosSQL.close

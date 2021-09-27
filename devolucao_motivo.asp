@@ -12,6 +12,21 @@ DebitarCaixa = ref("DebitarCaixa")&""
 accountId = req("accountId")&""
 contaID = ref("ContaID")&""
 
+' ######################### BLOQUEIO FINANCEIRO ########################################
+accounts = Split(accountId, "_")
+contabloqueada = verificaBloqueioConta(2, 1, accounts(1), session("UnidadeID"),date() )
+if contabloqueada = "1" then
+    response.write("A conta não pode ser alterada pois está bloqueada!")
+    %>
+    <script>
+      alert('Esta conta está bloqueada e não pode ser alterada!');
+      $('#modal-components').modal('hide');
+    </script>
+    <%
+    Response.End
+end if
+' ######################################################################################
+
 
 set devolucaoObj = new Devolucao
 exeDevolucao = devolucaoObj.gerarDevolucao(InvoiceID, iteninvoice, accountId, TipoOperacao, MotivoDevolucao, DebitarCaixa, Observacao, contaID)

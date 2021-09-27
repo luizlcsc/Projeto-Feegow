@@ -486,8 +486,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     templateSelection: formatRepoSelection
                 });
 
-                $(".proposta-item-procedimentos .select2-selection").css("max-width", "200px")
-                $("#invoiceItens .select2-selection").css("max-width", "400px")
+                $(".proposta-item-procedimentos .select2-container").css("max-width", "200px")
+                $("#invoiceItens .select2-container").css("max-width", "400px")
             });
         }
     </script>
@@ -1333,6 +1333,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF
+
+								if req("Mod")<>"" then
+								    FileName = "modulos/"&req("Mod") &"/"& FileName
+								end if
 
 								server.Execute(FileName)
 								%>

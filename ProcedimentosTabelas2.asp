@@ -216,7 +216,7 @@ set SolicitacaoTabelaSQL = db_execute("SELECT s.*, count(sp.id) procedimentos  "
                     end if
                     %>
 
-                    <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i></button>
+                    <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" title="Imprimir" type="button"><i class="far fa-print bigger-110"></i></button>
 
                     <button type="button" class="btn btn-sm btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
                 </span>

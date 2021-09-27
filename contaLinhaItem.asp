@@ -40,10 +40,11 @@
 						checado = ""
 						Executor = "Não executado"
 					end if
-                    if ii("Tipo")="S" or ii("Tipo")="P" then
-                        if Executado = "C" then 
+
+                    if ii("Tipo")="S" or ii("Tipo")="P" or not isnull(DataCancelamento) then
+                        if Executado = "C" or not isnull(DataCancelamento) then
                         %>
-                            <span class="label label-danger">Cancelado</span>
+                            <span class="label label-danger"><i class="far fa-times"></i> Cancelado</span>
                         <%
                         else 
                       medkit = 1

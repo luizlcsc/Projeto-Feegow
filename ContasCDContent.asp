@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 session("ccDe") = ref("De") 'De
@@ -73,12 +74,8 @@ if req("X")<>"" then
 
         IF NOT PodeApagar THEN %>
             <script>
-                      new PNotify({
-                         		title: 'Conta Bloqueada',
-                         		text: 'Esta conta ESTA BLOQUEADA e não pode ser alterada!',
-                         		type: 'danger'
-                         	});
-                             $("#btnSave").prop("disabled", false);
+                  showMessageDialog('Esta conta está BLOQUEADA e não pode ser alterada!', 'danger', 'Conta Bloqueada');
+                 $("#btnSave").prop("disabled", false);
             </script>
         <% END IF
 
@@ -119,6 +116,7 @@ if req("X")<>"" then
         columns = "|AccountID|AssociationAccountID|Value|Tax|CompanyUnitID|TabelaID|"
         'oldValues = "|^"&iInvoice("AccountID")&"|^"&iInvoice("AssociationAccountID")&"|^"&iInvoice("Value")&"|^"&iInvoice("Tax")&"|^"&iInvoice("CompanyUnitID")&"|^"&iInvoice("TabelaID")&"|"
         'call createLog("X", req("X"), "sys_financialinvoices", columns, oldValues, "","")
+        call registraEventoAuditoria("cancela_fatura", req("X") , "")
 
         'db.execute("INSERT INTO sys_financialinvoices_removidos (id, Name, AccountID, AssociationAccountID, Value, Tax, Currency, Description, AccountPlanID, CompanyUnitID, Recurrence, RecurrenceType, CD, Sta, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, FixaID, TabelaID, NumeroFatura, ProfissionalSolicitante, ) SELECT *,now() FROM sys_financialinvoices WHERE id = "&req("X"))
         'db_execute("delete from sys_financialinvoices where id="&req("X"))
@@ -194,11 +192,11 @@ if req("X")<>"" then
     IF PodeApagar THEN %>
         <script>
                   new PNotify({
-                            title: 'Conta Excluída',
-                            text: 'Conta excluída com sucesso.',
-                            type: 'success'
+                            title: 'Conta cancelada',
+                            text: 'Conta cancelada com sucesso.',
+                            type: 'warning'
                         });
-                         $("#btnSave").prop("disabled", false);
+                 $("#btnSave").prop("disabled", false);
         </script>
     <% END IF
 

@@ -5,6 +5,7 @@
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -98,6 +99,24 @@ rfData=ref("Data")
 if isdate(rfData) then
     rfData = cdate(rfData)
 end if
+
+if ref("LocalID")<>"" then
+    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(ref("LocalID")))
+
+    if not LocalSQL.eof then
+        AgendamentoUnidadeID=LocalSQL("UnidadeID")
+    end if
+end if
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+if AgendamentoUnidadeID <> "" then
+    contabloqueadacred = verificaBloqueioConta(2, 2, 0, AgendamentoUnidadeID,rfData)
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        erro ="Agenda bloqueada para edição retroativa (data fechada)."
+    end if
+end if
+' #####################################################################################
+
 
 rfProcedimento=ref("ProcedimentoID")
 rfrdValorPlano=ref("rdValorPlano")
@@ -382,6 +401,19 @@ if erro="" then
 	if (session("Banco")="clinic5445" or session("Banco")="clinic100000") and ref("ageCanal")<>"" then
 	    db.execute("UPDATE agendamentos SET CanalID="&treatvalnull(ref("ageCanal"))&" WHERE id="&ConsultaID)
     end if
+
+    if cdate(ref("Data"))< date() then
+
+        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and pCon("StaID")&"" <> rfStaID then
+            'status de agendamento passado alterado para status em que o atendimento nao foi prestado.
+
+            call registraEventoAuditoria("altera_status_agendamento_passado", ConsultaID, "")
+        else
+            call registraEventoAuditoria("altera_agendamento_passado", ConsultaID, "")
+        end if
+
+    end if
+
 
     if session("Banco")="clinic5459" then
         n = 0

@@ -2,6 +2,23 @@
 <%
 '->Removendo plick do nome para previnir erro de sql
 nameUser = Replace(nameInTable(session("User")),"'","")
+
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID =  replace(session("UnidadeID"),"'","")
+contabloqueadacred = verificaBloqueioConta(2, 1, treatvalzero(ref("ContaCorrenteID")), UnidadeID,date())
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+    retorno  = 	"new PNotify({ "&_
+                "		title: 'Meu Caixa', "&_
+                "		text: 'Esta conta está BLOQUEADA e não pode ser alterada!', "&_
+                "		type: 'danger' "&_
+                "	});" &_
+                " $('#modalCaixa').modal('hide');"
+    response.write(retorno)
+    response.end
+end if
+' #####################################################################################
+
 if ref("Acao")="Abrir" then
 	Descricao = "Caixa de "&nameUser&" em "&date()&" (Aberto)"
 	SaldoInicial = ref("SaldoInicial")

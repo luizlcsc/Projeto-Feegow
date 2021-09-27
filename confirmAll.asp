@@ -35,7 +35,7 @@
 function getWppLink(Celular, Mensagem)
     getWppLink=""
     if len(Celular) > 7 then
-        getWppLink="<a target='_blank' href='http://web.whatsapp.com/api/send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
+        getWppLink="<a target='_blank' href='whatsapp://send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
     end if
 end function
 
@@ -58,6 +58,16 @@ end if
     $(".crumb-icon a span").attr("class", "far fa-check");
 
 </script>
+<%
+if session("Partner")="" and LicenseId<>5459 then
+    Response.End
+end if
+
+queryLicencas = "select lic.Servidor, lic.id, lic.NomeEmpresa FROM cliniccentral.licencas lic WHERE lic.status='C' AND lic.Cupom='"& session("Partner") &"' "
+if LicenseId=5459 then
+    queryLicencas = "select lic.Servidor, lic.id, lic.NomeEmpresa FROM cliniccentral.licencas lic JOIN cliniccentral.clientes_servicosadicionais sa ON sa.LicencaID=lic.id WHERE lic.status='C' AND sa.`Status`=4 AND sa.ServicoID=47  "
+end if
+%>
 <div class="row">
     <br>
     <div class="col-md-12">
@@ -67,7 +77,7 @@ end if
                     <input type="hidden" name="P" value="ConfirmAll" />
                     <input type="hidden" name="Pers" value="1" />
                     <%= quickfield("datepicker", "Data", "Data", 3, Data, "", "", "") %>
-                    <%=quickfield("multiple", "Licencas", "Licenças", 3, req("Licencas"), "select id, NomeEmpresa FROM cliniccentral.licencas WHERE status='C' AND Cupom='"& session("Partner") &"' order by NomeEmpresa" , "NomeEmpresa", "") %>
+                    <%=quickfield("multiple", "Licencas", "Licenças", 3, req("Licencas"), queryLicencas& "order by NomeEmpresa" , "NomeEmpresa", "") %>
                     <%=quickfield("multiple", "Status", "Status", 3, Status, "select id, StaConsulta FROM staconsulta order by StaConsulta" , "StaConsulta", "") %>
                     <div class="col-md-2">
                         <label>&nbsp;</label><br />
@@ -92,15 +102,21 @@ function clearPhone(phone)
     end if
 end function
 
-if session("Partner")<>"" then
+Licencas = req("Licencas")
+
+if Licencas="" and LicenseId=5459 then
+    %>
+    <div class="alert alert-default"><i class="far fa-exclamation-circle"></i> Selecione uma licença acima.</div>
+    <%
+elseif session("Partner")<>"" or LicenseId=5459 then
     response.Buffer
-    Licencas = req("Licencas")
+
 
     if Licencas<>"" then
-        sqlLicencas = " AND id IN ("&replace(Licencas, "|", "")&") "
+        queryLicencas = queryLicencas&" AND lic.id IN ("&replace(Licencas, "|", "")&") "
     end if
 
-    set l = db.execute("select id, NomeEmpresa, Servidor from cliniccentral.licencas where Status='C' and Cupom='"& session("Partner") &"' "&sqlLicencas&" order by NomeEmpresa")
+    set l = db.execute(queryLicencas)
     while not l.eof
         Servidor=l("Servidor")
         LicencaID = l("id")

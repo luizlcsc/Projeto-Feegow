@@ -63,17 +63,20 @@ if not getMovement.EOF then
             end if
     end if
 
-	set ItemInvoiceRepasseSQL = db.execute("SELECT rr.id FROM itensinvoice ii INNER JOIN rateiorateios rr ON rr.ItemContaAPagar=ii.id WHERE ii.InvoiceID="&treatvalzero(mInvoiceId))
-
     AutRepasse= False
 
-	if not ItemInvoiceRepasseSQL.eof then
-	    EhRepasse=True
+    if CD="D" then
+        set ItemInvoiceRepasseSQL = db.execute("SELECT rr.id FROM itensinvoice ii INNER JOIN rateiorateios rr ON rr.ItemContaAPagar=ii.id WHERE ii.InvoiceID="&treatvalzero(mInvoiceId))
 
-	    if getMovement("CD")="C" and aut("|contaapagarrepasseX|")=1 then
-            AutRepasse=True
-	    end if
-	end if
+
+        if not ItemInvoiceRepasseSQL.eof then
+            EhRepasse=True
+
+            if getMovement("CD")="C" and aut("|contaapagarrepasseX|")=1 then
+                AutRepasse=True
+            end if
+        end if
+    end if
 
 	%>
 	

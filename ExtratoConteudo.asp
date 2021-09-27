@@ -633,7 +633,7 @@ end if
                         <%
 						if (aut("|movementX") or (not isnull(getMovement("CaixaID")) and aut("|caixasusuX|"))) and (getMovement("Type")="Pay" or getMovement("Type")="Fee" or getMovement("Type")="Transfer" or getMovement("Type")="CCCred" or getMovement("Type")="CCDeb") then
 						%>
-						<a class="red" onclick="xMov(<%=getMovement("id") %>);" role="button" href="#">
+						<a class="red" onclick="xMov(<%=getMovement("id") %>, 'extrato');" role="button" href="#">
 							<i class="far fa-trash bigger-130"></i>
 						</a>
                         <%

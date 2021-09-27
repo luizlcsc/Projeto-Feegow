@@ -1,7 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 I = ref("I")
+AuditoriaRegistrada = False
 
 DeletarCheck = TRUE
 
@@ -29,8 +31,9 @@ set MovementSQL = db.execute("SELECT * FROM sys_financialmovement WHERE id="&I)
 UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
 contabloqueadacred = verificaBloqueioConta(1, 1, MovementSQL("AccountIDCredit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
 contabloqueadadebt = verificaBloqueioConta(1, 1, MovementSQL("AccountIDDebit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
+
 if contabloqueadacred = "1" or contabloqueadadebt = "1" then
-    retorno  = " alert('Esta conta ESTA BLOQUEADA e não pode ser alterada!'); "
+    retorno  = " alert('Esta conta está BLOQUEADA e não pode ser alterada!'); "
     response.write(retorno)
     response.end
 end if
@@ -69,7 +72,6 @@ if InvoiceID<>"" then
     end if
 end if
 
-
 if MovementSQL("Name")="Fechamento Cx - Dinheiro" then
     'aqui reabre o caixa
     CaixaID=MovementSQL("CaixaID")
@@ -81,10 +83,14 @@ if MovementSQL("Name")="Fechamento Cx - Dinheiro" then
         <%
         Response.End
     end if
+
+    AuditoriaRegistrada = True
+    call registraEventoAuditoria("reabre_caixinha", CaixaID, ref("Jst"))
+
     db.execute("UPDATE caixa SET Reaberto='S',dtFechamento=null, Descricao=concat(Descricao, ' (Aberto)') WHERE id="&CaixaID)
 
     %>
-    showMessageDialog("Caixa reaberto com sucesso.", "success");
+    showMessageDialog("Caixinha reaberto.", "warning");
     <%
     'Response.End
 end if
@@ -121,6 +127,17 @@ if not MovementSQL.eof then
         Response.End
     end if
 end if
+
+if MovementSQL("Type")="Pay" and MovementSQL("CD")="D" and not AuditoriaRegistrada then
+    AuditoriaRegistrada = True
+    call registraEventoAuditoria("cancela_recebimento", I, ref("Jst"))
+end if
+
+
+if MovementSQL("Type")="Transfer" and not AuditoriaRegistrada then
+    call registraEventoAuditoria("exclui_transferencia", I, ref("Jst"))
+end if
+
 
 set cct = db.execute("select group_concat(id) parcelascartao from sys_financialcreditcardtransaction where MovementID="&I)
 if not cct.eof then

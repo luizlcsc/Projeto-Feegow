@@ -4491,7 +4491,7 @@ function imoon(nome)
             cor = "warning"
             fornecedor = "fas"
             corFixa = "#FF9832"
-        case 5
+        case 5,116
             icone = "fa-volume-up"
             cor = "primary"
             fornecedor = "fas"
@@ -4499,7 +4499,7 @@ function imoon(nome)
             icone = "fa-frown"
             cor = "danger"
             fornecedor = "fas"
-        case 7, 9, 10
+        case 7, 9, 10,108
             icone = "fa-grin"
             cor = "warning"
             fornecedor = "fas"
@@ -4508,7 +4508,7 @@ function imoon(nome)
             icone = "fa-eye"
             cor = "primary"
             fornecedor = "fas"
-        case 11,22,16
+        case 11,22,16,107
             icone = "fa-minus-circle"
             cor = "danger"
             fornecedor = "fas"
@@ -6100,10 +6100,10 @@ ModoFranquiaUnidade = getConfig("ModoFranquia") = "1" AND session("UnidadeID") <
 
 function verificaBloqueioConta(lockTypeId, accountTypeId, AccountId, UnidadeId, datafechamento)
 
-   IF getConfig("FechamentoDeData")<>"1"  THEN
-         verificaBloqueioConta = 0
-         EXIT FUNCTION
-   END IF
+   'IF getConfig("FechamentoDeData")<>"1"  THEN
+   '      verificaBloqueioConta = 0
+   '      EXIT FUNCTION
+   'END IF
 
     if InStr(1, datafechamento, "/", 1)> 0 then
         arrayDatapagamento  = split(datafechamento,"/")

@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 
@@ -17,14 +18,29 @@ idUsuariosDesconto = "0"
 totalValorDescontado = 0
 totalValorDescontadoEnvio = 0
 totalValorAcrescido = 0
-contaRatiada = 0
+contaRateada = 0
 sqlRateio = "select count(*) total from invoice_rateio where InvoiceID = " & InvoiceID
 set rsRateio = db.execute(sqlRateio)
 if not rsRateio.eof then
 	if ccur(rsRateio("total")) > 0 then
-		contaRatiada = 1
+		contaRateada = 1
 	end if
 end if
+
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+if verificaBloqueioConta(1, 1, 1, ref("CompanyUnitID"),ref("sysDate")) then
+ %>
+         showMessageDialog("Esta conta está BLOQUEADA e não pode ser alterada!");
+         $("#btnSave").prop("disabled", false);
+
+     saveExecutados();
+ <%
+        response.write(retorno)
+        response.end
+end if
+
+' #####################################################################################
 
 if temregradesconto=1 then
 	'Validar se existe algum desconto cadastrado para o sistema
@@ -331,14 +347,32 @@ if erro="" then
             db.execute("insert into itensinvoice_bck (`id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente`) select `id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente` from itensinvoice where InvoiceID="&InvoiceID)
         end if
 
-        sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
+        sqlWhereItens = "ii.InvoiceID="&InvoiceID
+
         if itensStr&""<>"" then
 		    sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
-			db.execute("DELETE FROM tissguiasinvoice WHERE InvoiceID="&InvoiceID&" AND ItemInvoiceID not in ("&itensStr&")")			
+			db.execute("DELETE FROM tissguiasinvoice WHERE InvoiceID="&InvoiceID&" AND ItemInvoiceID not in ("&itensStr&")")
+			sqlWhereItens = "ii.InvoiceID="&InvoiceID&" AND ii.id not in ("&itensStr&")"
 		end if
 
-		call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
-		db_execute(sqlExecute)
+        set ItensExcluidosSQL = db.execute("SELECT COALESCE(proc.NomeProcedimento, ii.Descricao) Descricao, ii.ValorUnitario, ii.Desconto, if(ii.Executado='S','S','N')Executado "&_
+                                           "FROM itensinvoice ii  "&_
+                                           "LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
+                                           "WHERE "&sqlWhereItens)
+
+        if not ItensExcluidosSQL.eof then
+            while not ItensExcluidosSQL.eof
+                DescricaoExclusaoItem = "Descricao: "&ItensExcluidosSQL("Descricao")&" | Valor unit.: R$ "&fn(ItensExcluidosSQL("ValorUnitario"))&" | Desconto: R$ "&fn(ItensExcluidosSQL("Desconto"))&" | Executado: "&ItensExcluidosSQL("Executado")
+                call registraEventoAuditoria("remove_item_fatura", InvoiceID, DescricaoExclusaoItem)
+            ItensExcluidosSQL.movenext
+            wend
+            ItensExcluidosSQL.close
+            set ItensExcluidosSQL=nothing
+            sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
+
+            call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
+            db_execute(sqlExecute)
+        end if
 
 		'-> roda de novo o processo de cima
 		totInvo = 0
@@ -600,11 +634,11 @@ if erro="" then
             DescricaoLog=""
         end if
         if scp()=1 then
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(ref("invTabelaID")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRateada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(ref("invTabelaID")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 			'call gravaLog(sqlInvoice, "AUTO")
 	    	db_execute(sqlInvoice)
         else
-			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRatiada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(ref("invTabelaID")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Rateado="&contaRateada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(ref("invTabelaID")) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 		' 	call gravaLog(sqlInvoice, "AUTO")
 
 			db_execute(sqlInvoice)

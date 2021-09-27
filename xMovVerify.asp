@@ -4,6 +4,8 @@
         <%
         MovementID = req("I")
         Acao = req("Act")
+        Source = req("source")
+
         set getMovement = db.execute("select * from sys_financialMovement where id="& MovementID)
         UnidadeID = getMovement("UnidadeID")
         CD = getMovement("CD")
@@ -26,6 +28,12 @@
         end if
 
         if erro="" then
+
+            %>
+            <div class="col-md-12">
+                <p>Por favor descreva abaixo o motivo para o cancelamento da transação.</p>
+            </div>
+            <%
 
             call quickfield("memo", "Jst", "Motivo do cancelamento", 6, ref("Jst"), "", "", " rows=4 required ")
 
@@ -129,8 +137,12 @@ end if
 
 <script type="text/javascript">
     $("#confCanc").submit(function(){
-        $.post("xMovVerify.asp?I=<%= MovementID %>&Act=<%= Act %>", $(this).serialize(), function(data){
+        $.post("xMovVerify.asp?I=<%= MovementID %>&Act=<%= Act %>&Source=<%=Source%>", $(this).serialize(), function(data){
+            <% if Source="extrato" then %>
+            $('#modal-components .modal-body').html(data);
+            <% else %>
             $('#pagar .modal-body').html(data);
+            <% end if %>
         } );
         return false;
     });
@@ -138,5 +150,6 @@ end if
     function confX(AutID){
         $.post("xMov.asp", {I:<%= MovementID %>, Jst:$('#Jst').val(), AutID:AutID }, function(data){ eval(data) });
         $('#pagar').fadeOut();
+        closeComponentsModal();
     }
 </script>

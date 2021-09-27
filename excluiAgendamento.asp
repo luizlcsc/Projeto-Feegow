@@ -2,6 +2,7 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 ConsultaID = req("ConsultaID")
 token = req("token")
@@ -129,6 +130,10 @@ else
     if token = "98b4d9bbfdfe2170003fcb23b8c13e6b" then
 
         call agendaUnificada("delete", ConsultaID, ProfissionalID)
+
+        if cdate(pCon("Data"))< date() then
+            call registerEvent("exclui_agendamento_passado", ConsultaID, Obs)
+        end if
         
         sqlDel = "update agendamentos set sysActive='-1' where id="&ConsultaID
 

@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/ValidaProcedimentoProfissional.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 
@@ -346,14 +347,32 @@ if erro="" then
             db.execute("insert into itensinvoice_bck (`id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente`) select `id`, `InvoiceID`, `Tipo`, `Quantidade`, `CategoriaID`, `ItemID`, `ValorUnitario`, `Desconto`, `Descricao`, `Executado`, `DataExecucao`, `HoraExecucao`, `GrupoID`, `AgendamentoID`, `sysUser`, `sysDate`, `ProfissionalID`, `EspecialidadeID`, `HoraFim`, `Acrescimo`, `AtendimentoID`, `Associacao`, `CentroCustoID`, `OdontogramaObj`, `PacoteID`, `DHUp`, `GeradoAutomaticamente` from itensinvoice where InvoiceID="&InvoiceID)
         end if
 
-        sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
+        sqlWhereItens = "ii.InvoiceID="&InvoiceID
+
         if itensStr&""<>"" then
 		    sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID&" AND id not in ("&itensStr&")"
-			db.execute("DELETE FROM tissguiasinvoice WHERE InvoiceID="&InvoiceID&" AND ItemInvoiceID not in ("&itensStr&")")			
+			db.execute("DELETE FROM tissguiasinvoice WHERE InvoiceID="&InvoiceID&" AND ItemInvoiceID not in ("&itensStr&")")
+			sqlWhereItens = "ii.InvoiceID="&InvoiceID&" AND ii.id not in ("&itensStr&")"
 		end if
 
-		call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
-		db_execute(sqlExecute)
+        set ItensExcluidosSQL = db.execute("SELECT COALESCE(proc.NomeProcedimento, ii.Descricao) Descricao, ii.ValorUnitario, ii.Desconto, if(ii.Executado='S','S','N')Executado "&_
+                                           "FROM itensinvoice ii  "&_
+                                           "LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
+                                           "WHERE "&sqlWhereItens)
+
+        if not ItensExcluidosSQL.eof then
+            while not ItensExcluidosSQL.eof
+                DescricaoExclusaoItem = "Descricao: "&ItensExcluidosSQL("Descricao")&" | Valor unit.: R$ "&fn(ItensExcluidosSQL("ValorUnitario"))&" | Desconto: R$ "&fn(ItensExcluidosSQL("Desconto"))&" | Executado: "&ItensExcluidosSQL("Executado")
+                call registerEvent("remove_item_fatura", InvoiceID, DescricaoExclusaoItem)
+            ItensExcluidosSQL.movenext
+            wend
+            ItensExcluidosSQL.close
+            set ItensExcluidosSQL=nothing
+            sqlExecute = "delete from itensinvoice where InvoiceID="&InvoiceID
+
+            call gravaLogs(sqlExecute ,"AUTO", "Item excluído manualmente","InvoiceID")
+            db_execute(sqlExecute)
+        end if
 
 		'-> roda de novo o processo de cima
 		totInvo = 0

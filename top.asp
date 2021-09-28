@@ -145,7 +145,7 @@ else
 
             if session("Cir")=1 and AgendaCirurgica=4 then
                 %>
-                <li class="sub-menu-click-agenda-agenda-de-cirurgias"><a href="./?P=listaAgendaCirurgica&Pers=1"><i class="far fa-scapel-alt"></i> Agenda de Cirurgias</a></li>
+                <li class="sub-menu-click-agenda-agenda-de-cirurgias"><a href="./?P=listaAgendaCirurgica&Pers=1"><i class="far fa-scalpel"></i> Agenda de Cirurgias</a></li>
                 <%
             end if
 

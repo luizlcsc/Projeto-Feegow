@@ -350,7 +350,7 @@ function DefaultForm(tableName, id)
 					if isnumeric(q) then
 					        sqlBuscaNumerica = " or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0) "
 					    end if
-					    sqlBuscaNome = " OR NomePaciente like '"&q&"%' or NomeSocial like '"&q&"%' "
+					    sqlBuscaNome = " OR NomePaciente like '%"&q&"%' or NomeSocial like '"&q&"%' "
 
 					    if PorteClinica > 3 then
 

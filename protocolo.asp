@@ -704,11 +704,7 @@ end if
 
     function logCampo(CampoId, TipoCampoId){
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("logCampoForm.asp?CampoId="+CampoId+"&TipoCampoId="+TipoCampoId+"&FormId=<%=ModeloID%>&PacienteId=<%=PacienteID%>", function (data) {
             $("#modal").html(data);
         });
@@ -817,11 +813,7 @@ end if
 
     function editPront(Tipo, ID, PacienteID){
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         if (Tipo == "atestado"){
             $.get("iPront.asp?t=Atestado&p="+PacienteID+"&m=&i="+ID+"&a=&redirect=false", function (data) {
                 $("#modal").html(data);

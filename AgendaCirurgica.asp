@@ -279,11 +279,7 @@ function itemCirurgia(T, I, II, A){
 	    $("#l"+T+II).fadeOut();
 	    $("#"+T+II).fadeIn();
 	    $("#"+T+II).removeClass('hidden');
-	    $("#"+T+II).html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+	    $("#"+T+II).html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalCirurgica.asp?T="+T+"&I="+I+"&II="+II,

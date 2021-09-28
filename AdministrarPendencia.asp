@@ -991,11 +991,7 @@
        $('#modal').removeAttr('style');
        $('head').append('<style type="text/css">.modal .modal-content {max-height: ' + ($('body').height() * .8) + 'px;overflow-y: auto;}.modal-open .modal{overflow-y: hidden !important;}</style>');
        $("#modal-table").modal("show");
-       $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+       $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
    
        $.get("PendenciaExecutanteContato.asp", {
            PendenciaProcedimentoID: PendenciaProcedimentoID,

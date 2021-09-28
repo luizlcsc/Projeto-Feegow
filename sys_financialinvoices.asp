@@ -448,11 +448,7 @@ callInstallments();
 
 function item(TipoItem, TipoAcao, I){
 	$("#modal-table").modal("show");
-	$("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+	$("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	$.ajax({
 		   type:"POST",
 		   url:"modalItensInvoice.asp?InvoiceID=<%=id%>&TipoItem="+TipoItem+"&TipoAcao="+TipoAcao+"&I="+I,

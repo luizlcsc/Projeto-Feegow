@@ -394,11 +394,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#gPacienteID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("addContrato.asp?Tipo=Quimioterapia&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID=3_"+$("#gPacienteID").val(), "", function(data){
             $("#modal").html(data);
         });

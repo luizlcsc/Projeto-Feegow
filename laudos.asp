@@ -100,11 +100,7 @@ end if
 
     function entrega(I,tipo) {
             $("#modal-table").modal("show");
-            $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+            $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
             if (tipo == 'html')
             {
                 $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });

@@ -389,11 +389,7 @@ function pagar(){
 
 function addContrato(ModeloID, InvoiceID, ContaID){
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("addContrato.asp?ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
         $("#modal").html(data);
     })

@@ -128,11 +128,7 @@ function paciente(){
 
     if( id != "" && id != null){
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("HistoricoPaciente.asp?PacienteID=" + id, function (data) { $("#modal").html( data ); });
     }
 }
@@ -350,22 +346,14 @@ function profissionais(){
 
     if( id != "" && id != null){
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("HistoricoProfissional.asp?ProfissionalID=" + id, function (data) { $("#modal").html( data ); });
     }
 }
 
 function hist(P) {
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.get("HistoricoPaciente.asp?PacienteID=" + P, function (data) { $("#modal").html( data ); });
 }
 

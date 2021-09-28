@@ -310,11 +310,7 @@ function ajudar(){
     textHelpMin = 2;
     if(textHelp.length >= textHelpMin ){
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("Help.asp?text=" + textHelp, function (data) { $("#modal").html( data ); });
     }else{
         showMessageDialog("Digite ao menos "+ textHelpMin +" caracters", 'warning');
@@ -788,11 +784,7 @@ function profissionais() {
     
     if( profissionalID > 0){
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("HistoricoProfissional.asp?ProfissionalID=" + profissionalID + "&Regiao=" + Regiao + "&Data="+dataHora,
             function (data) {
                 $("#modal").html( data );

@@ -365,11 +365,7 @@ function changeTexto(arg){
     function entrega() {
         if ($("#StatusID").val() == 3) {
             $("#modal-table").modal("show");
-            $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+            $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
             $.post("laudoEntrega.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
         } else {
             alert("Não é possível entregar o laudo pois ainda não foi liberado.");
@@ -378,22 +374,14 @@ function changeTexto(arg){
 
     function protocolo() {
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("laudoProtocolo.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
      }
 
 
     function LogLaudos() {
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10">
-                                <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i>
-                                 </center>
-                            </div>`)
+        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("laudoLog.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
     }
 

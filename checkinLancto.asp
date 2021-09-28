@@ -1,36 +1,12 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="Classes/ValidaDesconto.asp"-->
-<!--#include file="Classes/SessionCaixa.asp"-->
-
 <%
 posModalPagar = "fixed"
-LoadSessionCaixa()
-%>
 
-<!--#include file="invoiceEstilo.asp"-->
-<script type="text/javascript">
-/*
-$("#pagar").fadeIn();
-
-$(function() {
-$( "#pagar" ).draggable();
-});
-*/
-/*
-$("#pagar").html("Carregando...");
-    $.post("Pagar.asp?T=C", {
-        Parcela: '|3586|'
-    }, function (data) {
-    $("#pagar").html(data);
-});
-*/
-</script>
-<%
-splLC = split(replace(ref("LanctoCheckin")," ",""), ",")
+splLC = split(ref("LanctoCheckin"), ", ")
 ContaRectoID = ref("ContaRectoID")
-notPagar = ref("notPagar")&""
-atualizarCheckin = req("checkin")&""
+
 
 if ContaRectoID = "" then
     ContaRectoID = 0
@@ -40,21 +16,15 @@ FormaID = ref("FormaID")
 ValorTotal = 0
 
 tabelaId = ""
-
-spl2Total = split(replace(valor," ",""), "_")
-
 for i= 0 to ubound(splLC)
-    if ubound(spl2Total)>0 then
-        spl2 = split(splLC(i), "_")
-        AgendamentoID = spl2(0)
-        AgendamentoProcedimentoID = spl2(1)
-    end if
-
+    spl2 = split(splLC(i), "_")
+    AgendamentoID = spl2(0)
+    AgendamentoProcedimentoID = spl2(1)
     if AgendamentoID<>"" then
-        
-        set ag = db.execute("select a.id, a.ProfissionalID, a.Data, a.rdValorPlano, a.ValorPlano, a.PacienteID, TipoCompromissoID, a.EspecialidadeID, a.LocalID, a.TabelaParticularID, a.IndicadoPor FROM agendamentos a where a.id in ("& AgendamentoID&")")
+
+        set ag = db.execute("select a.id, a.ProfissionalID, a.Data, a.rdValorPlano, a.ValorPlano, a.PacienteID, TipoCompromissoID, a.EspecialidadeID, a.LocalID, a.TabelaParticularID, a.IndicadoPor FROM agendamentos a where a.id="& AgendamentoID)
         if not ag.eof then
-            
+
             PacienteID = ag("PacienteID")
             IndicadoPor = ag("IndicadoPor")
             Valor = ag("ValorPlano")
@@ -64,18 +34,18 @@ for i= 0 to ubound(splLC)
             EspecialidadeID=ag("EspecialidadeID")
 
             tabelaId = ag("TabelaParticularID")
-            
+
             if AgendamentoProcedimentoID<>"" then
                 set agProcedimento = db.execute("select a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID FROM agendamentosprocedimentos a where a.id="& AgendamentoProcedimentoID)
                 Valor = agProcedimento("ValorPlano")
                 rdValorPlano = agProcedimento("rdValorPlano")
                 ProcedimentoID = agProcedimento("TipoCompromissoID")
             end if
-            
+
             if rdValorPlano="V" then
                 ValorTotal = ValorTotal + Valor
             end if
- 
+
         end if
     end if
 next
@@ -90,20 +60,9 @@ end if
 
 NotificaDesconto    = ref("NotificaDesconto")
 IdsRegrasSuperiores = ref("IdsRegrasSuperiores")
-%>
 
-<script type="text/javascript">
-    $("#pagar").fadeIn();
-
-    $(function() {
-    $( "#pagar" ).draggable();
-    });
-</script>
-
-<%
 valorTotalOriginal=ValorTotal
 valorTotalUpdate=ValorTotal
-
 if ref("valorTotalSomadoModificado") <> "" then
     valorModificado = ref("valorTotalSomadoModificado")
     valorTotal = valorModificado
@@ -117,28 +76,20 @@ end if
 
 InvoiceID = 0
 saveInsys_financialmovement = 0
-splLC = split(replace(ref("LanctoCheckin")," ",""), ",")
+splLC = split(ref("LanctoCheckin"), ", ")
 ProcedimentosAdicionados = ""
 DescontosPendentes  = ""
 
 for i= 0 to ubound(splLC)
-
     spl2 = split(splLC(i), "_")
     AgendamentoID = spl2(0)
     AgendamentoProcedimentoID = spl2(1)
     JaAdicionou = false
 
     if AgendamentoID<>"" then
-        set ag = db.execute("select a.IndicadoPor, l.UnidadeID, a.id, a.ProfissionalID, a.Data, a.rdValorPlano, a.ValorPlano, a.PacienteID, " & _
-        "TipoCompromissoID, a.EspecialidadeID, a.LocalID, a.TabelaParticularID, fo.unidadepagadoraid " &_
-        "FROM agendamentos a " &_
-        "LEFT JOIN locais l ON l.id=a.LocalID " &_
-        "LEFT JOIN profissionais p ON p.id=a.ProfissionalID " &_
-        "LEFT JOIN fornecedores fo ON fo.id=p.fornecedorID " &_
-        "WHERE a.id in ("& AgendamentoID&")")
-
+        set ag = db.execute("select a.IndicadoPor, l.UnidadeID, a.id, a.ProfissionalID, a.Data, a.rdValorPlano, a.ValorPlano, a.PacienteID, TipoCompromissoID, a.EspecialidadeID, a.LocalID, a.TabelaParticularID FROM agendamentos a left join locais l ON l.id=a.LocalID where a.id="& AgendamentoID)
         if not ag.eof then
-            
+
             id = ag("id")
             PacienteID = ag("PacienteID")
             Valor = ag("ValorPlano")
@@ -148,7 +99,6 @@ for i= 0 to ubound(splLC)
             UnidadeID = ag("UnidadeID")
             IndicacaoID = ag("IndicadoPor")
             TabelaID = ag("TabelaParticularID")
-            FornecedorID = ag("unidadepagadoraid")
 
             if (tabelaId&"" = "" or tabelaId&""="0") and ObrigarTabelaParticular=1 then
                 response.write("<script>showMessageDialog('Erro: Preencha a tabela do paciente!');$('#pagar').fadeOut();</script>")
@@ -171,7 +121,7 @@ for i= 0 to ubound(splLC)
 
             Quantidade=1
             'quantidade de um mesmo procedimento na conta
-            set QuantidadeProcedimentoSQL = db.execute("SELECT count(ProcedimentoID)Qtd FROM (SELECT TipoCompromissoID ProcedimentoID FROM agendamentos WHERE id in ("&AgendamentoID&") UNION ALL SELECT TipoCompromissoID ProcedimentoID FROM agendamentosprocedimentos WHERE AgendamentoID in ("&AgendamentoID&"))t WHERE t.ProcedimentoID="&ProcedimentoID&" group by procedimentoID")
+            set QuantidadeProcedimentoSQL = db.execute("SELECT count(ProcedimentoID)Qtd FROM (SELECT TipoCompromissoID ProcedimentoID FROM agendamentos WHERE id="&AgendamentoID&" UNION ALL SELECT TipoCompromissoID ProcedimentoID FROM agendamentosprocedimentos WHERE AgendamentoID="&AgendamentoID&")t WHERE t.ProcedimentoID="&ProcedimentoID&" group by procedimentoID")
             if not QuantidadeProcedimentoSQL.eof then
                 Quantidade = ccur(QuantidadeProcedimentoSQL("Qtd"))
 
@@ -185,10 +135,9 @@ for i= 0 to ubound(splLC)
             if not JaAdicionou then
                 ProcedimentosAdicionados = ProcedimentosAdicionados & "|"&ProcedimentoID&"|"
 
-                historicoPacienteAutomativo = req("historicoPacienteAutomativo")&""
                 if rdValorPlano="V" then
 
-                ' calcula se houve desconto ou acrescimo
+                    ' calcula se houve desconto ou acrescimo
                     Acrescimo=0
                     Desconto=0
 
@@ -210,8 +159,8 @@ for i= 0 to ubound(splLC)
                     sqlBuscaInvoice = "select ii.InvoiceID, i.FormaID, ii.id, "&_
                                                           "(select id from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id limit 1) MovementID FROM itensinvoice ii "&_
                                                           "LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
-                                                          "WHERE i.AccountID="& PacienteID &" AND i.Value="& treatvalnull(ValorTotal) &" AND i.AssociationAccountID=3 "& _
-                                                          "AND ii.ItemID="& ProcedimentoID &" AND ii.Tipo='S' AND (ii.ProfissionalID="& ProfissionalID &" OR ISNULL(ii.ProfissionalID)) "&_
+                                                          "WHERE i.AccountID="& PacienteID &" AND i.Value="& treatvalnull(valorTotalUpdate) &" AND i.AssociationAccountID=3 "& _
+                                                          "AND ii.ItemID="& ProcedimentoID &" AND ii.Tipo='S' AND (ii.ProfissionalID="& treatvalnull(ProfissionalID) &" OR ISNULL(ii.ProfissionalID)) "&_
                                                           "AND IFNULL((select sum(Valor) from itensdescontados where ItemID=ii.id), 0)=0 AND (ii.ValorUnitario > 0 OR (ii.ValorUnitario = 0 AND ii.DataExecucao=CURDATE())) AND "&_
                                                           "(select count(id) from sys_financialmovement where Type='Bill' and CD='C' and InvoiceID=i.id)=1"
 
@@ -231,11 +180,13 @@ for i= 0 to ubound(splLC)
                         if NotificaDesconto = "1" and Desconto > 0  then
                             notEnviada = notificaDescontoPendente(vcaII("id"), Desconto, session("User"), UnidadeID, IdsRegrasSuperiores)
                             if DescontosPendentes = "" then
-                                DescontosPendentes = notEnviada 
+                                DescontosPendentes = notEnviada
                             else
-                                DescontosPendentes = DescontosPendentes  & "," & notEnviada 
+                                DescontosPendentes = DescontosPendentes  & "," & notEnviada
                             end if
                         end if
+
+
                     else
                         'Incrementa a variavel ItensDaInvoiceACriar
                         'response.write("Criando novo<br>")c
@@ -248,7 +199,7 @@ for i= 0 to ubound(splLC)
                             'exclui as contas geradas nao quitadas para este agendamento
                             'aqui pode ser o caso que um desconto foi dado e ai nao eh encontrado mais a conta naqueles parametros
 
-                            set InvoicesNaoQuitadasSQL = db.execute("SELECT ii.InvoiceID, ii.id FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID INNER JOIN sys_financialmovement m ON m.InvoiceID=i.id WHERE ii.AgendamentoID in ("&AgendamentoID&") AND i.sysDate=curdate() AND (m.ValorPago is null or m.ValorPago=0) LIMIT 2")
+                            set InvoicesNaoQuitadasSQL = db.execute("SELECT ii.InvoiceID, ii.id FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID INNER JOIN sys_financialmovement m ON m.InvoiceID=i.id WHERE ii.AgendamentoID="&AgendamentoID&" AND i.sysDate=curdate() AND (m.ValorPago is null or m.ValorPago=0) LIMIT 2")
                             while not InvoicesNaoQuitadasSQL.eof
                                 InvoiceIDToDelete = InvoicesNaoQuitadasSQL("InvoiceID")
                                 db.execute("DELETE FROM itensinvoice WHERE InvoiceID="&InvoiceIDToDelete)
@@ -258,8 +209,8 @@ for i= 0 to ubound(splLC)
                             wend
                             InvoicesNaoQuitadasSQL.close
                             set InvoicesNaoQuitadasSQL=nothing
-                            sql = "insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID,SubCaixaID, TabelaID, ProfissionalSolicitante) VALUES ('Gerado pelo check-in', "& PacienteID &", 3, "& treatvalzero(ValorTotal) &", 1, 'BRL', "& UnidadeID &", 1, 'm', 'C', 1, "& session("User") &", "&FormaID&", "&ContaRectoID&", curdate(), "& treatvalnull(session("CaixaID")) &",NULLIF('"&session("SubCaixaID")&"',''),"&treatvalnull(TabelaID)&",'"&IndicacaoID&"')"
-                            
+                            sql = "insert into sys_financialinvoices (Name, AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, TabelaID, ProfissionalSolicitante) VALUES ('Gerado pelo check-in', "& PacienteID &", 3, "& treatvalzero(valorTotalUpdate) &", 1, 'BRL', "& UnidadeID &", 1, 'm', 'C', 1, "& session("User") &", "&FormaID&", "&ContaRectoID&", curdate(), "& treatvalnull(session("CaixaID")) &","&treatvalnull(TabelaID)&",'"&IndicacaoID&"')"
+
                             call gravaLogs(sql, "AUTO", "Criado pelo check-in", "")
                             db.execute(sql)
                             set pult = db.execute("select id from sys_financialinvoices where sysUser="& session("User") &" order by id desc limit 1")
@@ -268,6 +219,7 @@ for i= 0 to ubound(splLC)
                         end if
 
                         ValorExecutadoCheckin = "S"
+
                         if getConfig("CheckinCriarInvoiceExecutada")="0" then
                             ValorExecutadoCheckin=""
                         end if
@@ -277,36 +229,21 @@ for i= 0 to ubound(splLC)
                             DescontoUpdate = 0
                         end if
 
-                        Acrescimo=0
-                        Desconto=0
+                        db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Acrescimo, Executado, DataExecucao, GrupoID, AgendamentoID, sysUser, ProfissionalID, EspecialidadeID, Associacao) values ("& InvoiceID &", 'S', "&Quantidade&", 0, "& ProcedimentoID &", "& treatvalzero(Valor) &", "&treatvalzero(DescontoUpdate)&", "&treatvalzero(Acrescimo)&", '"&ValorExecutadoCheckin&"', curdate(), 0, "& ag("id") &", "& session("User") &", "& ag("ProfissionalID") &", "& treatvalnull(EspecialidadeID) &", 5)")
+                        set pult = db.execute("select id from itensinvoice where sysUser="& session("User") &" order by id desc limit 1")
+                        ItemInvoiceID = pult("id")
 
-
-                        DiferencaPorcentagem = 0
-
-                        if valorModificado<>"" and valorTotalOriginal&""<>"0" then
-                            DiferencaPorcentagem = (valorTotalOriginal - ValorTotal) / valorTotalOriginal
-                            DiferencaValores = valorTotalOriginal - ValorTotal
-
-                            if DiferencaValores < 0 then
-                                Acrescimo = Round((DiferencaPorcentagem * Valor) * -1,2)
-                            elseif DiferencaValores > 0 then
-                                Desconto = Round(DiferencaPorcentagem * Valor)
+                        ' envia notificacao de desconto pendente
+                        if NotificaDesconto = "1" and Desconto > 0 then
+                            notEnviada = notificaDescontoPendente(ItemInvoiceID, Desconto, session("User"), UnidadeID, IdsRegrasSuperiores)
+                            if DescontosPendentes = "" then
+                                DescontosPendentes = notEnviada
+                            else
+                                DescontosPendentes = DescontosPendentes  & "," & notEnviada
                             end if
                         end if
 
-                        profissionalExterno = verificaProfissionalExterno(ProfissionalID)
 
-                        if profissionalExterno = "S" then
-                            ValorExecutadoCheckin = "NULL"
-                            DataExecutadoCheckin  = "NULL"
-                        else
-                            ValorExecutadoCheckin = "'S'"
-                            DataExecutadoCheckin  = "curdate()"
-                        end if
-
-                    db.execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Acrescimo, Executado, DataExecucao, GrupoID, AgendamentoID, sysUser, ProfissionalID, EspecialidadeID, Associacao) values ("& InvoiceID &", 'S', "&Quantidade&", 0, "& ProcedimentoID &", "& treatvalzero(Valor) &", "&treatvalzero(Desconto)&", "&treatvalzero(Acrescimo)&", "&ValorExecutadoCheckin&", "&DataExecutadoCheckin&", 0, "& ag("id") &", "& session("User") &", "& ag("ProfissionalID") &", "& treatvalnull(EspecialidadeID) &", 5)")
-                        set pult = db.execute("select id from itensinvoice where sysUser="& session("User") &" order by id desc limit 1")
-                        ItemInvoiceID = pult("id")
 
     've se tem repasse com indicacao
                         if IndicacaoID&""<>"" and IndicacaoID<>"0" then
@@ -345,31 +282,14 @@ for i= 0 to ubound(splLC)
                         end if
 
                         if saveInsys_financialmovement=0 then
-                            db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID,SubCaixaID,UnidadeID) values (0, 0, 3, "& PacienteID &", "& treatvalzero(ValorTotal) &", curdate(), 'C', 'Bill', 'BRL', 1, "& InvoiceID &", 1, "& session("User") &", "& treatvalnull(session("CaixaID")) &",NULLIF('"&session("SubCaixaID")&"',''), "& UnidadeID &")")
+                            db.execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID) values (0, 0, 3, "& PacienteID &", "& treatvalzero(valorTotalUpdate) &", curdate(), 'C', 'Bill', 'BRL', 1, "& InvoiceID &", 1, "& session("User") &", "& treatvalnull(session("CaixaID")) &", "& UnidadeID &")")
                             set pm = db.execute("select id from sys_financialmovement where sysUser="& session("User") &" order by id desc limit 1")
                             MovementID = pm("id")
                             saveInsys_financialmovement = 1
                         end if
 
                     end if
-                    %>
-
-                    <input class="parcela" type="hidden" name="Parcela" value="|<%= MovementID %>|" />
-                    <script type="text/javascript">
-                        var invoiceId= '<%=InvoiceID%>';
-
-
-                    </script>
-                    <%
-                    if notPagar <> "1" then
-                        checkinPagar = true
-                    else
-                    %>
-                    <script>
-                        $(function() { $("#pagar").hide(); } );
-                    </script>
-                    <%
-                    end if 
+                    checkinPagar = true
                 end if
             end if
         end if

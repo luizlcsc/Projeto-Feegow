@@ -1166,7 +1166,6 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                             };
                         },
                         processResults: function (response) {
-                            console.log(response)
                             return {
                                 results:response
                             };

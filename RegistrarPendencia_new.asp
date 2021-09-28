@@ -244,7 +244,7 @@ end if
             parcelaTres = 0
             parcelaSeis = 0
             if cart("ProcedimentoID") <> "" and  not isnull(cart("ProcedimentoID")) then
-                valorProcedimento = calcValorProcedimento(cart("ProcedimentoID"), cart("TabelaID"), "", cart("ProfissionalID"), cart("EspecialidadeID"), "")
+                valorProcedimento = calcValorProcedimento(cart("ProcedimentoID"), cart("TabelaID"), "", cart("ProfissionalID"), cart("EspecialidadeID"), "", "")
                 sqlDesconto = "SELECT ParcelasDe, ParcelasAte, Acrescimo FROM sys_formasrecto WHERE tipoDesconto = 'P' AND (procedimentos LIKE '%|ALL|%' OR procedimentos LIKE '%|" & cart("ProcedimentoID") & "|%') " &_
                                             " AND MetodoID IN (8,9,10) limit 1"
 

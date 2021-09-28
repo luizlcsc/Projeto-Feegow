@@ -16,6 +16,12 @@
 <form id="frmProposta">
 <br />
     <div class="panel mn">
+        <div class="panel-heading">
+            <span class="panel-title">Buscar propostas</span>
+            <span class="panel-controls">
+                <button  class="btn btn-primary"><i class="far fa-search"></i> Buscar</button>
+            </span>
+        </div>
         <div class="panel-body">
         <div class="row">
             <%=quickfield("datepicker", "De", "De", 2, dateadd("d", -7, date()), "", "", "") %>
@@ -24,12 +30,6 @@
             <%=quickfield("multiple", "Unidades", "Filtrar Unidades", 2 , "|"&session("UnidadeID")&"|", "SELECT 0 as id,NomeEmpresa as NomeFantasia  FROM empresa UNION SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "") %>
             <%=quickfield("users", "EmitidaPor", "Emitida por", 2, "", "", "", "") %>
             <%=quickfield("multiple", "Status", "Status", 2, "|1|", "select id, NomeStatus from propostasstatus", "NomeStatus", " required ") %>
-        </div>
-        <div class="row mt10">
-
-            <div class="col-md-2 col-md-offset-7 mt20">
-                <button class="btn btn-block btn-primary"><i class="far fa-search"></i> Buscar</button>
-            </div>
         </div>
     </div>
         </div>

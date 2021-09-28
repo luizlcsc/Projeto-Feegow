@@ -5805,7 +5805,33 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
         end if
     end if
 
+    valorCorridoVariacaoPreco = aplicaVariacaoDePreco(procValor, ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
 
+    if valorCorridoVariacaoPreco then
+        Valor2 = valorCorridoVariacaoPreco
+    end if
+
+    if eTabelaParticular then
+        objDeTransferencia = objDeTransferencia&", nomeTabela:"""&tabelaNomeDoValor&""", idTabela:"&tabelaIdDoValor
+    elseif eVariacao then
+        objDeTransferencia = objDeTransferencia&", variacao :"&pmId
+    end if
+
+
+    if Valor2="" then
+        novoValor = procValor
+        calcValorProcedimento = procValor
+    else
+        novoValor = Valor2
+        calcValorProcedimento= Valor2
+    end if
+    objDeTransferencia = objDeTransferencia&", novoValor:'"&novoValor&"',valorCusto:"&treatvalzero(valorCusto)
+    response.Charset="utf-8"
+    informacaoValor = "{"&objDeTransferencia&"}"
+
+end function
+
+function aplicaVariacaoDePreco(procValor, ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
     sqlVarPreco = "select * from("&_
                        "select (if(instr(Procedimentos, '|"&ProcedimentoID&"|'), 0, 1)) PrioridadeProc, t.* from (select * from varprecos WHERE "&_
                        "((Procedimentos='' OR Procedimentos IS NULL)  "&_
@@ -5846,8 +5872,8 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
     set vcaTab=nothing
 
     if pmTipo="F" then
-        Valor2 = pmValor
-        obsLog = obsLog&" modificado pelo valor fixo da regra de variacao (id: "&pmId&") valor final "&Valor2
+        aplicaVariacaoDePreco = pmValor
+        obsLog = obsLog&" modificado pelo valor fixo da regra de variacao (id: "&pmId&") valor final "&pmValor
     elseif pmTipo="D" or pmTipo="A" then
         eTabelaParticular= false
         eVariacao = true
@@ -5869,31 +5895,10 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
             pmValor = procValor + pmDescAcre
             obsLog = obsLog&" de acressimo"
         end if
-        Valor2 = pmValor
-        obsLog = obsLog&", valor final("&Valor2&")"
+        aplicaVariacaoDePreco = pmValor
+        obsLog = obsLog&", valor final("&pmValor&")"
 
     end if
-
-    session("obslog") = "Agendamento(id:"&ref("ConsultaID")&") grade(id:"&ref("GradeID")&")"&obsLog
-    
-    if eTabelaParticular then
-        objDeTransferencia = objDeTransferencia&", nomeTabela:"""&tabelaNomeDoValor&""", idTabela:"&tabelaIdDoValor
-    elseif eVariacao then
-        objDeTransferencia = objDeTransferencia&", variacao :"&pmId
-    end if
-
-
-    if Valor2="" then
-        novoValor = procValor
-        calcValorProcedimento = procValor
-    else
-        novoValor = Valor2
-        calcValorProcedimento= Valor2
-    end if
-    objDeTransferencia = objDeTransferencia&", novoValor:'"&novoValor&"',valorCusto:"&treatvalzero(valorCusto)
-    response.Charset="utf-8"
-    informacaoValor = "{"&objDeTransferencia&"}"
-
 end function
 
 function gravaLog(query, operacaoForce)

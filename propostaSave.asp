@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 PropostaID = req("PropostaID")
 AguardaDesconto=false
@@ -56,10 +57,13 @@ if erro="" then
 
 	if PropostaSQl("StaID")&"" = "5" then
 		sqlSave = "update propostas set ProfissionalID="&treatvalzero(ref("ProfissionalID"))&",  StaID="&ref("StaID")&", Internas='"&ref("Internas")&"',  ObservacoesProposta='"&ref("ObservacoesProposta")&"' where id="&PropostaID
+
+        call gravaLogs(sqlSave ,"AUTO", "Proposta alterada (executada)","")
 		db_execute(sqlSave)
 
 	else
 		sqlSave = "update propostas set ProfissionalID="&treatvalzero(ref("ProfissionalID"))&", PacienteID="&treatvalzero(ref("PacienteID"))&",TabelaID="&treatvalzero(ref("TabelaID"))&", Valor="&treatvalzero(ref("Valor"))&", UnidadeID="&treatvalzero(UnidadeID)&", StaID="&ref("StaID")&", TituloItens='"&ref("TituloItens")&"', TituloOutros='"&ref("TituloOutros")&"', TituloPagamento='"&ref("TituloPagamento")&"', DataProposta="&mydatenull(ref("DataProposta"))&", sysActive=1, "&sysUserSql&" Cabecalho='"&ref("Cabecalho")&"', Internas='"&ref("Internas")&"', ObservacoesProposta='"&ref("ObservacoesProposta")&"', Desconto="&treatvalzero(ref("DescontoTotal"))&" where id="&PropostaID
+		call gravaLogs(sqlSave ,"AUTO", "Proposta alterada","")
 '		response.Write(sqlSave)
 		db_execute(sqlSave)
 		totalProposta = ref("Valor")

@@ -557,7 +557,7 @@ elseif acao = "carregaProcedimentoExecutante" then
                     set ContatosSQL = db.execute("SELECT count(id) as Qtd, MAX(id) as id FROM pendencia_contatos_executantes WHERE PendenciaProcedimentoID="&PendenciaProcedimentoID&" AND ExecutanteID="&ExecutanteID&" AND sysActive = 1")
                     QtdContatos = ContatosSQL("Qtd")
 
-                    ValorTabela = calcValorProcedimento(ProcedimentoID, 0, "", ExecutanteID, EspecialidadeID, 0)
+                    ValorTabela = calcValorProcedimento(ProcedimentoID, 0, "", ExecutanteID, EspecialidadeID, 0, "")
 
                     if ContatosSQL("id") <> "" then
                         set StatusSQL = db.execute("SELECT ce.StatusID, es.NomeStatus, es.Classe FROM cliniccentral.pendencia_executante_status es LEFT JOIN pendencia_contatos_executantes ce ON ce.StatusID=es.id WHERE PendenciaProcedimentoID="&PendenciaProcedimentoID&" AND ExecutanteID="&ExecutanteID&" AND ce.id='"&ContatosSQL("id")&"'")
@@ -586,7 +586,7 @@ elseif acao = "carregaProcedimentoExecutante" then
                 <td style="text-align:right"><%=fn(ValorTabela)%></td>
                 <td style="text-align:center"><%=QtdContatos%></td>
                 <td style="text-align:left; white-space: nowrap">
-                    <button title="Observações" data-toggle="tooltip" onclick='obs(<%=ProfissionalSQL("id")%>);' type='button' class='btn btn-xs btn-primary'><i class='fa fa-comment'></i></button>
+                    <button title="Observações" data-toggle="tooltip" onclick='obs(<%=ProfissionalSQL("id")%>);' type='button' class='btn btn-xs btn-primary'><i class='fa fa-info-circle'></i></button>
 <%
                     if ccur(restricaoObj.possuiPreparo(ProcedimentoID)) > 0 then
 %>

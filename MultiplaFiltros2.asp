@@ -506,7 +506,12 @@ function abreModalRestricao(liberar) {
     ids += "0";
 
     if(PacienteID == "" || PacienteID == 0 || PacienteID == null){
-        alert("Paciente não selecionado");
+        new PNotify({
+            title: 'Campo obrigatório',
+            text: 'Selecione um paciente',
+            type: 'warning',
+            delay: 2000
+        });
     }else{
         $.ajax({
             type: 'GET',

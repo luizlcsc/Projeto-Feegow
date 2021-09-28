@@ -21,10 +21,10 @@ for i= 0 to ubound(splLC)
     AgendamentoID = spl2(0)
     AgendamentoProcedimentoID = spl2(1)
     if AgendamentoID<>"" then
-        
+
         set ag = db.execute("select a.id, a.ProfissionalID, a.Data, a.rdValorPlano, a.ValorPlano, a.PacienteID, TipoCompromissoID, a.EspecialidadeID, a.LocalID, a.TabelaParticularID, a.IndicadoPor FROM agendamentos a where a.id="& AgendamentoID)
         if not ag.eof then
-            
+
             PacienteID = ag("PacienteID")
             IndicadoPor = ag("IndicadoPor")
             Valor = ag("ValorPlano")
@@ -34,18 +34,18 @@ for i= 0 to ubound(splLC)
             EspecialidadeID=ag("EspecialidadeID")
 
             tabelaId = ag("TabelaParticularID")
-            
+
             if AgendamentoProcedimentoID<>"" then
                 set agProcedimento = db.execute("select a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID FROM agendamentosprocedimentos a where a.id="& AgendamentoProcedimentoID)
                 Valor = agProcedimento("ValorPlano")
                 rdValorPlano = agProcedimento("rdValorPlano")
                 ProcedimentoID = agProcedimento("TipoCompromissoID")
             end if
-            
+
             if rdValorPlano="V" then
                 ValorTotal = ValorTotal + Valor
             end if
- 
+
         end if
     end if
 next
@@ -89,7 +89,7 @@ for i= 0 to ubound(splLC)
     if AgendamentoID<>"" then
         set ag = db.execute("select a.IndicadoPor, l.UnidadeID, a.id, a.ProfissionalID, a.Data, a.rdValorPlano, a.ValorPlano, a.PacienteID, TipoCompromissoID, a.EspecialidadeID, a.LocalID, a.TabelaParticularID FROM agendamentos a left join locais l ON l.id=a.LocalID where a.id="& AgendamentoID)
         if not ag.eof then
-            
+
             id = ag("id")
             PacienteID = ag("PacienteID")
             Valor = ag("ValorPlano")
@@ -180,9 +180,9 @@ for i= 0 to ubound(splLC)
                         if NotificaDesconto = "1" and Desconto > 0  then
                             notEnviada = notificaDescontoPendente(vcaII("id"), Desconto, session("User"), UnidadeID, IdsRegrasSuperiores)
                             if DescontosPendentes = "" then
-                                DescontosPendentes = notEnviada 
+                                DescontosPendentes = notEnviada
                             else
-                                DescontosPendentes = DescontosPendentes  & "," & notEnviada 
+                                DescontosPendentes = DescontosPendentes  & "," & notEnviada
                             end if
                         end if
 
@@ -237,9 +237,9 @@ for i= 0 to ubound(splLC)
                         if NotificaDesconto = "1" and Desconto > 0 then
                             notEnviada = notificaDescontoPendente(ItemInvoiceID, Desconto, session("User"), UnidadeID, IdsRegrasSuperiores)
                             if DescontosPendentes = "" then
-                                DescontosPendentes = notEnviada 
+                                DescontosPendentes = notEnviada
                             else
-                                DescontosPendentes = DescontosPendentes  & "," & notEnviada 
+                                DescontosPendentes = DescontosPendentes  & "," & notEnviada
                             end if
                         end if
 

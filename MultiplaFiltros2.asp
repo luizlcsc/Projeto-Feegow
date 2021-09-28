@@ -25,6 +25,7 @@
     </div>
 </div>
 <%
+    Response.End
 end if
 
 idcarrinho = req("Carrinho")

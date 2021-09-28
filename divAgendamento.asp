@@ -744,7 +744,7 @@ end if
         <% end if %>
 
 
-        <div id="divAgendamentoCheckin" class="row">
+        <div id="divAgendamentoCheckin">
             <!--#include file="agendamentoProcedimentos.asp"-->
         </div>
 
@@ -1392,9 +1392,9 @@ function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
   setTimeout(function() {
     if($el.attr("data-force-disabled") !== 'true' || force){
           if(state){
-              $el.attr('disabled', false).html("<i class=s'far fa-save'></i> Salvar", false);
+              $el.attr('disabled', false).html(`<i class='far fa-save'></i> Salvar`, false);
           }else{
-              $el.attr('disabled', true).html("<i class='far fa-circle-o-notch  fa-spin'></i> "+waitMessage, true);
+              $el.attr('disabled', true).html(`<i class='far fa-circle-o-notch  fa-spin'></i> `+waitMessage, true);
           }
       }
   }, timeout);
@@ -1545,7 +1545,13 @@ var saveAgenda = function(){
 
             .fail(function(err){
                 $("#btnSalvarAgenda").prop("disabled", true);
+                showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
+
+                gtag('event', 'erro_500', {
+                    'event_category': 'erro_agenda',
+                    'event_label': "Erro ao salvar agendamento."
+                });
             });
 
         if(typeof callbackAgendaFiltros === "function"){

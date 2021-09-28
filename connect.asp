@@ -1846,8 +1846,8 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
         splPH2 = split(splPH(1), "'")
         placeholder = splPH2(0)
     end if
-    if instr(othersToInput, "required")>0 and label&""<>"" then
-        ast = " *"
+    if instr(othersToInput, "required")>0 then
+        ast = " <i class='fas fa-asterisk input-required-asterisk' ></i>"
     else
         ast = ""
     end if
@@ -2268,6 +2268,11 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
         }).fail(function(data) {
             $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
             $("#<%=btnSaveID%>").removeAttr('disabled');
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_cadastro',
+                'event_label': "Erro ao salvar <%=req("P")%>."
+            });
 
             showMessageDialog("Os dados não foram salvos. Tente novamente mais tarde.", "danger");
           });

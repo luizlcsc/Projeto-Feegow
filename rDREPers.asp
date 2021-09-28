@@ -214,7 +214,7 @@ ModeloID = ref("ModeloID")
     
     function det(l, m, a) {
 
-        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $("#modal-table").modal("show");
         $.get("rDRE_detalhes.asp?LinhaID=" + l + "&Mes=" + m +"&A="+ a, function (data) {
             $("#modal").html(data);

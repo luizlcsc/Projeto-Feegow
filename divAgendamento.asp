@@ -1921,7 +1921,7 @@ function CopyToClipboard (text) {
 
 function ObsConvenio(ConvenioID) {
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("ObsConvenio.asp?ConvenioID="+ConvenioID, "", function (data) {
         $("#modal").html(data);
 

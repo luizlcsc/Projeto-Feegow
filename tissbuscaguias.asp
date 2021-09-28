@@ -843,14 +843,14 @@ function correcaoValoresProcedimentos(self, guiaId, valorTotalCheck, tabela) {
 
 function modalTissGuiaStatuslog(GuiaID, TipoGuia) {
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("modalTissGuiaStatuslog.asp?GuiaID="+GuiaID+"&TipoGuia="+TipoGuia, "", function (data) { $("#modal").html(data) });
     $("#modal").addClass("modal-lg");
  }
 
 function modalPaciente(ID) {
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
     $("#modal").addClass("modal-lg");
  }

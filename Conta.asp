@@ -340,7 +340,7 @@ function anexa(){
 }
 
 $("#btnFatAgendamento").click(function(){
-    $("#divFatAgendamento").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#divFatAgendamento").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.get("AgendamentosFaturar.asp?PacienteID=<%=PacienteID%>", function(data){
         $("#divFatAgendamento").html(data);
     });
@@ -361,7 +361,7 @@ function modalEstoque(ItemInvoiceID, ProdutoID, ProdutoInvoiceID){
 }
 
 function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID) {
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.ajax({
         type:"POST",
         url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID +"&ItemInvoiceID=" + ItemInvoiceID + "&AtendimentoID="+ AtendimentoID,

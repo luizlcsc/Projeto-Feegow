@@ -600,14 +600,14 @@ end if
 <script type="text/javascript">
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
-        $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
         $("#modal").addClass("modal-lg");
      }
 
      function modalPacienteRelativo(ID, Nome) {
          $("#modal-table").modal("show");
-         $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+         $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
          $.post("modalPacientesRelativo.asp?I="+ID+"&Nome="+Nome, "", function (data) { $("#modal").html(data) });
          $("#modal").addClass("modal-lg");
       }
@@ -673,7 +673,7 @@ function comparaPaciente(T) {
 			if (T == 'Conta') {
 				eval(data);
 			} else {
-				$("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+				$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 				$("#modal-table").modal("show");
 				$("#modal").html(data);
 			}

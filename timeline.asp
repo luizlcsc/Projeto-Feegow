@@ -586,7 +586,7 @@ function carregaAbaVacina(aba,pacienteID) {
 function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 
     $.post(pagina, { valor1: valor1,
                      valor2: valor2,

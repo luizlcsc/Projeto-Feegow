@@ -630,7 +630,7 @@ end if
                 eval(data);
             } else {
                 $("#modal-components").modal('hide');
-                $("#div-descontos-pendentes").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+                $("#div-descontos-pendentes").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                 $("#modal-descontos-pendentes").css( 'z-index', 999999900999999999999999);
                 $("#modal-descontos-pendentes").modal("show");
                 $("#div-descontos-pendentes").html(data);

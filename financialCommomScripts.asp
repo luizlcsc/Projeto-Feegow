@@ -55,7 +55,7 @@ function transaction(transactionID, Save, ModalMeuCaixa){
 }
 
 function modalPaymentDetails(movementID, deleteID){
-    $("#pagar").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#pagar").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 
     $("#pagar").fadeIn();
     $.post("modalPaymentDetails.asp",{

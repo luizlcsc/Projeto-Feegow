@@ -151,7 +151,7 @@ function EditarImpressao(I){
     $("#modal").css("margin-left", "-300px");
 
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("ConfigFormPersonalizado.asp?I="+I, "", function (data) {
         $("#modal").html(data);
 
@@ -161,7 +161,7 @@ function EditarImpressao(I){
 
 function infoImpressao(){
     $("#modal-table").modal("show");
-    $("#modal").html(`<div class="p10"><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("infoImpressao.asp", "", function (data) {
         $("#modal").html(data);
     });

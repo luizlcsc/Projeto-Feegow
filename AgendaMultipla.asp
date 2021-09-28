@@ -113,7 +113,7 @@ if ExibirFiltroPorLocalizacao then
             </div>
            <div class="col-md-2">
                <div class="input-group">
-                  <input type="text" placeholder="Máx. 10km" class="form-control" id="raio-busca" name="raio-busca" step="1" value="10" maxlength="2" autocomplete="off" required min="5" max="100">
+                  <input type="text" placeholder="Máx. 25km" class="form-control" id="raio-busca" name="raio-busca" step="1" value="25" maxlength="2" autocomplete="off" required min="5" max="100">
                   <span for="raio-busca" class="input-group-addon">
                      km
                  </span>
@@ -289,7 +289,7 @@ $(document).ready(function() {
   $("#raio-busca").change(function() {
 
     parametrosBuscaEndereco.raioBusca = $("#raio-busca").val();
-    (parametrosBuscaEndereco.raioBusca > 10 || parametrosBuscaEndereco.raioBusca==0 || parametrosBuscaEndereco.raioBusca == '') ? $("#raio-busca").val('10') : false;
+    (parametrosBuscaEndereco.raioBusca > 25 || parametrosBuscaEndereco.raioBusca==0 || parametrosBuscaEndereco.raioBusca == '') ? $("#raio-busca").val('25') : false;
     ($('#searchTextField').val() != "") ? filtraUnidadesEndereco() : false;
 
   });

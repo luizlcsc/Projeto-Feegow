@@ -559,22 +559,64 @@ if tipo="Equipamento" then
 
     tempoFinal = somatempo()
 
-    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), tempoFinal, ref("EquipamentoID"), ref("ConsultaID"))
-    if msgEquip<>"" then
-        %>
-        new PNotify({
-            title: 'EQUIPAMENTO EM USO!',
-            text: '<%=msgEquip %>',
-            type: 'danger',
-            delay: 3000,
-            icon: 'fa fa-times'
-        });
-        $("#btnSalvarAgenda").attr("disabled", true);
-        <%
+    ProcedimentosAgendamento = trim(ref("ProcedimentosAgendamento"))
+    if ProcedimentosAgendamento<>"" then
+        if (Mid(ProcedimentosAgendamento,Len(ProcedimentosAgendamento),1) = ",") then
+        ProcedimentosAgendamento = Mid(ProcedimentosAgendamento,1,Len(ProcedimentosAgendamento)-1)
+        end if
+        ProcedimentosAgendamento = replace(ProcedimentosAgendamento, ", ,", ", ")
+        splPA = split(ProcedimentosAgendamento, ", ")
+        for iPA=0 to ubound(splPA)
+            if splPA(iPA)&""<>"" then
+                apID = ccur( splPA(iPA) )
+                apEquipamentoID = "EquipamentoID"&apID
+                apTipoCompromissoID = ref("ProcedimentoID"&apID)
+                set EquipamentoPadraoSQL = db.execute("SELECT * FROM procedimentos WHERE id="&apTipoCompromissoID)
+                if not EquipamentoPadraoSQL.eof then
+                    EquipamentoPadrao = EquipamentoPadraoSQL("EquipamentoPadrao")
+                    msgEquip = dispEquipamento(ref("Data"), ref("Hora"), tempoFinal, EquipamentoPadrao, ref("ConsultaID"))
+                    if msgEquip<>"" then
+                        %>
+                        new PNotify({
+                            title: 'EQUIPAMENTO EM USO!',
+                            text: '<%=msgEquip %>',
+                            type: 'danger',
+                            delay: 3000,
+                            icon: 'fa fa-times'
+                        });
+                        $("#btnSalvarAgenda").attr("disabled", true);
+                        <%
+                    else
+
+                        %>
+                        if('<%=apEquipamentoID%>' != ''){
+                            $("#<%=apEquipamentoID%>").val('<%=EquipamentoPadrao%>').change();
+                            $("#<%=apEquipamentoID%>").select2();
+                        }
+                        btnSalvarToggleLoading(true);
+                        <%
+                    end if
+                end if
+            end if
+        next
     else
-        %>
-        btnSalvarToggleLoading(true);
-        <%
+        msgEquip = dispEquipamento(ref("Data"), ref("Hora"), tempoFinal, ref("EquipamentoID"), ref("ConsultaID"))
+        if msgEquip<>"" then
+            %>
+            new PNotify({
+                title: 'EQUIPAMENTO EM USO!',
+                text: '<%=msgEquip %>',
+                type: 'danger',
+                delay: 3000,
+                icon: 'fa fa-times'
+            });
+            $("#btnSalvarAgenda").attr("disabled", true);
+            <%
+        else
+            %>
+            btnSalvarToggleLoading(true);
+            <%
+        end if
     end if
 end if
 

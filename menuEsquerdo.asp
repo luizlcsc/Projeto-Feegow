@@ -638,11 +638,14 @@ end if
                 <input type="hidden" id="hData" name="hData" value="<%=date() %>" />
                 </form>
         <%
-    case "locais", "locaisgrupos", "mapasalas"
+    case "locais", "locaisgrupos", "mapasalas", "locaisexternos"
 
     %>
     <li>
         <a href="?P=Locais&Pers=Follow"><span class="fa fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais de Atendimento</span></a>
+    </li>
+    <li>
+        <a href="?P=locaisexternos&Pers=1"><span class="fa fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais Externos</span></a>
     </li>
     <li>
         <a href="?P=LocaisGrupos"><span class="fa fa-crosshairs bigger-110"></span> <span class="sidebar-title">Grupos de Locais</span></a>
@@ -1625,6 +1628,12 @@ end if
     
             </li>
         <% END IF %>
+
+        <li>
+            <a data-toggle="tab" href="#divAutorizador" onclick="ajxContent('IntegracaoAutorizador', '', 1, 'divAutorizador');">
+            <span class="fa fa-exchange"></span> <span class="sidebar-title">Autorizador Online<span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+
         <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
             <li>
               <a href="?P=faixaetaria&Pers=1">

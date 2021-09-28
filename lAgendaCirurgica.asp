@@ -71,8 +71,6 @@ if Faturar<>"" then
     response.Redirect("./?P=lAgendaCirurgica&Pers=1")
 end if
 %>
-<div class="panel mt10">
-    <div class="panel-body">
         <table class="table table-striped table-hover">
             <thead>
                 <tr class="info">
@@ -151,5 +149,3 @@ end if
             %>                
             </tbody>
         </table>
-    </div>
-</div>

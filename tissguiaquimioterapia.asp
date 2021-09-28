@@ -116,8 +116,8 @@ end if
                     <span> Dados do Beneficiário </span>
                 </div>
                 <div class="row">
-                    <div class="col-md-3"><%= selectInsert("* Paciente  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
-                    <%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
+                    <div class="col-md-3"><%= selectInsert("Paciente  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
+                    <%= quickField("simpleSelect", "gConvenioID", "Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
                     <div class="col-md-2" id="tissplanosguia"><!--#include file="tissplanosguia.asp"--></div>
                     <script> 
                         $('#gPacienteID').prop('required', true);
@@ -130,43 +130,43 @@ end if
                         end if
                     %>
                     <div class="col-md-2">
-                        <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt", "", " required""  autocomplete='matricula' required "&pattern&" title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
+                        <%= quickField("text", "NumeroCarteira", "N&deg; da Carteira", 12, NumeroCarteira, " lt", "", " required""  autocomplete='matricula' required "&pattern&" title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
                         <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position: absolute;top: 65px;z-index: 9999;">
                             <input id="NumeroCarteiraValidacao" class=" form-control input-sm" placeholder="Digite novamente  o  n&deg; da carteira...">
                         </div>
                     </div>
                     <%= quickField("datepicker", "ValidadeCarteira", "Data Validade da Carteira", 2, ValidadeCarteira, " input-mask-date ", "", "") %>
-                    <%= quickField("text", "RegistroANS", "* Reg. ANS", 1, RegistroANS, "", "", " required minlength='1' maxlength='6'") %>
+                    <%= quickField("text", "RegistroANS", "Reg. ANS", 1, RegistroANS, "", "", " required minlength='1' maxlength='6'") %>
                 </div>
                 <br />
                 <div class="row mb20">
                     <%= quickField("datepicker", "DataAutorizacao", "Data da Autoriza&ccedil;&atilde;o", 2, DataAutorizacao, "", "", "") %>
                     <%= quickField("text", "Senha", "Senha", 1, Senha, "", "", "") %>
                     <%= quickField("datepicker", "DataValidadeSenha", "Validade da Senha", 2, DataValidadeSenha, "", "", "") %>
-                    <%= quickField("text", "NGuiaPrestador", "* N&deg; da Guia no Prestador", 2, NGuiaPrestador, "", "", " autocomplete='nro-prestador' required") %>
+                    <%= quickField("text", "NGuiaPrestador", "N&deg; da Guia no Prestador", 2, NGuiaPrestador, "", "", " autocomplete='nro-prestador' required") %>
                     <%
                     if RepetirNumeroOperadora=1 then
                         fcnRepetirNumeroOperadora = " onkeyup=""$('#NGuiaPrestador').val( $(this).val() )"" "
                     end if
                     %>
                     <%= quickField("text", "NGuiaOperadora", "N&deg; da Guia na Operadora", 2, NGuiaOperadora, "", "", fcnRepetirNumeroOperadora) %>
-                    <%= quickField("text", "NGuiaReferenciada", "* N&deg; da Guia Principal", 2, NGuiaPrincipal, "", "", " required ") %>
+                    <%= quickField("text", "NGuiaReferenciada", "N&deg; da Guia Principal", 2, NGuiaPrincipal, "", "", " required ") %>
                     <%= quickField("text", "CNS", "CNS", 1, CNS, "", "", "") %>
                 </div>
                 <div class="row">
-                    <%= quickField("text", "Peso", "* Peso(Kg)", 3, Peso, "", "", " required") %>
-                    <%= quickField("text", "Altura", "* Altura(Cm)", 3, Altura, "", "", " required") %>
-                    <%= quickField("text", "SuperficieCorporal", "* Superficie Corporal", 2, SuperficieCorporal, "", "", " required") %>
-                    <%= quickField("number", "Idade", "* Idade", 2, IdadePaciente, "", "", " required") %>
-                    <%=quickField("simpleSelect", "Sexo", "* Sexo", 2, Sexo, "select * from Sexo where sysActive=1", "NomeSexo", "required")%>
+                    <%= quickField("text", "Peso", "Peso(Kg)", 3, Peso, "", "", " required") %>
+                    <%= quickField("text", "Altura", "Altura(Cm)", 3, Altura, "", "", " required") %>
+                    <%= quickField("text", "SuperficieCorporal", "Superficie Corporal", 2, SuperficieCorporal, "", "", " required") %>
+                    <%= quickField("number", "Idade", "Idade", 2, IdadePaciente, "", "", " required") %>
+                    <%=quickField("simpleSelect", "Sexo", "Sexo", 2, Sexo, "select * from Sexo where sysActive=1", "NomeSexo", "required")%>
                 </div>
                 <div class="section-divider mt40 mb20">
                     <span> Dados do Profissional Solicitante </span>
                 </div>
                 <div class="row">
-                    <%= quickField("simpleSelect", "ProfissionalID", "* Profissional Solicitante", 4, ProfissionalSolicitanteID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('ProfissionalSolicitante', this.value);"" required") %>
-                    <%= quickField("datepicker", "DataSolicitacao", "* Data da Solicitação", 2, DataSolicitacao, "", "", "required") %>
-                    <%= quickField("mobile", "Cel1", "* Telefone", 3, Telefone, "", "", " required") %>
+                    <%= quickField("simpleSelect", "ProfissionalID", "Profissional Solicitante", 4, ProfissionalSolicitanteID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('ProfissionalSolicitante', this.value);"" required") %>
+                    <%= quickField("datepicker", "DataSolicitacao", "Data da Solicitação", 2, DataSolicitacao, "", "", "required") %>
+                    <%= quickField("mobile", "Cel1", "Telefone", 3, Telefone, "", "", " required") %>
                     <%= quickField("text", "Email", " E-mail", 3, Email, "", "", "") %>
                 </div>
                 <div class="section-divider mt40 mb20">
@@ -194,10 +194,10 @@ end if
                             </div>
                         </div>
                         <div class="row">
-                            <%= quickField("text", "Estadiamento", "* Estadiamento", 3, Estadiamento, "", "", " required minlength='1' maxlength='1'") %>
-                            <%= quickField("text", "TipoQuimioterapia", "* Tipo de Quimioterapia", 3, TipoQuimioterapia, "", "", " required minlength='1' maxlength='1'") %>
-                            <%= quickField("text", "Finalidade", "* Finalidade", 2, Finalidade, "", "", " required minlength='1' maxlength='1'") %>
-                            <%= quickField("text", "ECOG", "* ECOG", 4, ECOG, "", "", " required minlength='1' maxlength='1'") %>
+                            <%= quickField("text", "Estadiamento", "Estadiamento", 3, Estadiamento, "", "", " required minlength='1' maxlength='1'") %>
+                            <%= quickField("text", "TipoQuimioterapia", "Tipo de Quimioterapia", 3, TipoQuimioterapia, "", "", " required minlength='1' maxlength='1'") %>
+                            <%= quickField("text", "Finalidade", "Finalidade", 2, Finalidade, "", "", " required minlength='1' maxlength='1'") %>
+                            <%= quickField("text", "ECOG", "ECOG", 4, ECOG, "", "", " required minlength='1' maxlength='1'") %>
                         </div>
                         <div class="row mt20">
                             <%=quickfield("memo", "DiagnosticoCitoHistopatologico", " Diagnostico Cito/Histopatógico", 12, DiagnosticoCitoHistopatologico, "", "", "rows='4' minlength='0' maxlength='1000'")%>
@@ -205,7 +205,7 @@ end if
                     </div>
                     <div class="col-md-6">
                         <div class="row">
-                            <%=quickfield("memo", "PlanoTerapeutico", "* Plano Terapêutico", 12, PlanoTerapeutico, "", "", "rows='5' required minlength='0' maxlength='1000'")%>
+                            <%=quickfield("memo", "PlanoTerapeutico", "Plano Terapêutico", 12, PlanoTerapeutico, "", "", "rows='5' required minlength='0' maxlength='1000'")%>
                         </div>
                         <div class="row mt10">
                             <%=quickfield("memo", "InfoRelevante", " Informações Relevantes", 12, InfoRelevante, "", "", "rows='4' minlength='0' maxlength='1000'")%>
@@ -237,9 +237,9 @@ end if
                     </div>
                     <div class="col-md-12 mb20">
                         <div class="row">
-                            <%=quickField("number", "NumeroCicloPrevisto", "* Número de Ciclos Previstos", 3, NumeroCicloPrevisto, "", "", " required min='0' max='99' ")%>
-                            <%=quickField("number", "CicloAtual", "* Ciclos Atual", 2, CicloAtual, "", "", " required min='0' max='99' ")%>
-                            <%=quickField("number", "IntervaloEntreCiclos", "* Intervalo entre Ciclos(em dias)", 3, IntervaloEntreCiclos, "", "", " required min='0' max='999' ")%>
+                            <%=quickField("number", "NumeroCicloPrevisto", "Número de Ciclos Previstos", 3, NumeroCicloPrevisto, "", "", " required min='0' max='99' ")%>
+                            <%=quickField("number", "CicloAtual", "Ciclos Atual", 2, CicloAtual, "", "", " required min='0' max='99' ")%>
+                            <%=quickField("number", "IntervaloEntreCiclos", "Intervalo entre Ciclos(em dias)", 3, IntervaloEntreCiclos, "", "", " required min='0' max='999' ")%>
                             <%= quickField("memo", "Observacoes", " Observação / Justificativa", 4, Observacoes, "", "", "minlength='0' maxlength='500'") %>
                         </div>
                     </div>

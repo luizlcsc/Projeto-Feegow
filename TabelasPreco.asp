@@ -88,6 +88,11 @@ end if
 <div class="panel mt20 mtn hidden-print">
     <div class="panel-heading">
         <span class="panel-title"><i class="fal fa-filter"></i> Filtrar</span>
+
+        <span class="panel-controls">
+            <button type="button" class="btn btn-default " onclick="LimparFiltros()"><i class="fal fa-eraser"> </i> Limpar </button>
+            <button class="btn btn-primary " ><i class="fal fa-search"> </i> Buscar </button>
+        </span>
     </div>
     <div class="panel-body">
         <form action="" id="form-filtro-tabela-de-preco" method="get">
@@ -113,11 +118,6 @@ end if
 				
             </select>
             </div>
-
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fal fa-eraser"> </i> Limpar </button>
-                    <button class="btn btn-primary mt25" ><i class="fal fa-search"> </i> Buscar </button>
-                </div>
             </div>
         </form>
     </div>
@@ -196,7 +196,7 @@ end if
                 sql = "select pt.*, tp.id HasSolicitacao,coalesce(Fim,date(Now())) as Fim,coalesce(Inicio,date(Now())) as Inicio,(SELECT group_concat(' ',NomeFantasia) FROM vw_unidades WHERE Unidades like CONCAT('%|',id,'|%')) Unidades, Unidades like '%|0|%' as HasCentral "&_
                 "from procedimentostabelas pt "&_
                 " LEFT JOIN solicitacao_tabela_preco tp ON tp.TabelaPrecoID=pt.id AND Status='PENDENTE' "&_
-                "where "&franquiaUnidade(" ( Unidades LIKE '%|"&session("UnidadeID")&"|%' OR Unidades = '' OR Unidades IS NULL) AND ")&" pt.sysActive=1  "&sqlFiltros&" ORDER BY 2 limit "&((pagNumber-1)*10)&",10"
+                "where "&franquiaUnidade(" ( Unidades LIKE '%|"&session("UnidadeID")&"|%' OR Unidades = '' OR Unidades IS NULL) AND ")&" pt.sysActive=1  "&sqlFiltros&" ORDER BY IF(Fim>curdate(),1,0) DESC,NomeTabela limit "&((pagNumber-1)*10)&",10"
 
                 set t = db.execute(sql)
                 'response.write (sql)

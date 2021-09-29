@@ -689,6 +689,9 @@ $(document).ready(function(){
         $(input).val(descontoEmPercentual);
         $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
     });
+    <%
+    if req("T")="C" then
+    %>
 	let executados = $("input[id^='Executado']")
 	executados.each((key,input)=>{
 		let id = $(input).attr('id').replace('Executado','')
@@ -706,7 +709,10 @@ $(document).ready(function(){
 		let procedimentoId = $(element).find('select').val()
 		let linhaId = $(element).attr('id').replace('row','')
 		filtraExecutantes(procedimentoId, linhaId);
-	})
+	});
+    <%
+    end if
+    %>
 });
 
 </script>

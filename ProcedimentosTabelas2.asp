@@ -320,7 +320,7 @@ set SolicitacaoTabelaSQL = db_execute("SELECT s.*, count(sp.id) procedimentos  "
                         ValorBase = fn(t("Valor"))
                         TitleTr = ""
 
-                        if t("PermiteAlteracaoDePrecoPelasUnidades")&""="" AND TipoTabela="V" and session("UnidadeID")<>0 then
+                        if t("PermiteAlteracaoDePrecoPelasUnidades")&""="" AND TipoTabela="V" and session("UnidadeID")<>0 and ModoFranquia then
                             PermiteAlteracao = False
                             ValorBase = ""
                             ProcedimentoBloqueadoParaUnidade = True

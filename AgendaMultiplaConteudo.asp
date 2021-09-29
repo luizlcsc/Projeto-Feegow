@@ -440,37 +440,15 @@ while not comGrade.eof
                 ObsAgenda: "<%= ObsAgenda %>",
                 strAB: '<%= strAB %>'
             }, function (data) {
-                    $('#pf<%= comGrade("ProfissionalID") %>').html(data)
+                $('#pf<%= comGrade("ProfissionalID") %>').html(data)
 
-                    let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
-                    conteudo = conteudo.trim();
-                    if(conteudo === ""){
-                        $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
-                    }
+                let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
+                conteudo = conteudo.trim();
+                if(conteudo === ""){
+                    $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
+                }
             }));
         </script>
-
-
-
-            <script type="text/javascript">
-                window.requestsAgenda = window.requestsAgenda || [];
-                
-                window.requestsAgenda.push($.post("namAgenda.asp", {
-                    Especialidades: '<%= Especialidades %>',
-                    ProfissionalID: '<%= comGrade("ProfissionalID") %>',
-                    Data: '<%= Data %>',
-                    NomeProfissional: "<%= comGrade("NomeProfissional") %>",
-                    Cor: '<%= CorTitulo %>',
-                    NomeEspecialidade: '<%= NomeEspecialidade %>',
-                    ProcedimentoID: "<%= ProcedimentoID %>",
-                    Locais: "<%= ref("Locais") %>",
-                    LocalID: "<%= comGrade("LocalID") %>",
-                    ObsAgenda: "<%= ObsAgenda %>",
-                    strAB: '<%= strAB %>'
-                }, function (data) {
-                        $('#pf<%= comGrade("ProfissionalID") %>').html(data)
-                }));
-            </script>
     <%
     end if
 

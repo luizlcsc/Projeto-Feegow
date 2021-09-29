@@ -652,6 +652,9 @@ end if
         <a href="?P=locaisexternos&Pers=1"><span class="fa fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais Externos</span></a>
     </li>
     <li>
+        <a href="?P=locaisexternos&Pers=1"><span class="fa fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais Externos</span></a>
+    </li>
+    <li>
         <a href="?P=LocaisGrupos"><span class="fa fa-crosshairs bigger-110"></span> <span class="sidebar-title">Grupos de Locais</span></a>
     </li>
     <li>

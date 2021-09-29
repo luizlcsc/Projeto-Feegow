@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"-->
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%>>
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> class="invoice-linha-item" >
     <td>
 		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required")%>
         </td>

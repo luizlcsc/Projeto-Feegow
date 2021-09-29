@@ -1080,7 +1080,8 @@ var itensAlterados = false;
 
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
-	var inc = $('[data-val]:last').attr('data-val');
+	var inc = $('.invoice-linha-item[data-val]:last').attr('data-val');
+    console.log(inc)
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 

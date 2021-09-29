@@ -1,4 +1,4 @@
-<tr id="rowOutros<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%>>
+<tr id="rowOutros<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> class="invoice-linha-item" >
     <td width="75%">
 	<input type="hidden" name="propostaOutros" value="<%=id%>">
 	<%=quickField("editor", "DescricaoOutros"&id, "", 4, Descricao, "0", "", desabilitarProposta)%></td>

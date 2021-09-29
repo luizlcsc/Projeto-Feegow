@@ -3,7 +3,7 @@ if req("Agenda")="1" then
     %>
     <div class="row">
         <div class="col-md-12">
-            <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn btn-sm btn-dark pull-right"><i class="fa fa-external-link"></i> Ir para ficha completa</a>
+            <a href="./?P=Pacientes&I=<%=req("I")%>&Pers=1" class="btn btn-sm btn-dark pull-right"><i class="far fa-external-link"></i> Ir para ficha completa</a>
         </div>
     </div>
     <%
@@ -137,16 +137,16 @@ end if
             <div id="camera" class="camera"></div>
             <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
                 <input type="file" name="Foto" id="Foto" />
-                <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="fa fa-camera"></i></button>
+                <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
             </div>
             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
 	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
-                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
             <div class="row"><div class="col-xs-6">
-	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="fa fa-check"></i></button>
+	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
             </div><div class="col-xs-6">
-	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
             </div></div>
     </div>
       <script type="text/javascript">
@@ -189,7 +189,7 @@ end if
             %>
             <script >
                 $("#NomePaciente").attr("readonly", true);
-                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-default btn-xs'><i class='fa fa-edit'></i></button>");
+                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-link btn-xs'><i class='far fa-edit'></i></button>");
             </script>
             <%
             end if
@@ -240,7 +240,7 @@ end if
                 %>
             	<i data-toggle="tooltip"
                   title="Prontuário antigo: <%=reg("idImportado")%>"
-                  class="fa fa-info-circle"
+                  class="far fa-info-circle"
                   aria-hidden="true"></i>
                 <%
                 end if
@@ -307,7 +307,7 @@ end if
 
 
 <div class="alert alert-danger hidden" id="divComparaPacientes">
-    <button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
+    <button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
     <span></span>
 </div>
     <script>
@@ -341,21 +341,23 @@ end if
             set busca = db.execute("select distinct ii.InvoiceID, i.sysDate, (select count(id) from itensinvoice where InvoiceID=i.id and Executado='S' and Tipo='S') Executados, (select count(id) from itensinvoice where InvoiceID=i.id and Tipo='S') Total from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where (isnull(ii.Executado) OR ii.Executado='' OR ii.Executado='N') and i.AccountID="&PacienteID&" AND i.CD='C' AND Tipo='S' and i.AssociationAccountID=3")
             if not busca.EOF then
                 %>
-                <div class="alert alert-block alert-success">
-                    <button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-                    <p><strong>Execução de serviços:</strong></p>
+                <div class="alert alert-block alert-default">
+                    <button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+                    <p><strong><i class="far fa-exclamation-circle"></i> Atenção! </strong>Existem serviços em aberto para este paciente.</p>
+                    <br>
+
                     <%
                     while not busca.EOF
                         %>
                          <div class="btn-group">
-                             <button data-toggle="dropdown" class="btn btn-primary btn-xs dropdown-toggle" data-rel="tooltip" data-placement="top" title="Data: <%=busca("sysDate")%>">
+                             <button data-toggle="dropdown" class="btn btn-default btn-xs dropdown-toggle" data-rel="tooltip" data-placement="top" title="Data: <%=busca("sysDate")%>">
                                     <%=busca("Executados")%> executados de <%=busca("Total")%> contratados.
                              </button>
                              <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">
                                <div class="panel mbn">
                                     <div class="panel-menu">
                                         <%if aut("areceberpacienteV")>0 then%>
-                                        <span class="panel-icon" title="Ir para conta"><a href="./?P=invoice&I=<%=busca("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank"><i class="fa fa-external-link text-primary"></i></a></span>
+                                        <span class="panel-icon" title="Ir para conta"><a href="./?P=invoice&I=<%=busca("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank"><i class="far fa-external-link text-primary"></i></a></span>
                                         <%end if%>
                                         <span class="panel-title fw600" style="color: #484D61;"> Data: <%=busca("sysDate")%></span>
                                      </div>
@@ -367,11 +369,11 @@ end if
                                            while not itens.eof
                                                if itens("Executado")="S" then
                                                    %>
-                                                   <div class="col-xs-12" style="padding-top: 10px; padding-left: 20px; color: #484D61;"><i class="fa fa-check text-success"></i> <%=itens("NomeProcedimento")%> - Execução em <%=itens("DataExecucao")%><%if not isnull(itens("HoraExecucao")) then%> às <%=formatdatetime(itens("HoraExecucao"), 4)%><%end if%><%if not isnull(itens("NomeProfissional")) then%> por <%=itens("NomeProfissional")%><%end if%>.</div>
+                                                   <div class="col-xs-12" style="padding-top: 10px; padding-left: 20px; color: #484D61;"><i class="far fa-check text-success"></i> <%=itens("NomeProcedimento")%> - Execução em <%=itens("DataExecucao")%><%if not isnull(itens("HoraExecucao")) then%> às <%=formatdatetime(itens("HoraExecucao"), 4)%><%end if%><%if not isnull(itens("NomeProfissional")) then%> por <%=itens("NomeProfissional")%><%end if%>.</div>
                                                    <%
                                                else
                                                    %>
-                                                   <div class="col-xs-12" style="padding-top: 10px; padding-left: 20px; color: #484D61;"><i class="fa fa-exclamation-circle text-danger"></i> <%=itens("NomeProcedimento")%> - Não executado.</div>
+                                                   <div class="col-xs-12" style="padding-top: 10px; padding-left: 20px; color: #484D61;"><i class="far fa-exclamation-circle text-danger"></i> <%=itens("NomeProcedimento")%> - Não executado.</div>
                                                    <%
                                                end if
                                            itens.movenext
@@ -432,7 +434,7 @@ end if
                     <div class="row">
                         <%= quickField("memo", "Observacoes", "Observa&ccedil;&otilde;es", 6, reg("Observacoes"), "", "", "") %>
                         <div class="col-md-6 <%if instr(Omitir, "|pendencias|") then%> hidden<%end if%>">
-                        	<div class="checkbox-custom checkbox-warning"><input data-rel="tooltip" title="" data-original-title="Marque para acionar lembrete" type="checkbox" class="tooltip-danger" name="lembrarPendencias" id="lembrarPendencias" value="S"<%if reg("lembrarPendencias")="S" then%> checked="checked"<%end if%> /><label for="lembrarPendencias"> Avisos e Pend&ecirc;ncias</label> <i class="fa fa-flag red pull-right"></i></div>
+                        	<div class="checkbox-custom checkbox-warning"><input data-rel="tooltip" title="" data-original-title="Marque para acionar lembrete" type="checkbox" class="tooltip-danger" name="lembrarPendencias" id="lembrarPendencias" value="S"<%if reg("lembrarPendencias")="S" then%> checked="checked"<%end if%> /><label for="lembrarPendencias"> Avisos e Pend&ecirc;ncias</label> <i class="far fa-flag red pull-right"></i></div>
                         	<textarea class="form-control" name="Pendencias" id="Pendencias"><%=reg("Pendencias")%></textarea>
                         </div>
                     </div>
@@ -459,7 +461,7 @@ end if
 						%>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8 hidden">
                     <div class="row">
                         <%= quickField("text", "Endereco2", "Endereço 2", 4, reg("Endereco2"), "", "", "  ") %>
                         <%= quickField("text", "Numero2", "Número 2", 2, reg("Numero2"), "", "", "") %>
@@ -598,14 +600,14 @@ end if
 <script type="text/javascript">
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
         $("#modal").addClass("modal-lg");
      }
 
      function modalPacienteRelativo(ID, Nome) {
          $("#modal-table").modal("show");
-         $("#modal").html("Carregando...");
+         $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
          $.post("modalPacientesRelativo.asp?I="+ID+"&Nome="+Nome, "", function (data) { $("#modal").html(data) });
          $("#modal").addClass("modal-lg");
       }
@@ -671,7 +673,7 @@ function comparaPaciente(T) {
 			if (T == 'Conta') {
 				eval(data);
 			} else {
-				$("#modal").html("Carregando...");
+				$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 				$("#modal-table").modal("show");
 				$("#modal").html(data);
 			}
@@ -698,7 +700,7 @@ function mesclar(p1, p2){
 $(document).ready(function () {
 
     <% if getConfig("ExibirProgramasDeSaude") = 1 then %>
-        $("#block-programas-saude").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+        $("#block-programas-saude").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="far fa-spin fa-spinner"></i></div>');
         function loadProgramasSaude() {
             getUrl("health-programs/patient-view/<%=PacienteID %>", {}, function(data) {
                 $("#block-programas-saude").html(data);
@@ -718,7 +720,7 @@ $(document).ready(function () {
     <% end if %>
 
     <% if getConfig("ExibirCareTeam") = 1 then %>
-        $("#block-care-team").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="fa fa-spin fa-spinner"></i></div>');
+        $("#block-care-team").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="far fa-spin fa-spinner"></i></div>');
         getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
             $("#block-care-team").html(data);
         });
@@ -785,7 +787,7 @@ if getConfig("LembreteFormulario")=1 then
         <%
     end if
 end if
-if getConfig("AvisosPendenciasProntuario")=1 then
+if getConfig("AvisosPendenciasProntuario")=1 and instr(Omitir, "|pendencias|")=0 then
     if reg("lembrarPendencias")="S" then
     %>
     <script type="text/javascript">
@@ -833,7 +835,7 @@ if not isnull(reg("Nascimento")) and isdate(reg("Nascimento")) then
 <script type="text/javascript">
 $( document ).ready(function() {
 new PNotify({
-	    icon: 'fa fa-birthday-cake',
+	    icon: 'far fa-birthday-cake',
 	    title: 'ANIVERS&Aacute;RIO DO PACIENTE',
 	    text: '<%=txt%>',
 	    type: 'info',

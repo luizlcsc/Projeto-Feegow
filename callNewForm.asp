@@ -46,8 +46,16 @@ session("FP"&FTipo) = FormID
 
 buiFormID = FormID
 
-if getConfig("GerarNovoFormulario")=1 then
-    'config para DUPLICAR o form inves de editar
+FormInativo = false
+if FormID <> "N" then
+    set getFormPreenchido = db.execute("SELECT sysActive FROM buiformspreenchidos WHERE sysActive = -1 AND id = "&FormID)
+    if not getFormPreenchido.eof then
+		FormInativo = true
+    end if
+end if
+
+'Duplica o formulário se o atual for Inativo ou se a configuração para "Gerar novo formulário ao editar" estiver habilitada
+if getConfig("GerarNovoFormulario")=1 or FormInativo = true then
     buiFormID="N"
 end if
 %>
@@ -118,7 +126,7 @@ if FormID<>"N" then
 		end if
 		%>
         <script type="text/javascript">
-            $("#nomeProfissionalPreen").html("<i class='fa fa-user-md'></i> <%=NomeProfissional & DataHora%>")
+            $("#nomeProfissionalPreen").html("<i class='far fa-user-md'></i> <%=NomeProfissional & DataHora%>")
         </script>
 		<%
 	end if

@@ -27,7 +27,7 @@ DataSourceTree.prototype.data = function(options, callback) {
 };
 
 var tree_data = {
-	'for-sale' : {name: '<a href="javascript:chama(1);"><i class="fa fa-edit green"></i></a> <a href="javascript:chama(1);"><i class="fa fa-share-alt green"></i></a>  Profissionais', type: 'folder'}	,
+	'for-sale' : {name: '<a href="javascript:chama(1);"><i class="far fa-edit green"></i></a> <a href="javascript:chama(1);"><i class="far fa-share-alt green"></i></a>  Profissionais', type: 'folder'}	,
 	'vehicles' : {name: 'Vehicles', type: 'folder'}	,
 	'rentals' : {name: 'Rentals', type: 'folder'}	,
 	'real-estate' : {name: 'Real Estate', type: 'folder'}	,
@@ -105,25 +105,25 @@ var tree_data_2 = {
 	'video' : {name: 'Video', type: 'folder', 'icon-class':'blue'}	,
 	'documents' : {name: 'Documents', type: 'folder', 'icon-class':'green'}	,
 	'backup' : {name: 'Backup', type: 'folder'}	,
-	'readme' : {name: '<i class="fa fa-file-text grey"></i> ReadMe.txt', type: 'item'},
-	'manual' : {name: '<i class="fa fa-book blue"></i> Manual.html', type: 'item'}
+	'readme' : {name: '<i class="far fa-file-text grey"></i> ReadMe.txt', type: 'item'},
+	'manual' : {name: '<i class="far fa-book blue"></i> Manual.html', type: 'item'}
 }
 tree_data_2['music']['additionalParameters'] = {
 	'children' : [
-		{name: '<i class="fa fa-music blue"></i> song1.ogg', type: 'item'},
-		{name: '<i class="fa fa-music blue"></i> song2.ogg', type: 'item'},
-		{name: '<i class="fa fa-music blue"></i> song3.ogg', type: 'item'},
-		{name: '<i class="fa fa-music blue"></i> song4.ogg', type: 'item'},
-		{name: '<i class="fa fa-music blue"></i> song5.ogg', type: 'item'}
+		{name: '<i class="far fa-music blue"></i> song1.ogg', type: 'item'},
+		{name: '<i class="far fa-music blue"></i> song2.ogg', type: 'item'},
+		{name: '<i class="far fa-music blue"></i> song3.ogg', type: 'item'},
+		{name: '<i class="far fa-music blue"></i> song4.ogg', type: 'item'},
+		{name: '<i class="far fa-music blue"></i> song5.ogg', type: 'item'}
 	]
 }
 tree_data_2['video']['additionalParameters'] = {
 	'children' : [
-		{name: '<i class="fa fa-film blue"></i> movie1.avi', type: 'item'},
-		{name: '<i class="fa fa-film blue"></i> movie2.avi', type: 'item'},
-		{name: '<i class="fa fa-film blue"></i> movie3.avi', type: 'item'},
-		{name: '<i class="fa fa-film blue"></i> movie4.avi', type: 'item'},
-		{name: '<i class="fa fa-film blue"></i> movie5.avi', type: 'item'}
+		{name: '<i class="far fa-film blue"></i> movie1.avi', type: 'item'},
+		{name: '<i class="far fa-film blue"></i> movie2.avi', type: 'item'},
+		{name: '<i class="far fa-film blue"></i> movie3.avi', type: 'item'},
+		{name: '<i class="far fa-film blue"></i> movie4.avi', type: 'item'},
+		{name: '<i class="far fa-film blue"></i> movie5.avi', type: 'item'}
 	]
 }
 tree_data_2['pictures']['additionalParameters'] = {
@@ -134,40 +134,40 @@ tree_data_2['pictures']['additionalParameters'] = {
 }
 tree_data_2['pictures']['additionalParameters']['children']['wallpapers']['additionalParameters'] = {
 	'children' : [
-		{name: '<i class="fa fa-picture green"></i> wallpaper1.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> wallpaper2.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> wallpaper3.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> wallpaper4.jpg', type: 'item'}
+		{name: '<i class="far fa-picture green"></i> wallpaper1.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> wallpaper2.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> wallpaper3.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> wallpaper4.jpg', type: 'item'}
 	]
 }
 tree_data_2['pictures']['additionalParameters']['children']['camera']['additionalParameters'] = {
 	'children' : [
-		{name: '<i class="fa fa-picture green"></i> photo1.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> photo2.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> photo3.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> photo4.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> photo5.jpg', type: 'item'},
-		{name: '<i class="fa fa-picture green"></i> photo6.jpg', type: 'item'}
+		{name: '<i class="far fa-picture green"></i> photo1.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> photo2.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> photo3.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> photo4.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> photo5.jpg', type: 'item'},
+		{name: '<i class="far fa-picture green"></i> photo6.jpg', type: 'item'}
 	]
 }
 
 
 tree_data_2['documents']['additionalParameters'] = {
 	'children' : [
-		{name: '<i class="fa fa-file-text red"></i> document1.pdf', type: 'item'},
-		{name: '<i class="fa fa-file-text grey"></i> document2.doc', type: 'item'},
-		{name: '<i class="fa fa-file-text grey"></i> document3.doc', type: 'item'},
-		{name: '<i class="fa fa-file-text red"></i> document4.pdf', type: 'item'},
-		{name: '<i class="fa fa-file-text grey"></i> document5.doc', type: 'item'}
+		{name: '<i class="far fa-file-text red"></i> document1.pdf', type: 'item'},
+		{name: '<i class="far fa-file-text grey"></i> document2.doc', type: 'item'},
+		{name: '<i class="far fa-file-text grey"></i> document3.doc', type: 'item'},
+		{name: '<i class="far fa-file-text red"></i> document4.pdf', type: 'item'},
+		{name: '<i class="far fa-file-text grey"></i> document5.doc', type: 'item'}
 	]
 }
 
 tree_data_2['backup']['additionalParameters'] = {
 	'children' : [
-		{name: '<i class="fa fa-archive brown"></i> backup1.zip', type: 'item'},
-		{name: '<i class="fa fa-archive brown"></i> backup2.zip', type: 'item'},
-		{name: '<i class="fa fa-archive brown"></i> backup3.zip', type: 'item'},
-		{name: '<i class="fa fa-archive brown"></i> backup4.zip', type: 'item'}
+		{name: '<i class="far fa-archive brown"></i> backup1.zip', type: 'item'},
+		{name: '<i class="far fa-archive brown"></i> backup2.zip', type: 'item'},
+		{name: '<i class="far fa-archive brown"></i> backup3.zip', type: 'item'},
+		{name: '<i class="far fa-archive brown"></i> backup4.zip', type: 'item'}
 	]
 }
 var treeDataSource2 = new DataSourceTree({data: tree_data_2});

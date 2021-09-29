@@ -147,7 +147,7 @@ if req("Horario")="00:00" then
             if NumeroEncaixes>MaximoEncaixes then
                 %>
                 <div class="alert alert-danger text-center erroralert">
-                    <i class="fa fa-exclamation-triangle"></i> ATEN&Ccedil;&Atilde;O: O n&uacute;mero m&aacute;ximo de <%=MaximoEncaixes %> encaixes permitidos para este profissional j&aacute; foi atingido.
+                    <i class="far fa-exclamation-triangle"></i> ATEN&Ccedil;&Atilde;O: O n&uacute;mero m&aacute;ximo de <%=MaximoEncaixes %> encaixes permitidos para este profissional j&aacute; foi atingido.
                 </div>
 
                 <script >
@@ -406,18 +406,18 @@ end if
 <div class="panel">
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
-        <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" onclick="crumbAgenda();" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
-        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden'); toRequired()" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
-        <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); " href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
+        <li id="liAgendamento" class="active abaAgendamento"><a data-toggle="tab" onclick="crumbAgenda();" href="#dadosAgendamento"><i class="far fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
+        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1&AgendamentoID=<%=agendamentoIDSelecionado%>', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden'); toRequired()" href="#divDadosPaciente"><i class="far fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
+        <li id="abaHistorico" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); " href="#divHistorico"><i class="far fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
         <%if Aut("contapac")=1 or aut("|areceberpaciente")=1 then%>
-	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); $('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
+	        <li id="abaConta" class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); $('#alertaAguardando').removeClass('hidden'); $('#pagar').remove();" href="#divHistorico"><i class="far fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
         <% End If %>
 	</ul>
 
 
 
 <span class="panel-controls" onclick="javascript:af('f'); crumbAgenda();">
-    <i class="fa fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
+    <i class="far fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
 </span>
 
 
@@ -599,6 +599,12 @@ end if
                     if(Ipac>1000000000){
                         $.get("baseExt.asp?OP=insert&I="+Ipac, function(data){ eval(data) });
                     }
+                    $.get("ListaPropostas.asp?Origem=Agenda&PacienteID="+ Ipac, function(data){
+                        if(data.length>5){
+                            $("#modal-table").modal("show");
+                            $("#modal").html(data);
+                        }
+                     });
                 }
             </script>
             <div class="col-md-<%= colPac %>">
@@ -718,7 +724,7 @@ if session("Banco")="clinic5459" then
     <div class="panel">
         <div class="panel-heading">
             <span class="panel-title">Pessoas de contato</span>
-            <span class="panel-controls"><i class="btn btn-success btn-xs fa fa-plus"></i></span>
+            <span class="panel-controls"><i class="btn btn-success btn-xs far fa-plus"></i></span>
         </div>
         <div class="panel-body" id="agendamentosContatos">
             <% server.execute("agendamentosContatos.asp") %>
@@ -774,7 +780,7 @@ end if
                                         <td><%=ft(OutrosAgendamentosSQL("Hora"))%></td>
                                         <td><%=OutrosAgendamentosSQL("NomeProfissional")%></td>
                                         <td><%=OutrosAgendamentosSQL("NomeProcedimento")%></td>
-                                        <td><button type="button" onclick="abreAgenda('<%=replace(ft(OutrosAgendamentosSQL("Hora")),":","")%>', '<%=OutrosAgendamentosSQL("id")%>', '<%=OutrosAgendamentosSQL("Data")%>')" class="btn btn-primary btn-xs"><i class="fa fa-external-link"></i></button></td>
+                                        <td><button type="button" onclick="abreAgenda('<%=replace(ft(OutrosAgendamentosSQL("Hora")),":","")%>', '<%=OutrosAgendamentosSQL("id")%>', '<%=OutrosAgendamentosSQL("Data")%>')" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></button></td>
                                     </tr>
                                     <%
                                 OutrosAgendamentosSQL.movenext
@@ -851,7 +857,7 @@ end if
                                     end if
 
 									%>
-									<br><small><em><i class="fa fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%>  <strong><%=enviadoEm%></strong></em></small>
+									<br><small><em><i class="far fa-check"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%>  <strong><%=enviadoEm%></strong></em></small>
 									<%
 								s.movenext
 								wend
@@ -874,7 +880,7 @@ end if
                                     end if
 
 									%>
-									<br><small><em><i class="fa fa-history"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> programado para <strong><%=smsFila("DataHora")%></strong></em></small>
+									<br><small><em><i class="far fa-history"></i> <%=SmsOuWhatsApp%><%=DescricaoEvento%> programado para <strong><%=smsFila("DataHora")%></strong></em></small>
 									<%
 								smsFila.movenext
 								wend
@@ -910,7 +916,7 @@ end if
                                     end if
 
 									%>
-									<br><small><em><i class="fa fa-mail"></i>Envio<%=DescricaoEvento%> programado para <strong><%=emailsFila("DataHora")%></strong></em></small>
+									<br><small><em><i class="far fa-mail"></i>Envio<%=DescricaoEvento%> programado para <strong><%=emailsFila("DataHora")%></strong></em></small>
 									<%
 								emailsFila.movenext
 								wend
@@ -1031,7 +1037,7 @@ end if
         <div class="modal-footer">
         <%if session("banco")="clinic1773" then%>
         <button class="btn btn-sm btn-primary" title="Enviar sms personalizado." type="button" style="float: left;" id="btnSendSms">
-                        <i class="fa fa-mobile"></i>
+                        <i class="far fa-mobile"></i>
                     </button>
         <%end if
 
@@ -1040,7 +1046,7 @@ end if
 
         <div class="col-xs-6 col-md-1 pt10">
             <button class="btn btn-sm btn-default btn-block" type="button" onClick="printAgendamento();">
-                <i class="fa fa-print"></i>
+                <i class="far fa-print"></i>
             </button>
         </div>
         <%
@@ -1049,7 +1055,7 @@ end if
             %>
             <div class="col-xs-3 col-md-2 pt10">
                 <button class="btn btn-sm btn-link " type="button" onClick="CopyLinkToClipboard('<%=ConsultaID%>', <%=ProfissionalID%>, <%=PacienteID%>)">
-                    <i class="fa fa-link"></i> Copiar link da consulta
+                    <i class="far fa-link"></i> Copiar link da consulta
                 </button>
             </div>
             <%
@@ -1063,7 +1069,7 @@ end if
                 disabled = ""
                 if (ConsultaID=0 and aut("agendaI")=1) or (ConsultaID<>0 and aut("agendaA")=1) then
                     if req("Checkin")="1" then
-                        txtBtn = "<i class=""fa fa-check""></i>  FINALIZAR CHECKIN"
+                        txtBtn = "<i class=""far fa-check""></i>  FINALIZAR CHECKIN"
                         colCHK = 8
                         hiddenCHK = " hidden "
 
@@ -1077,7 +1083,7 @@ end if
                         </div>
                         <%
                     else
-                        txtBtn = "<i class=""fa fa-save""></i> Salvar"
+                        txtBtn = "<i class=""far fa-save""></i> Salvar"
                         colCHK = 3
                         hiddenCHK = ""
                     end if
@@ -1112,7 +1118,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-success btn-block" type="button" onclick="repetir(<%=ConsultaID%>, 'Solicitar', '');">
-                            <i class="fa fa-copy"></i> Repetir
+                            <i class="far fa-copy"></i> Repetir
                         </button>
                     </div>
                     <%
@@ -1121,7 +1127,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-warning btn-block" type="button" onclick="remarcar(<%=ConsultaID%>, 'Solicitar', '');">
-                            <i class="fa fa-copy"></i> Remarcar
+                            <i class="far fa-copy"></i> Remarcar
                         </button>
                     </div>
                     <%
@@ -1130,7 +1136,7 @@ end if
                     %>
                     <div class="col-xs-5 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-danger btn-block" type="button" data-bb-handler="danger" onclick="excluiAgendamento(<%=ConsultaID%>, 0);">
-                            <i class="fa fa-trash"></i> Excluir
+                            <i class="far fa-trash"></i> Excluir
                         </button>
                     </div>
                     <%
@@ -1138,7 +1144,7 @@ end if
                     %>
                     <div class="hidden col-xs-1 col-md-1 pt10 <%= hiddenCHK %>">
                         <button title="Histórico de alterações" class="btn btn-sm btn-default btn-block" type="button" data-bb-handler="default" onclick="logAgendamento('<%=ConsultaID%>', 0);">
-                            <i class="fa fa-history"></i>
+                            <i class="far fa-history"></i>
                         </button>
                     </div>
                     <%
@@ -1147,7 +1153,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-info btn-block" type="button" data-bb-handler="danger" onclick="abreBloqueio(0, '<%=Data%>', '<%=Hora%>');">
-                            <i class="fa fa-lock"></i> Inserir Bloqueio
+                            <i class="far fa-lock"></i> Inserir Bloqueio
                         </button>
                     </div>
                     <%
@@ -1386,9 +1392,9 @@ function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
   setTimeout(function() {
     if($el.attr("data-force-disabled") !== 'true' || force){
           if(state){
-              $el.attr('disabled', false).html("<i class='fa fa-save'></i> Salvar", false);
+              $el.attr('disabled', false).html(`<i class='far fa-save'></i> Salvar`, false);
           }else{
-              $el.attr('disabled', true).html("<i class='fa fa-spinner fa-spin'></i> "+waitMessage, true);
+              $el.attr('disabled', true).html(`<i class='far fa-circle-o-notch  fa-spin'></i> `+waitMessage, true);
           }
       }
   }, timeout);
@@ -1523,7 +1529,7 @@ function gravaWorklist () {
 }
 
 var saveAgenda = function(){
-        $("#btnSalvarAgenda").html('salvando');
+        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
 
@@ -1531,7 +1537,7 @@ var saveAgenda = function(){
             .done(function(data){
                 //$("#btnSalvarAgenda").removeAttr('disabled');
                 eval(data);
-                $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
+                $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
                 $("#btnSalvarAgenda").prop("disabled", false);
                 crumbAgenda();
                 gravaWorklist();
@@ -1539,7 +1545,13 @@ var saveAgenda = function(){
 
             .fail(function(err){
                 $("#btnSalvarAgenda").prop("disabled", true);
+                showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
+
+                gtag('event', 'erro_500', {
+                    'event_category': 'erro_agenda',
+                    'event_label': "Erro ao salvar agendamento."
+                });
             });
 
         if(typeof callbackAgendaFiltros === "function"){
@@ -1915,7 +1927,7 @@ function CopyToClipboard (text) {
 
 function ObsConvenio(ConvenioID) {
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("ObsConvenio.asp?ConvenioID="+ConvenioID, "", function (data) {
         $("#modal").html(data);
 
@@ -2028,6 +2040,15 @@ $( document ).ready(function() {
             });
         }
     })
+});
+
+$("select[name^=ConvenioID]").change(function(){
+    $.get("ObsConvenioAgenda.asp?ConvenioID="+$(this).val(), function(data){
+        if(data!=""){
+            $("#modal-table").modal("show");
+            $("#modal").html(data);
+        }
+    });
 });
 
 <!--#include file="jQueryFunctions.asp"-->

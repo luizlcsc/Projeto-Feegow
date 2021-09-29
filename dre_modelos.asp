@@ -11,7 +11,7 @@ id=req("I")
 		<br>
 		<div class="panel">
 			<div class="panel-body" id="dre_modelos_panel">
-                <button class="btn btn-primary btn-sm hidden" id="save"> <i class="fa fa-save"></i> Salvar </button>
+                <button class="btn btn-primary btn-sm hidden" id="save"> <i class="far fa-save"></i> Salvar </button>
 				<div class="row">
 					<%=quickField("text", "NomeModelo", "Nome do Modelo", "6", reg("NomeModelo"), "", "", "")%>
 

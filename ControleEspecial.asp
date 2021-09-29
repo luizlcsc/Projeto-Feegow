@@ -64,7 +64,7 @@
 <!--#include file="connect.asp"-->
 
 <div class="hidden-print" style="position:fixed; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;">
-    <button type="button" class="btn btn-primary" onClick="print()"><i class="fa fa-print"></i> IMPRIMIR</button>
+    <button type="button" class="btn btn-primary" onClick="print()"><i class="far fa-print"></i> IMPRIMIR</button>
 </div>
 <div class="row">
 <%

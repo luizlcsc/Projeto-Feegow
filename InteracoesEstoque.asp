@@ -55,7 +55,7 @@ end if
     <div class='panel-heading'>
         <span>Interações do Medicamento</span>
         <div class='actionArea'>
-            <button class="btn btn-success"><i class="fa fa-save"></i> Salvar</button>
+            <button class="btn btn-success"><i class="far fa-save"></i> Salvar</button>
         </div>
     </div>
 

@@ -5,7 +5,7 @@
 <%
 
 if request.ServerVariables("REMOTE_ADDR")<>"::1" then
-    on error resume next
+    'on error resume next
 end if
 
 ProfissionalID = req("ProfissionalID")
@@ -24,11 +24,14 @@ if ProfissionalID="" then
     ProfissionalNaoInformado=True
 end if
 
+set AgendamentoSQL = db.execute("SELECT *, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&AgendamentoID)
+
+if AgendamentoSQL.eof then
+    Response.End
+end if
+
 if ProfissionalNaoInformado then
-    set AgendamentoSQL = db.execute("SELECT ProfissionalID FROM agendamentos WHERE id="&AgendamentoID)
-    if not AgendamentoSQL.eof then
-        ProfissionalID=AgendamentoSQL("ProfissionalID")
-    end if
+    ProfissionalID=AgendamentoSQL("ProfissionalID")
 end if
 if isdate(Data) then
 	DiaSemana = weekday(Data)
@@ -47,9 +50,7 @@ if LocalID="Search" then
 end if
 
 if Acao="Solicitar" then
-	set AgendamentoSet = db.execute("SELECT StaID in (3) executado FROM agendamentos WHERE id="&AgendamentoID)
-
-	IF NOT AgendamentoSet.EOF THEN
+	IF AgendamentoSQL("StaID")=3 THEN
 	    IF AgendamentoSet("executado") THEN
 	    %>
             showMessageDialog("Este agendamento já se encontra finalizado", "danger")
@@ -84,7 +85,6 @@ end if
 if Acao="Remarcar" then
     Encaixe=0
 
-    set AgendamentoSQL = db.execute("SELECT especialidadeid,tipocompromissoid, localid ,Hora, HoraFinal, Tempo, EquipamentoID, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&session("RemSol"))
     if LocalID="Search" then
         LocalID = AgendamentoSQL("localid")
     end if 
@@ -176,31 +176,30 @@ if Acao="Remarcar" then
         end if
     end if
 
+    ' ######################### BLOQUEIO FINANCEIRO ########################################
+    UnidadeID = session("UnidadeID")
+    contabloqueadacred = verificaBloqueioConta(2, 2, 0, UnidadeID,Data)
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        erro ="Agenda bloqueada para edição retroativa (data fechada).', 'danger', 'Não permitido!"
+    end if
+    ' #####################################################################################
+
     if erro="" then
 
-        
-        set profissionalAntigoSQL = db.execute("SELECT ProfissionalID FROM agendamentos WHERE id="&session("RemSol"))
-        if not profissionalAntigoSQL.eof then
-            ProfissionalIDAntigo=profissionalAntigoSQL("ProfissionalID")
-        end if
+        ProfissionalIDAntigo=AgendamentoSQL("ProfissionalID")
 
         sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
         db_execute(sql)
         
         call agendaUnificada("update", session("RemSol"), ProfissionalIDAntigo)
 
-    '	response.Write("select ConfSMS, ConfEmail from agendamentos where id="&session("RemSol"))
-
-        set age = db.execute("select ConfSMS, ConfEmail,PacienteID,TipoCompromissoID from agendamentos where id="&session("RemSol"))
-        if not age.eof then
-            sql = "INSERT INTO logsmarcacoes (DataHoraFeito,Sta,Motivo, PacienteID, ProfissionalID, ProcedimentoID,Data,Hora,Usuario,ARX,ConsultaID,Obs, UnidadeID) VALUES ('"&now()&"',15,0,"&age("PacienteID")&","&treatvalzero(ProfissionalID)&","&age("TipoCompromissoID")&","&mydatenull(Data)&","&mytime(Hora)&","&session("User")&", 'R',"&session("RemSol")&",'Remarcado', "&treatvalzero(session("UnidadeID"))&")"
-            'response.write(sql)
-            db.execute(sql)
-            'call centralSMS(age("ConfSMS"), Data, Hora, session("RemSol"))
-            'call centralEmail(age("ConfEmail"), Data, Hora, session("RemSol"))
-            call googleCalendar("X", "", session("RemSol"), "", "", "", "", "", "", "")
-            call googleCalendar("I", "vca", session("RemSol"), ProfissionalID, "", "", "", "", "", "")
-        end if
+        sql = "INSERT INTO logsmarcacoes (DataHoraFeito,Sta,Motivo, PacienteID, ProfissionalID, ProcedimentoID,Data,Hora,Usuario,ARX,ConsultaID,Obs, UnidadeID) VALUES ('"&now()&"',15,0,"&AgendamentoSQL("PacienteID")&","&treatvalzero(ProfissionalID)&","&AgendamentoSQL("TipoCompromissoID")&","&mydatenull(Data)&","&mytime(Hora)&","&session("User")&", 'R',"&session("RemSol")&",'Remarcado', "&treatvalzero(session("UnidadeID"))&")"
+        'response.write(sql)
+        db.execute(sql)
+        'call centralSMS(AgendamentoSQL("ConfSMS"), Data, Hora, session("RemSol"))
+        'call centralEmail(AgendamentoSQL("ConfEmail"), Data, Hora, session("RemSol"))
+        call googleCalendar("X", "", session("RemSol"), "", "", "", "", "", "", "")
+        call googleCalendar("I", "vca", session("RemSol"), ProfissionalID, "", "", "", "", "", "")
         session("RemSol")=""
         redirectID = ProfissionalID
         if isAgendaEquipamento = "equipamento" then

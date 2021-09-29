@@ -33,9 +33,9 @@ $(function(){
             <div class="row">
                 <div class="col-md-3">
                     <div class="btn-group btn-block" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-3 btn-default" onclick="paciente()"><i class="fa fa-user"></i> <br /> Paciente</button>
-                        <button type="button" class="btn btn-3 btn-default" onclick="paciente()"><i class="fa fa-calendar"></i> <br /> Agendamento</button>
-                        <a href="?P=AgendamentoLaboratorial&Pers=1" class="btn btn-3 btn-default" ><i class="fa fa-medkit"></i> <br /> Laboratórios</a>
+                        <button type="button" class="btn btn-3 btn-default" onclick="paciente()"><i class="far fa-user"></i> <br /> Paciente</button>
+                        <button type="button" class="btn btn-3 btn-default" onclick="paciente()"><i class="far fa-calendar"></i> <br /> Agendamento</button>
+                        <a href="?P=AgendamentoLaboratorial&Pers=1" class="btn btn-3 btn-default" ><i class="far fa-medkit"></i> <br /> Laboratórios</a>
                     </div>
                     
                 
@@ -49,8 +49,8 @@ $(function(){
                 <%= quickfield("simpleSelect", "bageTabela", "Tabela", 2, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " no-select2 onchange='agfilParametros()' ") %>
                 <div class="col-md-2">
                     <div class="btn-group btn-block" role="group" aria-label="Basic example">
-                        <button onclick="Limpar()" class="btn btn-2 btn-default" type="button"><i class="fa fa-eraser"></i> <br /> Limpar</button>
-                        <button type="button" class="btn btn-2 btn-alert" onclick="profissionais()"><i class="fa fa-user-md"></i> <br /> Profissionais</button>
+                        <button onclick="Limpar()" class="btn btn-2 btn-default" type="button"><i class="far fa-eraser"></i> <br /> Limpar</button>
+                        <button type="button" class="btn btn-2 btn-alert" onclick="profissionais()"><i class="far fa-user-md"></i> <br /> Profissionais</button>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@ $(function(){
                 <%= quickfield("simpleSelect", "bProcedimentoID", "Procedimento", 4, "", "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' and ifnull(OpcoesAgenda, 0)<>3 order by NomeProcedimento", "NomeProcedimento", " empty ") %>
                 <%= quickfield("simpleSelect", "bComplementoID", "Complemento", 2, "", "select id, NomeComplemento from complementos where sysActive=1 and length(NomeComplemento)>1 order by NomeComplemento", "NomeComplemento", " empty ") %>
                 <div class="col-md-1">
-                    <button type="button" class="btn btn-success btn-sm mt25 btn-block" onclick="cart('I')"><i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-success btn-sm mt25 btn-block" onclick="cart('I')"><i class="far fa-plus"></i></button>
                 </div>
                 <%= quickfield("simpleSelect", "bRegiao", "Zona", 2, "", "select '' id, 'Todas' Regiao UNION ALL select distinct Regiao id , Regiao  from sys_financialcompanyunits WHERE sysActive=1 AND Regiao is not null and Regiao!=''", "Regiao", " semVazio ") %>
             </div>
@@ -76,7 +76,7 @@ $(function(){
             </div>
             <div class="row mt10">
                 <div class="col-md-12">
-                    <button onclick="buscar()" type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-search"></i> Buscar por horários</button>
+                    <button onclick="buscar()" type="button" class="btn btn-primary btn-sm btn-block"><i class="far fa-search"></i> Buscar por horários</button>
                 </div>
             </div>
             <div class="row mt10">
@@ -101,16 +101,16 @@ $(function(){
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-2">
-        <button type="button" class="btn btn-warning mt15 btn-block btn-xs" title="Desistência"><i class="fa fa-remove"></i> Desistência</button>
+        <button type="button" class="btn btn-warning mt15 btn-block btn-xs" title="Desistência"><i class="far fa-remove"></i> Desistência</button>
     </div>
     <div class="col-md-2">
-        <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger mt15 btn-block btn-xs" title="Pendência"><i class="fa fa-puzzle-piece"></i> Pendência</button>
+        <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger mt15 btn-block btn-xs" title="Pendência"><i class="far fa-puzzle-piece"></i> Pendência</button>
     </div>
     <div class="col-md-2">
-        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary mt15 btn-block btn-xs" title="Finalizar busca"><i class="fa fa-check"></i> Finalizar</button>
+        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary mt15 btn-block btn-xs" title="Finalizar busca"><i class="far fa-check"></i> Finalizar</button>
     </div>
     <div class="col-md-2">
-        <button onclick="Receber()" type="button" class="btn btn-success mt15 btn-block btn-xs" title="Receber do paciente"><i class="fa fa-dollar"></i> Receber </button>
+        <button onclick="Receber()" type="button" class="btn btn-success mt15 btn-block btn-xs" title="Receber do paciente"><i class="far fa-dollar"></i> Receber </button>
     </div>
 </div>
 
@@ -128,7 +128,7 @@ function paciente(){
 
     if( id != "" && id != null){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("HistoricoPaciente.asp?PacienteID=" + id, function (data) { $("#modal").html( data ); });
     }
 }
@@ -152,7 +152,7 @@ function buscar() {
     //    alert('Selecione um paciente.');
     //    return false;
     //}else{
-        $("#divBusca").html("<div style='text-align:center'><i class='fa fa-circle-o-notch fa-spin'></i> Carregando!...</div>");
+        $("#divBusca").html("<div style='text-align:center'><i class='far fa-circle-o-notch fa-spin'></i> Carregando!...</div>");
         $.post("CartBusca.asp", { Data: $("#bData").val(), Regiao: $("#bRegiao").val() }, function (data) {
             $("#divBusca").html(data);
         });
@@ -263,7 +263,7 @@ function loadAgenda(){
     $(".crumb-active a").html("Agenda por Filtros");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-calendar");
+    $(".crumb-icon a span").attr("class", "far fa-calendar");
 
     $("#bGrupoID").change(function() {
         $.get("comboGrupoProcedimento.asp", {GrupoID: $(this).val()}, function(data) {
@@ -346,14 +346,14 @@ function profissionais(){
 
     if( id != "" && id != null){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("HistoricoProfissional.asp?ProfissionalID=" + id, function (data) { $("#modal").html( data ); });
     }
 }
 
 function hist(P) {
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.get("HistoricoPaciente.asp?PacienteID=" + P, function (data) { $("#modal").html( data ); });
 }
 
@@ -361,7 +361,7 @@ var CarrinhoID = 0;
 
 function abreAgenda(Hora, id,Data, ProfissionalID, EspecialidadeID, TabelaID, ProcedimentoID, LocalID, ValorSelector, CarrinhoID) {
             window.CarrinhoID = CarrinhoID;
-            // $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+            // $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
 
             var Valor = $("#"+ValorSelector).val();
             var GradeID = 0;

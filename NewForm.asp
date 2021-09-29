@@ -82,7 +82,7 @@ set reg = db.execute("select * from buiforms where id="&I)
 
                 if (recursoPermissaoUnimed=4 and aut("permissoesformulariosI")=1) or recursoPermissaoUnimed<>4 then
                 %>
-        	    <label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-block" onclick="permissoes()"><i class="fa fa-lock"></i> Permiss&otilde;es</button>
+        	    <label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-block" onclick="permissoes()"><i class="far fa-lock"></i> Permiss&otilde;es</button>
         	    <%end if%>
             </div>
         </div>
@@ -127,7 +127,7 @@ $(".form-control").change(function(){
 function estilo(){
 	$.post("formEstilo.asp?FormID=<%=I%>", '', function(data, status){
 
-		$("#modal").html("Carregando...");
+		$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		$("#modal-table").modal('show');
 		setTimeout(function(){$("#modal").html(data);}, 1000);
 
@@ -164,7 +164,7 @@ $(".btn-20").click(function(){
 */
 function permissoes(){
 	$.post("formPermissoes.asp?F=<%=I%>", '', function(data, status){
-  		   $("#modal").html("Carregando...");
+  		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	});

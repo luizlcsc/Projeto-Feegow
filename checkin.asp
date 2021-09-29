@@ -17,11 +17,11 @@
     $(".crumb-active a").html("Checkin");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("<%= date() %>");
-    $(".crumb-icon a span").attr("class", "fa fa-check");
+    $(".crumb-icon a span").attr("class", "far fa-check");
 
 
     $("#frm-filtros").submit(function(){
-        $("#GradeAgenda").html("Carregando...");
+        $("#GradeAgenda").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("checkinContent.asp?AgendamentoID="+ $("#reqAgendamentoID").val(), $(this).serialize(), function(data){
             $("#GradeAgenda").html(data);
 
@@ -52,7 +52,7 @@
 
     function abreAgenda(horario, id, data, LocalID, ProfissionalID, EquipamentoID) {
 
-        $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
         af('a');
         $.ajax({
             type: "POST",

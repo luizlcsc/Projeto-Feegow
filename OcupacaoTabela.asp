@@ -4,10 +4,19 @@
 lDe = cdate(ref("Data"))
 lAte = lDe + 7
 rfLocais = "|UNIDADE_ID"& ref("Unidade") &"|"
-'rfLocais = ref("Unidade")
+Especialidades = ref("Especialidades")
+
 if rfLocais="" then
     rfLocais = "-"
 end if
+
+if ref("Unidade")="" or Especialidades="" then
+    %>
+    Preencha a especialidade e unidade.
+    <%
+    Response.End
+end if
+
 'response.write(De&", "&Ate&", "&refEspecialidade&", """", """", """", "& rfLocais)    
 %>
 
@@ -22,7 +31,7 @@ end if
             dataN = lDe
             while dataN<lAte
                 %>
-                <th><%= ucase(left(weekdayname(weekday(dataN)),3)) %></th>
+                <th title="<%=dataN%>"><%= ucase(left(weekdayname(weekday(dataN)),3)) %></th>
                 <%
                 dataN = dataN+1
             wend
@@ -33,10 +42,10 @@ end if
         <%
 		splLocais = split(rfLocais, ", ")
 		for il=0 to ubound(splLocais)
-			call ocupacao(lDe, lAte, ref("Especialidades"), "", "", "", splLocais(il))    
+			call ocupacao(lDe, lAte, Especialidades, "", "", "", splLocais(il))
 
 
- 			set prof = db.execute("select distinct ro.ProfissionalID, ro.EspecialidadeID, ro.UnidadeID, prof.NomeProfissional, esp.especialidade, u.NomeFantasia FROM agenda_horarios ro LEFT JOIN profissionais prof ON prof.id=ro.ProfissionalID LEFT JOIN especialidades esp ON ro.EspecialidadeID=esp.id LEFT JOIN sys_financialcompanyunits u ON u.id=ro.UnidadeID WHERE ro.sysUser="& session("User") &" ORDER BY prof.NomeProfissional")
+ 			set prof = db.execute("select distinct ro.ProfissionalID, ro.EspecialidadeID, ro.UnidadeID, prof.NomeProfissional, esp.especialidade, u.NomeFantasia FROM agenda_horarios ro LEFT JOIN profissionais prof ON prof.id=ro.ProfissionalID LEFT JOIN especialidades esp ON ro.EspecialidadeID=esp.id LEFT JOIN sys_financialcompanyunits u ON u.id=ro.UnidadeID WHERE ro.sysUser="& session("User") &" and prof.Ativo='ON' ORDER BY prof.NomeProfissional")
 			while not prof.eof
 				nomUn = getNomeLocalUnidade(prof("UnidadeID"))&""
 				%>

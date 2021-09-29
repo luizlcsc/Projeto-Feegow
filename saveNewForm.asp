@@ -93,9 +93,9 @@ if I="N" then
     set atendimentoReg = db.execute("select * from atendimentos where PacienteID="&PacienteID&" and sysUser = "&session("User")&" and HoraFim is null and Data = date(now())")
      if atendimentoReg.EOF  then
         if getConfig("AutoSaveForms") = 1 then 'Nao permite salvar automaticamente
-         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
+            db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", "&Active&", "& treatvalzero(Prior) &")")
         else
-         db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", 1, "& treatvalzero(Prior) &")")
+            db_execute("insert into buiformspreenchidos (ModeloID, PacienteID, sysUser, sysActive, Prior) values ("&ModeloID&", "&PacienteID&", "&session("User")&", 1, "& treatvalzero(Prior) &")")
         end if
     else
         'salva com id do atendimento
@@ -111,19 +111,33 @@ set pcampos = db.execute("select id, TipoCampoID, enviardadoscid from buicamposf
 while not pcampos.eof
     select case pcampos("TipoCampoID")
         case 1, 2, 4, 5, 6, 8,3,16
-            valorCampo = refHTML("input_"&pcampos("id"))
-            valorCampo = stripHTML(valorCampo)
+            if Request("input_"&pcampos("id")).Count > 0 then
+                valorCampo = refHTML("input_"&pcampos("id"))
+                valorCampo = stripHTML(valorCampo)
 
-            if valorCampo <> "" or habilitarVazio = "1" then
-                inputValor = refHTML("input_"&pcampos("id"))
-                'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
-                inputValor = replace(inputValor, "​", "")
-                sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
-                if pcampos("TipoCampoID")  = 16 and  pcampos("enviardadoscid") = 1 then 
-                    sqlIncluirCid = "INSERT INTO pacientesdiagnosticos ( PacienteID, CidID, Descricao, DataHora, sysUser, sysActive,  AtendimentoID) "&_
-                                    " VALUES ("&PacienteID&", "&inputValor&", '', NOW(), "&session("User")&", 1, null)"
-                    db.execute( sqlIncluirCid )
-                end if 
+                'se o campo vier em branco, verifica se houve alteração
+                campoAlterado = false
+                if valorCampo = "" then
+                    set rsHasUpdate = db.execute("SELECT " & pcampos("id") & " as campo FROM `_"&ModeloID&"` WHERE id = " &I)
+                    if not rsHasUpdate.eof then
+                        valorAtual = stripHTML(rsHasUpdate("campo")&"")
+                        if valorAtual <> valorCampo then
+                            campoAlterado = true
+                        end if
+                    end if
+                end if
+
+                if valorCampo <> "" or habilitarVazio = "1" or campoAlterado = true then
+                    inputValor = refHTML("input_"&pcampos("id"))
+                    'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
+                    inputValor = replace(inputValor, "​", "")
+                    sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
+                    if pcampos("TipoCampoID")  = 16 and  pcampos("enviardadoscid") = 1 then
+                        sqlIncluirCid = "INSERT INTO pacientesdiagnosticos ( PacienteID, CidID, Descricao, DataHora, sysUser, sysActive,  AtendimentoID) "&_
+                                        " VALUES ("&PacienteID&", "&inputValor&", '', NOW(), "&session("User")&", 1, null)"
+                        db.execute( sqlIncluirCid )
+                    end if
+                end if
             end if
         case 9
             if req("auto")<>"1" then
@@ -155,7 +169,7 @@ while not pcampos.eof
                             convTags_itens = convTags_itens&"|PacienteID_"&req("p")
                         end if
 
-                        if linha<0 then
+                        if linha<0 or req("Inserir")="1" then
                             strInValLinha = TagsConverte(strInValLinha,convTags_itens,"")
                             sqlIn = "insert into buitabelasvalores (CampoID, FormPreenchidoID "& strInLinha &") values ("& pcampos("id") &", "& I & strInValLinha &")"
                             'response.Write( sqlIn )

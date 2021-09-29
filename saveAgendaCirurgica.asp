@@ -35,7 +35,7 @@ end if
 if erro<>"" then
 	%>
     new PNotify({
-        title: '<i class="fa fa-thumbs-down"></i> ERRO!',
+        title: '<i class="far fa-thumbs-down"></i> ERRO!',
         text: '<%=erro%>',
         type: 'danger'
     });
@@ -48,7 +48,7 @@ else
 	db.execute(sql)
 	set guia = db.execute("select * from agendacirurgica where id="&I)
 	%>
-        location.href='./?P=lAgendaCirurgica&Pers=1';
+        location.href='./?P=listaAgendaCirurgica&Pers=1';
     <%
 end if
 %>

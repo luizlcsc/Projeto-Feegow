@@ -6,7 +6,7 @@ width: 1%;
 </style>
 <script type="text/javascript">
     $(".crumb-active a").html("Auditoria");
-    $(".crumb-icon a span").attr("class", "fa fa-eye");
+    $(".crumb-icon a span").attr("class", "far fa-eye");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Financeiro");
 </script>
@@ -111,8 +111,8 @@ var criarTabelaGenerica = (data) => {
                      return `<td ${style}>${row[item]}</td>`;
                  }).join();
                  trHtml += `<td class='acao' style="white-space: nowrap;">
-                                <button class='btn btn-primary btn-xs' id='auditar' onclick='clickAutic(${row._InTable},"${itemAuditavel}")'><i class='fa fa-check'></i></button>
-                                <a target="_blank" class='btn btn-success btn-xs' id='auditar' href="${url}"><i class='fa fa-edit'></i></a>
+                                <button class='btn btn-primary btn-xs' id='auditar' onclick='clickAutic(${row._InTable},"${itemAuditavel}")'><i class='far fa-check'></i></button>
+                                <a target="_blank" class='btn btn-success btn-xs' id='auditar' href="${url}"><i class='far fa-edit'></i></a>
                             </td>`;
 
                  trHtml += "</tr>";

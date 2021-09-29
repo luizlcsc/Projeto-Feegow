@@ -39,7 +39,7 @@ end if
     <div class="panel-heading">
         <span class="panel-title">Cadastro de tipo de arquivo</span>
          <div class='actionArea'>
-            <button class="btn btn-success" onclick="saveTipo()"><i class="fa fa-save"></i> Salvar</button>
+            <button class="btn btn-success" onclick="saveTipo()"><i class="far fa-save"></i> Salvar</button>
         </div>
     </div>
     <div class="panel-body">

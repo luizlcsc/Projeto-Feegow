@@ -138,7 +138,7 @@ end if
     <div id="modal-recibo" class="modal fade" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" id="modal-content" style="width:860px; margin-left:-130px;">
-                <div ><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>
+                <div ><i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span class="sr-only">Carregando...</span> Carregando...</div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
@@ -166,7 +166,7 @@ end if
                                 </div>
                                 <div id="divDisplayFoto" style="display: <%= divDisplayFoto %>">
                                     <img id="avatarFoto" src="<%=arqEx(reg("Foto"), "Perfil")%>" class="img-thumbnail" width="100%" />
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position: absolute; left: 18px; bottom: 6px;"><i class="far fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -333,7 +333,7 @@ end if
                                 Última compra: R$ <%= fn(uii("Valor")) %>/<%= descUC %>
 
                                 <% if aut("contasapagar")=1 and false then %>
-                                    <a target="_blank" href="./?P=Invoice&Pers=1&T=D&I=<%= uii("InvoiceID") %>" class="btn btn-xs btn-default"><i class="fa fa-eye"></i></a>
+                                    <a target="_blank" href="./?P=Invoice&Pers=1&T=D&I=<%= uii("InvoiceID") %>" class="btn btn-xs btn-default"><i class="far fa-eye"></i></a>
                                 <% end if %>
                             </div>
                             <%
@@ -463,7 +463,7 @@ end if
 
     function lancar(P, T, L, V, PosicaoID){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.ajax({
             type:"POST",
             url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID,
@@ -477,7 +477,7 @@ end if
     function dividir(P, T, L, V, PosicaoID)
     {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 
         if(PosicaoID === "LOTE"){
             PosicaoID=[];

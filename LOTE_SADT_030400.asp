@@ -291,12 +291,10 @@ prefixo = right(prefixo, 20)
                         <%if MotivoEncerramentoID<>"" then%><ans:motivoEncerramento><%= MotivoEncerramentoID %></ans:motivoEncerramento><% End If %>
                     </ans:dadosAtendimento>
 
-										<%
-                                        sequencialItem = 1
-                                        if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then
-                                        %>
+										<%if InStr(XMLTagsOmitir,"|procedimentosExecutados|")=0 then%>
                     <ans:procedimentosExecutados>
                     <%
+                    sequencialItem = 1
 
 					set procs = db.execute("select tps.*, proc.ProcedimentoSeriado from tissprocedimentossadt tps INNER JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where tps.GuiaiD="&guias("id"))
 					while not procs.eof

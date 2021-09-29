@@ -194,11 +194,11 @@ while not pTemp.EOF
               <td></td><td></td><td></td><td></td>
 			  <td class="fc-col0 fc-thu fc-widget-content fc-state-highlight fc-today"><%
 			  if UtilizarFila<>"" then
-			  	%><button type="button" onclick="filaEspera('U_<%=UtilizarFila%>_<%=formatDateTime(pTemp("Hora"),4)%>')" class="btn btn-xs btn-primary"><i class="fa fa-chevron-left"></i> Agendar Aqui</button><%
+			  	%><button type="button" onclick="filaEspera('U_<%=UtilizarFila%>_<%=formatDateTime(pTemp("Hora"),4)%>')" class="btn btn-xs btn-primary"><i class="far fa-chevron-left"></i> Agendar Aqui</button><%
 			  elseif session("RemSol")<>"" then
-			  	%><button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(pTemp("Hora"),4)%>')" class="btn btn-xs btn-warning"><i class="fa fa-chevron-left"></i> Agendar Aqui</button><%
+			  	%><button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(pTemp("Hora"),4)%>')" class="btn btn-xs btn-warning"><i class="far fa-chevron-left"></i> Agendar Aqui</button><%
 			  elseif session("RepSol")<>"" then
-			  	%><button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(pTemp("Hora"),4)%>')" class="btn btn-xs btn-warning"><i class="fa fa-chevron-left"></i> Repetir Aqui</button><%
+			  	%><button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(pTemp("Hora"),4)%>')" class="btn btn-xs btn-warning"><i class="far fa-chevron-left"></i> Repetir Aqui</button><%
 			  else
 			  	%>&nbsp;<small class="grey pull-right"><%=pTemp("NomeLocal")%>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</small><%
 			  end if
@@ -270,7 +270,7 @@ while not pTemp.EOF
 				wend
 				pagendamentos.close
 				set pagendamentos=nothing
-				%><%if ccur(contaagendamentos)<ccur(MaximoAgendamentos) then%></td><td><button type="button" onclick="abreAgenda('<%=replace(left(cdate( hour(pTemp("Hora"))&":"&minute(pTemp("Hora")) ),5), ":", "")%>', 0, '<%=Data%>', '<%=pTemp("LocalID")%>')" class="btn btn-success btn-xs"><i class="fa fa-plus"></i></button><%end if%></td></tr><%
+				%><%if ccur(contaagendamentos)<ccur(MaximoAgendamentos) then%></td><td><button type="button" onclick="abreAgenda('<%=replace(left(cdate( hour(pTemp("Hora"))&":"&minute(pTemp("Hora")) ),5), ":", "")%>', 0, '<%=Data%>', '<%=pTemp("LocalID")%>')" class="btn btn-success btn-xs"><i class="far fa-plus"></i></button><%end if%></td></tr><%
 			end if
             contaAgendamentos.close
             set contaAgendamentos = nothing

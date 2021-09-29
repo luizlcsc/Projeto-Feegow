@@ -66,7 +66,7 @@ end if
 					<%
 					if proc("ProcedimentoTelemedicina")="S" then
 						%>
-						<i class="fa fa-video-camera"></i>
+						<i class="far fa-video-camera"></i>
 						<%
 					end if
 					%>

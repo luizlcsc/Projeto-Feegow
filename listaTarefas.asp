@@ -7,11 +7,11 @@
     $(".crumb-active a").html("Gerenciar Tarefas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("filtre as tarefas que deseja localizar");
-    $(".crumb-icon a span").attr("class", "fa fa-tasks");
+    $(".crumb-icon a span").attr("class", "far fa-tasks");
     <%
     botaoSprints = ""
     if session("Banco")="clinic5459" OR session("Banco")="clinic100000" then
-        botaoSprints = "&nbsp;&nbsp;<a class=""btn btn-sm btn-primary"" href=""./?P=listaSprints&Pers=1""><i class=""fa fa-users""></i><span class=""menu-text""> Sprints</span></a>"
+        botaoSprints = "&nbsp;&nbsp;<a class=""btn btn-sm btn-primary"" href=""./?P=listaSprints&Pers=1""><i class=""far fa-users""></i><span class=""menu-text""> Sprints</span></a>"
     end if
 
 
@@ -19,8 +19,8 @@
 
       if req("Helpdesk") = "" then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=Tarefas&I=N&Pers=1<% if req("Helpdesk") <> "" then response.write("&Helpdesk=1") end if %>"><i class="fa fa-tasks"></i><span class="menu-text"> Inserir tarefa</span></a>&nbsp;&nbsp;' +
-     '<a class="btn btn-sm btn-primary" href="./?P=listaProjetos&Pers=1" <% if req("Helpdesk") <> "" then response.write(" style=""display:none"" ") end if %>><i class="fa fa-th-large"></i><span class="menu-text"> Projetos</span></a><%=botaoSprints%>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=Tarefas&I=N&Pers=1<% if req("Helpdesk") <> "" then response.write("&Helpdesk=1") end if %>"><i class="far fa-tasks"></i><span class="menu-text"> Inserir tarefa</span></a>&nbsp;&nbsp;' +
+     '<a class="btn btn-sm btn-primary" href="./?P=listaProjetos&Pers=1" <% if req("Helpdesk") <> "" then response.write(" style=""display:none"" ") end if %>><i class="far fa-th-large"></i><span class="menu-text"> Projetos</span></a><%=botaoSprints%>');
     <%
       end if
     end if
@@ -55,11 +55,11 @@
                 <%=quickfield("datepicker", "AberturaAte", "&nbsp;", 2, "", "", "", "") %>
                 <div class="col-md-1">
                     <label>&nbsp;</label><br />
-                    <button id="Buscar" class="btn btn-sm btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+                    <button id="Buscar" class="btn btn-sm btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
                 </div>
                 <div class="col-md-1">
                     <label>&nbsp;</label><br />
-                    <button class="btn-export btn btn-sm btn-info btn-block" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+                    <button class="btn-export btn btn-sm btn-info btn-block" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i></button>
                 </div>
             </div>
             <div class="row hidden-xs">
@@ -90,7 +90,7 @@
                 <% end if %>
                 <div class="col-md-1">
                     <label>&nbsp;</label><br />
-                    <button class="btn-export btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>
+                    <button class="btn-export btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i></button>
                 </div>
             </div>
             <% if req("Helpdesk") = "" then %>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="hidden panel-footer br-t p12">
                           <span class="fs11">
-                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <i class="far fa-arrow-up pr5"></i> 3% INCREASE
                             <b>1W AGO</b>
                           </span>
                         </div>
@@ -167,7 +167,7 @@
                         </div>
                         <div class="hidden panel-footer br-t p12">
                           <span class="fs11">
-                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <i class="far fa-arrow-up pr5"></i> 3% INCREASE
                             <b>1W AGO</b>
                           </span>
                         </div>
@@ -185,7 +185,7 @@
                         </div>
                         <div class="hidden panel-footer br-t p12">
                           <span class="fs11">
-                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <i class="far fa-arrow-up pr5"></i> 3% INCREASE
                             <b>1W AGO</b>
                           </span>
                         </div>
@@ -203,7 +203,7 @@
                         </div>
                         <div class="hidden panel-footer br-t p12">
                           <span class="fs11">
-                            <i class="fa fa-arrow-up pr5"></i> 3% INCREASE
+                            <i class="far fa-arrow-up pr5"></i> 3% INCREASE
                             <b>1W AGO</b>
                           </span>
                         </div>
@@ -237,7 +237,7 @@ function downloadExcel(){
 <script type="text/javascript">
     $("#frm").submit(function () {
         $.post("listaTarefasResult.asp", $(this).serialize() + "&Helpdesk=<%=req("Helpdesk")%>", function (data) {
-            $("#lista").html("<center><i class='fa fa-circle-o-notch fa-spin'></i></center>");
+            $("#lista").html("<center><i class='far fa-circle-o-notch fa-spin'></i></center>");
             $("#lista").html(data);
         });
         return false;

@@ -21,8 +21,8 @@ end if
 %>
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
-        <li class="active"><a data-toggle="tab" href="#divatestado" id="btnatestado"><i class="fa fa-hospital-o"></i> Textos e Atestados</a></li>
-        <li><a data-toggle="tab" class="hidden" id="btnatestadosmodelos" href="#atestadosmodelos"><i class="fa fa-list"></i> <span class="hidden-480">Modelos</span></a></li>
+        <li class="active"><a data-toggle="tab" href="#divatestado" id="btnatestado"><i class="far fa-hospital-o"></i> Textos e Atestados</a></li>
+        <li><a data-toggle="tab" class="hidden" id="btnatestadosmodelos" href="#atestadosmodelos"><i class="far fa-list"></i> <span class="hidden-480">Modelos</span></a></li>
 	</ul>
 </div>
 <div class="panel-body p25" id="iProntCont">
@@ -36,14 +36,14 @@ end if
                         <input type="text" class="form-control" id="TituloAtestado" name="TituloAtestado" value="<%=Titulo %>" />
                     </div>
                     <div class="col-md-2">
-                        <button type="button" onclick="novo();" class="btn btn-info btn-block"><i class="fa fa-plus icon-plus"></i> Novo</button>
+                        <button type="button" onclick="novo();" class="btn btn-info btn-block"><i class="far fa-plus icon-plus"></i> Novo</button>
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" id="saveAtestado" style="<%=ArquivoAssinado%>"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
+                        <button type="button" class="btn btn-primary btn-block" id="saveAtestado" style="<%=ArquivoAssinado%>"><i class="far fa-save icon-save"></i> Salvar e Imprimir</button>
                     </div>
 
                     <div class="col-md-2">
-                        <button type="button" style="<%= ExisteAtestado%>" class="btn btn-info btn-block" id="printAtestado"><i class="fa fa-print icon-print"></i> Imprimir</button>
+                        <button type="button" style="<%= ExisteAtestado%>" class="btn btn-info btn-block" id="printAtestado"><i class="far fa-print icon-print"></i> Imprimir</button>
                     </div>
                 </div>
                 <div class="row">
@@ -57,13 +57,13 @@ end if
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                            <i class="fa fa-file-text-o"></i>
+                            <i class="far fa-file-text"></i>
                             Modelos de Textos / Atestados
                         </span>
                         <% if aut("|modelosprontuarioI|")=1 then%>
                         <div class="panel-controls">
                                  <a href="#" onclick="modalTextoAtestado('', 0)" class="btn btn-xs btn-dark" data-original-title="Cadastrar medicamento ou f&oacute;rmula para futuras prescri&ccedil;&otilde;es" data-rel="tooltip" data-placement="top" title="">
-                                    <i class="fa fa-plus text-white"></i>
+                                    <i class="far fa-plus text-white"></i>
                                 </a>
                         </div>
                         <%end if%>
@@ -74,7 +74,7 @@ end if
                         <input id="FiltroTA" class="form-control input-sm refina" autocomplete="off" placeholder="Filtrar..." type="text">
                         <span class="input-group-btn">
                         <button class="btn btn-sm btn-default" onclick="ListaTextosAtestados($('#FiltroTA').val(), '', '')" type="button">
-                        <i class="fa fa-filter icon-filter bigger-110"></i>
+                        <i class="far fa-filter icon-filter bigger-110"></i>
                         Buscar
                         </button>
                         </span>
@@ -103,7 +103,7 @@ end if
 
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 

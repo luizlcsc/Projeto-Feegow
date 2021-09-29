@@ -11,14 +11,20 @@ if req("i")<>"" and isnumeric(req("i")) then
         $(document).ready(function(){
         <%
     end if
-	set val = db.execute("select * from _"&req("m")&" where id="&req("i"))
-	if not val.eof then
+	set FormSQL = db.execute("select * from _"&req("m")&" where id="&req("i"))
+
+	if not FormSQL.eof then
 		set camVals = db.execute("select * from buicamposforms where FormID="&req("m"))
 		while not camVals.eof
 			set vca = db.execute("select i.table_name from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='"&session("banco")&"' and i.TABLE_NAME='_"&req("m")&"' and i.COLUMN_NAME='"&camVals("id")&"'")
 			if not vca.eof then
                 if camVals("TipoCampoID")=4 OR camVals("TipoCampoID")=5 then
-                    valor = val(""&camVals("id")&"")&""
+
+                    if IsObject(FormSQL) then
+                        valor = FormSQL(""&camVals("id")&"")&""
+                    else
+                        valor = ""
+                    end if
                     if valor<>"" then
                         spl = split(valor, ", ")
                         for ival=0 to ubound(spl)
@@ -26,10 +32,14 @@ if req("i")<>"" and isnumeric(req("i")) then
                         next
                     end if
                 else
-				    valor = val(""&camVals("id")&"")&""
+                    if IsObject(FormSQL) then
+                        valor = FormSQL(""&camVals("id")&"")&""
+                    else
+                        valor = ""
+                    end if
 				    valor = replace(valor, chr(13), "")
 				    valor = replace(valor, chr(10), "")
-				    response.write("$('[name=input_"& camVals("id")&"]').val("""& valor &""");")
+				    response.write("$('[name=input_"& camVals("id")&"]').FormSQL("""& valor &""");")
                 end if
 
                 if camVals("TipoCampoID")=8 then

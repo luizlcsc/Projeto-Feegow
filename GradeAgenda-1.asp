@@ -213,18 +213,23 @@ end if
 
     if existegradeval or getConfig("PermitirRemarcarSemGrade")=1 then
     %>
-    <div class="panel panel-footer row">
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
-                <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
-                <span class="input-group-btn">
+    <div class="row">
+        <div class="panel  ">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                    <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
+
+                </div>
+                <p><i>*Selecione um hor&aacute;rio abaixo ou digite</i></p>
+            </div>
+            <div class="col-md-2">
+                <span class="btn-group">
                     <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                        <i class="fa fa-clock-o bigger-110"></i>
+                        <i class="far fa-check bigger-110"></i>
                         Remarcar</button>
-                </span>
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
                 </span>
             </div>
         </div>
@@ -254,7 +259,7 @@ if session("RepSol")<>"" then
             <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRepetir">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" onclick="repetir(<%=session("RepSol")%>, 'Repetir', $('#HoraRepetir').val(), 'Search')">
-                    <i class="fa fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock-o bigger-110"></i>
                     Repetir</button>
             </span>
             <span class="input-group-btn">
@@ -269,13 +274,13 @@ end if
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=Agenda-1&Pers=1'>Agenda</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(escreveData)%>");
         //$("#rbtns").html("<select class='form-control select-xs' id='select-tipo-agenda'><option value='Agenda-1'>Agenda Diária</option><option value='AgendaMultipla'>Agenda Múltipla</option><option value='Agenda-S'>Agenda Semanal</option>");
         <% if device()<>"" then %>
-            $(".crumb-icon a").html("<i class='fa fa-calendar'></i> <%= Data %>");
+            $(".crumb-icon a").html("<i class='far fa-calendar'></i> <%= Data %>");
             $(".crumb-icon a").css("overflow", "unset");
             $(".crumb-icon a").css("max-width", "unset");
         <% end if %>
@@ -387,7 +392,7 @@ end if
                                 <td colspan="4">
                                 <%if UtilizarFila<>"" then%>
                                     <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-                                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                        <i class="far fa-chevron-left"></i> Agendar Aqui
                                     </button>
                                 <%end if%>
                                 </td>
@@ -401,7 +406,7 @@ end if
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                     <td colspan="4">
                                         <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                            <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                            <i class="far fa-chevron-left"></i> Remarcar Aqui
                                         </button>
                                     </td>
                                 </tr>
@@ -414,7 +419,7 @@ end if
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                        <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                        <i class="far fa-chevron-left"></i> Repetir Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -468,7 +473,7 @@ end if
                                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                         <td colspan="4">
                                             <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>')" class="btn btn-xs btn-primary">
-                                                <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                                <i class="far fa-chevron-left"></i> Agendar Aqui
                                             </button>
                                         </td>
                                     </tr>
@@ -480,7 +485,7 @@ end if
                                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                         <td colspan="4">
                                             <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                                <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                                <i class="far fa-chevron-left"></i> Remarcar Aqui
                                             </button>
                                         </td>
                                     </tr>
@@ -492,7 +497,7 @@ end if
                                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                         <td colspan="4">
                                             <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                                <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                                <i class="far fa-chevron-left"></i> Repetir Aqui
                                             </button>
                                         </td>
                                     </tr>
@@ -659,7 +664,7 @@ end if
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
-                        remarcarAqui = "<td ><button class=""btn btn-xs btn-info"" "&remarcarlink&" ><i class=""fa fa-external-link""></i> Encaixe </button></td>"
+                        remarcarAqui = "<td ><button class=""btn btn-xs btn-info"" "&remarcarlink&" ><i class=""far fa-external-link""></i> Encaixe </button></td>"
                     end if
 
                     if instr(omitir, "tel1")=0 then
@@ -679,13 +684,13 @@ end if
                     Conteudo = Conteudo & """ data-id="""&comps("id")&""">"&_
                     "<td width=""1%"" "& linkAg &">"
                     if not isnull(comps("Resposta")) then
-                        Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
+                        Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
                     end if
                     if comps("Primeira")=1 then
-                        Conteudo = Conteudo & "<i class=""fa fa-flag blue"" title=""Primeira vez""></i>"
+                        Conteudo = Conteudo & "<i class=""far fa-flag blue"" title=""Primeira vez""></i>"
                     end if
                     ' if comps("LocalID")<>LocalID then
-                        Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey hide"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
+                        Conteudo = Conteudo & "<i class=""far fa-exclamation-triangle grey hide"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
                     'end if
                     FirstTdBgColor = ""
                     if ExibirCorPacienteAgenda=1 then
@@ -696,10 +701,10 @@ end if
                     end if
                     Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"
                     if session("Banco")="clinic4134" then
-                        Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""fa fa-plus""></i></button>"
+                        Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""far fa-plus""></i></button>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&" <img src=""assets/img/"&comps("StaID")&".png""> "
+                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&"  <span style='position:relative;top:6px;'>"&imoon(comps("StaID"))&"</span>"
                     if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
@@ -717,7 +722,7 @@ end if
                     end if
                     iconRetorno = ""
                     if comps("Retorno") then
-                        iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""fa fa-undo text-warning pt10""></i>"
+                        iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""far fa-undo text-warning pt10""></i>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
                     "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
@@ -826,7 +831,7 @@ end if
 						{
 							$(this).removeClass("btn-default");
 							$(this).addClass("btn-danger");
-							$(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+							$(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
 						}
 					});
 					<%
@@ -903,22 +908,25 @@ $(document).ready(function(){
 			<%
 		end if
 	wend
-    ExcecaoMesAnoSplt = split(Data,"/")
-    ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
-    sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
-	set DiasComExcecaoSQL=db.execute(sExc)
-    while not DiasComExcecaoSQL.eof
-        diasAtende = DiasComExcecaoSQL("DataDe")
-        DataExcecaoClasseSplt = split(diasAtende,"/")
-        DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
-                    %>
-                    //cidiiddid
-    $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
-            <%
-    DiasComExcecaoSQL.movenext
-    wend
-    DiasComExcecaoSQL.close
-    set DiasComExcecaoSQL=nothing
+
+	if instr(Data,"/") then
+        ExcecaoMesAnoSplt = split(Data,"/")
+        ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
+        sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
+        set DiasComExcecaoSQL=db.execute(sExc)
+        while not DiasComExcecaoSQL.eof
+            diasAtende = DiasComExcecaoSQL("DataDe")
+            DataExcecaoClasseSplt = split(diasAtende,"/")
+            DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
+                        %>
+                        //cidiiddid
+        $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
+                <%
+        DiasComExcecaoSQL.movenext
+        wend
+        DiasComExcecaoSQL.close
+        set DiasComExcecaoSQL=nothing
+    end if
     call agendaOcupacoes(ProfissionalID, Data)
 	%>
 // Create the tooltips only when document ready

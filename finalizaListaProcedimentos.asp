@@ -33,7 +33,7 @@ end if
 <table id="tabela" class="table table-striped table-hover table-condensed">
 <thead>
   <tr>
-    <th colspan="2"><span class="input-icon input-icon-right width-100"><input id="pesquisar" class="form-control" type="text" autocomplete="off" value="" name="perquisar" placeholder="Filtrar..."><i class="fa fa-search"></i></span></th>
+    <th colspan="2"><span class="input-icon input-icon-right width-100"><input id="pesquisar" class="form-control" type="text" autocomplete="off" value="" name="perquisar" placeholder="Filtrar..."><i class="far fa-search"></i></span></th>
   </tr>
   <tr>
     <td colspan="2">
@@ -98,16 +98,16 @@ while not proc.eof
 
 	    ExibirLancar = 1
         ValorFinal = proc("Valor")
-        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, "")
 
 		if not isnull(ValorFinal) and ValorFinal<>0 then
 			Valor =  formatnumber(ValorFinal, 2)
 			vp = Valor
             if  aut("valordoprocedimentoV")=0 then
-                Valor = "<i class=""fa fa-check-circle-o text-success tooltip-info""></i>"
+                Valor = "<i class=""far fa-check-circle-o text-success tooltip-info""></i>"
             end if
 		else
-			Valor = "<i class=""fa fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento no particular"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento no""></i>"
+			Valor = "<i class=""far fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento no particular"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento no""></i>"
 			vp = 0
 		end if
 		rd = "V"
@@ -154,7 +154,7 @@ while not proc.eof
                         vp=Valor
 
                         IF ISnulL(Valores("AssociacaoID")) THEN
-                            Valor = "<i class=""fa fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento neste convênio"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento neste convênio""></i>"
+                            Valor = "<i class=""far fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento neste convênio"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento neste convênio""></i>"
                         END IF
                     else
                         Valor = fn(Valor)
@@ -173,10 +173,10 @@ while not proc.eof
 
 
             if  aut("valordoprocedimentoV")=0 then
-                Valor = "<i class=""fa fa-check-circle-o text-success tooltip-info""></i>"
+                Valor = "<i class=""far fa-check-circle-o text-success tooltip-info""></i>"
             end if
 		else
-			Valor = "<i class=""fa fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento neste convênio"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento neste convênio""></i>"
+			Valor = "<i class=""far fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento neste convênio"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento neste convênio""></i>"
 			vp = 0
 		end if
 		rd = "P"
@@ -197,7 +197,7 @@ while not proc.eof
 			%>
             </small>
         </td>
-        <td width="1%"><button type="button" onclick="addProc('I', <%=proc("id")%>, '<%= ConvenioID %>', '<%= vp %>')" class="btn btn-success btn-xs rt" style="position:absolute; right:0"><i class="fa fa-chevron-right"></i></button></td>
+        <td width="1%"><button type="button" onclick="addProc('I', <%=proc("id")%>, '<%= ConvenioID %>', '<%= vp %>')" class="btn btn-success btn-xs rt" style="position:absolute; right:0"><i class="far fa-chevron-right"></i></button></td>
     </tr>
     <%
 	end if

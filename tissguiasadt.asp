@@ -611,7 +611,7 @@ end if
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de SP/SADT");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <style>
 .select2-container{
@@ -676,12 +676,12 @@ min-width: 150px;
                 if not vcaCont.eof then
                     %>
                     <label>&nbsp;</label><br />
-                    <div class='btn-group pull-right'><button class='btn btn-info dropdown-toggle' data-toggle='dropdown' title='Adicionar Contrato'><i class='fa fa-file'></i></button>
+                    <div class='btn-group pull-right'><button class='btn btn-info dropdown-toggle' data-toggle='dropdown' title='Adicionar Contrato'><i class='far fa-file'></i></button>
                     <ul class='dropdown-menu dropdown-info pull-right'>
                     <%
                     while not vcaCont.eof
                         %>
-                        <li><a href='javascript:addContrato(<%=vcaCont("id")%>, <%=req("I")%>, $("#AccountID").val())'><i class='fa fa-plus'></i> <%=vcaCont("NomeModelo")%></a></li>
+                        <li><a href='javascript:addContrato(<%=vcaCont("id")%>, <%=req("I")%>, $("#AccountID").val())'><i class='far fa-plus'></i> <%=vcaCont("NomeModelo")%></a></li>
                         <%
                     vcaCont.movenext
                     wend
@@ -700,6 +700,25 @@ min-width: 150px;
    <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
 
+            <% if True then %>
+                <% if reg("GuiaSimplificada") = 1 then%>
+                    <script>
+                        $(document).ready(function(){
+                            guiaSimplificada();
+                        });
+                    </script>
+                <% end if %>
+                <div class="row hidden">
+                    <div class="text-right">
+                        <label for="check-guia-simplificada">
+                            <input id="check-guia-simplificada" name="GuiaSimplificada" class="form-control" type="checkbox" value="1" style="height: 25px" <% if reg("GuiaSimplificada") = 1 then%>checked="checked"<% end if %>/> Convênio Simplificado
+                        </label>
+                    </div>
+                </div>
+            <% else %>
+                <input id="check-guia-simplificada" name="GuiaSimplificada" type="hidden" value="0" />
+            <% end if %>
+
             <input type="hidden" name="tipo" value="GuiaSADT" />
             <input type="hidden" name="GuiaID" value="<%=req("I")%>" />
 
@@ -708,8 +727,8 @@ min-width: 150px;
             </div>
 
             <div class="row">
-                <div class="col-md-3"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
-                <%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
+                <div class="col-md-3"><%= selectInsert("Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um Paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-link' type='button' style=""position:absolute; top:-5px""><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", " required", "") %></div>
+                <%= quickField("simpleSelect", "gConvenioID", "Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
                 <div class="col-md-2" id="tissplanosguia"><!--#include file="tissplanosguia.asp"--></div>
                 <%
                 pattern = ""
@@ -718,7 +737,7 @@ min-width: 150px;
                 end if
                 %>
                 <div class="col-md-2">
-                    <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt", "", " required""  autocomplete='matricula' required "&pattern&" title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
+                    <%= quickField("text", "NumeroCarteira", "N&deg; da Carteira", 12, NumeroCarteira, " lt", "", " required""  autocomplete='matricula' required "&pattern&" title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
                     <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position: absolute;top: 65px;z-index: 9999;">
 
                         <input id="NumeroCarteiraValidacao" class=" form-control input-sm" placeholder="Digite novamente  o  n&deg; da carteira...">
@@ -726,14 +745,14 @@ min-width: 150px;
                 </div>
 
                 <%= quickField("datepicker", "ValidadeCarteira", "Data Validade da Carteira", 2, ValidadeCarteira, " input-mask-date ", "", "") %>
-                <%= quickField("text", "RegistroANS", "* Reg. ANS", 1, RegistroANS, "", "", " required") %>
+                <%= quickField("text", "RegistroANS", "Reg. ANS", 1, RegistroANS, "", "", " required") %>
             </div>
             <br />
             <div class="row">
                 <%= quickField("datepicker", "DataAutorizacao", "Data da Autoriza&ccedil;&atilde;o", 1, DataAutorizacao, "", "", "") %>
                 <%= quickField("text", "Senha", "Senha", 2, Senha, "", "", "") %>
                 <%= quickField("datepicker", "DataValidadeSenha", "Validade da Senha", 1, DataValidadeSenha, "", "", "") %>
-                <%= quickField("text", "NGuiaPrestador", "* N&deg; da Guia no Prestador", 2, NGuiaPrestador, "", "", " autocomplete='nro-prestador' required") %>
+                <%= quickField("text", "NGuiaPrestador", "N&deg; da Guia no Prestador", 2, NGuiaPrestador, "", "", " autocomplete='nro-prestador' required") %>
                 <%
                 if RepetirNumeroOperadora=1 then
                     fcnRepetirNumeroOperadora = " onkeyup=""$('#NGuiaPrestador').val( $(this).val() )"" "
@@ -752,7 +771,7 @@ min-width: 150px;
                             <%= quickField("text", "IdentificadorBeneficiario", "Identificador - código de barras da carteira", 12, identificadorBeneficiario, "", "", " readonly") %>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+                            <button type="button" class="btn btn-xs btn-warning far fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
                         </td>
                     </tr>
                 </table>
@@ -812,12 +831,12 @@ min-width: 150px;
                         <%= selectInsert("", "ProfissionalSolicitanteExternoID", ProfissionalSolicitanteID, "profissionalexterno", "NomeProfissional", " onchange=""tissCompletaDados(8, this.value);""", "", "") %>
                     </span>
                 </div>
-                <%= quickField("simpleSelect", "ConselhoProfissionalSolicitanteID", "* Conselho Profissional", 2, ConselhoProfissionalSolicitanteID, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %>
-                <%= quickField("text", "NumeroNoConselhoSolicitante", "* N&deg; no Conselho", 2, NumeroNoConselhoSolicitante, "", "", " empty='' required='required' autocomplete='numero-conselho'") %>
-                <%= quickField("text", "UFConselhoSolicitante", "* UF", 1, UFConselhoSolicitante, "", "", " empty='' required='required' pattern='[A-Za-z]{2}'") %>
+                <%= quickField("simpleSelect", "ConselhoProfissionalSolicitanteID", "Conselho Profissional", 2, ConselhoProfissionalSolicitanteID, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %>
+                <%= quickField("text", "NumeroNoConselhoSolicitante", "N&deg; no Conselho", 2, NumeroNoConselhoSolicitante, "", "", " empty='' required='required' autocomplete='numero-conselho'") %>
+                <%= quickField("text", "UFConselhoSolicitante", "UF", 1, UFConselhoSolicitante, "", "", " empty='' required='required' pattern='[A-Za-z]{2}'") %>
                 <%
-                   ' quickField("text", "CodigoCBOSolicitante", "* C&oacute;digo CBO", 2, CodigoCBOSolicitante, "", "", " empty='' required='required' pattern='[0-9-]{6,7}' autocomplete='cbos' ")
-        		    call quickField("simpleSelect", "CodigoCBOSolicitante", "* C&oacute;digo CBO", 4, CodigoCBOSolicitante, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' no-select2")
+                   ' quickField("text", "CodigoCBOSolicitante", "C&oacute;digo CBO", 2, CodigoCBOSolicitante, "", "", " empty='' required='required' pattern='[0-9-]{6,7}' autocomplete='cbos' ")
+        		    call quickField("simpleSelect", "CodigoCBOSolicitante", "C&oacute;digo CBO", 4, CodigoCBOSolicitante, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' no-select2")
                 %>
             </div>
             <br />
@@ -826,8 +845,8 @@ min-width: 150px;
             </div>
             <div class="row">
                 <div class="col-md-3" id="divContratado"><% server.Execute("listaContratado.asp") %></div>
-                <%= quickField("text", "CodigoNaOperadora", "* C&oacute;digo na Operadora", 2, CodigoNaOperadora, "", "", " required") %>
-                <%= quickField("text", "CodigoCNES", "* C&oacute;digo CNES", 2, CodigoCNES, "", "", " pattern='[0-9]{7}' required") %>
+                <%= quickField("text", "CodigoNaOperadora", "C&oacute;digo na Operadora", 2, CodigoNaOperadora, "", "", " required") %>
+                <%= quickField("text", "CodigoCNES", "C&oacute;digo CNES", 2, CodigoCNES, "", "", " pattern='[0-9]{7}' required") %>
             </div>
             <br />
             <div class="row">
@@ -843,11 +862,11 @@ min-width: 150px;
                     set PermissoesSQL = nothing
                 end if
                 %>
-                <%= quickField("simpleSelect", "TipoAtendimentoID", "* Tipo de Atendimento", 2, TipoAtendimentoID, "select * from tisstipoatendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
-                <%= quickField("simpleSelect", "AtendimentoRN", "* Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
-                <%= quickField("simpleSelect", "IndicacaoAcidenteID", "* Indica&ccedil;&atilde;o de acidente", 2, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "TipoAtendimentoID", "Tipo de Atendimento", 2, TipoAtendimentoID, "select * from tisstipoatendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "AtendimentoRN", "Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "IndicacaoAcidenteID", "Indica&ccedil;&atilde;o de acidente", 2, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "TipoConsultaID", tipoConsulta_label&" Tipo de Consulta", 2, TipoConsultaID, "select * from tisstipoconsulta order by descricao", "descricao", " empty='' "&tipoConsulta_required&" no-select2 ") %>
-                <%= quickField("simpleSelect", "CaraterAtendimentoID", "* Car&aacute;ter do Atendimento", 2, CaraterAtendimentoID, "select * from cliniccentral.tisscarateratendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "CaraterAtendimentoID", "Car&aacute;ter do Atendimento", 2, CaraterAtendimentoID, "select * from cliniccentral.tisscarateratendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
                 <%= quickField("simpleSelect", "MotivoEncerramentoID", "Motivo de Encerramento", 2, MotivoEncerramentoID, "select * from tissmotivoencerramento order by descricao", "descricao", " no-select2 ") %>
             </div>
             <br />
@@ -929,28 +948,28 @@ min-width: 150px;
 
 <div class="clearfix form-actions no-margin">
     <div class="btn-group">
-    <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="fa fa-save"></i> Salvar</button>
+    <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="far fa-save"></i> Salvar</button>
       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
-        <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="fa fa-print"></i> Salvar e imprimir</a></li>
+        <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="far fa-print"></i> Salvar e imprimir</a></li>
       </ul>
     </div>
 
-    <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
-    <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISSPrint()"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+    <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="far fa-history"></i></button>
+    <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISSPrint()"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
     <%
     if reg("sysActive")=1 then
     %>
-    <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaSADT()"><i class="fa fa-file"></i> Imprimir Guia</button>
+    <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaSADT()"><i class="far fa-file"></i> Imprimir Guia</button>
     <%
     end if
     %>
     <%if AutorizadorTiss then %>
-                  <button type="button" onclick="AutorizarGuiaTisss();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
-                  <button type="button" onclick="Autorizador.cancelarGuia(1)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
-                  <button type="button" onclick="Autorizador.verificarStatusGuia(1)" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
+                  <button type="button" onclick="AutorizarGuiaTisss();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
+                  <button type="button" onclick="Autorizador.cancelarGuia(1)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
+                  <button type="button" onclick="Autorizador.verificarStatusGuia(1)" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
     <%end if %>
 </div>
 	</form>
@@ -1124,13 +1143,18 @@ function tissCompletaDados(T, I){
 		data:$("#GuiaSADT, #frmModal").serialize(),
 		success:function(data){
 			eval(data);
-			var convenio = $("#gConvenioID").val();
-            $.get(
-                'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
-                function(data){
-                    eval(data)
-                }
-            );
+
+			//não processa campos obrigatórios se for convênio simplificado
+            if (!$('#check-guia-simplificada').prop('checked')) {
+                var convenio = $("#gConvenioID").val();
+                $.get(
+                    'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
+                    function(data){
+                        eval(data)
+                    }
+                );
+            }
+
 		}
 	});
     if(T === "Plano"){
@@ -1140,6 +1164,75 @@ function tissCompletaDados(T, I){
 		atualizaTabela("tissprocedimentossadt", `tissprocedimentossadt.asp?I=${GuiadID}&T=${T}&setPlano=${setPlano}&setConvenio=${setConvenio}`)
     }
 }
+
+function simplificaElemento(el)
+{
+    let oldRequired =  $(el).attr('data-oldrequired');
+    if (!oldRequired) {
+        oldRequired = typeof $(el).attr('required') !== 'undefined' ? 1 : 0;
+    }
+    $(el).hide().attr('data-oldrequired', oldRequired).removeAttr('required').find('input, select').each(function() {
+        simplificaElemento(this);
+    });
+}
+
+function restauraElemento(el)
+{
+    const oldRequired = $(el).attr('data-oldrequired');
+    if (oldRequired === 1 || oldRequired === '1') {
+        $(el).attr('required', 'required');
+    }
+    $(el).show().removeAttr('data-oldrequired').find('input, select').each(function() {
+        restauraElemento(this);
+    });
+}
+
+function guiaSimplificada(restore)
+{
+    const isSimplificada = $('#check-guia-simplificada').prop('checked');
+
+    const elements = [
+        $('#qfnumerocarteira'),
+        $('#qfvalidadecarteira'),
+        $('#qfregistroans'),
+        $('#qfdataautorizacao'),
+        $('#qfsenha'),
+        $('#qfdatavalidadesenha'),
+        $('#qfnguiaoperadora'),
+        $('#qfnguiaprincipal'),
+        $('#qfcns'),
+        $('#qfcontratadosolicitantecodigonaoperadora'),
+        $('#qfdatasolicitacao'),
+        $('#qfindicacaoclinica'),
+        $('#qfconselhoprofissionalsolicitanteid'),
+        $('#qfnumeronoconselhosolicitante'),
+        $('#qfufconselhosolicitante'),
+        $('#qfcodigocbosolicitante'),
+        $('#qfcodigonaoperadora'),
+        $('#qfcodigocnes'),
+        $('#qftipoatendimentoid'),
+        $('#qfatendimentorn'),
+        $('#qfindicacaoacidenteid'),
+        $('#qftipoconsultaid'),
+        $('#qfcarateratendimentoid'),
+        $('#qfmotivoencerramentoid'),
+    ]
+
+    if (isSimplificada && !restore) {
+        for (let el of elements) {
+            simplificaElemento(el);
+        }
+    } else {
+        for (let el of elements) {
+            restauraElemento(el);
+        }
+    }
+
+}
+
+$('#check-guia-simplificada').on('change', function() {
+    guiaSimplificada();
+});
 
 $("#gConvenioID, #UnidadeID").change(function(){
     tissCompletaDados("Convenio", $("#gConvenioID").val());
@@ -1284,7 +1377,7 @@ function itemSADT(T, I, II, A){
     if(A!='Cancela'){
 //	    $("#l"+T+II).fadeOut();
         $("#"+T+II).removeClass('hidden');
-//	    $("#"+T+II).html("Carregando...");
+//	    $("#"+T+II).html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
@@ -1292,7 +1385,8 @@ function itemSADT(T, I, II, A){
 	        success:function(data){
                 $("#"+T+II).fadeIn();
                 $("#"+T+II).html(data);
-	            $("#Fator").trigger("keyup")
+	            $("#Fator").trigger("keyup");
+	            guiaSimplificada();
 	        }
 	    });
 	}
@@ -1392,7 +1486,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#gPacienteID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("addContrato.asp?Tipo=SADT&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID=3_"+$("#gPacienteID").val(), "", function(data){
             $("#modal").html(data);
         });

@@ -60,7 +60,7 @@ if lembrarme="S" then
 end if
 %>
 $.gritter.add({
-    title: '<i class="fa fa-save"></i> Salvo automaticamente...',
+    title: '<i class="far fa-save"></i> Salvo automaticamente...',
     text: '',
     time: 500,
     class_name: 'gritter-success gritter-light'

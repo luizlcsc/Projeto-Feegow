@@ -221,7 +221,7 @@ end if
         });
         
         //$("#modal-agenda").modal("show");
-        //	$("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='fa fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgendaPrint.asp?Data="+$("#Data").val()+"&ProfissionalID="+$("#ProfissionalID").val()+"' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
+        //	$("#div-agendamento").html("<div class='row'><div class='col-xs-12 text-right'><button class='btn btn-xs btn-default' data-dismiss='modal' type='button'><i class='far fa-remove'></i> Fechar</button></div></div><div class='row'><div class='col-xs-12 text-right'><iframe src='GradeAgendaPrint.asp?Data="+$("#Data").val()+"&ProfissionalID="+$("#ProfissionalID").val()+"' width='100%' height='800' scrolling='auto' frameborder='0'></iframe></div></div>");
         // af('a');
         var tk = localStorage.getItem("tk");
         var url = domain + "appointment/print-daily?date="+$("#Data").val()+"&professionalId="+$("#ProfissionalID").val()+"&tk="+tk;
@@ -231,7 +231,7 @@ end if
 
     function altMult(ProfissionalID, Data) {
         $("#modal-table").modal("show");
-        $("#div-table").html("Carregando...");
+        $("#div-table").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`);
         $.post("agendaAltMult.asp", {
             ProfissionalID: ProfissionalID,
             Data: Data

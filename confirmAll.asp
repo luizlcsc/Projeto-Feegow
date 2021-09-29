@@ -14,7 +14,7 @@
       /* Alert the copied text */
     //      alert("Texto copiado: " + copyText.value);
             $.gritter.add({
-            title: '<i class="fa fa-copy"></i> Texto copiado!',
+            title: '<i class="far fa-copy"></i> Texto copiado!',
             text: copyText.value,
             class_name: 'gritter-success gritter-light'
         });
@@ -35,7 +35,7 @@
 function getWppLink(Celular, Mensagem)
     getWppLink=""
     if len(Celular) > 7 then
-        getWppLink="<a target='_blank' href='http://web.whatsapp.com/api/send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
+        getWppLink="<a target='_blank' href='whatsapp://send?phone="&clearPhone(Celular) &"&text="&Mensagem&"' class='badge'>"&Celular&"</a>"
     end if
 end function
 
@@ -55,9 +55,19 @@ end if
 
     $(".crumb-active a").html("Confirmação de agendamentos");
     $(".crumb-link").removeClass("hidden");
-    $(".crumb-icon a span").attr("class", "fa fa-check");
+    $(".crumb-icon a span").attr("class", "far fa-check");
 
 </script>
+<%
+if session("Partner")="" and LicenseId<>5459 then
+    Response.End
+end if
+
+queryLicencas = "select lic.Servidor, lic.id, lic.NomeEmpresa FROM cliniccentral.licencas lic WHERE lic.status='C' AND lic.Cupom='"& session("Partner") &"' "
+if LicenseId=5459 then
+    queryLicencas = "select lic.Servidor, lic.id, lic.NomeEmpresa FROM cliniccentral.licencas lic JOIN cliniccentral.clientes_servicosadicionais sa ON sa.LicencaID=lic.id WHERE lic.status='C' AND sa.`Status`=4 AND sa.ServicoID=47  "
+end if
+%>
 <div class="row">
     <br>
     <div class="col-md-12">
@@ -67,11 +77,11 @@ end if
                     <input type="hidden" name="P" value="ConfirmAll" />
                     <input type="hidden" name="Pers" value="1" />
                     <%= quickfield("datepicker", "Data", "Data", 3, Data, "", "", "") %>
-                    <%=quickfield("multiple", "Licencas", "Licenças", 3, req("Licencas"), "select id, NomeEmpresa FROM cliniccentral.licencas WHERE status='C' AND Cupom='"& session("Partner") &"' order by NomeEmpresa" , "NomeEmpresa", "") %>
+                    <%=quickfield("multiple", "Licencas", "Licenças", 3, req("Licencas"), queryLicencas& "order by NomeEmpresa" , "NomeEmpresa", "") %>
                     <%=quickfield("multiple", "Status", "Status", 3, Status, "select id, StaConsulta FROM staconsulta order by StaConsulta" , "StaConsulta", "") %>
                     <div class="col-md-2">
                         <label>&nbsp;</label><br />
-                        <button class="btn btn-sm btn-primary"><i class="fa fa-search"></i> BUSCAR</button>
+                        <button class="btn btn-sm btn-primary"><i class="far fa-search"></i> BUSCAR</button>
                     </div>
                 </form>
             </div>
@@ -92,15 +102,21 @@ function clearPhone(phone)
     end if
 end function
 
-if session("Partner")<>"" then
+Licencas = req("Licencas")
+
+if Licencas="" and LicenseId=5459 then
+    %>
+    <div class="alert alert-default"><i class="far fa-exclamation-circle"></i> Selecione uma licença acima.</div>
+    <%
+elseif session("Partner")<>"" or LicenseId=5459 then
     response.Buffer
-    Licencas = req("Licencas")
+
 
     if Licencas<>"" then
-        sqlLicencas = " AND id IN ("&replace(Licencas, "|", "")&") "
+        queryLicencas = queryLicencas&" AND lic.id IN ("&replace(Licencas, "|", "")&") "
     end if
 
-    set l = db.execute("select id, NomeEmpresa, Servidor from cliniccentral.licencas where Status='C' and Cupom='"& session("Partner") &"' "&sqlLicencas&" order by NomeEmpresa")
+    set l = db.execute(queryLicencas)
     while not l.eof
         Servidor=l("Servidor")
         LicencaID = l("id")
@@ -173,7 +189,7 @@ if session("Partner")<>"" then
             <th width="20%">Contato</th>
             <th width="15%">Procedimento</th>
             <th width="23%">Observações</th>
-            <th width="23%">Texto whatsapp <i class="fa fa-copy"></i> (Clique)</th>
+            <th width="23%">Texto whatsapp <i class="far fa-copy"></i> (Clique)</th>
         </tr>
     </thead>
     <tbody>
@@ -206,7 +222,7 @@ if session("Partner")<>"" then
                             <tr data-id="<%=a("id")%>" class="<%= Classe %>">
                                 <td>
                                 <%
-                                StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&a("StaConsulta")&"' src='assets/img/"&a("StaID")&".png' /></span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+                                StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'><img data-toggle='tooltip' title='"&a("StaConsulta")&"' src='assets/img/"&a("StaID")&".png' /></span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
                                 set StatusSQL=dbS.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116)")
                                 while not StatusSQL.eof
                                     Active=""
@@ -227,7 +243,7 @@ if session("Partner")<>"" then
                                 %>
                                 </td>
                                 <td><%= a("Data") %></td>
-                                <td><a href="./?P=ChangeLic&I=<%= LicencaID %>&Pers=1&A=<%= a("id") %>" target="_blank" class="btn btn-primary btn-xs" title="Ver agendamento"><i class="fa fa-external-link"></i> <%= ft(a("Hora")) %></a></td>
+                                <td><a href="./?P=ChangeLic&I=<%= LicencaID %>&Pers=1&A=<%= a("id") %>" target="_blank" class="btn btn-primary btn-xs" title="Ver agendamento"><i class="far fa-external-link"></i> <%= ft(a("Hora")) %></a></td>
                                 <td><%= a("NomePaciente") %></td>
                                 <td>
                                     <%=getWppLink(a("Tel1"), Texto)%>

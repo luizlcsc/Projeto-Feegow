@@ -73,17 +73,15 @@ end if
         <div class="panel-heading">
             <span class="panel-title">Horários de Atendimento de  <%=NomeProfissional%></span>
             <span class="panel-controls">
-                <button class="btn btn-default btn-sm" type="button" onclick="HistoricoAlteracoes()" title="Histórico de alterações"><i class="fa fa-history"></i></button>
-                <button type="button" onclick="ajxContent('DiferencaGrade', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-alert btn-sm"><i class="fa fa-calendar"></i> LISTAR GRADES POR DATA</button>
+                <button class="btn btn-default btn-sm" type="button" onclick="HistoricoAlteracoes()" title="Histórico de alterações"><i class="far fa-history"></i></button>
+                <button type="button" onclick="ajxContent('DiferencaGrade', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-alert btn-sm"><i class="far fa-calendar"></i> LISTAR GRADES POR DATA</button>
+                <button class="btn btn-primary btn-sm"><i class="far fa-save"></i> Salvar</button>
             </span>
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-11">
                     <h4><%= showDate %></h4>
-                </div>
-                <div class="col-md-1">
-                    <button class="btn btn-primary btn-ms"><i class="fa fa-save"></i> Salvar</button>
                 </div>
             </div>
             <br>
@@ -99,7 +97,7 @@ end if
                             <th><%=ucase(weekdayname(Dia))%></th>
                             <th width="1%">
                                 <% if aut("horariosA") = 1 then %>
-                                <button type="button" class="btn btn-xs btn-success" onclick="addHorario(<%=Dia%>)"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn btn-xs btn-success" onclick="addHorario(<%=Dia%>)"><i class="far fa-plus"></i></button>
                                 <% end if %>
                             </th>
                             <%
@@ -150,10 +148,10 @@ end if
                                             </div>
                                             <div class="text-right">
                                                 <% if aut("horariosA") = 1 then%>
-                                                <button onclick="editGrade(<%=h("id")%>, <%=ProfissionalID%>);" class="btn btn-xs btn-success" type="button"><i class="fa fa-edit"></i></button>
+                                                <button onclick="editGrade(<%=h("id")%>, <%=ProfissionalID%>);" class="btn btn-xs btn-success" type="button"><i class="far fa-edit"></i></button>
                                                 <% end if%>
                                                 <% if aut("horariosX") = 1 then%>
-                                                <button onclick="if(confirm('Tem certeza de que deseja excluir esta programação da grade de horários?'))ajxContent('Horarios-1&T=Profissionais&X=<%=h("id")%>', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-xs btn-danger" type="button"><i class="fa fa-remove"></i></button>
+                                                <button onclick="if(confirm('Tem certeza de que deseja excluir esta programação da grade de horários?'))ajxContent('Horarios-1&T=Profissionais&X=<%=h("id")%>', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-xs btn-danger" type="button"><i class="far fa-remove"></i></button>
                                                 <% end if%>
                                             </div>
                                         </td>
@@ -216,7 +214,7 @@ end if
     });
 
     function addHorario(Dia){
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`);
         $("#modal-table").modal("show");
         $.post("addHorario.asp?addGrade=0&ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
@@ -225,7 +223,7 @@ end if
 
     function editGrade(H, ProfissionalID){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`);
         $.get("addHorario.asp?addGrade=1&H="+H+"&ProfissionalID="+ProfissionalID, function(data){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });

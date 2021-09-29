@@ -33,8 +33,8 @@
 								iconePend = "exclamation-circle"
 							end if
 							%>
-                            	<td class="<%=classePend%>"> <i class="fa fa-<%=iconePend&" "&classePend%>"></i> <strong><%=formatnumber( itensinvoice("ValorUnitario")-itensinvoice("Desconto")+itensinvoice("Acrescimo") , 2 )%></strong></td>
-                            <td><a href="./?P=invoice&Pers=1&T=C&I=<%=itensinvoice("InvoiceID")%>" class="btn btn-info btn-xs"><i class="fa fa-edit"></i></a></td>
+                            	<td class="<%=classePend%>"> <i class="far fa-<%=iconePend&" "&classePend%>"></i> <strong><%=formatnumber( itensinvoice("ValorUnitario")-itensinvoice("Desconto")+itensinvoice("Acrescimo") , 2 )%></strong></td>
+                            <td><a href="./?P=invoice&Pers=1&T=C&I=<%=itensinvoice("InvoiceID")%>" class="btn btn-info btn-xs"><i class="far fa-edit"></i></a></td>
                         </tr>
                         <%
                     itensinvoice.movenext
@@ -50,7 +50,7 @@
                         	<td><%=gc("NomeProfissional")%></td>
                             <td><%=gc("NomeProcedimento")%></td>
                             <td class="text-right"><%=formatnumber(gc("ValorProcedimento"),2)%></td>
-                            <td><a href="./?P=tissguiaconsulta&Pers=1&I=<%=gc("id")%>" class="btn btn-info btn-xs"><i class="fa fa-edit"></i></a></td>
+                            <td><a href="./?P=tissguiaconsulta&Pers=1&I=<%=gc("id")%>" class="btn btn-info btn-xs"><i class="far fa-edit"></i></a></td>
                         </tr>
 						<%
 					gc.movenext
@@ -66,7 +66,7 @@
                         	<td><%=gs("NomeProfissional")%></td>
                             <td><%=gs("NomeProcedimento")%></td>
                             <td><%=gs("ValorUnitario")%></td>
-                            <td><a href="./?P=tissguiasadt&Pers=1&I=<%=gs("GuiaID")%>" class="btn btn-info btn-xs"><i class="fa fa-edit"></i></a></td>
+                            <td><a href="./?P=tissguiasadt&Pers=1&I=<%=gs("GuiaID")%>" class="btn btn-info btn-xs"><i class="far fa-edit"></i></a></td>
                         </tr>
 						<%
 					gs.movenext

@@ -92,7 +92,7 @@ end if
         %>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-sm btn-success"><i class="fa fa-save"></i> SALVAR</button>
+        <button class="btn btn-sm btn-success"><i class="far fa-save"></i> SALVAR</button>
     </div>
 </form>
 

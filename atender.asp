@@ -10,7 +10,7 @@ Acao = req("Acao")
 
 if AgendamentoID="" or not isnumeric(AgendamentoID) then
 	AgendamentoID = 0
-	set getAgendamentoID = db.execute("SELECT id FROM agendamentos WHERE Data= '"&mydate(date())&"' AND PacienteID="&PacienteID&" AND ProfissionalID="&treatvalzero(session("idInTable"))&" AND sysActive = 1 LIMIT 1 ")
+	set getAgendamentoID = db.execute("SELECT id FROM agendamentos WHERE Data= '"&mydate(date())&"' AND PacienteID="&PacienteID&" AND ProfissionalID="&treatvalzero(session("idInTable"))&" AND sysActive = 1  LIMIT 1 ")
 	if not getAgendamentoID.eof then
 	    AgendamentoID = getAgendamentoID("id")
 	end if
@@ -458,7 +458,15 @@ if Acao="Iniciar" then
 		if not agendamento.eof then
             UnidadeIDAgendamento = agendamento("UnidadeID")
 
-			StaX = 2
+            StaIDTriagem = req("StaID")
+            if StaIDTriagem = "200" or StaIDTriagem = "204" or StaIDTriagem = "206" then
+                StaIDTriagem = "202"
+            elseif StaIDTriagem = "201" or StaIDTriagem = "205" or StaIDTriagem = "207" then
+                StaIDTriagem = "203"
+            else
+                StaIDTriagem = "2"
+            end if
+
 			'triagem
             set ConfigSQL = db.execute("SELECT Triagem,PosConsulta FROM sys_config WHERE id=1")
 
@@ -468,7 +476,7 @@ if Acao="Iniciar" then
                 end if
             end if
 
-            db_execute("update agendamentos SET StaID = "&StaX&" WHERE id="&AgendamentoID)
+            db_execute("update agendamentos SET StaID = "&StaIDTriagem&" WHERE id="&AgendamentoID)
 
             call logAgendamento(AgendamentoID, "Atendimento iniciado pela sala de espera", "R")
 
@@ -516,9 +524,6 @@ if Acao="Iniciar" then
 	if instr(session("Atendimentos"), "|"&pultID&"|")=0 then
 		session("Atendimentos")=session("Atendimentos")&"|"&pultID&"|"
 	end if
-
-
-
 end if
 
 if Acao="" then
@@ -538,7 +543,16 @@ if Acao="PreEncerrar" then
 	end if
 	if not buscaAtendimento.eof then
 	    AtendimentoID=buscaAtendimento("id")
-	%>
+''		db_execute("update atendimentos set HoraFim='"&time()&"' where id="&buscaAtendimento("id"))
+		'fecha possível lista de espera com este paciente
+''		set lista = db.execute("select * from agendamentos where PacienteID="&PacienteID&" and Data='"&mydate(date())&"' and StaID<>3 and ProfissionalID="&session("idInTable")&" order by Hora")
+''		session("Atendimentos") = replace(session("Atendimentos"), "|"&buscaAtendimento("id")&"|", "")
+		set lista = db.execute("select StaID from agendamentos where id="&req("Atender"))
+		StaID = ""
+        if not lista.EOF then
+			StaID = lista("StaID")
+		end if
+		%>
 		<script language="javascript">
     <%
         set AtendimentoSQL = db.execute("SELECT PacienteID, agendamentoid FROM atendimentos WHERE id="&buscaAtendimento("id"))
@@ -685,7 +699,7 @@ end if
 if Conteudo="Play" then
         if getConfig("ExibirIniciarAtendimento") then
             %>
-                    <button <%=iniciarDisabled%> type="button" class="btn btn-success btn-gradient btn-alt btn-block" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'Iniciar', '')"><i class="fa fa-play"></i> Iniciar Atendimento </button>
+                    <button <%=iniciarDisabled%> type="button" class="btn btn-success btn-gradient btn-acao-atendimento btn-alt btn-block" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'Iniciar', '')"><i class="fa fa-play"></i> Iniciar Atendimento </button>
             <%
             else
             %>
@@ -701,19 +715,19 @@ if Conteudo="Play" then
         end if
       else
         %>
-        <h3 class="text-center light"><i class="fa fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
+        <h3 class="text-center light"><i class="far fa-clock-o"></i> <span id="counter"><%=Tempo%></span></h3>
           <div class="row">
             <% if getConfig("SolicitacaoDeProcedimentosEspera")="1" then %>
 
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="far fa-stop"></i> Finalizar</button>
                 </div>
                 <div class="col-sm-6">
-                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="fa fa-pause"></i> Espera</button>
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atEspera()"><i class="far fa-pause"></i> Espera</button>
                 </div>
                 <% IF session("AtendimentoTelemedicina")&""<>"" THEN %>
                 <div class="col-sm-12">
-                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="cancelarAtendimento()"><i class="fa fa-times"></i> Cancelar Atendimento</button>
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="cancelarAtendimento()"><i class="far fa-times"></i> Cancelar Atendimento</button>
                 </div>
                 <% END IF %>
 
@@ -734,7 +748,7 @@ if Conteudo="Play" then
 
                     function atEspera() {
                         $.get("atEspera.asp?PacienteID=<%= PacienteID %>&Atendimentos=<%= session("Atendimentos")%>", function (data) {
-                            $("#modal").html("Carregando...");
+                            $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                             $("#modal-table").modal("show");
                             $("#modal").html(data);
                         });
@@ -743,13 +757,78 @@ if Conteudo="Play" then
 
             <% else %>
                 <div class="col-sm-6">
-                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="fa fa-stop"></i> Finalizar</button>
+                    <button class="btn btn-danger btn-gradient btn-alt btn-block col-sm-6" type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'N')"><i class="far fa-stop"></i> Finalizar</button>
                 </div>
                 <div class="col-sm-6">
-                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="fa fa-pause"></i> Solicitar</button>
+                    <button class="btn btn-warning btn-gradient btn-alt btn-block col-sm-6 <% if session("Banco")="clinic5351" then response.write(" hidden ") end if %> " type="button" onClick="atender(<%= AgendamentoID %>, <%= PacienteID %>, 'PreEncerrar', 'S')"><i class="far fa-pause"></i> Solicitar</button>
                 </div>
             <% end if %>
           </div>
+          <%
+          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 then
+
+            set AssinaturaDigitalConfiguradaSQL = db_execute("select id from dc_pdfstampconfigs WHERE UsuarioID="&treatvalzero(session("User")))
+
+            if not AssinaturaDigitalConfiguradaSQL.eof then
+            %>
+                <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.js"></script>
+
+                <div class="col-md-12">
+                    <div style="float: left; opacity: 0.4; cursor: default" id="content-assinatura" data-toggle="tooltip" data-placement="bottom" title="Carregando...">
+                        <div class="switch round switch-xs " style="float: left;">
+                            <input disabled onchange="persistAssinaturaAuto(this)" name="AssinaturaAuto" id="AssinaturaAuto" type="checkbox">
+                            <label for="AssinaturaAuto"></label>
+                        </div>
+                        <span style="position: relative; top: 3px;" class="ml10 ">Assinatura digital</span>
+                    </div>
+                    <div style="display:none" id="conteudo-assinatura-auto">
+
+                    </div>
+
+                </div>
+                <script>
+                    $(document).ready(function(){
+                        assinaturaAuto = localStorage.getItem("assinaturaAuto");
+                        if(assinaturaAuto == "1"){
+                            $("#AssinaturaAuto").attr("checked", "checked")
+                        }
+
+                        function lacunaNotAvailable(){
+                            const $contentAssinatura = $("#content-assinatura");
+
+                            $contentAssinatura.attr("data-original-title", "Você precisa instalar a extensão WebPki para usar o certificado digital.");
+                            $contentAssinatura.tooltip();
+                        }
+
+                        function lacunaIsAvailable(){
+                            const $contentAssinatura = $("#content-assinatura");
+                            const $inputAssinar = $("#AssinaturaAuto");
+
+                            $inputAssinar.attr("disabled", false);
+                            $contentAssinatura.css("opacity", 1);
+                            $contentAssinatura.attr("data-original-title", "");
+                            $contentAssinatura.tooltip();
+                        }
+
+                        try{
+                            var pki = new LacunaWebPKI();
+                            function start() {
+                                pki.init({
+                                    ready: lacunaIsAvailable,
+                                    notInstalled: lacunaNotAvailable
+                                });
+                            }
+                            start();
+                        }catch (e){
+                            lacunaNotAvailable();
+                        }
+
+                    })
+                </script>
+            <%
+            end if
+          end if
+          %>
       <script type="text/javascript">
       var stopTime;
       /**********************************************************************************************
@@ -872,6 +951,77 @@ if Conteudo="Play" then
 
             new CountUp(dateTime, 'counter');
         });
+
+        callbackAssinatura = {fn: undefined}
+        function callbackFinishSign(res) {
+            if(res == "SUCCESS"){
+                showMessageDialog("Atendimento assinado com sucesso!", "success")
+            }else{
+                showMessageDialog("Ocorreu um erro ao assinar o documento.", "danger")
+            }
+
+            gtag('event', 'assinatura_automatica_finalizada', {
+                'event_category': 'atendimento',
+                'event_label': res == "SUCCESS" ? "Assinatura realizada com sucesso." : "Erro na assinatura.",
+            });
+
+
+            callbackAssinatura.fn(res);
+        }
+
+        function assinarAtendimento(cbFinalizar){
+
+
+            gtag('event', 'assinatura_automatica_iniciada', {
+                'event_category': 'atendimento',
+                'event_label': "Assinatura iniciada - Finalizando atendimento",
+            });
+
+            var modal =
+                    `<div class="modal fade" >
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body " id="alertmodalassinaturabody" style="text-align:center">
+                        <i class="fa fa-2x fa-circle-o-notch fa-spin"></i>
+                        <p>Assinando documento...</p>
+                    </div>
+                </div>
+            </div>
+            </div>`;
+
+            var modal = $(modal);
+            modal.modal("show");
+
+            callbackAssinatura.fn = function(res){
+                $(".btn-acao-atendimento").attr("disabled", true);
+                modal.modal("hide");
+                cbFinalizar(res);
+            }
+
+            getUrl("/digital-certification/assinar-avulso", {
+                tipo: "ATENDIMENTO",
+                id: "<%=AtendimentoID%>"
+            }, function(data){
+                if(data === "ERROR"){
+                    closeComponentsModal();
+                    showMessageDialog("Não assinado", "warning");
+                    cbFinalizar("error");
+                }else{
+                    $("#conteudo-assinatura-auto").html(data);
+                }
+            });
+        }
+
+        function persistAssinaturaAuto(el){
+            v = $(el).prop("checked") ? 1 : 0
+            localStorage.setItem("assinaturaAuto", v);
+
+            gtag('event', 'assinatura_auto_alterada', {
+                'event_category': 'atendimento',
+                'event_label': v ? "Assinatura automática ativada" : "Assinatura automática desativada.",
+            });
+
+        }
 
       </script>
 

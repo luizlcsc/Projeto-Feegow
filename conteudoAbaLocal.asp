@@ -29,11 +29,11 @@ wend
 </tr>
 </tbody>
 </table>
-<button type="button" class="btn btn-xs btn-block btn-primary" value="SALVAR" onClick="interQuadro(<%=pLoc("id")%>);"><i class="fa fa-save"></i> SALVAR</button>
+<button type="button" class="btn btn-xs btn-block btn-primary" value="SALVAR" onClick="interQuadro(<%=pLoc("id")%>);"><i class="far fa-save"></i> SALVAR</button>
 <button type="button" class="btn btn-xs btn-block btn-success" value="EDITAR PROFISSIONAIS" onclick="location.href='?P=EdiProfQD&Pers=1&LId=<%=pLoc("id")%>&Data=<%
 if req("Data")="" then
 	response.Write(date())
 else
 	response.Write(req("Data"))
 end if
-%>';"><i class="fa fa-calendar"></i> EDITAR PROFISSIONAIS</button>
+%>';"><i class="far fa-calendar"></i> EDITAR PROFISSIONAIS</button>

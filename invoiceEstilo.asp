@@ -5,13 +5,9 @@
         }
 
         .ulinha {
-            background-color: #f7f7f7 !important;
+            background-color: #fafafa !important;
         }
 
-            .ulinha td {
-                border-top: #ccc 2px groove !important;
-                background-color: #f7f7f7 !important;
-            }
 
         .detalheMetodo {
             display: none;
@@ -54,8 +50,6 @@ if posModalPagar="" then
     posModalPagar="absolute"
 end if
 %>
-<div id="pagar" style="display:none; background-color:#fff; border:#ccc 1px solid; width:900px; position:<%=posModalPagar%>; top:100px; left:20px; z-index:10000; box-shadow:#000000 15px;-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.48);
--moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.48);
-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.48); border-radius:5px;">
+<div class="modal-pagar" id="pagar" style="display:none;  width:900px; position:<%=posModalPagar%>; top:100px; left:20px; ">
 	Carregando...
 </div>

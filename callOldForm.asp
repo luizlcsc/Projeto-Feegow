@@ -98,7 +98,7 @@ if FormID<>"N" then
 	end if
 end if
 %>
-<%if pFor("TipoCampoID")<>3 and pFor("TipoCampoID")<>12 then%><span class="badge badge-light lembrar"><i class="fa fa-flag red"></i> <input class="ace postvalue" type="checkbox" id="lembrarme_<%=pFor("id")%>" name="lembrarme_<%=pFor("id")%>"<%= lembchecado %> /><span class="lbl"> Lembrar-me disso</span></span><%end if%>
+<%if pFor("TipoCampoID")<>3 and pFor("TipoCampoID")<>12 then%><span class="badge badge-light lembrar"><i class="far fa-flag red"></i> <input class="ace postvalue" type="checkbox" id="lembrarme_<%=pFor("id")%>" name="lembrarme_<%=pFor("id")%>"<%= lembchecado %> /><span class="lbl"> Lembrar-me disso</span></span><%end if%>
 	<%
 	if TipoTitulo="B" or isNull(TipoTitulo) then
 		abreDivTitulo="<div style=""padding-bottom:2px;"">"
@@ -153,8 +153,8 @@ end if
                 <div id="<%=pFor("id")%>divDisplayFoto" style="display:<%= divDisplayFoto %>">
                     <img id="<%=pFor("id")%>avatarFoto" src="uploads/<%=valor%>" style="max-width:<%= larguraFoto-10 %>px; max-height:<%= alturaFoto-10 %>px; width:auto; height: auto;" />
                     <span style="position:absolute; margin-left:-57px; margin-top:8px; float:left">
-                    <button type="button" class="btn btn-xs btn-success" title="Editar Imagem" onclick="return launchEditor('<%=pFor("id")%>avatarFoto', 'uploads/<%=valor%>');"><i class="fa fa-pencil"></i></button>
-                    <button type="button" class="btn btn-xs btn-danger" onclick="formRemoveFoto(<%=pFor("id")%>);"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-xs btn-success" title="Editar Imagem" onclick="return launchEditor('<%=pFor("id")%>avatarFoto', 'uploads/<%=valor%>');"><i class="far fa-pencil"></i></button>
+                    <button type="button" class="btn btn-xs btn-danger" onclick="formRemoveFoto(<%=pFor("id")%>);"><i class="far fa-trash"></i></button>
                     </span>
                 </div>
             </div>

@@ -186,16 +186,16 @@ function getUrl(url, data, callback) {
 		//  xhr.setRequestHeader("My-First-Header", "first value");
 		//  xhr.setRequestHeader("My-Second-Header", "second value");
 		//}
+        error: function(data) {
+            if (callback) {
+                callback("ERROR");
+            }
+        }
 	}).done(function(data) {
 		if (callback) {
             callback(data);
         }
-    })
-    .fail(function(data) {
-		if (callback) {
-            callback(data);
-        }
-	});
+    });
 }
 
 function postUrl(url, data, callback) {
@@ -281,7 +281,10 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
         setTimeout(function () {
             setListeners($modal)
         }, modalTimeout);
-	});
+	}).fail(function(xhr, textStatus, error) {
+        showMessageDialog("Ocorreu um erro. Tente novamente mais tarde.", "error");
+        closeComponentsModal();
+    });
 }
 
 function openComponentsModalPost(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
@@ -314,6 +317,9 @@ function openComponentsModalPost(url, params, title, closeBtn, saveBtn, modalSiz
         setTimeout(function () {
             setListeners($modal)
         }, modalTimeout);
+    }).fail(function(xhr, textStatus, error) {
+        showMessageDialog("Ocorreu um erro. Tente novamente mais tarde.", "error");
+        closeComponentsModal();
     });
 }
 
@@ -387,11 +393,11 @@ function showMessageDialog(message, messageType, title, delay=3000) {
 
     if (!title) {
         if (messageType === "danger") {
-            title = "ERRO!"
+            title = "Ocorreu um erro!"
         } else if (messageType === "success") {
-            title = "SUCESSO!"
+            title = "Sucesso!"
         } else if (messageType === "warning") {
-            title = "ATENÇÃO!"
+            title = "Atenção!"
         }
     }
 

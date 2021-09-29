@@ -13,11 +13,11 @@ else
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Configuração de Chamada de Pacientes por Voz");
-    $(".crumb-icon a span").attr("class", "fa fa-<%=dIcone("chamadaporvoz")%>");
+    $(".crumb-icon a span").attr("class", "far fa-<%=dIcone("chamadaporvoz")%>");
     <%
     'if aut("lancamentosI")=1 then
     %>
-    $("#rbtns").html('<button type="button" onClick="salvarChamada();" class="btn btn-sm btn-primary">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>');
+    $("#rbtns").html('<button type="button" onClick="salvarChamada();" class="btn btn-sm btn-primary">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>');
     <%
     'end if
     %>

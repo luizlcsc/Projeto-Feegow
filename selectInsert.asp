@@ -64,7 +64,7 @@ if list.eof then
     <%
 	if aut(lcase(ref("resource"))&"I")=1 then
 	%>
-    <button type="button" class="btn btn-xs btn-primary" id="button-insert-<%=ref("selectID")%>"><i class="fa fa-plus"></i> Inserir</button></small>
+    <button type="button" class="btn btn-xs btn-primary" id="button-insert-<%=ref("selectID")%>"><i class="far fa-plus"></i> Inserir</button></small>
 	<%
 	scriptInsert="S"
 	end if
@@ -84,7 +84,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
 	%>
 	<li>
 	<a href="./?P=<%=tableName%>&Pers=<%=Pers%>" class="btn btn-xs btn-default pull-right">
-		<i class="fa fa-cog"></i> Cadastros
+		<i class="far fa-cog"></i> Cadastros
 	</a>
 	</li>
 	<%

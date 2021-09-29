@@ -72,7 +72,7 @@ end if
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <button type="button" class="btn btn-primary pull-right btn-xs" onClick="reg('Add', 0)"><i class="fa fa-plus"></i> Inserir Registro</button>
+            <button type="button" class="btn btn-primary pull-right btn-xs" onClick="reg('Add', 0)"><i class="far fa-plus"></i> Inserir Registro</button>
         </div>
     </div>
     <hr>
@@ -117,7 +117,7 @@ end if
             </td>
             <td><%= nameInTable(vals("sysUser")) %></td>
             <td><%= vals("sysDate") %></td>
-            <td width="1%"><button onClick="reg('Remove', <%=vals("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button></td>
+            <td width="1%"><button onClick="reg('Remove', <%=vals("id")%>)" type="button" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button></td>
           </tr>
           <%
 		vals.movenext
@@ -130,7 +130,7 @@ end if
 </div>
 <div class="modal-footer no-margin-top">
     <button type="button" onClick="reg('Save', 0)" class="btn btn-sm btn-success pull-right">
-        <i class="fa fa-save"></i>
+        <i class="far fa-save"></i>
         Salvar
     </button>
     

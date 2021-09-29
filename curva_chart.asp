@@ -156,8 +156,8 @@ end if
             </li>
         </ul>
         <div class="right-buttons">
-            <button class="btn btn-xs btn-alert" onclick="gotoFullScreen()"><i class="fa fa-expand"></i> Tela cheia</button>
-            <button class="btn btn-xs btn-alert" onclick="saveImage()"><i class="fa fa-download"></i> Baixar imagem</button>
+            <button class="btn btn-xs btn-alert" onclick="gotoFullScreen()"><i class="far fa-expand"></i> Tela cheia</button>
+            <button class="btn btn-xs btn-alert" onclick="saveImage()"><i class="far fa-download"></i> Baixar imagem</button>
         </div>
     </div>
 

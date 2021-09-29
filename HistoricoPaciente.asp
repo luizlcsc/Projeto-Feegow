@@ -17,7 +17,7 @@ end if
 <div class="panel">
     <div class="panel-heading">
         <div class="col-md-6">
-	        <span class="panel-title"><i class="fa fa-calendar"></i> Histórico de Agendamentos</span>
+	        <span class="panel-title"><i class="far fa-calendar"></i> Histórico de Agendamentos</span>
         </div>
 
         <%
@@ -25,7 +25,7 @@ end if
         %>
         <div class="col-md-6 text-right">
             <a href="HistoricoPaciente.asp?AgendamentoPaciente=<%=PacienteID%>" class="btn btn-success  btn-sm">
-            <i class="fa fa-plus"></i>
+            <i class="far fa-plus"></i>
             Agendamento</a>
         </div>
         <%
@@ -75,8 +75,8 @@ end if
 		    end if
             disabledAbrir = " " 
 
-if pCons("sysActive")=-1 then
-            disabledAbrir = " disabled " 
+            if pCons("sysActive")&""="-1" then
+                disabledAbrir = " disabled " 
             end if
 
 
@@ -104,13 +104,13 @@ if pCons("sysActive")=-1 then
             staconsulta = pCons("StaConsulta")
 
 
-            if pCons("sysActive")=-1 then
+            if pCons("sysActive")&""= "-1" then
                 staconsulta = "Excluído"
                 classe = "danger"
             end if
 
 
-
+            statusIcon = imoon(pCons("StaID"))
             %>
             <tr class="row-<%=classe %>" onclick="">
                 <td class="pn">
@@ -118,7 +118,7 @@ if pCons("sysActive")=-1 then
                         <%=left(staconsulta, 18) %>
                     </span>
                 </td>
-                <td><%="<img src=""assets/img/"&pCons("StaID")&".png"">"%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
+                <td><%=statusIcon%> &nbsp; <%=pCons("Data")&" - "&consHora %></td>
                 <td><%=left(pCons("NomeProfissional"), 30) %></td>
 				<td><%=left(pCons("NomeEquipamento"), 30) %></td>
                 <td><%=left(pCons("NomeEspecialidade"), 30) %></td>
@@ -127,7 +127,7 @@ if pCons("sysActive")=-1 then
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-primary btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
-                        <a <%=disabledAbrir%> class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="fa fa-external-link"></i></a>
+                        <a <%=disabledAbrir%> class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
                     </div>
                     <div id="divhist<%=pCons("id")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>
@@ -193,7 +193,7 @@ if pCons("sysActive")=-1 then
                                 </div>
                                 <div class="col-xs-2">
                                     <%=Pagto%>
-                                    <i class="fa fa-angle-down bigger-110 pull-right" data-icon-hide="fa fa-angle-down" data-icon-show="fa fa-angle-right"></i>
+                                    <i class="far fa-angle-down bigger-110 pull-right" data-icon-hide="far fa-angle-down" data-icon-show="far fa-angle-right"></i>
                                 </div>
 
                               </div>

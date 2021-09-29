@@ -33,7 +33,7 @@ end if
         <div id="Conta" class="tab-pane active">
             <form method="post" id="FormConta" action="./?P=LanctoRapido&Pers=1&PacienteID=<%=PacienteID%>">
                 <div class="page-header">
-                    <h1>Conta do Paciente <small>&raquo; <a href="./?P=Pacientes&I=<%=PacienteID%>&Pers=1"><i class="fa fa-external-link"></i> <%=pac("NomePaciente")%> </a> &raquo; <%= accountBalance("3_"&PacienteID, 1) %></small></h1>
+                    <h1>Conta do Paciente <small>&raquo; <a href="./?P=Pacientes&I=<%=PacienteID%>&Pers=1"><i class="far fa-external-link"></i> <%=pac("NomePaciente")%> </a> &raquo; <%= accountBalance("3_"&PacienteID, 1) %></small></h1>
                 </div>
                 <%
                 Data = date()

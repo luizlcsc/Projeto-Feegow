@@ -13,7 +13,7 @@
     $(".crumb-active a").html("Laudo");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("detalhes do laudo");
-    $(".crumb-icon a span").attr("class", "fa fa-file-text");
+    $(".crumb-icon a span").attr("class", "far fa-file-text");
 </script>
 
 
@@ -193,7 +193,7 @@ end if
             <div class="panel-heading">
                 <span class="panel-title">Anexos</span>
                 <span class="panel-controls">
-                    <button class="btn-primary btn btn-sm btn-primary" onclick="saveLaudo('Texto')"><i class="fa fa-save"></i> Salvar</button>
+                    <button class="btn-primary btn btn-sm btn-primary" onclick="saveLaudo('Texto')"><i class="far fa-save"></i> Salvar</button>
                 </span>
             </div>
             <div class="panel-body">
@@ -204,7 +204,7 @@ end if
                 <div class="col-md-6">
                     <div class="panel">
                         <div class="panel-heading">
-                            <span class="panel-title"><i class="fa fa-camera"></i> Imagens do Paciente</span>
+                            <span class="panel-title"><i class="far fa-camera"></i> Imagens do Paciente</span>
                         </div>
                         <div id="divImagens" class="panel-body pn">
                             <iframe width="100%" height="170" frameborder="0" scrolling="no" src="dropzone.php?PacienteID=<%=PacienteID %>&LaudoID=<%= LaudoID %>&L=<%= replace(session("Banco"), "clinic", "") %>&Pasta=Imagens&Tipo=I"></iframe>
@@ -365,7 +365,7 @@ function changeTexto(arg){
     function entrega() {
         if ($("#StatusID").val() == 3) {
             $("#modal-table").modal("show");
-            $("#modal").html("Carregando...");
+            $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
             $.post("laudoEntrega.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
         } else {
             alert("Não é possível entregar o laudo pois ainda não foi liberado.");
@@ -374,14 +374,14 @@ function changeTexto(arg){
 
     function protocolo() {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("laudoProtocolo.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
      }
 
 
     function LogLaudos() {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("laudoLog.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
     }
 
@@ -421,7 +421,7 @@ function changeTexto(arg){
         saveLaudo('ProfissionalID');
     });
 
-    $("#rbtns").html("<a class='btn btn-sm btn-default' href='./?P=Laudos&Pers=1'><i class='fa fa-list'></i></a>");
+    $("#rbtns").html("<a class='btn btn-sm btn-default' href='./?P=Laudos&Pers=1'><i class='far fa-list'></i></a>");
 
 function ChangeButtonHistorico(valor)
 {

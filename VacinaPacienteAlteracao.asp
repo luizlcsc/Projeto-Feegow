@@ -26,7 +26,7 @@ dosagem = db.execute("SELECT DataPrevisao, StatusID, Observacao FROM vacina_apli
 							<div class="input-group">
 								<input id="InputDataAplicacao" autocomplete="off" class="form-control input-mask-date date-picker" type="text" data-date-format="dd/mm/yyyy" value="<%=dosagem("DataPrevisao")%>">
 								<span class="input-group-addon">
-								<i class="fa fa-calendar bigger-110"></i>
+								<i class="far fa-calendar bigger-110"></i>
 								</span>
 							</div>	
                         </div>
@@ -68,7 +68,7 @@ dosagem = db.execute("SELECT DataPrevisao, StatusID, Observacao FROM vacina_apli
     </div>
 </div>     
 <div class="modal-footer no-margin-top">
-    <button class="btn btn-sm btn-primary pull-right" id="saveVacinaPaciente"><i class="fa fa-save"></i> Salvar</button>
+    <button class="btn btn-sm btn-primary pull-right" id="saveVacinaPaciente"><i class="far fa-save"></i> Salvar</button>
 </div>
 
 <script type="text/javascript">

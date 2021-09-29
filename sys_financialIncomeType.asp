@@ -15,7 +15,7 @@ arvore('C', '', '');
 function chamagritter()
 {
 	/*$.gritter.add({
-		title: '<i class="fa fa-save"></i> Lista reordenada com sucesso.',
+		title: '<i class="far fa-save"></i> Lista reordenada com sucesso.',
 		text: '',
 		class_name: 'gritter-success gritter-light'
 	});*/

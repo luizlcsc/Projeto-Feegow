@@ -502,7 +502,7 @@ end if
                         " FROM empresa UNION ALL                                                          "&chr(13)&_
                         " SELECT CONCAT('5_',id) id, NomeProfissional, 1 ordem, Unidades                  "&chr(13)&_
                         " FROM profissionais                                                              "&chr(13)&_
-                        " WHERE sysActive=1 AND ativo='on' and (id in ( select ProfissionalID from profissionais_unidades where UnidadeID in ('"&session("UnidadeID")&"'))or nullif(Unidades, '') is null)UNION ALL "&chr(13)&_
+                        " WHERE sysActive=1 AND ativo='on' "&franquia("and (id in ( select ProfissionalID from profissionais_unidades where UnidadeID in ('"&session("UnidadeID")&"'))or nullif(Unidades, '') is null) ")& " UNION ALL "&chr(13)&_
                         " SELECT CONCAT('8_',id) id, NomeProfissional, 2 ordem, ''                        "&chr(13)&_
                         " FROM profissionalexterno                                                        "&chr(13)&_
                         " WHERE sysActive=1                                                               "&chr(13)&_

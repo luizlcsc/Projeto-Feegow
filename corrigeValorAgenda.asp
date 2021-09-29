@@ -13,7 +13,7 @@ while not AgendamentosZeradosSQL.eof
     EspecialidadeID = AgendamentosZeradosSQL("EspecialidadeID")
 
 
-    ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+    ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID,0)
 
     %>
     <%=AgendamentoID%> --

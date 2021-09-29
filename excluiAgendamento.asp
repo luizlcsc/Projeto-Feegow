@@ -109,7 +109,7 @@ else
 
         call agendaUnificada("delete", ConsultaID, ProfissionalID)
         
-        sqlDel = "update agendamentos set sysActive=-1 where id="&ConsultaID
+        sqlDel = "update agendamentos set sysActive='-1' where id="&ConsultaID
 
         call gravaLogs(sqlDel, "AUTO", "Agendamento excluído", "")
         db_execute(sqlDel)

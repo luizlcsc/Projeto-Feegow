@@ -76,18 +76,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           background-color: red;
       }
 
-      .select-insert li {
-        cursor:pointer;
-        list-style-type:none;
-        margin:0;
-        padding:3px;
-        font-size:14px;
-        color:#000;
-        background-color:#FFF;
-      }
-      .select-insert li:hover {
-        background-color:#999;
-      }
       a[href]:after {
         content: ""!important;
       }
@@ -217,7 +205,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?cache-control=2">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?cache-control=3">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -1394,7 +1382,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
 
-                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
+                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" data-toggle="tooltip" data-placement="top"  title="Central de ajuda" class="btn btn-xs btn-default">
                           <i class="far fa-question-circle"></i> Suporte
                       </button>
                       <%end if%>
@@ -1402,7 +1390,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                         <%
                         Versao = session("Versao")
                         if Versao="" then
-                          Versao=" 8"
+                          Versao="8.0"
                         end if
                         %>
                           Feegow  <%=Versao%>
@@ -1431,7 +1419,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                             <% IF False THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+
+                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:'<%=Request.QueryString()%>'}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
+                              <span class="far fa-bug"></span> Reportar bug
+                            </button>
+
+                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -1470,6 +1463,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               end if
               %>
             <span class="footer-meta"><b><%=session("NomeEmpresa")%></b></span>
+
             <a href="#content" class="footer-return-top">
               <span class="far fa-arrow-up"></span>
             </a>

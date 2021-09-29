@@ -22,6 +22,7 @@ end if
     <input type="hidden" name="Pers" value="1" />
     <br>
     <div class="panel">
+
     <div class="clearfix form-actions panel-body">
     	<div class="row">
             <div class="col-md-2">
@@ -39,10 +40,6 @@ end if
             <div class="col-md-1">
                 <label>&nbsp;</label><br />
                 <button class="btn btn-md btn-primary"><i class="far fa-search"></i> Buscar</button>
-            </div>
-            <div class="col-md-2">
-                <label>&nbsp;</label><br />
-                <button type="button" class="btn btn-md btn-success" onClick="fechalote()"><i class="far fa-archive"></i> Fechar Lote</button>
             </div>
         </div>
         <br>
@@ -98,6 +95,14 @@ end if
 </form>
 
 <div class="panel">
+<div class="panel-heading">
+    <span class="panel-title">
+        Guias encontradas
+    </span>
+    <span class="panel-controls">
+        <button type="button" class="btn btn-md btn-success" onClick="fechalote()"><i class="far fa-archive"></i> Fechar Lote</button>
+    </span>
+</div>
 <div class="panel-body">
 <form action="" method="post" id="guias" name="guias">
 <%
@@ -676,7 +681,8 @@ jQuery(function() {
       bLengthChange: false,
       bFilter: true,
       bInfo: false,
-      bAutoWidth: false
+      bAutoWidth: false,
+      searching: false
   });
 });
 </script>

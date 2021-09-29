@@ -1392,9 +1392,9 @@ function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
   setTimeout(function() {
     if($el.attr("data-force-disabled") !== 'true' || force){
           if(state){
-              $el.attr('disabled', false).html("<i class='far fa-save'></i> Salvar", false);
+              $el.attr('disabled', false).html("<i class=s'far fa-save'></i> Salvar", false);
           }else{
-              $el.attr('disabled', true).html("<i class='far fa-spinner fa-spin'></i> "+waitMessage, true);
+              $el.attr('disabled', true).html("<i class='far fa-circle-o-notch  fa-spin'></i> "+waitMessage, true);
           }
       }
   }, timeout);

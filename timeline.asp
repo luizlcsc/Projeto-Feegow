@@ -251,7 +251,7 @@ select case Tipo
                     if Tipo = "|L|" then
                         De = DateAdd("d", -7, date())
                     %>
-                        <button type="button" class="btn btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="far fa-external-link"></i> Ir para Laudos</button>
+                        <button type="button" class="btn btn-system" onclick="javascript:location.href='./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1'" ><i class="far fa-external-link"></i> Ir para Laudos</button>
                      <%
                     end if
                     %>

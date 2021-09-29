@@ -584,12 +584,6 @@ end if
                 end if
                 %>
 
-                <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
-                    <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
-                    <label for="VariosProcedimentos" id="lblprocedimentos" style="margin-bottom:0px">
-                        Adição Rápida
-                    </label>
-                </span>
 
                 <%
 
@@ -676,7 +670,14 @@ end if
                         end if
                     end if
 
+                    if CD="C" then
                         %>
+                        <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
+                            <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
+                            <label for="VariosProcedimentos" id="lblprocedimentos" style="margin-bottom:0px">
+                                Adição Rápida
+                            </label>
+                        </span>
 
                         <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm">
                             <i class="far fa-check-circle"></i> Marcar execução
@@ -684,7 +685,7 @@ end if
 
                         <%
 
-                        if session("Odonto")=1 and CD="C" then
+                        if session("Odonto")=1  then
                             %>
                         <div class="btn-group nao-mostrar-caso-pago">
                             <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma">
@@ -697,13 +698,15 @@ end if
                         end if
                         %>
 
-                        <% if CD="C" and Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
+                        <% if  Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
                         <div class="btn-group ">
                             <button type="button" class="btn btn-danger btn-sm" id="btn-abrir-modal-cancelamento">
                                 <i class="far fa-times"></i> Cancelamento
                             </button>
                         </div>
                         <% end if %>
+
+                    <% end if %>
 
                     <div class="btn-group hidden">
                         <button type="button" onclick="abrirMatrix('<%=InvoiceID%>')" class="btn btn-<%=corBtnPleres%> btn-sm" id="btn-abrir-modal-pleres" title="<%=titleBtnPleres%>">

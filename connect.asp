@@ -4311,7 +4311,7 @@ function sinalAgenda(val)
             case -2
                 sinalAgenda = "<i class=""far fa-exclamation-circle text-danger""></i>"
             case 1
-                sinalAgenda = "<i class=""far fa-check-circle-o text-success""></i>"
+                sinalAgenda = "<i class=""far fa-check-circle text-success""></i>"
         end select
     end if
 end function

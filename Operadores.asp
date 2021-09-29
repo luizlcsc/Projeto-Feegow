@@ -12,7 +12,7 @@ $(".crumb-active a").html("Operadores");
             <i class="far fa-user-alt"></i> Operadores ativos
         </span>
         <span class="panel-controls">
-            <button class="btn btn-sm btn-success" onclick="javascript:location.href='?P=Operadores&I=N&Pers=1'"><i class="far fa-plus"></i> INSERIR</button>
+            <button class="btn btn-sm btn-success" onclick="javascript:location.href='?P=Operador&I=N&Pers=1'"><i class="far fa-plus"></i> INSERIR</button>
         </span>
     </div>
     <div class="panel-body">
@@ -21,22 +21,36 @@ $(".crumb-active a").html("Operadores");
                 <thead>
                     <th>Nome</th>
                     <th>E-mail</th>
+                    <th>Status</th>
                     <th></th>
                 </thead>
                 <tbody>
                     <%
                     if req("X")<>"" and isnumeric(req("X")) then
-                        db_execute("delete from cliniccentral.licencasusuariosmulti where Cupom='"&session("Partner")&"' AND id="&req("X")&" AND Admin=0")
+                        dbc.execute("update cliniccentral.licencasusuariosmulti SET Ativo='' where Cupom='"&session("Partner")&"' AND id="&req("X")&" AND Admin=0")
                         response.Redirect("./?P=Operadores&Pers=1")
                     end if
 
-                    set ops = db.execute("select * from cliniccentral.licencasusuariosmulti where Cupom='"&session("Partner")&"'")
+                    set ops = dbc.execute("select * from cliniccentral.licencasusuariosmulti where Cupom='"&session("Partner")&"' ORDER BY Nome")
                     while not ops.eof
                         link = "./?P=Operador&Pers=1&I="&ops("id")
                         %>
                         <tr>
                             <td><a href="<%=link%>"><%=ops("Nome")%></a></td>
                             <td><%=ops("Email")%></td>
+                            <td>
+                                <%
+                                if ops("Ativo")<>"on" then
+                                    %>
+                                    <span class="label label-danger">Inativo</span>
+                                    <%
+                                else
+                                    %>
+                                    <span class="label label-success">Ativo</span>
+                                    <%
+                                end if
+                                %>
+                            </td>
                             <td nowrap width="1%">
                                 <a class="btn btn-xs btn-success" href="<%=link%>"><i class="far fa-edit"></i></a>
                                 <%

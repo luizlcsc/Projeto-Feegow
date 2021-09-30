@@ -28,7 +28,7 @@ if acao = "carregaComboProcedimento" then
           " AND Ativo='on' " & sqlGrupoID & sqlProfissional &_ 
           " order by NomeProcedimento "
 
-    response.write(quickfield("simpleSelect", "bProcedimentoID", "Procedimento", 5, ProcedimentoID, sql, "NomeProcedimento", "onchange=""agfilParametros();recarregaCombo('carregaComboExecutor','',$(this).val(),$('#bProfissionalID').val());recarregaCombo('carregaComplemento','',$(this).val()); recarregaCombo('carregaComboSubEspecializacao','',$(this).val())"" "))
+    response.write(quickfield("simpleSelect", "bProcedimentoID", "Procedimento", "", ProcedimentoID, sql, "NomeProcedimento", "style=""width:100%""  onchange=""agfilParametros();recarregaCombo('carregaComboExecutor','',$(this).val(),$('#bProfissionalID').val());recarregaCombo('carregaComplemento','',$(this).val()); recarregaCombo('carregaComboSubEspecializacao','',$(this).val())"" "))
     response.write("<script>$('.select2-single').select2();</script>")
 
 elseif acao = "carregaComboExecutorAll" then
@@ -40,7 +40,8 @@ elseif acao = "carregaComboExecutorAll" then
               " AND p.sysActive = 1 "&_ 
               " ORDER BY IF(ISNULL(NomeSocial) OR NomeSocial='', TRIM(NomeProfissional), TRIM(NomeSocial)) "
 
-        response.write(quickfield("simpleSelect", "bProfissionalID", "Executor", 4, "", sql, "NomeProfissional", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento','',$('#bProcedimentoID').val(),$(this).val());""") )
+        response.write(quickfield("simpleSelect", "bProfissionalID", "Executor", "", "", sql, "NomeProfissional", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento','',$('#bProcedimentoID').val(),$(this).val());""") )
+        response.write("<div class='text-right'> <a href='#' onclick='profissionais()'> <i class='fa fa-external-link'></i> Agendamentos</a> </div>")
         response.write("<script>$('.select2-single').select2();</script>")
 
 elseif acao = "carregaComboExecutor" then
@@ -65,7 +66,8 @@ elseif acao = "carregaComboExecutor" then
 
     sql = sql &" ORDER BY IF(ISNULL(NomeSocial) OR NomeSocial='', TRIM(NomeProfissional), TRIM(NomeSocial))"
 
-    response.write(quickfield("simpleSelect", "bProfissionalID", "Executor", 4, ProfissionalID, sql , "NomeProfissional", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento','',$('#bProcedimentoID').val(),$(this).val())"" "))
+    response.write(quickfield("simpleSelect", "bProfissionalID", "Executor", "", ProfissionalID, sql , "NomeProfissional", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento','',$('#bProcedimentoID').val(),$(this).val())"" "))
+    response.write("<div class='text-right'> <a href='#' onclick='profissionais()'> <i class='fa fa-external-link'></i> Agendamentos</a> </div>")
     response.write("<script>$('.select2-single').select2();</script>")
 
 elseif acao = "carregaComplemento" then
@@ -95,7 +97,7 @@ elseif acao = "carregaComboSubEspecializacao" then
           " AND ppu.id_procedimento = "&ProcedimentoID&_
           " ORDER BY 2 "
 
-    Response.write(quickfield("simpleSelect", "bSubespecialidadeID", "Sub Especialidade", 5, "", sql, "Subespecialidade", " empty "))
+    Response.write(quickfield("simpleSelect", "bSubespecialidadeID", "Sub Especialidade", 2, "", sql, "Subespecialidade", " empty "))
     Response.write("<script>$('.select2-single').select2();</script>")
 end if
 %>

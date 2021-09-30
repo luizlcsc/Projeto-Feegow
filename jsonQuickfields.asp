@@ -45,14 +45,14 @@ Select Case TableSQL
                 " FROM procedimentos                    "&chr(13)&_
                 " WHERE sysActive=1 AND ativo = 'on'    "&chr(13)&_
                 whereSearchSQL&whereSQL                 &chr(13)&_
-                " LIMIT 0,20    "
+                " LIMIT 0,100    "
     
     Case "procedimentosgrupos"
         sql = "SELECT id, NomeGrupo as text "   &chr(13)&_
               "FROM procedimentosgrupos "       &chr(13)&_
               "WHERE sysActive=1 "              &chr(13)&_
               whereSearchSQL&whereSQL           &chr(13)&_
-              "ORDER BY NomeGrupo LIMIT 0,10"
+              "ORDER BY NomeGrupo LIMIT 0,100"
 
 End Select
 'response.write(sql)

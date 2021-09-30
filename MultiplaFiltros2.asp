@@ -56,35 +56,48 @@ sessaoAgenda = req("sessaoAgenda")&""
             <input type="hidden" name="agendamentoIDCarrinho" class="agendamentoIDCarrinho" id="agendamentoIDCarrinho" value="<%=AgendamentoID%>_">
             <!--<input type="hidden" name="agendamentoIDCarrinho2" class="agendamentoIDCarrinho2" id="agendamentoIDCarrinho2" value="<% 'AgendamentoID%>"> -->
             <div class="row">
-                
-                <div class="col-md-8 pacientemultipla">
-                    <%= selectInsert("Paciente", "bPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""agfilParametros(); parametros(this.id, this.value); paciente(); """, "required", "paciente_multipla") %>
+                <div class="col-md-3 pacientemultipla">
+                    <%= selectInsert("Paciente", "bPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""agfilParametros(); parametros(this.id, this.value); paciente(); """, "", "paciente_multipla") %>
                     <input type="hidden" name="paciente_multipla" id="paciente_multipla" value="paciente_multipla">
+                    <div class="text-right">
+                        <a href="#" onclick="paciente()"> <i class="fa fa-info-circle"></i> Detalhes do Paciente</a>
+                    </div>
                 </div>
-                <% ' quickfield("simpleSelect", "bageTabela", "Tabela", 2, TabelaID, "select id, NomeTabela from tabelaparticular where sysActive=1 order by NomeTabela", "NomeTabela", " no-select2 onchange='agfilParametros()' ") %>
-                <div class="col-md-4">
-                    <div class="btn-group btn-block" role="group">
-                        <button style="width:25%" type="button" class="btn btn-default" onclick="profissionais()"><i class="far fa-user-md"></i> <br /> Profissionais</button>
-                        <button style="width:20%" type="button" class="btn btn-default" onclick="paciente()"><i class="far fa-user"></i> <br /> Paciente</button>
-                        <button style="width:25%" type="button" class="btn btn-default" onclick="propostas()"><i class="far fa-calendar"></i> <br /> Laboratório</button>
-                        <button style="width:30%" onclick="Limpar(100)" class="btn btn-alert" type="button"><i class="far fa-eraser"></i> <br /> Limpar</button>
+                <div class="col-md-3">
+                    <%= quickfield("datepicker", "bData", "Data", "", date(), "", "", "") %>
+                </div>
+                <div class="col-md-3">
+                    <%= quickfield("simpleSelect", "bRegiao", "Região", "", "", "select '' id, 'Todas' Regiao UNION ALL select distinct Regiao id , Regiao  from sys_financialcompanyunits WHERE sysActive=1 AND Regiao is not null and Regiao!=''", "Regiao", " semVazio ") %>
+                </div>
+                <div class="col-md-3">
+                    <div class="btn-group btn-block" role="group" style="margin-top:20px">
+                        <button style="width:50%" type="button" class="btn btn-default" onclick="propostas()"><i class="far fa-calendar"></i> Laboratório</button>
+                        <button style="width:50%" onclick="Limpar(100)" class="btn btn-alert" type="button"><i class="far fa-eraser"></i>  Limpar</button>
                     </div>
                 </div>
             </div>
+
             <div class="row">
-                <div id="divComboGrupoProcedimento">
-                    <%= quickfield("simpleSelect", "bGrupoID", "Grupo", 3, "", "select id, NomeGrupo from procedimentosgrupos where TRUE ", "NomeGrupo", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento',$(this).val())"" limitSQL") %>
+                <div class="col-md-3" id="divComboGrupoProcedimento">
+                    <%= quickfield("simpleSelect", "bGrupoID", "Grupo", "", "", "select id, NomeGrupo from procedimentosgrupos where TRUE ", "NomeGrupo", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento',$(this).val())"" limitSQL") %>
                 </div>
-                <div id="divComboProcedimento">
-                    <%= quickfield("simpleSelect", "bProcedimentoID", "Procedimento", 5, "", "select id, NomeProcedimento from procedimentos p where TRUE ", "NomeProcedimento", "onchange=""agfilParametros();recarregaCombo('carregaComboExecutor','',$(this).val(),$('#bProfissionalID').val());recarregaCombo('carregaComplemento','',$(this).val());recarregaCombo('carregaComboSubEspecializacao','',$(this).val())"" limitSQL") %>
+                <div id="divComboProcedimento" class="col-md-3">
+                    <%= quickfield("simpleSelect", "bProcedimentoID", "Procedimento", "", "", "select id, NomeProcedimento from procedimentos p where TRUE ", "NomeProcedimento", "required onchange=""agfilParametros();recarregaCombo('carregaComboExecutor','',$(this).val(),$('#bProfissionalID').val());recarregaCombo('carregaComplemento','',$(this).val());recarregaCombo('carregaComboSubEspecializacao','',$(this).val())"" limitSQL") %>
+                </div>    
+                <div id="divComboProfissional" class="col-md-2">
+                    <%= quickfield("simpleSelect", "bProfissionalID", "Executor", "", "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento','',$('#bProcedimentoID').val(),$(this).val());""") %>
+                    <div class="text-right">
+                        <a href="#" onclick="profissionais()"> <i class="fa fa-user-md"></i> Histórico</a>
+                    </div>
                 </div>
-                <div id="divComboProfissional">
-                    <%= quickfield("simpleSelect", "bProfissionalID", "Executor", 4, "", "select id, if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial) NomeProfissional from profissionais where sysActive=1 and ativo='on' order by if(isnull(NomeSocial) or NomeSocial='', NomeProfissional, NomeSocial)", "NomeProfissional", " onchange=""agfilParametros();recarregaCombo('carregaComboProcedimento','',$('#bProcedimentoID').val(),$(this).val());""") %>
+                <div id="divComboSubEspecializacoes">
+                    <div class="col-md-2">
+                        <label for="bSubEspecializacoes"> Sub Especialidade</label>
+                        <select class="class_especializacoes" name="bSubEspecializacoes">
+                            <option value="0">Selecione</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-                
-            <div class="row">
-                <%= quickfield("datepicker", "bData", "Data", 2, date(), "", "", "") %>
                 <div id="divComboComplemento">
                     <div class="col-md-2 qf">
                         <label for="bComplementos"> Complemento</label>
@@ -93,29 +106,24 @@ sessaoAgenda = req("sessaoAgenda")&""
                         </select>
                     </div>
                 </div>
-                <div id="divComboSubEspecializacoes">
-                    <div class="col-md-5 qf">
-                        <label for="bSubEspecializacoes"> Sub Especialidade</label>
-                        <select class="class_especializacoes" name="bSubEspecializacoes">
-                            <option value="0">Selecione</option>
-                        </select>
-                    </div>
-                </div>
-                <script>
+            </div>
+            <script>
                 $('.class_complementos').select2();
                 $('.class_especializacoes').select2();
-                </script>
-                 <div class="col-md-1">
-                    <button type="button" class="btn btn-success btn-sm mt25 btn-block" onclick="cart('I');limparFiltros()"><i class="far fa-plus"></i></button>
-                </div>
-                <%= quickfield("simpleSelect", "bRegiao", "Zona", 2, "", "select '' id, 'Todas' Regiao UNION ALL select distinct Regiao id , Regiao  from sys_financialcompanyunits WHERE sysActive=1 AND Regiao is not null and Regiao!=''", "Regiao", " semVazio ") %>
+            </script>
+
+            
+            <div class="col-md-12">
+                <button type="button" class="btn btn-success btn-sm mt25 btn-block" onclick="cart('I');limparFiltros()"><i class="far fa-plus"></i> Adicionar Procedimento</button>
             </div>
-            <div class="row mt10">
-                <div class="col-md-12" id="divCart">
+
+            <div class="row mt10" >
+                <div class="col-md-12" id="divCart" style="margin-top:20px">
                     
                 </div>
             </div>
-            <div class="row mt10">
+            
+            <div class="row mt10" style="margin:15px 0">
                 <div class="col-md-3">
                     <%= quickfield("text", "textHelp", "", 12, "", " input-sm ", "", " placeholder=""Digite um termo...""  ") %>
                 </div>
@@ -214,7 +222,7 @@ function limparFiltros() {
         </div>`);
                     
     $("#divComboSubEspecializacoes").html(`
-        <div class="col-md-5 qf">
+        <div class="col-md-2 qf">
             <label for="bSubEspecializacoes"> Sub Especialidade</label>
             <select class="class_especializacoes" name="bSubEspecializacoes">
                 <option value="0">Selecione</option>
@@ -270,7 +278,7 @@ $(document).on('hide.bs.modal','#modal-components', function () {
 //SLV
 function cart(A, I){
     if(($("#bProcedimentoID").val()  == "" || $("#bProcedimentoID").val() == null || $("#bProcedimentoID").val() == 0) && A == "I" ){
-        showMessageDialog("Escolha um procedimento", 'danger');
+        showMessageDialog("Escolha um procedimento", 'warning');
     }else{
         $.post("Cart.asp?A="+A+"&I="+I+"&sessaoAgenda="+sessionStorage.getItem("sessaoAgenda"), $("#bAgenda").serialize(), function(data){
         $("#divCart").html(data);
@@ -290,6 +298,7 @@ function paciente(){
         })
     }
 }
+
 function FinalizarBusca() {
     var PacienteID = $("#bPacienteID").val();
 
@@ -326,7 +335,7 @@ function buscar() {
             $("#divBusca").html(data);
         });
     } else {
-        showMessageDialog("Selecione um procedimento ", 'danger');
+        showMessageDialog("Adicione um procedimento ", 'warning');
     }
 }
 
@@ -798,9 +807,9 @@ function profissionais() {
         );
     }else{
         new PNotify({
-            title: 'Erro!',
-            text: 'Selecione um profissional',
-            type: 'danger',
+            title: 'Campo Obrigatório!',
+            text: 'Executor',
+            type: 'warning',
             delay: 2000
         });
     }

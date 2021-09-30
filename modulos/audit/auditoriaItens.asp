@@ -2,6 +2,9 @@
 <!--#include file="AuditoriaUtils.asp"-->
 <div class="panel m10">
     <div class="panel-heading">
+        <span class="panel-title">
+            Resultado da busca
+        </span>
         <span class="panel-controls">
 
             <button type="button" style="display: none" class="btn btn-sm btn-success" id="marcarAuditado" onclick="marcarAuditado()"><i class="far fa-check"></i> Marcar como auditado</button>

@@ -187,7 +187,7 @@ end if
                                         <%
                                             link = "./?P=DescontoPendente&I="&rsDescontoPendente("iddesconto")&"&Pers=1"
                                         %>
-                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="far fa-check-square bigger-130"></i></a>
+                                        <a title="Aprovar" class="btn btn-xs btn-success" href="<%=link%>&OP=1" onclick="aprovarDesconto(this)"><i class="far fa-check bigger-130"></i></a>
                                         <a title="Não Aprovar" class="btn btn-xs btn-danger" href="<%=link%>&OP=-1" onclick="rejeitarDesconto(this)"><i class="far fa-times bigger-130"></i></a>
                                     </div>
                                 </td>

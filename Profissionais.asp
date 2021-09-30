@@ -356,19 +356,39 @@ end if
 
         </div>
         <div id="divHorarios" class="tab-pane<%=tabHorarios%>">
-			Carregando...
+			<div class="panel">
+			    <div class="panel-body">
+			        <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                </div>
+            </div>
         </div>
         <div id="divPermissoes" class="tab-pane">
-			Carregando...
+			<div class="panel">
+                <div class="panel-body">
+                    <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                </div>
+            </div>
         </div>
         <div id="divAcesso" class="tab-pane">
-			Carregando...
+            <div class="panel">
+			    <div class="panel-body">
+			        <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                </div>
+            </div>
         </div>
         <div id="divExtrato" class="tab-pane">
-			Carregando...
+			<div class="panel">
+                <div class="panel-body">
+                    <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                </div>
+            </div>
         </div>
         <div id="divCompartilharPront" class="tab-pane">
-			Carregando...
+			<div class="panel">
+                <div class="panel-body">
+                    <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -512,7 +532,7 @@ function esps(A, E){
 // Chamada Ajax Programa Saúde
 $(document).ready(function () {
 
-    $("#block-programas-saude").html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="far fa-spin fa-spinner"></i></div>');
+    $("#block-programas-saude").html(`<div class="panel"><div class="panel-body"><i class="far fa-circle-o-notch fa-spin"></i> Carregando...</div></div>`);
     getUrl("health-programs/professional-view/<%=req("I") %>", {}, function(data) {
         $("#block-programas-saude").html(data);
     });

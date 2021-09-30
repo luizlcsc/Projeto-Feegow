@@ -8,6 +8,8 @@
 InvoiceID = req("I")
 CD = ref("T")
 msgExtra=""
+statusAlertSuccess="success"
+
 Voucher = ref("voucher")
 temregradesconto=ref("temregradesconto")
 if temregradesconto="" then
@@ -19,6 +21,7 @@ end if
 
 idUsuariosDesconto = "0"
 
+PossuiPermissaoParaDesconto = True
 totalValorDescontado = 0
 totalValorDescontadoEnvio = 0
 totalValorAcrescido = 0
@@ -67,8 +70,8 @@ if temregradesconto=1 then
 		set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
 											" from regrasdescontos rd  "&_
 											" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
-											" INNER JOIN sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') "&_
-											" WHERE  rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
+											" INNER JOIN sys_users suser on suser.RegraID = rd.RegraID "&_
+											" WHERE rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
 
 		'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )
 	end if
@@ -213,10 +216,10 @@ if existePagto="" then
 							ValorDesconto=0
 						end if
 
-
 						if DescontoMaximo < CCUR(ValorDesconto)  then
 							totalValorDescontado = totalValorDescontado + CCUR(ValorDesconto)
 							ValorDesconto = 0
+							PossuiPermissaoParaDesconto=False
 						end if
 					end if
                 end if
@@ -448,7 +451,7 @@ if erro="" then
                         valorUnitario="0"
                     end if
 
-					if descontoIgual = False then 
+					if descontoIgual = False then
 						if not rsDescontosUsuario.eof then
 							while not rsDescontosUsuario.eof
 								procedimentoText = rsDescontosUsuario("Procedimentos")
@@ -515,7 +518,7 @@ if erro="" then
 				NewItemID = Row
 			end if
 
-			if temregradesconto=1 then
+			if temregradesconto=1 and not PossuiPermissaoParaDesconto then
 				'Gravar esses dados em outra tabela
 
 				DescontoInput = ref("Desconto"&ii)
@@ -529,6 +532,7 @@ if erro="" then
 
 				if temdescontocadastrado=1 and CCUR(DescontoInput) > 0  then
 					msgExtra = "Alguns itens necessitam de aprovação para o desconto"
+					statusAlertSuccess="warning"
 					set DescontosSQL = db.execute("select * from descontos_pendentes where ItensInvoiceID = "&NewItemID&"")
 					if not DescontosSQL.eof then
 						sqlInsertpendente = "update descontos_pendentes set DataHora=NOW(),Desconto = "&treatvalzero(ref("Desconto"&ii))&", sysUserAutorizado=null,DataHoraAutorizado=null,  Status = 0, SysUser = "&session("User")&" where id = " & DescontosSQL("id")
@@ -752,9 +756,9 @@ if erro="" then
 	});
 	
 	new PNotify({
-		title: 'Salvo com sucesso!<%=msgExtra%>',
-		text: '',
-		type: 'success',
+		title: 'Salvo com sucesso!',
+		text: '<%=msgExtra%>',
+		type: '<%=statusAlertSuccess%>',
         delay: 1000
 	});
 	geraParcelas('N');

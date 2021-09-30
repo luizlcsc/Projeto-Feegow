@@ -94,7 +94,9 @@ if Acao="" then
 		Subtotal = 0
         response.Buffer
 
-		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, i.Voucher, i.DataCancelamento from itensinvoice ii JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
+		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, dp.Desconto DescontoPendente, dp.Status StatusDesconto, i.Voucher, i.DataCancelamento from itensinvoice ii LEFT JOIN descontos_pendentes dp ON dp.ItensInvoiceID=ii.id JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
+
+        ExistemDescontosPendentes = False
 
 		if not itens.eof then
             Voucher = itens("Voucher")
@@ -107,6 +109,14 @@ if Acao="" then
             while not itens.eof
                 response.Flush()
                 conta = conta+itens("Quantidade")
+                StatusDesconto = itens("StatusDesconto")
+                DescontoPendente = itens("DescontoPendente")
+                if not isnull(StatusDesconto) then
+                    if StatusDesconto&""="0" then
+                        ExistemDescontosPendentes = True
+                    end if
+                end if
+
                 Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))
                 Total = Total+Subtotal
                 NomeItem = ""
@@ -277,9 +287,16 @@ if Acao="" then
 				    if Voucher = "" then
                         msgVoucherHidden = "display:none"
 
-				    %>
-				    <button id="btn-aplicar-desconto" type="button" class="btn btn-default btn-xs disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> <i class="far fa-percentage"></i> Aplicar Descontos</button>
-				    <%
+
+                        if ExistemDescontosPendentes then
+                            %>
+                            <span class="label label-warning"><i class="far fa-exclamation-circle"></i> Existem descontos pendentes</span>
+                            <%
+                        else
+                            %>
+                            <button id="btn-aplicar-desconto" type="button" class="btn btn-default btn-xs disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> <i class="far fa-percentage"></i> Aplicar Descontos</button>
+                            <%
+                        end if
 				    end if
 				    %>
 				    <span style="<%=msgVoucherHidden%>" id="msg-voucher-aplicado" class="label label-alert"><i class="far fa-ticket-alt"></i> Voucher <i class="voucher-aplicado"><%=Voucher%></i> aplicado</span>

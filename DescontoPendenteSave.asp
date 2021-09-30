@@ -6,7 +6,7 @@ OP = req("OP")
 
 resultado = ""
 if ID <> "" and OP <> "" then
-    set rsDescontoPendenteUpdate = db.execute("select * from descontos_pendentes WHERE id = "&ID& " ")
+    set rsDescontoPendenteUpdate = db.execute("select * from descontos_pendentes WHERE id = "&ID& " and Status = 0")
     if not rsDescontoPendenteUpdate.eof then
         
         SysUser = Session("user")

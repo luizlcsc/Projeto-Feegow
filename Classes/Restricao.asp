@@ -163,11 +163,11 @@ Class Restricao
                             restricaoVal_RespostaRemarcada = "NULL"
                         end if
 
-                        if valorRestricao("Restringir") = "D" and restricaoVal_RespostaRemarcada) >= restricaoVal_Inicio and restricaoVal_RespostaRemarcada) <= restricaoVal_RespostaRemarcada then
+                        if valorRestricao("Restringir") = "D" and restricaoVal_RespostaRemarcada >= restricaoVal_Inicio and restricaoVal_RespostaRemarcada <= restricaoVal_RespostaRemarcada then
                             totalRestricao = totalRestricao+1
                             valorMotivo = "dentro"
                             cssClass = "danger"
-                        elseif valorRestricao("Restringir") = "F" and (restricaoVal_RespostaRemarcada) < restricaoVal_Inicio or restricaoVal_RespostaRemarcada) > restricaoVal_RespostaRemarcada) then
+                        elseif valorRestricao("Restringir") = "F" and restricaoVal_RespostaRemarcada < restricaoVal_Inicio or restricaoVal_RespostaRemarcada > restricaoVal_RespostaRemarcada then
                             totalRestricao = totalRestricao+1
                             valorMotivo = "fora"
                             cssClass = "danger"

@@ -154,6 +154,11 @@
             notEdit = " notedit "
         end if
 
+        DescontoReadonly = ""
+        if Voucher<> "" then
+            DescontoReadonly = " readonly "
+        end if
+
         if aut("valordoprocedimentoA")=0 and Tipo="S" then
             ValorUnitarioReadonly=" readonly"
             notEdit = " notedit "
@@ -169,7 +174,7 @@
                     <li><a href="javascript:void(0)" onclick="mudarFormatoDesconto(this)" class="dropdown-item">%</a></li>
                 </ul>
             </div>
-            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right disable", "", " data-desconto='"&fn(Desconto)&"' onkeyup=""setInputDescontoEmPorcentagem(this)""")%>
+            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right disable", "", " data-desconto='"&fn(Desconto)&"' onkeyup=""setInputDescontoEmPorcentagem(this)""" &DescontoReadonly)%>
             <%=quickField("text", "PercentDesconto"&id, "", 4, "0.00", " PercentDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0.00' onkeyup=""setInputDescontoEmReais(this)""")%>
         </div>
     </td>

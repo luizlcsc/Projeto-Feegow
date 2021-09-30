@@ -1788,7 +1788,7 @@ hash_chat: 'FFCHAT01'
     <!-- old sms -->
     	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
-		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+		<script src="./assets/js/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>

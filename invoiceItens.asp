@@ -94,9 +94,10 @@ if Acao="" then
 		Subtotal = 0
         response.Buffer
 
-		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, i.DataCancelamento from itensinvoice ii JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
+		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, i.Voucher, i.DataCancelamento from itensinvoice ii JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
 
 		if not itens.eof then
+            Voucher = itens("Voucher")
 		    set FornecedorSQL = db_execute("SELECT f.limitarPlanoContas FROM fornecedores f INNER JOIN sys_financialinvoices i ON i.AccountID=f.id WHERE i.AssociationAccountID=2 AND f.limitarPlanoContas != '' and f.limitarPlanoContas is not null AND i.id="&InvoiceID)
 
 		    if not FornecedorSQL.eof then
@@ -270,7 +271,19 @@ if Acao="" then
 			%>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
-				<th><button type="button" class="btn btn-default btn-xs disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> <i class="far fa-percentage"></i> Aplicar Descontos</button></th>
+				<th>
+				    <%
+				    msgVoucherHidden=""
+				    if Voucher = "" then
+                        msgVoucherHidden = "display:none"
+
+				    %>
+				    <button id="btn-aplicar-desconto" type="button" class="btn btn-default btn-xs disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> <i class="far fa-percentage"></i> Aplicar Descontos</button>
+				    <%
+				    end if
+				    %>
+				    <span style="<%=msgVoucherHidden%>" id="msg-voucher-aplicado" class="label label-alert"><i class="far fa-percentage"></i> Voucher <i class="voucher-aplicado"><%=Voucher%></i> aplicado</span>
+                </th>
 				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <div id="totalGeral"><%=formatnumber(Total,2)%></div></th>
 				<th colspan="3"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
@@ -653,12 +666,14 @@ const filtraExecutantes = async (procedimentoId, linhaId) => {
 
     const executantes = response.data;
 
-    executantes.unshift({
-        NomeProfissional: "Selecione",
-        AssociacaoID: null,
-        ID: null,
-    });
+
     if(executantes){
+        executantes.unshift({
+            NomeProfissional: "Selecione",
+            AssociacaoID: null,
+            ID: null,
+        });
+
         var valorSelecionado = $selectExecutantes.val();
         $selectExecutantes.html("");
         let htmlExecutantes = "";

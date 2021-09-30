@@ -234,6 +234,7 @@ else
     ProfissionalSolicitante = data("ProfissionalSolicitante")
 end if
 
+Voucher = data("Voucher")
 
 ContaID = data("AccountID")
 AssID = data("AssociationAccountID")
@@ -471,23 +472,26 @@ end if
                 %>
             </div>
 
-
-            <div class="col-md-4">
 <%
 if getConfig("CalculoReembolso") then
 
     set ProcedimentoComReembolsoSQL=db.execute("SELECT ii.id FROM itensinvoice ii INNER JOIN procedimentos proc ON proc.id=ii.ItemID WHERE proc.PermiteReembolsoConvenio='S' AND ii.InvoiceID="&treatvalzero(InvoiceID))
     if not ProcedimentoComReembolsoSQL.eof then
 %>
+            <div class="col-md-4">
+
                 <br>
                 <button type="button" onclick="calculaReembolso()" class="btn btn-default disable"><i class="far fa-calculator"></i> Calcular reembolso</button>
 <%
     end if
-end if
 %>&nbsp;
             </div>
-
-            <%
+<%
+else
+%>
+<div class="col-md-3"></div>
+<%
+end if
              if getConfig("ObrigarTabelaParticular") then
                 camposRequired=" required empty"
             else
@@ -516,8 +520,15 @@ end if
                     qInputProfissionais = "SELECT * FROM ("&qInputProfissionais&") AS t "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
 
 
-
-                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 3, ProfissionalSolicitante, qInputProfissionais, "NomeProfissional", SolicitanteRequired ))
+                    set VoucherCountSQL = db.execute("SELECT count(id)qtd from voucher WHERE sysActive=1")
+                    if ccur(VoucherCountSQL("qtd"))>0 then
+                        response.write (quickfield("text", "Voucher", "Voucher", 2, Voucher, "", "", " placeholder=""Digite..."""))
+                    else
+                        %>
+                        <div class="col-md-2">&nbsp; <input type="hidden" id="Voucher" name="Voucher" value="<%=Voucher%>"></div>
+                        <%
+                    end if
+                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 2, ProfissionalSolicitante, qInputProfissionais, "NomeProfissional", SolicitanteRequired ))
 
               else %>
             <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
@@ -1081,7 +1092,6 @@ var itensAlterados = false;
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
 	var inc = $('.invoice-linha-item[data-val]:last').attr('data-val');
-    console.log(inc)
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
@@ -1114,6 +1124,7 @@ function recalc(input, mod){
 	var _input = $("#formItens input");
     var elemSerialized = "";
     var dadosForm =  $("#formItens").serialize();
+    var Voucher = $("#Voucher").val();
     $.each(_input, function (key, val) {
         if(dadosForm.indexOf(val.name) == -1){
             elemSerialized +=  val.name + '=' + val.value + "&";
@@ -1122,8 +1133,8 @@ function recalc(input, mod){
 
     clearTimeout(clearInput);
     clearInput = setTimeout(() =>{
-        $.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
-    },500)
+        $.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod+"&Voucher="+Voucher, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
+    },200)
 }
 
 function geraParcelas(Recalc,call = null){
@@ -1777,7 +1788,11 @@ if not isnull(data("DataCancelamento")) then
     <%
 end if
 %>
-
+$("#Voucher").change(function(){
+	$.post("voucherAplica.asp?InvoiceID=<%= InvoiceID %>", $("#formItens").serialize(), function(data){
+		eval(data);
+	});
+});
 </script>
 
 

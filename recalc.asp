@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 T = ref("T")
+Voucher = req("Voucher")
 
 TipoConta = ""
 'if T = "D" then
@@ -19,6 +20,15 @@ else
 end if
 ParcelasID = ref("ParcelasID")
 Total = 0
+
+VoucherDesconto = 0
+if Voucher<>"" then
+    set VoucherSQL = db.execute("SELECT Valor,TipoValor FROM voucher WHERE Codigo='"&Voucher&"'")
+    if not VoucherSQL.eof then
+        VoucherDesconto = ccur(VoucherSQL("Valor"))
+        VoucherTipoDesconto = VoucherSQL("TipoValor")
+    end if
+end if
 
 CompanyUnitID = "%|"&ref("CompanyUnitID")&"|%"
 spl = split(inputs, ", ")
@@ -51,11 +61,24 @@ for i=0 to ubound(spl)
 		Percent = Replace(Percent,",",".")
 	end if
 
+
+    if VoucherDesconto > 0 then
+        if VoucherTipoDesconto="V" then
+            Desconto = VoucherDesconto
+        else
+            Desconto = ValorUnitario * (VoucherDesconto/100)
+        end if
+
+        %>
+            $("#<%="Desconto"&spl(i)%>").val("<%=fn(Desconto)%>").attr("readonly","readonly");
+        <%
+    end if
+
 	Desconto2 = Replace(Desconto, ",",".")
 	Acrescimo = ccur(Acrescimo)
 	Subtotal = Quantidade * (ValorUnitario - Desconto + Acrescimo)
 
-    if Desconto > 0 and T <> "D" then
+    if Desconto > 0 and T <> "D" and Voucher="" then
         sqlRegraSuperior = "SELECT IFNULL(group_concat(RegraID), '') regras FROM regrasdescontos WHERE ((TipoDesconto = 'P' AND DescontoMaximo>="&Percent&") OR (TipoDesconto = 'V' AND DescontoMaximo>="&Desconto2&")) AND "&_
                                         "(Procedimentos IS NULL OR Procedimentos ='' OR Procedimentos LIKE '%|"&ProcedimentoID&"|%') AND "&_
                                         " (Unidades IS NULL OR Unidades ='' OR Unidades LIKE '"&CompanyUnitID&"' OR Unidades = "&treatvalzero(CompanyUnitID)&") "&_

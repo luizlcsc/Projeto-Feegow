@@ -282,7 +282,7 @@ if Acao="" then
 				    <%
 				    end if
 				    %>
-				    <span style="<%=msgVoucherHidden%>" id="msg-voucher-aplicado" class="label label-alert"><i class="far fa-percentage"></i> Voucher <i class="voucher-aplicado"><%=Voucher%></i> aplicado</span>
+				    <span style="<%=msgVoucherHidden%>" id="msg-voucher-aplicado" class="label label-alert"><i class="far fa-ticket-alt"></i> Voucher <i class="voucher-aplicado"><%=Voucher%></i> aplicado</span>
                 </th>
 				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <div id="totalGeral"><%=formatnumber(Total,2)%></div></th>

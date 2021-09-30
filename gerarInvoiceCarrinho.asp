@@ -4,7 +4,7 @@ function callHist(){
         if(result != ""){
             showMessageDialog(result, "info");
         }
-        openComponentsModal('HistoricoPacienteAgenda.asp?PacienteID=' + id, false, 'Pacientes')
+        openComponentsModal('HistoricoPacienteAgenda.asp?PacienteID=' + id, false, 'Pacientes', true, false, 'lg')
     })
 }
 <%

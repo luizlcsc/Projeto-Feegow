@@ -1230,17 +1230,20 @@ end if
             <li <%=ativoCadastro%>>
                 <a data-toggle="tab" href="#divCadastroProfissional"><span class="far fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro do Profissional</span></a>
             </li>
-            <!-- VERSÃO ANTIGA V7
+
             <li>
                 <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('ProfProcAgenda', '<%=req("I")%>', 1, 'divPermissoes');">
             	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos da Agenda</span></a>
             </li>
-            -->
+            <%
+            if recursoAdicional(41)=4 then
+            %>
             <li>
                 <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('procedimentounidadeprofissional', '<%=req("I")%>', 1, 'divPermissoes');">
-            	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos da Agenda</span></a>
+            	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos por unidade <span class="label label-system label-xs fleft">Novo</span> </span></a>
             </li>
             <%
+            end if
 		    if aut("horarios")=1 then
 		    %>
             <li <%=ativoHorarios%>>

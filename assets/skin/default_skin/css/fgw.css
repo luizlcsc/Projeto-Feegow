@@ -13686,7 +13686,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 
 .nav-tabs {
-    border-bottom: 1px solid #dddddd;
+    border-bottom: 1px solid #e2e2e2;
 }
 
 .nav-tabs > li {
@@ -13698,7 +13698,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     margin-right: 2px;
     line-height: 1.49;
     border: 1px solid transparent;
-    border-radius: 4px 4px 0 0;
+    border-radius: 6px 6px 0 0;
 }
 
 .nav-tabs > li > a:hover {
@@ -13710,8 +13710,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav-tabs > li.active > a:focus {
     color: #555555;
     background-color: transparent;
-    border: 1px solid #dddddd;
-    border-bottom-color: transparent;
+    border: 1px solid #e2e2e2;
+    border-bottom-color: #fff;
     cursor: default;
 }
 
@@ -30535,4 +30535,12 @@ select[tabindex="-1"], .multisel {
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     background-color: transparent;
+}
+
+.sfcolor .gui-input{
+    border-radius: 6px 0 0 6px!important;
+}
+.sfcolor .gui-input + .sp-replacer{
+    border-top-right-radius: 6px !important;
+    border-bottom-right-radius: 6px !important;
 }

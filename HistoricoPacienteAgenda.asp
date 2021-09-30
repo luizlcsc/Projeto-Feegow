@@ -81,24 +81,21 @@ end if
     </form>
 </div>
 <div class="panel">
-    <div class="panel-heading">
-	    <span class="panel-title"><i class="far fa-calendar"></i> Detalhes dos Agendamentos</span>
-    </div>
-    <div class="panel-body">
+    <div class="">
 
         <ul class="nav nav-tabs">
-            <li><a data-toggle="tab" href="#agdFuturo">Agendamentos Futuros <span class="badge badge-light badgefuturo">0</span></a></li>
-            <li><a data-toggle="tab" href="#agendamentosantigos">Agendamentos <span class="badge badge-light badgeagendamento">0</span></a></li>
-            <li><a data-toggle="tab" href="#propostas" href="#">Propostas <span class="badge badge-light badgeproposta">0</span></a></li>
-            <li><a data-toggle="tab" href="#agendamentos" href="#">Excluídos <span class="badge badge-light badgeexcluido">0</span></a></li>
-            <li><a data-toggle="tab" href="#pendencias" href="#">Pendências <span class="badge badge-light badgependencia">0</span></a></li>
-            <li><a data-toggle="tab" href="#contas" href="#">Contas <span class="badge badge-light badgecontas">0</span></a></li>
+            <li class="active"><a data-toggle="tab" href="#agdFuturo">Agendamentos Futuros <span class="badge badge-default badgefuturo">0</span></a></li>
+            <li><a data-toggle="tab" href="#agendamentosantigos">Agendamentos <span class="badge badge-default badgeagendamento">0</span></a></li>
+            <li><a data-toggle="tab" href="#propostas" href="#">Propostas <span class="badge badge-default badgeproposta">0</span></a></li>
+            <li><a data-toggle="tab" href="#agendamentos" href="#">Excluídos <span class="badge badge-default badgeexcluido">0</span></a></li>
+            <li><a data-toggle="tab" href="#pendencias" href="#">Pendências <span class="badge badge-default badgependencia">0</span></a></li>
+            <li><a data-toggle="tab" href="#contas" href="#">Contas <span class="badge badge-default badgecontas">0</span></a></li>
         </ul>
     
-    <div class="tab-content mt15">
+    <div class="tab-content m15">
     <div id="agdFuturo" class="active tab-pane">
     <form method="post" id="formAgdFut">
-    <table class="table footable fw-labels" data-page-size="20">
+    <table class="table footable fw-labels table-condensed" data-page-size="20">
         <thead>
             <tr>
                 <th>Status</th>
@@ -107,6 +104,7 @@ end if
                 <th>Especialidade</th>
                 <th>Procedimento</th>
                 <th>Valor/Convênio</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -115,25 +113,25 @@ end if
 	    c = 0
         temNovoPagamento = 0
 	    agends = ""
-       
-        set pCons = db.execute("select a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta,p.id as ProcedimentoID, p.NomeProcedimento, " &_ 
-        " c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN profissionais prof on prof.id=a.ProfissionalID " &_ 
-        " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) " &_ 
-        " LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano " &_ 
+
+        set pCons = db.execute("select a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta,p.id as ProcedimentoID, p.NomeProcedimento, " &_
+        " c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN profissionais prof on prof.id=a.ProfissionalID " &_
+        " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) " &_
+        " LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano " &_
         " WHERE DATE_FORMAT(a.Data, '%Y-%m-%d') >= DATE_FORMAT(now(),'%Y-%m-%d') AND a.PacienteID="&PacienteID&" ORDER BY a.Data ASC, a.Hora ASC")
-        
+
         while not pCons.EOF
 
             jaTemValorPago = 0
-            
-            'Buscar a movement dos agendamentos 
+
+            'Buscar a movement dos agendamentos
             sqlMovement = "select mov.id as movementID,ii.InvoiceID, SUM(mov.ValorPago) ValorPago, SUM(mov.Value) Value from sys_financialmovement mov INNER JOIN sys_financialinvoices inv ON inv.id = mov.InvoiceID " &_
                     " LEFT JOIN itensinvoice ii ON ii.InvoiceID = inv.id WHERE ii.AgendamentoID = " & pCons("id") & " GROUP BY(ii.AgendamentoID)"
 
             set Movs = db.execute(sqlMovement)
 
             InvoiceID = ""
-                
+
             if not Movs.eof then
                 InvoiceID = Movs("InvoiceID")
             end if
@@ -151,7 +149,7 @@ end if
 			    Pagto = pCons("NomeConvenio")
 		    end if
 		    agends = agends & pCons("id") & ","
-		
+
 		    consHora = pCons("Hora")
 		    if not isnull(consHora) then
 			    consHora = formatdatetime(consHora, 4)
@@ -192,23 +190,25 @@ end if
                 <td><%=left(NomeProcedimento, 30) %></td>
                 <td><%=Pagto%></td>
                 <td>
-                    <a data-toggle="tab" href="#recibosgerados"  onclick='$.get("listaRecibos.asp?Externo=true&InvoiceID=" +<%=InvoiceID%> , function (data) {$("#recibosgerados").html(data+"<div class=\"text-right\"><a data-toggle=\"tab\" href=\"#agdFuturo\" >Voltar</a></div>") });' class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>"><i class="far fa-print"></i></a>
-                    <button class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
-                    <% if jaTemValorPago = 0 then %>
-                    <a class="btn btn-warning btn-xs" onclick="remarcar('<%=pCons("id")%>')" href="#">Remarcar </a>
-                    <% end if %>
-                    <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
-                    <%
-                        set sql = db.execute("SELECT PendenciaID FROM pendenciasagendamentos WHERE AgendamentoID ="&pCons("id"))
-                        
-                        if not sql.eof then
-                    %>
-                        <button class="btn btn-danger btn-xs" onclick="voltarPendencia('<%=pCons("id")%>', '<%=pCons("ProcedimentoID")%>')">Pendência</button>
-                    <%        
-                        end if
-                    %>
-                    <div id="divhist<%=pCons("id")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
-                    
+                    <div class="btn-group">
+                        <a title="Imprimir" data-toggle="tab" href="#recibosgerados"  onclick='$.get("listaRecibos.asp?Externo=true&InvoiceID=" +<%=InvoiceID%> , function (data) {$("#recibosgerados").html(data+"<div class=\"text-right\"><a data-toggle=\"tab\" href=\"#agdFuturo\" >Voltar</a></div>") });' class="btn btn-default btn-xs" data-agendamentoid="<%= pCons("id") %>"><i class="far fa-print"></i></a>
+                        <button title="Detalhes" class="btn btn-default btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>"><i class="far fa-info-circle"></i></button>
+                        <% if jaTemValorPago = 0 then %>
+                        <a title="Remarcar" class="btn btn-default btn-xs" onclick="remarcar('<%=pCons("id")%>')" href="#"> <i class="far fa-calendar"></i> </a>
+                        <% end if %>
+                        <a class="btn btn-default btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
+                        <%
+                            set sql = db.execute("SELECT PendenciaID FROM pendenciasagendamentos WHERE AgendamentoID ="&pCons("id"))
+
+                            if not sql.eof then
+                        %>
+                            <button class="btn btn-danger btn-xs" onclick="voltarPendencia('<%=pCons("id")%>', '<%=pCons("ProcedimentoID")%>')">Pendência</button>
+                        <%
+                            end if
+                        %>
+                    </div>
+                    <div id="divhist<%=pCons("id")%>" class="ResultSearchInput" style="position:absolute; display:none;z-index: 99999; padding:0; margin-left:-740px; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
+
                 </td>
             </tr>
             <%
@@ -216,7 +216,7 @@ end if
         wend
         pCons.close
         set pCons=nothing
-	
+
 	    if c=0 then
 		    txt = "Nenhum agendamento."
 	    elseif c=1 then
@@ -238,38 +238,37 @@ end if
     <script>$(function(){ if('<%=c%>' == 0) { $(".badgefuturo").hide() } $(".badgefuturo").html('<%=c%>') })</script>
 
     <div id="propostas" class="tab-pane">
-    <div class="text-right" style="margin:5px 0">
-        <a href="#" class="btn btn-sm btn-primary" onclick="propostas()">
-            <i class="far fa-plus"></i> Nova proposta
-        </a>
-    </div>
-    <table class="table footable fw-labels" data-page-size="20">
+    <table class="table footable fw-labels table-condensed" data-page-size="20">
         <thead>
             <tr>
-                <th>Título da Proposta</th>
+                <th>Título</th>
                 <th>Data</th>
                 <th>Executor</th>
                 <th>Valor</th>
                 <th>Desconto</th>
                 <th>3x</th>
                 <th>6x</th>
-                <th></th>
+                <th>
+                    <a href="#" class="btn btn-xs btn-success pull-right" onclick="propostas()">
+                        <i class="far fa-plus"></i> Nova proposta
+                    </a>
+                </th>
             </tr>
         </thead>
 
         <tbody>
         <%
         c = 0
-        sqlProposta = "SELECT *, pp.NomeProfissional, p.id as idproposta, (select SUM(ValorUnitario) from itensproposta ipp where ipp.PropostaID = p.id) valorTotal, " &_ 
+        sqlProposta = "SELECT *, pp.NomeProfissional, p.id as idproposta, (select SUM(ValorUnitario) from itensproposta ipp where ipp.PropostaID = p.id) valorTotal, " &_
         " (select SUM(Desconto) from itensproposta ipp where ipp.PropostaID = p.id) valorDesconto FROM propostas p " &_
         " LEFT JOIN profissionais pp ON pp.id= p.ProfissionalID  " &_
         " LEFT JOIN propostasstatus ps ON ps.id= p.StaID WHERE p.sysActive=1 AND p.StaID = 1 "
         PacienteID = req("PacienteID")
-        
+
         if PacienteID <> "" then
             sqlProposta = sqlProposta & " AND p.PacienteID = " & PacienteID
         end if
- 
+
 
         sqlProposta = sqlProposta & " ORDER BY p.DataProposta desc "
         set propostaSQL = db.execute(sqlProposta)
@@ -278,7 +277,7 @@ end if
             c = c + 1
 
             valorTotal = 0
-            Desconto = 0 
+            Desconto = 0
 
             if propostaSQL("valorTotal")&"" <> "" then
                 valorTotal = propostaSQL("valorTotal")
@@ -287,7 +286,7 @@ end if
             if propostaSQL("valorDesconto")&"" <> "" then
                 Desconto = propostaSQL("valorDesconto")
             end if
-            
+
             tresVezes = (valorTotal - Desconto) / 3
             seisVezes = (valorTotal - Desconto) / 6
 
@@ -305,9 +304,11 @@ end if
                 <td><%= "R$ " & formatnumber(tresVezes) %></td>
                 <td><%= "R$ " & formatnumber(seisVezes) %></td>
                 <td>
-                <button class="btn btn-info btn-xs" data-propostaid="<%= propostaSQL("idproposta") %>" id="prophist2<%=propostaSQL("idproposta")%>">Detalhes</button>
-                <a class="btn btn-primary btn-xs" href="./?P=PacientesPropostas&Pers=1&I=&PropostaID=<%=propostaSQL("idproposta")%>" target="_blank" title="Ir para proposta"><i class="far fa-external-link"></i></a>
-                <div id="divhist2<%=propostaSQL("idproposta")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
+                <div class="btn-group pull-right">
+                    <button title="Detalhes" class="btn btn-default btn-xs" data-propostaid="<%= propostaSQL("idproposta") %>" id="prophist2<%=propostaSQL("idproposta")%>"><i class="far fa-info-circle"></i></button>
+                    <a title="Ir para agendamento" class="btn btn-default btn-xs" href="./?P=PacientesPropostas&Pers=1&I=&PropostaID=<%=propostaSQL("idproposta")%>" target="_blank" title="Ir para proposta"><i class="far fa-external-link"></i></a>
+                </div>
+                    <div id="divhist2<%=propostaSQL("idproposta")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>
             </tr>
         <%
@@ -320,7 +321,7 @@ end if
     <script>$(function(){ if('<%=c%>' == 0) { $(".badgeproposta").hide() } $(".badgeproposta").html('<%=c%>') })</script>
 
     <div id="agendamentosantigos" class="tab-pane">
-    <table class="table footable fw-labels" data-page-size="20">
+    <table class="table footable fw-labels table-condensed" data-page-size="20">
         <thead>
             <tr>
                 <th>Status</th>
@@ -335,13 +336,13 @@ end if
 
         <%
 	    c = 0
-	
+
 	    agends = ""
-        
-        set pCons = db.execute("select a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, " &_ 
-        " c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN profissionais prof on prof.id=a.ProfissionalID "&_ 
-        " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) " &_ 
-        " LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano " &_ 
+
+        set pCons = db.execute("select a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, " &_
+        " c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN profissionais prof on prof.id=a.ProfissionalID "&_
+        " LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) " &_
+        " LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano " &_
         " WHERE DATE_FORMAT(a.Data, '%Y-%m-%d') < DATE_FORMAT(now(),'%Y-%m-%d') AND a.PacienteID="&PacienteID&" ORDER BY a.Data DESC, a.Hora DESC LIMIT 20")
 
         while not pCons.EOF
@@ -349,7 +350,7 @@ end if
 		    if pCons("rdValorPlano")="V" then
                 if aut("areceberareceberpaciente") then
     			    Pagto = "R$ " & formatnumber(0&pCons("ValorPlano"), 2)
-                    
+
                 else
                     Pagto = ""
                 end if
@@ -357,7 +358,7 @@ end if
 			    Pagto = pCons("NomeConvenio")
 		    end if
 		    agends = agends & pCons("id") & ","
-		
+
 		    consHora = pCons("Hora")
 		    if not isnull(consHora) then
 			    consHora = formatdatetime(consHora, 4)
@@ -396,9 +397,12 @@ end if
                 <td><%=left(pCons("NomeEspecialidade"), 30) %></td>
                 <td><%=left(NomeProcedimento, 30) %></td>
                 <td><%=Pagto%></td>
-                <td><button class="btn btn-info btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
-                    <a class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
-                    <div id="divhist<%=pCons("id")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
+                <td>
+                    <div class="btn-group">
+                        <button title="Detalhes" class="btn btn-default btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>"><i class="far fa-info-circle"></i></button>
+                        <a class="btn btn-default btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
+                    </div>
+                    <div id="divhist<%=pCons("id")%>" class="ResultSearchInput" style="position:absolute; display:none;z-index: 99999; padding:0; margin-left:-740px; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>
             </tr>
             <%
@@ -406,7 +410,7 @@ end if
         wend
         pCons.close
         set pCons=nothing
-	
+
 	    if c=0 then
 		    txt = "Nenhum agendamento."
 	    elseif c=1 then
@@ -509,11 +513,10 @@ end if
         <script>$(function(){ if('<%=c%>' == 0) { $(".badgeexcluido").hide() } $(".badgeexcluido").html('<%=c%>') })</script>
         
         <div id="pendencias" class="tab-pane">
-        <h3>Pendências</h3>
 
-        <table class="table table-striped">
+        <table class="table table-striped table-condensed">
             <thead>
-                <tr class="success">
+                <tr>
                     <th>Paciente</th>
                     <th>Zona</th>
                     <th>Itens</th>
@@ -586,9 +589,6 @@ end if
         <script>$(function(){ if('<%=c%>' == 0) { $(".badgependencia").hide() }  $(".badgependencia").html('<%=c%>') })</script>
     </div>
     
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" id="btn-close-pacientes-modal" onClick="fecharModal()"><i class="far fa-close"></i> Fechar</button>
 </div>
 
 <script type="text/javascript">
@@ -753,18 +753,6 @@ end if
             $("#agdFuturo").html(data)
         })
     }
-
-    function fecharModal(){
-        if (confirm("As informações não salvas serão perdidas. Deseja continuar?")) {
-            for (let index = 0; index < 3; index++) {
-                $(".modal").modal('hide');
-            }
-        } 
-    }
-
-    $( ".close").click(function() {
-    fecharModal();
-    });
 
     function modalPagamento()
     {

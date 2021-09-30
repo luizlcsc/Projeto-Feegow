@@ -40,7 +40,7 @@
     <div class="col-md-3">
         <button type="button" onclick="desistencia()" class="btn btn-warning btn-sm" title="Desistência"><i class="far fa-remove"></i> Desistência</button>
         <button onclick="RegistrarMultiplasPendencias()" type="button" class="btn btn-danger btn-sm" title="Pendência"><i class="far fa-puzzle-piece"></i> Pendência</button>
-        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary btn-sm" title="Finalizar busca"><i class="far fa-check"></i> Finalizar</button>   
+        <button onclick="FinalizarBusca()" type="button" class="btn btn-primary btn-sm" title="Finalizar busca"><i class="far fa-check"></i> Finalizar</button>
     </div>
 </div>
 <%
@@ -432,15 +432,15 @@ end if
 
 <div class="row mt20">
 <div class="col-md-offset-2 col-md-2">
-    <button onclick="buscarDias('menosdias')" type="button" class="btn btn-default btn-xs btn-block"><i class="far fa-minus"></i> Menos Dias</button>
+    <button onclick="buscarDias('menosdias')" type="button" class="btn btn-default btn-xs btn-block"><i class="far fa-minus"></i> Menos dias</button>
 </div>
 
 <div class="col-md-4">
-    <button onclick="buscarAllZonas()" type="button" class="btn btn-primary btn-xs btn-block"> Mais Zonas</button>
+    <button onclick="buscarAllZonas()" type="button" class="btn btn-primary btn-xs btn-block"> Mais regiões</button>
 </div>
 
 <div class="col-md-2">
-    <button onclick="buscarDias()" type="button" class="btn btn-default btn-xs btn-block"><i class="far fa-plus"></i> Mais Dias</button>
+    <button onclick="buscarDias()" type="button" class="btn btn-default btn-xs btn-block"><i class="far fa-plus"></i> Mais dias</button>
 </div>
 </div>
 

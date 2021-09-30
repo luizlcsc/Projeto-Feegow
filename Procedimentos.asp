@@ -90,7 +90,6 @@ TipoGuia = reg("TipoGuia")
 
                             </label>
                         </div>
-                        <%=quickField("text", "Sinonimo", "Nome Técnico do Procedimento", 3, reg("Sinonimo"), "", "", "")%>
                     </div>
                     <hr class="short alt" />
                     <div class="row">
@@ -100,6 +99,7 @@ TipoGuia = reg("TipoGuia")
                         <%=quickField("simpleSelect", "GrupoID", "Grupo", 2, reg("GrupoID"), "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
                         <%=quickField("text", "Sigla", "Sigla", 1, reg("Sigla"), "", "", "")%>
                         <%=quickField("text", "Codigo", "Código TUSS", 1, reg("Codigo"), "", "", "")%>
+                        <%=quickField("text", "Sinonimo", "Nome Técnico do Procedimento", 2, reg("Sinonimo"), "", "", "")%>
                         <% if getConfig("procedimentosPorMes") = 1 then%>
                             <%=quickField("number", "MaximoNoMes", "Máximo de procedimentos no mês", 2, reg("MaximoNoMes"), " text-right", "", "")%>
                         <% end if%>

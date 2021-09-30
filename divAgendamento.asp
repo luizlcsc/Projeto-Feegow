@@ -1088,15 +1088,6 @@ end if
                         hiddenCHK = ""
                     end if
 
-                if session("Banco")="clinic5710" then
-                %>
-                <div class="col-xs-6 col-md-4 pt10">
-                    <button class="btn btn-block btn-sm btn-warning" type="button" onclick="RegistrarMultiplasPendencias('liberar')" id="btnPendenciaAgenda">
-                        Restrição
-                    </button>
-                </div>
-                <%
-                end if
                 %>
 
                 <div class="col-xs-6 col-md-<%= colCHK %> pt10">

@@ -2554,16 +2554,16 @@ end function
 function macro(editor)
 	macro = "<div class=""btn-toolbar"">"
 	macro = macro&"<div class=""btn-group"">"
-	macro = macro&"	<div class=""btn-group"">      <div>Inserir Macro&nbsp;&nbsp;</div>     </div>"
+	macro = macro&"	<div class=""btn-group"">      <div class='ml10'>Inserir Macro&nbsp;&nbsp;</div>     </div>"
 
     '-> pacientes
     macro = macro&"	<div class=""btn-group"">"
-    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Paciente <span class=""caret""></span></button>"
+    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Paciente <span class=""caret""></span></button>"
     macro = macro&"	  <ul class=""dropdown-menu"">"
     strPac = "[Paciente.Nome]|^[Paciente.Idade]|^[Paciente.CPF]|^[Paciente.Prontuario]|^[Paciente.Endereco]|^[Paciente.Numero]|^[Paciente.Complemento]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Cep]|^[Paciente.Nascimento]|^[Paciente.Sexo]|^[Paciente.Cor]|^[Paciente.Altura]|^[Paciente.Peso]|^[Paciente.IMC]|^[Paciente.Religiao]|^[Paciente.Tel1]|^[Paciente.Tel2]|^[Paciente.Cel1]|^[Paciente.Cel2]|^[Paciente.Email1]|^[Paciente.Email2]|^[Paciente.Profissao]|^[Paciente.Documento]|^[Paciente.EstadoCivil]|^[Paciente.Origem]|^[Paciente.IndicadoPor]|^[Paciente.Observacoes]|^[Paciente.Convenio]|^[Paciente.Matricula]|^[Paciente.Validade]"
     splPac = split(strPac, "|^")
     for pak=0 to ubound(splPac)
-        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPac(pak)&"')"">"&splPac(pak)&"</a></li>"
+        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPac(pak)&"')""><code>"&splPac(pak)&"</code></a></li>"
     next
     macro = macro&"	  </ul>"
     macro = macro&"	</div>"
@@ -2571,12 +2571,12 @@ function macro(editor)
 
 	'-> unidades
 	macro = macro&"	<div class=""btn-group"">"
-	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Unidade <span class=""caret""></span></button>"
+	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Unidade <span class=""caret""></span></button>"
 	macro = macro&"	  <ul class=""dropdown-menu"">"
 	strUni = "Nome, NomeFantasia, Endereco, Numero, Complemento, Bairro, Cidade, Estado, Tel1, Cel1, Email1, CNPJ, CNES"
 	splUni = split(strUni, ", ")
 	for unk=0 to ubound(splUni)
-		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Unidade."&splUni(unk)&"]')"">[Unidade."&splUni(unk)&"]</a></li>"
+		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Unidade."&splUni(unk)&"]')""><code>[Unidade."&splUni(unk)&"]</code></a></li>"
 	next
 	macro = macro&"	  </ul>"
 	macro = macro&"	</div>"
@@ -2584,12 +2584,12 @@ function macro(editor)
     if editor<>"Cabecalho" and editor<>"Rodape" then
         '-> agendamento
         macro = macro&"	<div class=""btn-group"">"
-        macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Agendamento <span class=""caret""></span></button>"
+        macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Agendamento <span class=""caret""></span></button>"
         macro = macro&"	  <ul class=""dropdown-menu"">"
         strUni = "Hora, Data, HoraChegada"
         splUni = split(strUni, ", ")
         for unk=0 to ubound(splUni)
-            macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Agendamento."&splUni(unk)&"]')"">[Agendamento."&splUni(unk)&"]</a></li>"
+            macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Agendamento."&splUni(unk)&"]')""><code>[Agendamento."&splUni(unk)&"]</code></a></li>"
         next
         macro = macro&"	  </ul>"
         macro = macro&"	</div>"
@@ -2598,12 +2598,12 @@ function macro(editor)
 
     '<-- profissionais
     macro = macro&"	<div class=""btn-group"">"
-    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Profissional <span class=""caret""></span></button>"
+    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Profissional <span class=""caret""></span></button>"
     macro = macro&"	  <ul class=""dropdown-menu"">"
     strPro = "[Profissional.Nome]|^[Profissional.Documento]|^[Profissional.Assinatura]"
     splPro = split(strPro, "|^")
     for prk=0 to ubound(splPro)
-        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPro(prk)&"')"">"&splPro(prk)&"</a></li>"
+        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPro(prk)&"')""><code>"&splPro(prk)&"</code></a></li>"
     next
     macro = macro&"	  </ul>"
     macro = macro&"	</div>"
@@ -2611,12 +2611,12 @@ function macro(editor)
 
     '<-- sistema
 	macro = macro&"	<div class=""btn-group"">"
-	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Sistema <span class=""caret""></span></button>"
+	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Sistema <span class=""caret""></span></button>"
 	macro = macro&"	  <ul class=""dropdown-menu"">"
 	strSis = "[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
 	splSis = split(strSis, "|^")
 	for sik=0 to ubound(splSis)
-		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splSis(sik)&"')"">"&splSis(sik)&"</a></li>"
+		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splSis(sik)&"')""><code>"&splSis(sik)&"</code></a></li>"
 	next
 	macro = macro&"	  </ul>"
 	macro = macro&"	</div>"

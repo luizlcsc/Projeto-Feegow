@@ -8,10 +8,6 @@
         border-radius: 0px;
     }
 
-    #modal-components .modal-dialog
-    {
-        width: 95% !important;
-    }
     .select2-search__field{
         text-transform: uppercase;
     }
@@ -41,7 +37,7 @@ end if
 PaciID = req("PaciID")
 sessaoAgenda = req("sessaoAgenda")&""
 %>
-<div class="panel">
+<div class="panel mt10">
     <div class="panel-body">
         <div id="div-agendamento" style="display: none"></div>
         <form id="bAgenda">
@@ -816,7 +812,7 @@ function profissionais() {
 }
 
 function hist(P) {
-    openComponentsModal('HistoricoPacienteAgenda.asp?PacienteID=' + P, false, 'Pacientes', true)
+    openComponentsModal('HistoricoPacienteAgenda.asp?PacienteID=' + P, false, 'Pacientes', true, false, 'lg')
 }
 
 var CarrinhoID = 0;

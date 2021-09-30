@@ -49,6 +49,7 @@ if not ItemAuditoriaSQL.eof then
                 %>
                 <strong>Cliente: </strong> <%=RegistroSQL("Cliente")%> <br>
                 <strong>Valor: </strong> <%=Valor%> <br>
+                <strong>Detalhes: </strong> <%=RegistroSQL("Detalhes")%> <br>
                 <strong>Data original: </strong> <%=RegistroSQL("DataOriginal")%> <br>
                 <strong>Executante: </strong> <%=RegistroSQL("Executante")%> <br>
 

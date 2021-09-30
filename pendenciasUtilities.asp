@@ -44,7 +44,7 @@ if acao = "abrirModalRestricaoPreparo" then
 <%
     elseif ccur(totalPreparos("totalPreparos")) > 0 then
 %>
-        openComponentsModal('procedimentosModalPreparo.asp?ProcedimentoId=' + ProcedimentoID+ '&PacientedId=' + PacienteID+'&agendamentoID=' + agendamentoID + '&requester=AgendaMultipla&ProfissionalID=' + ProfissionalID, true, 'Preparo', true, '')
+        openComponentsModal('procedimentosModalPreparo.asp?ProcedimentoId=' + ProcedimentoID+ '&PacientedId=' + PacienteID+'&agendamentoID=' + agendamentoID + '&requester=AgendaMultipla&ProfissionalID=' + ProfissionalID, true, 'Preparo', true, '','sm')
 <%
     else
         if CriarPendencia = "sim" then

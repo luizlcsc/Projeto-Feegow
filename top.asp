@@ -572,6 +572,11 @@ else
             </li>
             <%
             end if
+            if aut("voucherV")=1 then
+            %>
+            <li><a href="./?P=voucher&Pers=Follow"  class="sub-menu-click-cadastro-voucher" ><i class="far fa-ticket-alt"></i> Voucher <span class="label label-system label-xs fleft">Novo</span></a></li>
+            <%
+            end if
             if aut("planocontas")=1 then
             %>
             <li>

@@ -479,14 +479,16 @@ if getConfig("CalculoReembolso") then
     if not ProcedimentoComReembolsoSQL.eof then
 %>
             <div class="col-md-4">
-
                 <br>
                 <button type="button" onclick="calculaReembolso()" class="btn btn-default disable"><i class="far fa-calculator"></i> Calcular reembolso</button>
-<%
-    end if
-%>&nbsp;
             </div>
 <%
+    else
+    %>
+    <div class="col-md-3"></div>
+    <%
+    end if
+
 else
 %>
 <div class="col-md-3"></div>

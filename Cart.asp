@@ -37,7 +37,7 @@ if Acao <> "prop" then
     <%
     valorMinimoParcela = getConfig("ValorMinimoParcelamento")
     %>
-    <table class="table table-condensed table-bordered table-hover">
+    <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr class="system">
                 <th colspan="12"><i class="fa fa-calendar"></i> <%=cartTotal("total")%> procedimentos selecionados</th>

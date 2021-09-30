@@ -147,12 +147,27 @@ Class Restricao
                     set valorRestricao = db.execute(sqlValorRestricao)
 
                     if restricoes("tipo") = 2 then
+                        if isnumeric(respostas("RespostaMarcada")) then
+                            restricaoVal_RespostaRemarcada = ccur(respostas("RespostaMarcada"))
+                        else
+                            restricaoVal_RespostaRemarcada = "NULL"
+                        end if
+                        if isnumeric(valorRestricao("Inicio")) then
+                            restricaoVal_Inicio = ccur(valorRestricao("Inicio"))
+                        else
+                            restricaoVal_RespostaRemarcada = "NULL"
+                        end if
+                        if isnumeric(valorRestricao("Fim")) then
+                            restricaoVal_RespostaRemarcada = ccur(valorRestricao("Fim"))
+                        else
+                            restricaoVal_RespostaRemarcada = "NULL"
+                        end if
 
-                        if valorRestricao("Restringir") = "D" and ccur(respostas("RespostaMarcada")) >= ccur(valorRestricao("Inicio")) and ccur(respostas("RespostaMarcada")) <= ccur(valorRestricao("Fim")) then
+                        if valorRestricao("Restringir") = "D" and restricaoVal_RespostaRemarcada) >= restricaoVal_Inicio and restricaoVal_RespostaRemarcada) <= restricaoVal_RespostaRemarcada then
                             totalRestricao = totalRestricao+1
                             valorMotivo = "dentro"
                             cssClass = "danger"
-                        elseif valorRestricao("Restringir") = "F" and (ccur(respostas("RespostaMarcada")) < ccur(valorRestricao("Inicio")) or ccur(respostas("RespostaMarcada")) > ccur(valorRestricao("Fim"))) then
+                        elseif valorRestricao("Restringir") = "F" and (restricaoVal_RespostaRemarcada) < restricaoVal_Inicio or restricaoVal_RespostaRemarcada) > restricaoVal_RespostaRemarcada) then
                             totalRestricao = totalRestricao+1
                             valorMotivo = "fora"
                             cssClass = "danger"

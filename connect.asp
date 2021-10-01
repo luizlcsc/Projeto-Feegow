@@ -5671,8 +5671,8 @@ function recursoAdicional(RecursoAdicionalID)
             end if
         end if
 
-        Response.Cookies("recurso-adicional-"&RecursoAdicionalID)=Status
-        Response.Cookies("recurso-adicional-"&RecursoAdicionalID).Expires = Date() + 1
+        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID)=Status
+        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID).Expires = Date() + 1
         recursoAdicional=Status
     end if
 end function
@@ -5954,8 +5954,8 @@ function getConfig(configName)
                 c = 0
             end if
 
-            Response.Cookies("config-"&configName) = c
-            Response.Cookies("config-"&configName).Expires = Date() + 1
+            'Response.Cookies("config-"&configName) = c
+            'Response.Cookies("config-"&configName).Expires = Date() + 1
             getConfig = c
         end if
     end if

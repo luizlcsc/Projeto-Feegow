@@ -663,6 +663,8 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
         <%
     case "|ResultadosExames|"
         %><!--#include file="ResultadosExames.asp"--><%
+    case "|ExamesImagem|"
+        %><!--#include file="ExamesImagem.asp"--><%
     case "|Protocolos|"
         %>
         <div class="panel timeline-add">

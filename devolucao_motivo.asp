@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Devolucao.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 'Não gerar devolução se tiver REPASSE GERADO E/OU NOTA FISCAL GERADA
@@ -31,6 +32,7 @@ end if
 set devolucaoObj = new Devolucao
 exeDevolucao = devolucaoObj.gerarDevolucao(InvoiceID, iteninvoice, accountId, TipoOperacao, MotivoDevolucao, DebitarCaixa, Observacao, contaID)
 if exeDevolucao then
+    call registraEventoAuditoria("cancela_item", InvoiceID, Observacao)
     response.write("Conta cancelada com sucesso")
 else
     response.write("Conta não cancelada")
@@ -41,7 +43,9 @@ $(function(){
     closeComponentsModal();
     $("#btn-invoice-save").attr("disabled", false);
     showMessageDialog("Itens cancelados com sucesso", "warning");
-    itens();
+    setTimeout(function (){
+        itens();
+    },500);
 
 });
 

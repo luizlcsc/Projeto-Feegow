@@ -94,6 +94,7 @@ rfHora=ref("Hora")
 rfProfissionalID=ref("ProfissionalID")
 rfEspecialidadeID=ref("EspecialidadeID")
 rdEquipamentoID=ref("EquipamentoID")
+GradeID = ref("GradeID")
 indicacaoID=ref("indicacaoId")
 rfData=ref("Data")
 if isdate(rfData) then

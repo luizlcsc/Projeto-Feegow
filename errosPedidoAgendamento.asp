@@ -2,6 +2,9 @@
 <!--#include file="Classes/AgendamentoValidacoes.asp"-->
 <%
 set ConfigSQL = db.execute("select BloquearEncaixeEmHorarioBloqueado from sys_config WHERE id=1 LIMIT 1")
+set ProcedimentoSQL = db.execute("SELECT * FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
+set ProfissionalSQL = db.execute("SELECT * FROM profissionais WHERE id="&treatvalzero(rfProfissionalID))
+set GradeSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
 
 if ref("ageTel1")="" and ref("ageCel1")="" then
     erro = "Erro: Preencha ao menos um telefone do paciente."
@@ -144,13 +147,20 @@ end if
 
 
 if rfrdValorPlano="V" then
-    set ProcedimentoConveniosSQL = db.execute("SELECT SomenteConvenios FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
-    if not ProcedimentoConveniosSQL.eof then
-        LimitarConvenios = ProcedimentoConveniosSQL("SomenteConvenios")
+    if not ProcedimentoSQL.eof then
+        LimitarConvenios = ProcedimentoSQL("SomenteConvenios")
 
         if LimitarConvenios&""<>"" then
             if instr(LimitarConvenios, "|NOTPARTICULAR|")>0 then
                 erro="Este procedimento não permite particular."
+            end if
+        end if
+    end if
+    if not GradeSQL.eof then
+        LimitarConveniosGrade = GradeSQL("Convenios")&""
+        if LimitarConveniosGrade <> "" then
+            if instr(LimitarConveniosGrade,"|P|")=0 then
+                erro = "Esta grade não permite particular."
             end if
         end if
     end if
@@ -166,9 +176,8 @@ elseif rfrdValorPlano="P" then
        
     end if
 
-    set ProcedimentoConveniosSQL = db.execute("SELECT SomenteConvenios FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
-    if not ProcedimentoConveniosSQL.eof then
-        LimitarConvenios = ProcedimentoConveniosSQL("SomenteConvenios")
+    if not ProcedimentoSQL.eof then
+        LimitarConvenios = ProcedimentoSQL("SomenteConvenios")
 
         if LimitarConvenios&""<>"" then
             if instr(LimitarConvenios, "|"&rfValorPlano&"|")<=0 then
@@ -180,9 +189,17 @@ elseif rfrdValorPlano="P" then
         end if
     end if
 
-    set ProfissionalConveniosSQL = db.execute("SELECT SomenteConvenios FROM profissionais WHERE id="&treatvalzero(rfProfissionalID))
-    if not ProfissionalConveniosSQL.eof then
-        LimitarConvenios = ProfissionalConveniosSQL("SomenteConvenios")
+    if not GradeSQL.eof then
+        LimitarConveniosGrade = GradeSQL("Convenios")&""
+        if LimitarConveniosGrade <> "" then
+            if instr(LimitarConveniosGrade,"|"&rfValorPlano&"|")=0 then
+                erro = "Esta grade não permite o convênio selecionado."
+            end if
+        end if
+    end if
+
+    if not ProfissionalSQL.eof then
+        LimitarConvenios = ProfissionalSQL("SomenteConvenios")
 
         if LimitarConvenios&""<>"" then
             if instr(LimitarConvenios, "|"&rfValorPlano&"|")<=0 then
@@ -242,10 +259,9 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         else
             tmp=0
         end if
-        set veNrComp=db.execute("select MaximoAgendamentos from procedimentos where id = '"&rfProcedimento&"'")
-        if not veNrComp.EOF then
-            if not isnull(veNrComp("MaximoAgendamentos")) and isnumeric(veNrComp("MaximoAgendamentos")) then
-                nrComp=cint(veNrComp("MaximoAgendamentos"))
+        if not ProcedimentoSQL.EOF then
+            if not isnull(ProcedimentoSQL("MaximoAgendamentos")) and isnumeric(ProcedimentoSQL("MaximoAgendamentos")) then
+                nrComp=cint(ProcedimentoSQL("MaximoAgendamentos"))
             else
                 nrComp=1
             end if
@@ -310,12 +326,10 @@ end if
 
 TotalEncaixeLocal = -1
 if ref("GradeID")<> "" then
-    GradeID =  ref("GradeID")
 
     if ref("Encaixe")="1" then
-        set MaximosDeEncaixePorGradeSQL = db.execute("SELECT MaximoEncaixes FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
-        if not MaximosDeEncaixePorGradeSQL.eof then
-            MaximoEncaixesPorGrade=MaximosDeEncaixePorGradeSQL("MaximoEncaixes")
+        if not GradeSQL.eof then
+            MaximoEncaixesPorGrade=GradeSQL("MaximoEncaixes")
         end if
     end if
 
@@ -326,21 +340,20 @@ if ref("GradeID")<> "" then
     if rfProcedimento&""<>"" then
          set TipoProcedimentoSQL = db.execute("SELECT TipoProcedimentoID FROM procedimentos WHERE TipoProcedimentoID=9 AND id="&rfProcedimento)
          if ref("Retorno") = "1" or not TipoProcedimentoSQL.eof then
-             set MaximoRetornosGradeSQL = db.execute("SELECT MaximoRetornos, ProfissionalID, HoraDe, HoraA FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID))
-             if not MaximoRetornosGradeSQL.eof then
-                 if MaximoRetornosGradeSQL("MaximoRetornos")&"" <> "" then
-                     if isnumeric(MaximoRetornosGradeSQL("MaximoRetornos")&"") then
+             if not GradeSQL.eof then
+                 if GradeSQL("MaximoRetornos")&"" <> "" then
+                     if isnumeric(GradeSQL("MaximoRetornos")&"") then
                         if ConsultaID<>"0" then
                             whereRetorno = " AND agendamentos.id NOT IN("&ConsultaID&")"
                         end if
                          sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID " &_
-                                                   " WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(MaximoRetornosGradeSQL("ProfissionalID")) &_
-                                                   " AND Hora BETWEEN TIME('"&right(MaximoRetornosGradeSQL("HoraDe"),8)&"') AND TIME('"&right(MaximoRetornosGradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData) &_
+                                                   " WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(GradeSQL("ProfissionalID")) &_
+                                                   " AND Hora BETWEEN TIME('"&right(GradeSQL("HoraDe"),8)&"') AND TIME('"&right(GradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData) &_
                                                    " AND StaId NOT IN (6,11) AND (procedimentos.TipoProcedimentoID=9 OR agendamentos.Retorno = 1) "&whereRetorno
                          set AgendamentosRetornosSQL = db.execute(sqlAgendamentosRetornos)
 
                          if not AgendamentosRetornosSQL.eof then
-                             if cint(AgendamentosRetornosSQL("NumeroRetornos")) >= cint(MaximoRetornosGradeSQL("MaximoRetornos")) then
+                             if cint(AgendamentosRetornosSQL("NumeroRetornos")) >= cint(GradeSQL("MaximoRetornos")) then
                                  erro = "Máximo de retornos excedido."
                              end if
                          end if
@@ -433,9 +446,8 @@ if ref("Encaixe")="1" and erro="" and ConsultaID="0" then
     end if
 
     if erro="" then
-        set ProcedimentoPermiteEncaixeSQL = db.execute("SELECT PermiteEncaixe FROM procedimentos WHERE id="&rfProcedimento)
-        if not ProcedimentoPermiteEncaixeSQL.eof then
-            if ProcedimentoPermiteEncaixeSQL("PermiteEncaixe")="N" then
+        if not ProcedimentoSQL.eof then
+            if ProcedimentoSQL("PermiteEncaixe")="N" then
                 erro = "Este procedimento não permite encaixe."
             end if
         end if
@@ -484,11 +496,8 @@ if erro="" and getConfig("ExibirProgramasDeSaude") = 1 then
 
     'verifica se a grade possui limitação de programas de saúde
     if ref("GradeID")<> "" then
-        GradeID = ref("GradeID")
-
-        set rsProgramasGrades = db.execute("SELECT Programas FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
-        if not rsProgramasGrades.eof then
-            programasGrade = rsProgramasGrades("Programas")&""
+        if not GradeSQL.eof then
+            programasGrade = GradeSQL("Programas")&""
             if programasGrade <> "" then
                 if ProgramaID = "" then
                     erro="A grade deste horário é restrita a programas de saúde."

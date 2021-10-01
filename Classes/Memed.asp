@@ -216,7 +216,8 @@
     function savePrescricaoMemed(id) {
         postUrl('prescription/memedv2/save-prescription', {
              prescriptionId: id,
-             patientId: '<%=req("I")%>'
+             patientId: '<%=req("I")%>',
+             tipo: memedTipo,
          }, function (data) {
             const tipo = memedTipo === 'exame' ? 'Pedido' : 'Prescricao';
             if (data.success) {

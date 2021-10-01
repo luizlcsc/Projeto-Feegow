@@ -1,4 +1,4 @@
-﻿﻿<!--#include file="modal.asp"-->
+﻿<!--#include file="modal.asp"-->
 <%
 function desfazBloqueioFeriado(feriadoid)
 	sqlBuscaBloqueios = " select * "&_ 
@@ -368,7 +368,7 @@ function DefaultForm(tableName, id)
 
 					        sqlBuscaNome = " OR NomePaciente like '%"&q&"%' "
                             if isnumeric(q) then
-                                sqlBuscaNumerica = " OR CPF = '"&q&"' OR id = '"&q&"' "
+                                sqlBuscaNumerica = " OR CPF = '"&q&"' OR id = '"&q&"' OR Cel1 = '"&q&"' OR Tel1 = '"&q&"' "
                                 sqlBuscaNome = ""
                             end if
 							if isdate(q) then

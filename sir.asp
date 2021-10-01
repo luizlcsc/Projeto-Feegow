@@ -51,6 +51,8 @@ if aut(lcase(ref("resource"))&"A")=1 then
         if PorteClinica <= 3 then
             'sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&ref("q")&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
             sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
+        else
+            sqlTelefone = " OR Cel1='"&ref("q")&"' OR Tel1='"&ref("q")&"' "
         end if
         
         if not isnumeric(TermoBuscado) then

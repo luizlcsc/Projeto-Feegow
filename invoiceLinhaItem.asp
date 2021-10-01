@@ -73,16 +73,18 @@
                 <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
             <% end if %>
                 <%
-                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
-                    set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
-                    TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
+                if id>0 then
+                    if Executado="C" then
+                        set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
+                        TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
 
-                    if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
+                        if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) then
                         %>
                          <input type="hidden" value="C" name="Cancelado<%=id%>">
                         <span class="label label-danger">Cancelado</span>
                         <% '<span class="checkbox-custom checkbox-danger"><input type="checkbox" name="Cancelado id" id="Cancelado id" value="C" checked="checked" /><label for="Cancelado id"> Cancelado</label></span> %>
                         <%
+                        end if
                     end if
                 end if
                 %>

@@ -1320,7 +1320,7 @@ var InvoiceAlterada = false;
         if(accountId == '_'){
             alert('Você precisa selecionar um paciente!');
         }else{
-            openComponentsModal("devolucao_invoice.asp", {"accountId": accountId, "InvoiceID": <%=InvoiceID%>}, "Gerar Devoluções", false, "");
+            openComponentsModal("devolucao_invoice.asp", {"accountId": accountId, "InvoiceID": <%=InvoiceID%>}, "Gerar Devoluções", false, false, "md");
         }
     })
 

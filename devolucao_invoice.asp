@@ -107,7 +107,7 @@ end if
     <% end if %>
 
     <%=quickField("selectRadio", "MotivoDevolucao", "Motivo da devolução<br>", 4, "", "select * from motivo_devolucao where sysActive = 1 order by id", "Motivo", " required ")%>
-    <%=quickField("memo", "Observacao", "Observação", 12, "", "", "", "") %>
+    <%=quickField("memo", "Observacao", "Observação", 12, "", "", "", " required ") %>
 </div>
 <%
 'ii.Executado != 'S' AND
@@ -155,7 +155,7 @@ if not queryInvoice.eof then
     <div class="row mt15">
         <div class="col-md-12">
             <div class="pull-right">
-                <button type="button" class="btn btn-danger devolucao"><i class="far fa-times"></i> Gerar Devolução</button>
+                <button type="button" class="btn btn-danger" id="btn-devolucao"><i class="far fa-times"></i> Gerar Devolução</button>
             </div>
         </div>
     </div>
@@ -182,8 +182,9 @@ $(function(){
         }
     });
 
-    $(".devolucao").on('click', function(){
+    $("#btn-devolucao").on('click', function(){
         var itensinvoiceid = "";
+        $("#btn-invoice-save").attr("disabled", true);
 
         $(".iteninvoice:checked").each((i, val) => {
             itensinvoiceid += val.value + ","
@@ -198,6 +199,8 @@ $(function(){
             new PNotify({ title: 'Preencha todos os campos', type: 'danger', delay: 1000 });
             return false;
         }
+
+        $(this).attr("disabled", true);
 
         var operacao = function(){
             $.ajax({

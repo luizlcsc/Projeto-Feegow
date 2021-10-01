@@ -38,11 +38,13 @@ end if
 %>
 <script>
 $(function(){
-$('#modal-components').on('hidden.bs.modal', function (e) {
-  location.reload();
-})
+    closeComponentsModal();
+    $("#btn-invoice-save").attr("disabled", false);
+    showMessageDialog("Itens cancelados com sucesso", "warning");
+    itens();
 
-})
+});
+
 </script>
 
 <%

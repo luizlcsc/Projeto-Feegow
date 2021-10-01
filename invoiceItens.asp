@@ -97,6 +97,7 @@ if Acao="" then
 		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, dp.Desconto DescontoPendente, dp.Status StatusDesconto, i.Voucher, i.DataCancelamento from itensinvoice ii LEFT JOIN descontos_pendentes dp ON dp.ItensInvoiceID=ii.id JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
 
         ExistemDescontosPendentes = False
+        DataCancelamento=""
 
 		if not itens.eof then
             Voucher = itens("Voucher")
@@ -105,6 +106,8 @@ if Acao="" then
 		    if not FornecedorSQL.eof then
 		        LimitarPlanoContas = FornecedorSQL("limitarPlanoContas")
 		    end if
+
+
 
             while not itens.eof
                 response.Flush()
@@ -116,6 +119,12 @@ if Acao="" then
                         ExistemDescontosPendentes = True
                     end if
                 end if
+                if itens("Executado")="C" then
+                    DataCancelamento = "1"
+                else
+                    DataCancelamento = ""
+                end if
+
 
                 Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))
                 Total = Total+Subtotal
@@ -284,7 +293,7 @@ if Acao="" then
 				<th>
 				    <%
 				    msgVoucherHidden=""
-				    if Voucher = "" then
+				    if Voucher&"" = "" then
                         msgVoucherHidden = "display:none"
 
 
@@ -415,7 +424,7 @@ elseif Acao="I" then
 			Subtotal = ValorUnitario * Quantidade
             PacoteID = II
             Executado="U"
-			if not integracaofeita.eof then
+			if not integracaofeita.eof or DataCancelamento&""<>"" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
@@ -436,7 +445,7 @@ elseif Acao="I" then
 			ValorUnitario = pct("ValorUnitario")
 			Subtotal = ValorUnitario
             PacoteID = II
-			if not integracaofeita.eof then
+			if not integracaofeita.eof or DataCancelamento&""<>"" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%

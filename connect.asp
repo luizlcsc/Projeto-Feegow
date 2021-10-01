@@ -3113,7 +3113,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		end if
         'response.Write(recursoPerm)
 		if (hsysActive=1 and aut(recursoPerm&"A")=1) or (hsysActive=0 and aut(recursoPerm&"I")=1) or (aut("aberturacaixinhaI") and session("CaixaID")<>"" and hsysActive=0) or (hsysActive=1 and data("CaixaID")=session("CaixaID") and aut("aberturacaixinhaA")) or (aut("contasareceberI")=0 and aut("areceberpacienteI")) then
-				rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
+				rbtns = rbtns & "<button id='btn-invoice-save' class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
 
 		end if
 

@@ -4,8 +4,7 @@
 set ConfigSQL = db.execute("select BloquearEncaixeEmHorarioBloqueado from sys_config WHERE id=1 LIMIT 1")
 set ProcedimentoSQL = db.execute("SELECT * FROM procedimentos WHERE id="&treatvalzero(rfProcedimento))
 set ProfissionalSQL = db.execute("SELECT * FROM profissionais WHERE id="&treatvalzero(rfProfissionalID))
-set GradeSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
-
+set GradeProfSQL = db.execute("SELECT * FROM assfixalocalxprofissional WHERE id="&treatvalzero(GradeID)&"")
 if ref("ageTel1")="" and ref("ageCel1")="" then
     erro = "Erro: Preencha ao menos um telefone do paciente."
     %>
@@ -156,8 +155,8 @@ if rfrdValorPlano="V" then
             end if
         end if
     end if
-    if not GradeSQL.eof then
-        LimitarConveniosGrade = GradeSQL("Convenios")&""
+    if not GradeProfSQL.eof then
+        LimitarConveniosGrade = GradeProfSQL("Convenios")&""
         if LimitarConveniosGrade <> "" then
             if instr(LimitarConveniosGrade,"|P|")=0 then
                 erro = "Esta grade não permite particular."
@@ -173,7 +172,7 @@ elseif rfrdValorPlano="P" then
                 erro="Este plano não cobre o procedimento selecionado."
             end if
         end if
-       
+
     end if
 
     if not ProcedimentoSQL.eof then
@@ -189,8 +188,8 @@ elseif rfrdValorPlano="P" then
         end if
     end if
 
-    if not GradeSQL.eof then
-        LimitarConveniosGrade = GradeSQL("Convenios")&""
+    if not GradeProfSQL.eof then
+        LimitarConveniosGrade = GradeProfSQL("Convenios")&""
         if LimitarConveniosGrade <> "" then
             if instr(LimitarConveniosGrade,"|"&rfValorPlano&"|")=0 then
                 erro = "Esta grade não permite o convênio selecionado."
@@ -328,8 +327,8 @@ TotalEncaixeLocal = -1
 if ref("GradeID")<> "" then
 
     if ref("Encaixe")="1" then
-        if not GradeSQL.eof then
-            MaximoEncaixesPorGrade=GradeSQL("MaximoEncaixes")
+        if not GradeProfSQL.eof then
+            MaximoEncaixesPorGrade=GradeProfSQL("MaximoEncaixes")
         end if
     end if
 
@@ -340,20 +339,20 @@ if ref("GradeID")<> "" then
     if rfProcedimento&""<>"" then
          set TipoProcedimentoSQL = db.execute("SELECT TipoProcedimentoID FROM procedimentos WHERE TipoProcedimentoID=9 AND id="&rfProcedimento)
          if ref("Retorno") = "1" or not TipoProcedimentoSQL.eof then
-             if not GradeSQL.eof then
-                 if GradeSQL("MaximoRetornos")&"" <> "" then
-                     if isnumeric(GradeSQL("MaximoRetornos")&"") then
+             if not GradeProfSQL.eof then
+                 if GradeProfSQL("MaximoRetornos")&"" <> "" then
+                     if isnumeric(GradeProfSQL("MaximoRetornos")&"") then
                         if ConsultaID<>"0" then
                             whereRetorno = " AND agendamentos.id NOT IN("&ConsultaID&")"
                         end if
                          sqlAgendamentosRetornos = "SELECT count(agendamentos.id)NumeroRetornos FROM agendamentos INNER JOIN procedimentos ON procedimentos.id = agendamentos.TipoCompromissoID " &_
-                                                   " WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(GradeSQL("ProfissionalID")) &_
-                                                   " AND Hora BETWEEN TIME('"&right(GradeSQL("HoraDe"),8)&"') AND TIME('"&right(GradeSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData) &_
+                                                   " WHERE agendamentos.sysActive=1 AND ProfissionalID="&treatvalzero(GradeProfSQL("ProfissionalID")) &_
+                                                   " AND Hora BETWEEN TIME('"&right(GradeProfSQL("HoraDe"),8)&"') AND TIME('"&right(GradeProfSQL("HoraA"),8)&"') AND Data="&mydatenull(rfData) &_
                                                    " AND StaId NOT IN (6,11) AND (procedimentos.TipoProcedimentoID=9 OR agendamentos.Retorno = 1) "&whereRetorno
                          set AgendamentosRetornosSQL = db.execute(sqlAgendamentosRetornos)
 
                          if not AgendamentosRetornosSQL.eof then
-                             if cint(AgendamentosRetornosSQL("NumeroRetornos")) >= cint(GradeSQL("MaximoRetornos")) then
+                             if cint(AgendamentosRetornosSQL("NumeroRetornos")) >= cint(GradeProfSQL("MaximoRetornos")) then
                                  erro = "Máximo de retornos excedido."
                              end if
                          end if
@@ -496,8 +495,8 @@ if erro="" and getConfig("ExibirProgramasDeSaude") = 1 then
 
     'verifica se a grade possui limitação de programas de saúde
     if ref("GradeID")<> "" then
-        if not GradeSQL.eof then
-            programasGrade = GradeSQL("Programas")&""
+        if not GradeProfSQL.eof then
+            programasGrade = GradeProfSQL("Programas")&""
             if programasGrade <> "" then
                 if ProgramaID = "" then
                     erro="A grade deste horário é restrita a programas de saúde."

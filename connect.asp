@@ -5656,18 +5656,25 @@ end function
 
 
 function recursoAdicional(RecursoAdicionalID)
-    LicencaID=replace(session("Banco"), "clinic", "")
-    Status = 0
-    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
-    if not RecursoAdicionalSQL.eof then
-        Status=RecursoAdicionalSQL("Status")
+    recursoAdicionalCookie = Request.Cookies("recurso-adicional-"&RecursoAdicionalID)
+    if recursoAdicionalCookie<>"" then
+        recursoAdicional = cInt(recursoAdicionalCookie)
+    else
+        LicencaID=replace(session("Banco"), "clinic", "")
+        Status = 0
+        set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
+        if not RecursoAdicionalSQL.eof then
+            Status=RecursoAdicionalSQL("Status")
 
-		if Status=11 then
-			Status=4
-		end if
+            if Status=11 then
+                Status=4
+            end if
+        end if
+
+        Response.Cookies("recurso-adicional-"&RecursoAdicionalID)=Status
+        Response.Cookies("recurso-adicional-"&RecursoAdicionalID).Expires = Date() + 1
+        recursoAdicional=Status
     end if
-
-    recursoAdicional=Status
 end function
 
 function getPlanosOptions(ConvenioID, PlanoID)
@@ -5935,14 +5942,22 @@ function arqEx(nArquivo, nTipo)
 end function
 
 function getConfig(configName)
-    set ConfigSQL = db.execute("SELECT IFNULL(cp.Valor, cc.ValorPadrao) ValorPadrao FROM cliniccentral.config_opcoes cc LEFT JOIN config_gerais cp ON cc.id = cp.ConfigID WHERE Coluna='"&configName&"'") 
-    getConfig = 0
-    if not ConfigSQL.eof then 
-        c = ConfigSQL("ValorPadrao")
-		if c&""="" then
-			c = 0
-		end if
-		getConfig = c
+    configCookie = Request.Cookies("config-"&configName)
+    if configCookie<>"" then
+        getConfig = cInt(configCookie)
+    else
+        set ConfigSQL = db.execute("SELECT IFNULL(cp.Valor, cc.ValorPadrao) ValorPadrao FROM cliniccentral.config_opcoes cc LEFT JOIN config_gerais cp ON cc.id = cp.ConfigID WHERE Coluna='"&configName&"'")
+        getConfig = 0
+        if not ConfigSQL.eof then
+            c = ConfigSQL("ValorPadrao")
+            if c&""="" then
+                c = 0
+            end if
+
+            Response.Cookies("config-"&configName) = c
+            Response.Cookies("config-"&configName).Expires = Date() + 1
+            getConfig = c
+        end if
     end if
 end function
 

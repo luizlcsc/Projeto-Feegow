@@ -81,9 +81,9 @@
             position: relative;
             text-align: left;
             text-overflow: ellipsis;
+            top: 6px;
             vertical-align: top;
             white-space: nowrap;
-            font-weight: 600;
         }
 
         .nomeConv {
@@ -107,7 +107,7 @@
             max-width: 24px;
             height: auto;
             white-space: nowrap;
-        
+
         /*writing-mode: tb-rl;*/
         }
         #tblCalendario td {
@@ -115,18 +115,8 @@
             /*height:30px!important;*/
         }
 
-        #table-agenda-1 .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
-            padding: 7px !important;
-        }
-
-        .agenda-horario-txt{
-            color: #9d9d9d;
-            border-top: 0!important;
-            font-size: 12px;
-            background-color: #fafafa;
-        }
-        .table-hover > tbody > tr:hover > td{
-
+        .table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+            padding: 5px !important;
         }
     </style>
 

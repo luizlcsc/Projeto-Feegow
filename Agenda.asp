@@ -1,8 +1,6 @@
 <style type="text/css">
 .carinha {
-	margin:-2px
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px; 1px 3px;
+	margin:-2px 4px 1px 3px;
 }
 .item-agenda-1 {
 	width:35%;

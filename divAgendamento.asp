@@ -6,6 +6,7 @@ HorarioAgoraSQL = db.execute("SELECT DATE_FORMAT(NOW(), '%Y-%m-%dT%H:%i:%s') AS 
 HorarioAgora = HorarioAgoraSQL("now")
 set config = db.execute("select ChamarAposPagamento from sys_config limit 1")
 HorarioVerao="N"
+PermiteParticular = True
 
 omitir = ""
 if session("Admin")=0 then
@@ -319,7 +320,7 @@ function selecionaTabela(GradeID)
 end function
 
 'Atualizando valores da grade de convenios
-if GradeID<> "" and GradeID<>"undefined" then
+if GradeID<> "" and GradeID<>"undefined" and Convenios<> "Nenhum" then
 
     GradeSelecionada= selecionaTabela(GradeID)
 
@@ -330,9 +331,15 @@ if GradeID<> "" and GradeID<>"undefined" then
         GradeApenasConvenios = GradeSQL("Convenios")
         GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
         if GradeApenasConvenios <> "" then
+            if instr(GradeApenasConvenios,"|P|")=0 then
+                PermiteParticular = False
+            end if
             GradeApenasConvenios = trataConvenio(GradeApenasConvenios)&""
-
             Convenios = GradeApenasConvenios
+
+            if GradeApenasConvenios="P" then
+                Convenios = "Nenhum"
+            end if
         end if
         
         if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
@@ -1034,7 +1041,7 @@ end if
 
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="">
         <%if session("banco")="clinic1773" then%>
         <button class="btn btn-sm btn-primary" title="Enviar sms personalizado." type="button" style="float: left;" id="btnSendSms">
                         <i class="far fa-mobile"></i>

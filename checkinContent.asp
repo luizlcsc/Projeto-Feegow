@@ -2,7 +2,7 @@
 <div class="panel-body">
     <div class="table-responsive" style="overflow-y: scroll">
 
-    <table id="datatable2" class="table table-hover table-striped table-bordered">
+    <table id="datatable2" class="table table-hover table-striped table-bordered table-condensed">
         <thead>
             <tr>
                 <th width="1%"></th>
@@ -72,7 +72,7 @@
                     <%
                     statusIcon = imoon(ag("StaID"))
 
-                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+                    StatusSelect = "<div class='btn-group'><button class='btn btn-sm btn-transparent dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
                     set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
                     while not StatusSQL.eof
                         Active=""
@@ -102,7 +102,7 @@
                     <td><%= ag("NomeEquipamento") %></td>
                     <td><small><%= ag("NomeTabela") %></small></td>
                     <td class="text-right"><%= Convenio %></td>
-                    <td>
+                    <td class="p0">
                         <button style="width: 100%;" id="btn<%= ag("id") %>" class="btn btn-sm <% if ag("StaID")=4 then response.Write(" btn-warning ") else response.write(" btn-system ") end if  %>" type="button" onclick="abreAgenda('<%= replace(ft(ag("Hora"))&"", ":", "") %>', <%= ag("id") %>, '<%= date() %>', '<%= ag("LocalID") %>', '<%= ag("ProfissionalID") %>', '')">
                         <% if ag("StaID")=4 then %>
                         <i class=" far fa-clock-o"></i>

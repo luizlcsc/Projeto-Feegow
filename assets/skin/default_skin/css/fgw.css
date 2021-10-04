@@ -30618,3 +30618,12 @@ select[tabindex="-1"], .multisel {
     border-top-right-radius: 6px !important;
     border-bottom-right-radius: 6px !important;
 }
+
+.btn-transparent:active{
+    box-shadow: none !important;
+}
+
+.btn-transparent{
+    border: none;
+    background-color: transparent;
+}

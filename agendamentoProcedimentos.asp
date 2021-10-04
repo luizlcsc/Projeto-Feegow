@@ -34,11 +34,12 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                 for i=0 to ubound(spl)
                     TipoGuia = spl(i)
 
+                    Rotulo = "Guia "&TipoGuia
+
                     if TipoGuia<>"Simplificada" then
-                        TipoGuia = "de "&TipoGuia
+                        Rotulo = "Guia de "&TipoGuia
                     end if
 
-                    Rotulo = "Guia "& TipoGuia
                     %>
                     <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="far fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
                     <%
@@ -197,7 +198,7 @@ if req("Checkin")="1" then
         <%idagp = agp("id")%>
         <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
         <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
-        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
+        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular) %>
 
 
         <%
@@ -751,10 +752,14 @@ else
                             <%=quickField("number", "Tempo", "", 2, Tempo, "", "", " placeholder='Em minutos'"&TempoChange)%>
                         </td>
                         <td>
+                            <%
+                            if PermiteParticular then
+                            %>
                             <div class="radio-custom radio-primary">
                                 <input type="radio" onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
                             </div>
                             <%
+                            end if
                     if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
                             %>
                             <div class="radio-custom radio-primary">
@@ -904,7 +909,7 @@ $(document).ready(function() {
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
             contador = 1
             while not ageprocs.eof
-                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular)
                 contador = contador + 1
   
             ageprocs.movenext

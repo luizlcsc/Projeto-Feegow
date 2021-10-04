@@ -34,7 +34,7 @@ if (rdEquipamentoID&""<>"") AND (rfProfissionalID&""="" OR rfProfissionalID=0) t
     end if
 end if
 
-if (ref("ageTabela")&""="" or ref("ageTabela")&""="0") and getConfig("ObrigarTabelaParticular") then
+if (ref("ageTabela")&""="" or ref("ageTabela")&""="0") and getConfig("ObrigarTabelaParticular") and rfrdValorPlano="V" then
     erro = "Erro: Preencha a tabela do paciente."
 end if
 

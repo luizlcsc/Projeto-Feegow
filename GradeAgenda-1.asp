@@ -729,7 +729,7 @@ end if
                     "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
                     "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
-                    Conteudo = fix_string_chars_fulls(Conteudo)
+                    Conteudo = fix_string_chars_full(Conteudo)
                     if not podeVerAgendamento then
                         Conteudo = ""
                     end if

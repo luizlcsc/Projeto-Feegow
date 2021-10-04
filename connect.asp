@@ -1451,7 +1451,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             set filiais = db.execute("select * from sys_financialcompanyunits where not isnull(UnitName) and sysActive=1 order by UnitName")
 			if filiais.eof then
 				%>
-				<input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="0" />
+				<input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="0" <%=additionalTags%>/>
 				<%
 			else
 				response.Write(LabelFor)

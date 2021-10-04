@@ -345,11 +345,10 @@ end if
 
         <%
         if aut("|altunirectoA|")=0 and CD="C" then
-                disabUN = " disabled "
-                response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
-           end if
-           %>
-
+            disabUN = " disabled "
+            response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
+       end if
+       %>
         <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
         <%

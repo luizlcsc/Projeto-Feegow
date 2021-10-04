@@ -8203,9 +8203,11 @@ form.hide-list-label .bootstrap-duallistbox-container label {
     height: 0;
     background: transparent;
     border-bottom: 0;
-    box-shadow: 0 1px 0px #000;
+    box-shadow: 0 3px 18px rgb(0, 0, 0, 0.1);
     overflow: hidden;
     border: 0;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .dockmodal-header {
@@ -8215,10 +8217,12 @@ form.hide-list-label .bootstrap-duallistbox-container label {
     top: 0;
     left: 0;
     right: 0;
-    background: #30363e;
+    background: #009cf3;
     overflow: hidden;
     cursor: pointer;
     z-index: 1;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .dockmodal-body {
@@ -8270,10 +8274,11 @@ form.hide-list-label .bootstrap-duallistbox-container label {
     float: right;
     margin-right: 1px;
     line-height: 16px;
+    border-radius: 6px;
 }
 
 .dockmodal-header .header-action:hover {
-    background: #555;
+    background: #0086d1;
 }
 
 .dockmodal-header .header-action i {
@@ -17736,7 +17741,7 @@ ol.timeline-list li.timeline-item .timeline-date {
     padding: 7px;
     border-radius: 2px;
     border: 1px solid #e4e4e4;
-    background-color: #fefefe;
+    background-color: #f3f3f3;
     font-weight: 400;
 }
 
@@ -17754,8 +17759,77 @@ ol.timeline-list li.timeline-item .timeline-date {
     border-left-color: #777;
 }
 
+.chat-widget .media-own-message .media-body:after {
+    border-left-color: #009cf3;
+}
 .chat-widget .media-body:after {
     border-left-color: #FFF;
+}
+
+.chat-widget .chat-time-sent {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 66%;
+    float: right;
+    margin-left: 10px;
+}
+
+.chat-widget .media-own-message .chat-time-sent {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.dockmodal .chat-message-content{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 0;
+    padding-bottom: 10px;
+    background: #fffffff2;
+}
+
+.dockmodal .chat-message-content .panel-body{
+    padding: 6px;
+    border: none;
+}
+
+.dockmodal .chat-message-content  input{
+    border-radius: 25px!important;
+    width: 95%;
+}
+
+.dockmodal .chat-message-content  button{
+    border-radius: 50%!important;
+    border: 1px solid;
+    left: 2px;
+    background-color: #019cf3;
+    color: #ffffff;
+    margin-right: 10px;
+}
+.chat-widget .media-own-message .media-body {
+    background-color: #009cf3;
+    color: #fff;
+}
+
+
+.chat-widget .media-body {
+    border: none;
+    word-break: break-all;
+    border-radius: 8px;
+    max-width: 220px;
+}
+
+.media-own-message{
+    float: right;
+    padding-right: 10px ;
+}
+
+
+.chat-widget .media-own-message{
+    float: right;
+    padding-right: 10px ;
+}
+
+.chat-widget .media-own-message{
+    float: right;
+    padding-right: 10px ;
 }
 
 .chat-widget .media-left + .media-body:before,
@@ -17769,7 +17843,7 @@ ol.timeline-list li.timeline-item .timeline-date {
     border-color: transparent;
     border-style: solid;
     border-width: 8px 9px 8px 0px;
-    border-right-color: #777;
+    border-right-color: #f3f3f3;
 }
 
 .chat-widget .media-left + .media-body:after {

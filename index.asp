@@ -205,7 +205,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?cache-control=3">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.11.0">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -2522,7 +2522,7 @@ for i=0 to ubound(splChatWindows)
 			Para = chatID
 			chatID = splChatWindows(i)
 			%>
-			<div id="chat_<%=chatID%>"></div>
+			<div class="chat-popup" id="chat_<%=chatID%>"></div>
             <%
 		end if
 	end if

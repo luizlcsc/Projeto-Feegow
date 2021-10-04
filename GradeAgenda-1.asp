@@ -291,7 +291,7 @@ end if
     });
 </script>
 
-<table class="table table-striped table-hover table-condensed table-agenda">
+<table class="table table-striped table-hover table-condensed table-agenda" id="table-agenda-1">
      <%
         sqlUnidadesBloqueio=""
         if Ativo="on" then
@@ -449,8 +449,8 @@ end if
                                 HLivres = HLivres+1
                             %>
                             <tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', <%=LocalID%>, <%=ProfissionalID%>,<%=GradeID%>)" data-grade="<%=GradeID%>"  class="l l<%= LocalID %> vazio" data-hora="<%=formatdatetime(Hora, 4)%>" data-horaid="<%= horaid %>" id="<%=HoraID%>">
+                                <td class="agenda-horario-txt" width="1%"><%= formatdatetime(Hora,4) %></td>
                                 <td width="1%"></td>
-                                <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button> </td>
                                 <td colspan="4"><%= Tipo %></td>
                             </tr>
                             <%
@@ -550,7 +550,7 @@ end if
                     compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
                 set comps=db.execute(compsSql&compsWhereSql)
-  
+
                 while not comps.EOF
                     FormaPagto = comps("FormaPagto")
                     UnidadeID = comps("UnidadeID")
@@ -649,18 +649,18 @@ end if
                         end if
                     end if
                      if comps("matricula1") <>"" then
-					
+
 						matricula1 = "<br>Matrícula: "&comps("matricula1")
-						
+
 						if session("banco") = "clinic10402" and len(comps("matricula1")) > 21 then
 							matricula1 = "<br>Matrícula: "&mid(comps("matricula1"),8,7)
 						end if
-							
-                    else 
+
+                    else
                         matricula1 = "<br>Matrícula: *"
-                    end if 
+                    end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
+                    Conteudo = "<tr style='background-color:#ffffff;color:#7e7e7e' "&linkAg&" id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
@@ -682,7 +682,9 @@ end if
                     'end if
                     Conteudo = Conteudo & "Idade: "& IdadeAbreviada(comps("Nascimento")) &"<br>"
                     Conteudo = Conteudo & """ data-id="""&comps("id")&""">"&_
-                    "<td width=""1%"" "& linkAg &">"
+                    "<td width=""1%"" width=""1%"" nowrap "&FirstTdBgColor&" class='agenda-horario-txt btn-comp' data-hora="""&replace( compsHora, ":", "" )&""">"&compsHora&"</td>"
+                    Conteudo = Conteudo & "<td width=""1%"">"
+
                     if not isnull(comps("Resposta")) then
                         Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
                     end if
@@ -699,16 +701,15 @@ end if
                         end if
                         FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
                     end if
-                    Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"
                     if session("Banco")="clinic4134" then
                         Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""far fa-plus""></i></button>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&"  <span style='position:relative;top:6px;'>"&imoon(comps("StaID"))&"</span>"
+                    "<td  nowrap >"&pacientePrioridadeIcone&"  <span></span>"
                     if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
-                    Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) &"</span>"
+                    Conteudo = Conteudo & "<span class=""nomePac"">"& fix_string_chars_full(comps("NomePaciente")) &"</span><br><span>"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span>"
                     CorProcedimento = ""
                     if comps("Cor") <> "#fff" and not isnull(comps("Cor")) then
                         CorProcedimento = "<div class=""mr5 mt5"" style=""float:left;position:relative;background-color:"&comps("Cor")&";height:5px;width:5px;border-radius:50%""></div>"
@@ -725,9 +726,9 @@ end if
                         iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""far fa-undo text-warning pt10""></i>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
-                    "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
+                    "<td class=""text-center hidden-xs"" ></td>"&_
+                    "<td class=""text-center hidden-xs"" >"&comps("StaConsulta")&"</td>"&_
+                    "<td class=""text-right nomeConv hidden-xs""><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
                     Conteudo = fix_string_chars(Conteudo)
                     if not podeVerAgendamento then
@@ -785,7 +786,7 @@ end if
                                 }
                                 return false;
                            }
-                    });                    
+                    });
                 }
                 	<%
 					if HoraFinal<>"" then
@@ -808,7 +809,7 @@ end if
                 'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND ((false "&sqlUnidadesBloqueio&") or c.Unidades='' OR c.Unidades IS NULL) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
 				bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
                 set bloq = db.execute(bloqueioSql)
-				
+
                 while not bloq.EOF
                     HoraDe = HoraToID(bloq("HoraDe"))
 					HoraA = HoraToID(bloq("HoraA"))

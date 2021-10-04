@@ -841,6 +841,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
             </div>
           </div>
         </li>
+        <%
+        if aut("|chat") then
+        %>
 		<li class="dropdown menu-merge menu-right-chat">
 					<div class="navbar-btn btn-group">
 	          <button id="toggle_sidemenu_r" class="btn btn-sm btn-menu-left" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
@@ -852,6 +855,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 		</li>
 
         <%
+        end if
         if session("Status")="T" or session("Status")="F" then
         %>
         <script>

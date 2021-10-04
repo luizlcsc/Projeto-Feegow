@@ -11876,6 +11876,16 @@ th {
 }
 
 
+.table-hover(.table-bordered) > tbody > tr:hover > td:first-child {
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.table-hover:not(.table-bordered) > tbody > tr:hover > td:last-child {
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {
     background-color: #f5f5f5;
@@ -26225,7 +26235,7 @@ a.bg-success:hover {
 }
 
 .bg-success.light {
-    background-color: #85d27a !important;
+    background-color: #57e99f !important;
 }
 
 .bg-success.lighter {
@@ -26917,7 +26927,7 @@ fieldset[disabled] .btn-success.active {
 }
 
 .btn-success.light {
-    background-color: #85d27a;
+    background-color: #57e99f;
 }
 
 .btn-success.light:hover,
@@ -27413,19 +27423,19 @@ fieldset[disabled] .btn-dark.active {
 
 .radio-custom.radio-success label:before,
 .checkbox-custom.checkbox-success label:before {
-    border-color: #85d27a;
+    border-color: #57e99f;
 }
 
 .radio-custom.radio-success input[type=radio]:checked + label:after,
 .radio-custom.radio-success input[type=checkbox]:checked + label:after,
 .checkbox-custom.checkbox-success input[type=checkbox]:checked + label:after,
 .checkbox-custom.checkbox-success input[type=radio]:checked + label:after {
-    background-color: #85d27a;
-    color: #85d27a;
+    background-color: #57e99f;
+    color: #57e99f;
 }
 
 .checkbox-custom.fill.checkbox-success label:before {
-    background-color: #85d27a;
+    background-color: #57e99f;
 }
 
 .radio-custom.radio-info label:before,

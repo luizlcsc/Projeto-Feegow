@@ -32,6 +32,6 @@ set p = db.execute("select * from profissionais where id="&req("ProfissionalID")
 </div>
 <div class="modal-footer">
     <div class="col-md-2 col-md-offset-10">
-        <button type="button" class="btn btn-default btn-block" onclick="$('#modalObservacao').modal('hide')">Fechar</button>
+        <button type="button" class="btn btn-default btn-block" onclick="$('#modal-table').modal('hide')">Fechar</button>
     </div>
 </div>

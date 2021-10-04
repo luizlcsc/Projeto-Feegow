@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
+
 <style>
 .sb-l-o #content_wrapper {
     margin-left: 0;
@@ -23,11 +24,5 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
 <script type="text/javascript">
-
-    getUrl("labs-integration-v2/fila-coleta", {}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+    <% response.write(retornaChamadaIntegracaoLaboratorial("fila-coleta")) %>   
 </script>

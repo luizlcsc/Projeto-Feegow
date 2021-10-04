@@ -2557,56 +2557,9 @@ end if
             set telas = nothing
     end if
     case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs"
-        if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
     %>
-    <li>
-        <a href="?P=labscadastrocredenciais&Pers=1"><span class="far fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
-    </li>
-    <li>
-        <a href="?P=labsconfigintegracao&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
-    </li>
-    <li>
-        <a href="?P=labslistagemexames&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
-    </li>
-    <li>
-        <a href="?P=labslistagemprocedimentos&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Listagem de procedimentos</span></a>
-    </li>    
-    <li>
-        <a href="?P=procedimentolaboratorio&Pers=1"><span class="fa fa-list "></span> <span class="sidebar-title">Procedimentos x Laboratórios</span></a>
-    </li>
-    <li>
-        <a href="?P=labsimportardepara&Pers=1"><span class="far fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
-    </li>
-
+    <!--#include file="menuIntegracaoLaboratorial.asp"-->
     <%
-        set labAutenticacao = db.execute("SELECT * FROM slabs_autenticacao WHERE sysactive=1 and UnidadeID="&treatvalzero(session("UnidadeID")))
-        if not labAutenticacao.eof then
-        %>
-        
-        <li>
-            <a> <span class="far fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
-        </li>
-        <li>                
-        <%
-            sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
-                      " FROM cliniccentral.labs l "&_
-                      " INNER JOIN slabs_autenticacao la ON la.LabID = l.id and la.sysactive=1 order by l.NomeLaboratorio"
-            set dadoslab = db.execute(sqllabs)
-            while not dadoslab.eof
-            %>
-            <li>
-                <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
-                    &nbsp;&nbsp;&nbsp;<span class="far fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%></span>
-                </a>
-            </li>
-            <% 
-            dadoslab.movenext
-            wend
-        %>
-        </li>
-        <%
-        end if
-    end if
     case "programasdesaude", "programasdesaudetipos"
     %>
     <li>

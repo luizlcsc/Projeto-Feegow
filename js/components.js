@@ -23,17 +23,17 @@ var api = null;
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
-        labServiceURL = "http://localhost:8001/api/"
+        labServiceURL = "http://localhost:8001/"
         api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
-        labServiceURL = "https://labservice.feegow.com/api/"
+        labServiceURL = "https://labservice.feegow.com/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
-        labServiceURL = "https://labservice.feegow.com/api/"
+        labServiceURL = "https://labservice.feegow.com/"
         api = "/main/api/";
         break;
 }
@@ -161,14 +161,22 @@ function setModalContent(body, title, closeBtn, saveBtn, params) {
     return $modalComponents;
 }
 
-function getUrl(url, data, callback) {
+function getUrl(url, data, callback,ms = null) {
     if (!data) {
         data = {};
     }
 
 
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
+        if (ms=="integracaolaboratorial")
+        {
+            url = labServiceURL + url;
+        }
+        else
+        {
+            url = domain + url;
+        }
+        
 
     }
 

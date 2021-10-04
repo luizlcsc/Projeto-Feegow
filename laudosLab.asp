@@ -84,7 +84,7 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
             var profissional = $("#ProfissionalID").val();
             var status = $("#Status").val();
             var paciente = $("#PacienteID").val();
-            postUrl("labs-integration-v2/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidade:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
+            postUrl("labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidade:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
                 $("#divListaLaudos").hide();
                 $("#divListaLaudos").html(data);
                 $("#divListaLaudos").fadeIn('slow');

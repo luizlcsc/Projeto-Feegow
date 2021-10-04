@@ -1,10 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
-<%
-if recursoAdicional(24) <> 4 or Aut("labsconfigintegracao") <> 1 then
-    response.status = 403
-else
-%>
+
 <script type="text/javascript">
     $(".crumb-active a").html("Configurações Integração Laboratorial");
     $(".crumb-link").removeClass("hidden");
@@ -17,10 +13,6 @@ else
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
-    getUrl("labs-integration/config-integracao",{}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
+    <% response.write(retornaChamadaIntegracaoLaboratorial("config-integracao")) %>
 </script>
 <% end if %>

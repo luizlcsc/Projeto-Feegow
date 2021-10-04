@@ -648,12 +648,14 @@ end if
                             AlturaLinha = " style=\'height: "&Tempo&"px\' "
                         end if
                     end if
-                     if comps("matricula1") <>"" then
+                    Matricula1 = fix_string_chars_full(comps("matricula1"))
 
-						matricula1 = "<br>Matrícula: "&comps("matricula1")
+                     if Matricula1 <>"" then
 
-						if session("banco") = "clinic10402" and len(comps("matricula1")) > 21 then
-							matricula1 = "<br>Matrícula: "&mid(comps("matricula1"),8,7)
+						matricula1 = "<br>Matrícula: "&Matricula1
+
+						if session("banco") = "clinic10402" and len(Matricula1) > 21 then
+							matricula1 = "<br>Matrícula: "&mid(Matricula1,8,7)
 						end if
 
                     else
@@ -729,7 +731,7 @@ end if
                     "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
                     "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
-                    Conteudo = fix_string_chars_full(Conteudo)
+                    Conteudo = fix_string_chars(Conteudo)
                     if not podeVerAgendamento then
                         Conteudo = ""
                     end if

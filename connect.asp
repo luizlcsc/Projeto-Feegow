@@ -5141,10 +5141,10 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             
             SomenteConvenios = ""
             if ConvenioID <> 0 then
-                SomenteConvenios = "ConvenioID"
+                SomenteConvenios = "ConvenioID"&n
             end if
         
-           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios) 
+           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios)
         end if
         %>
         </td>

@@ -11,7 +11,7 @@ function recordToJSON(reg)
         str = "{"
         for each x in reg.Fields
             i = i+1
-            str = str&""""&x.name&""":"""&replace(x.value&"","""","'")&""""
+            str = str&""""&x.name&""":"""&replace(replace(replace(x.value&"","""","'"),chr(13),""),chr(10),"")&""""
             IF i < reg.Fields.Count THEN
                 str = str&","
             END IF

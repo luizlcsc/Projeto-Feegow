@@ -298,7 +298,13 @@ function aplicarTextoPedido(id, tipo){
 	$.post("PacientesAplicarFormula.asp?Tipo=E&PacienteID=<%=PacienteID%>", {id:id, idsAdicionados: IdsExamesProcedimentos,Tipo:tipo}, function(data, status){
 
 	    if(tipo === "Exame"){
-            $listaPedidoExames.append("<li><input type='hidden' class='ProcedimentoExameID' value='"+id+"'> <label >"+data+" </label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='far fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info far fa-comment'> </i><textarea style='float:rigth;display:none' class='obs-exame form-control' placeholder='Observações'></textarea>  </li>");
+            data = data[0];
+            displayTextoPedido = "none";
+            if(data.TextoPedido){
+                displayTextoPedido = "block";
+            }
+            $listaPedidoExames.append(`<li><input type='hidden' class='ProcedimentoExameID' value='"+id+"'> <label >${data.NomeProcedimento}</label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='far fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info far fa-comment'> </i><textarea style='float:right;display:${displayTextoPedido}' class='obs-exame form-control' placeholder='Observações'>${data.TextoPedido}</textarea>  </li>`);
+
 	        $(".exame-procedimento-content").css("display", "");
             $( ".titulodesc" ).unbind("click").on("click", function() {
                 $(this).next(".obs-exame").toggle();

@@ -178,13 +178,11 @@
         const cidade       = $("#Cidade").val()+estado;
         const telefone     = $("#Cel1").val() ? $("#Cel1").val().replace(/\D/g,'') : ($("#Cel2").val() ? $("#Cel2").val().replace(/\D/g,'') : null);
         const fullEndereco = endereco+numero;
-        const nomeSocial   = $('#NomeSocial').val() || null;
         const peso         = $('#Peso').val()   ? parseFloat($('#Peso').val().replace('.', '').replace(',', '.')) : null;
         const altura       = $('#Altura').val() ? parseFloat($('#Altura').val().replace('.', '').replace(',', '.')) : null;
 
         const dadosPaciente = {
             nome: nome,
-            nome_social: nomeSocial,
             telefone: telefone,
             endereco: fullEndereco,
             cidade: cidade,

@@ -1,0 +1,124 @@
+
+    .container-popup{
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .conteudo-popup{
+      background-size: cover;
+      background-repeat: no-repeat;
+      width: 356px;
+      height: 600px;
+      border-radius: 40px;
+      box-shadow:
+      0 4px 2.7px rgba(0, 0, 0, 0.011),
+      0 9.7px 6.6px rgba(0, 0, 0, 0.016),
+      0 18.3px 12.4px rgba(0, 0, 0, 0.02),
+      0 32.6px 22.1px rgba(0, 0, 0, 0.024),
+      0 61px 41.4px rgba(0, 0, 0, 0.029),
+      0 146px 99px rgba(0, 0, 0, 0.04);
+      display: grid;
+      grid-template-columns: repeat(22, 1fr);
+      grid-template-rows: repeat(14, 1fr) ;
+    }
+    .chamada{
+      grid-column-start: 3;
+      grid-row-start: 4;
+    }
+    .servicos{
+      grid-column-start: 3;
+      grid-row-start: 7;
+    }
+    .botoes{
+      grid-column-start: 3;
+      grid-row-start: 11;
+
+      text-align: center;
+    }
+    .botoes button{
+      background: transparent;
+      border: none;
+    }
+    .botoes button a{
+      font-family: 'Lato',sans-serif;
+      font-weight: 500;
+      display: block;
+      width: 180px;
+      height: 50px;
+      line-height: 50px;
+      text-decoration: none;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+    .btn-aceitar a{
+      color: #fff;
+      background-image: linear-gradient(to right top, #2c8ce3, #2f92e6, #3298ea, #379eed, #3ca4f0);
+      margin-right: 15px;
+      box-shadow:
+      0 1.3px 1.9px rgba(0, 0, 0, 0.016),
+      0 3.4px 4.8px rgba(0, 0, 0, 0.022),
+      0 6.9px 9.7px rgba(0, 0, 0, 0.028),
+      0 14.2px 20.1px rgba(0, 0, 0, 0.034),
+      0 39px 55px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-recusar a{
+      color: #202020;
+      background: transparent;
+      -webkit-box-shadow:inset 0px 0px 0px 2px #202020;
+      -moz-box-shadow:inset 0px 0px 0px 2px #202020;
+      box-shadow:inset 0px 0px 0px 2px #202020;
+      }
+
+      @media (max-width: 700px){
+      .conteudo-popup {
+        width: 90%;
+        height: 500px;
+      }
+      .chamada img{
+        width: 280px;
+        padding-left: 20px;
+        padding-top: 20px;
+      }
+      .servicos img{
+        width: 280px;
+        padding-left: 20px;
+        padding-top: 20px;
+      }
+      .botoes{
+      margin-left: 20px;
+      }
+      .botoes button a {
+        width: 130px;
+        height: 35px;
+        line-height: 35px;
+
+        border-radius: 8px;
+        font-size: 1em;
+        }
+        .btn-aceitar a {
+         margin-right: 8px;
+          }
+
+
+
+      }
+
+  .box-teaser{
+      
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+  }
+
+  .popup-image{
+    border-radius: 18px;
+  }

@@ -303,7 +303,7 @@ function aplicarTextoPedido(id, tipo){
             if(data.TextoPedido){
                 displayTextoPedido = "block";
             }
-            $listaPedidoExames.append(`<li><input type='hidden' class='ProcedimentoExameID' value='"+id+"'> <label >${data.NomeProcedimento}</label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='far fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info far fa-comment'> </i><textarea style='float:right;display:${displayTextoPedido}' class='obs-exame form-control' placeholder='Observações'>${data.TextoPedido}</textarea>  </li>`);
+            $listaPedidoExames.append(`<li><input type='hidden' class='ProcedimentoExameID' value='${id}'> <label >${data.NomeProcedimento}</label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='far fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info far fa-comment'> </i><textarea style='float:right;display:${displayTextoPedido}' class='obs-exame form-control' placeholder='Observações'>${data.TextoPedido}</textarea>  </li>`);
 
 	        $(".exame-procedimento-content").css("display", "");
             $( ".titulodesc" ).unbind("click").on("click", function() {

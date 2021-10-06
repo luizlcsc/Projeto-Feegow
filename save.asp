@@ -381,12 +381,13 @@ if not getResource.EOF then
 		if getFields("fieldTypeID")<>17 then
             'TRATA UPDATE NO CPF
             if getFields("columnName")="CPF" or getFields("columnName")="CNPJ" or getFields("columnName")="Cel1" or getFields("columnName")="Tel1" or getFields("columnName")="Cel2" or getFields("columnName")="Cel1" then
-                sqlFields = sqlFields&", `"&getFields("columnName")&"`="&RemoveCaracters(sqlValue,".-/ ")
+                sqlFields = sqlFields&", `"&getFields("columnName")&"`="&RemoveCaracters(sqlValue,".-/() ")
             else
                 sqlFields = sqlFields&", `"&getFields("columnName")&"`="&sqlValue
             end if
 			columnsCompare = columnsCompare&"|"&getFields("columnName")&"|"
 		end if
+
 		if instr(inputsCompare, "|"&getFields("columnName")&"|")=0 then
 			falta = falta&"|"&getFields("columnName")&"|"
 		end if

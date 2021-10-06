@@ -537,7 +537,7 @@ else
             </li>
             <%
             end if
-            if session("Admin")=1 and session("OtherCurrencies")="phone" then
+            if session("Admin")=1 and recursoAdicional(9)="phone" then
             %>
             <li>
                 <a href="?P=chamadasresultados"><i class="far fa-phone"></i> Resultados de Contato</a>

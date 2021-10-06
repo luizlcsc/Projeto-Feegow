@@ -16,7 +16,7 @@
 %>
 
 <form id="frmFunil">
-    <div class="panel">
+    <div class="panel mt15">
         <div class="panel-body">
         <div class="col-md-3">
             <%=quickfield("multiple", "Etapa", "Etapa", 12, funilSelect, "select * from chamadasconstatus order by Ordem", "NomeStatus", "") %>

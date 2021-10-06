@@ -97,7 +97,8 @@ if not vcaCalls.EOF then
 
             <% if abrePopup then %>
 			if ($("#detalheLigacao<%=vcaCalls("id")%>").length==0){
-            	$("#calls").before("<div class='dragavel' id='detalheLigacao<%=vcaCalls("id")%>' style='background-color:#fff; box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px rgba(0, 0, 0, 0.19); padding: 10px; border-radius: 10px; position:fixed; width:1050px; height:600px; top:100px; left:"+leftWin+"; z-index:10000000; overflow-x:hidden; overflow-y:scroll'>Carregando dados da ligação</div>");
+            	$("#calls").before(`<div class='dragavel modal-draggable' id='detalheLigacao<%=vcaCalls("id")%>' style='display: block;position:fixed; width:1050px; height:600px; top:100px; left:${leftWin}; overflow-x:hidden; overflow-y:scroll'><div class="p10"><center><i class='far fa-circle-o-notch fa-spin'></i> Carregando...</center></div></div>`);
+
                 $.get("detalheLigacao.asp?CallID=<%=vcaCalls("id")%>", function(data){ $("#detalheLigacao<%=vcaCalls("id")%>").html(data) });
             }
 			<%

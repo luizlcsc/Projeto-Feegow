@@ -17383,7 +17383,7 @@ ol.timeline-list li.timeline-item .timeline-desc strong {
 
 ol.timeline-list li.timeline-item .timeline-desc a {
     padding: 0 2px;
-    color: #48DBFB;
+    color: #009cf3;
 }
 
 ol.timeline-list li.timeline-item .timeline-icon {
@@ -30563,7 +30563,7 @@ select[tabindex="-1"], .multisel {
     font-size: 11px;
 }
 
-.modal-pagar{
+.modal-draggable{
     background-color: rgb(255, 255, 255);
     border: 1px solid rgb(225, 225, 225);
     width: 900px;

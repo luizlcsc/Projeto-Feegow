@@ -18,6 +18,8 @@
     padding: 5px;
     font-size: 11px;
     width: 211px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
   }
 
 

@@ -726,7 +726,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                     <span class="far fa-<%=canais("icone") %>"></span>
                                   </div>
                                   <div class="timeline-desc">
-                                    <b><a href="#" onclick="btb(<%=canais("id") %>, <%=canais("Prompt") %>)"><%=canais("NomeCanal") %></a></b>
+                                    <span><a href="#" onclick="btb(<%=canais("id") %>, <%=canais("Prompt") %>)"><%=canais("NomeCanal") %></a></span>
                                   </div>
                                 </li>
                                 <%
@@ -2537,9 +2537,9 @@ next
 <div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
 
 <%
-if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
+if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 then
     %>
-    <div id="calls" style="position:fixed; right:10px; bottom:10px; width:350px; border-radius:10px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></div>
+    <div id="calls" class="modal-draggable" style="position:fixed; right:10px; bottom:10px; width:350px; ;"></div>
     <script type="text/javascript">
         function recontatar(I){
             $.get("constante.asp?Recontatar="+I, function(data){

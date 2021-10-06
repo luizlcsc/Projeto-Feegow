@@ -249,6 +249,12 @@ if erro="" then
 	        valpac = "'"&valp&"'"
 	    end if
 
+	    IF "age"&splCamposPedir(z)&"" = "ageCel1" THEN
+            valpac = RemoveCaracters(valpac,"-./ ()")
+        end if
+        IF "age"&splCamposPedir(z)&"" = "ageTel1" THEN
+            valpac = RemoveCaracters(valpac,"-./ ()")
+        end if
         
 	    IF "age"&splCamposPedir(z)&"" = "ageCPF" THEN
             valpac = RemoveCaracters(valpac,"-./")

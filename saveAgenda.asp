@@ -6,6 +6,8 @@
 <!--#include file="AgendamentoUnificado.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="modulos/audit/AuditoriaUtils.asp"-->
+<!--#include file="webhookFuncoes.asp"-->
+
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -491,6 +493,33 @@ if erro="" then
         'call centralEmail(ref("ConfEmail"), rfData, rfHora, ConsultaID)
 
         if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
+
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
+            if recursoAdicional(43) = 4 then
+                if ref("ConfSMS")="S" then
+                msWhatsApp_eventoID = 119
+                    checkEndPointSQL =  " SELECT webEnd.id, webEnd.URL, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve                      "&chr(13)&_
+                                " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id  "&chr(13)&_
+                                " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&msWhatsApp_eventoID&"  AND webEve.Ativo='S'"
+                    SET  checkEndPoint = db.execute(checkEndPointSQL)
+                    if not checkEndPoint.eof then
+                        
+                        webhook_eventID  = checkEndPoint("evento_id")
+                        webhook_endpoint = checkEndPoint("URL")
+                        webhook_body     = checkEndPoint("ModeloJSON")
+                        webhook_body     = replace(webhook_body, "[agendamentoID]",ref("ConsultaID"))
+                        webhook_header   = checkEndPoint("id") 'HEADER CUSTOMIZADO
+                        
+                        CALL sendWebAPI(webhook_endpoint, webhook_body, "POST", true, Token, webhook_header) 
+                        'CALL addToQueue(webhook_eventID, webhook_body, webhook_endpoint)
+
+                    end if
+                    checkEndPoint.close
+                    set checkEndPoint = nothing
+
+                end if
+            end if
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             %>
             getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
             <%

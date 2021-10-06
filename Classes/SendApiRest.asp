@@ -2,8 +2,7 @@
 '***
 'ENVIO API REST VIA ASP
 '
-Function sendWebAPI(EndPoint, Content, Method, Async, Token) 
-
+Function sendWebAPI(EndPoint, Content, Method, Async, Token, EndPointHeader) 
   'EndPoint::::: https:'domain/
   'Content:::::: jsonContent
   'Method::::::: POST, GET, PUT, DELETE
@@ -32,6 +31,20 @@ Function sendWebAPI(EndPoint, Content, Method, Async, Token)
     if Token&""<>"" then
       xmlhttp.setRequestHeader "x-access-token", Token
     end if
+    'HEADER CUSTOMIZADO
+    if isnumeric(EndPointHeader) then
+    set webHookHeader = db.execute("SELECT * FROM cliniccentral.webhook_header where endPointID="&EndPointHeader)
+    if not webHookHeader.eof then
+      while not webHookHeader.eof
+        xmlhttp.setRequestHeader webHookHeader("header"), webHookHeader("value")
+      webHookHeader.movenext
+      wend
+    end if
+      webHookHeader.close
+      set webHookHeader = nothing
+    end if
+
+
     xmlhttp.Send Content
   end if
 

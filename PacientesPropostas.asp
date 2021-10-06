@@ -483,7 +483,7 @@ end if
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-9">
-                            <%= selectInsert("Inserir procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""itens(`S`, 'I', $(this).val()); $(this).val(''); $('#select2-ProcedimentoID-container').html('')"" ", oti, "ConvenioID") %>
+                            <%= selectInsert("Inserir procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""itens($(this).val() > 0 ? `S` : `P`, 'I', Math.abs($(this).val())); $(this).val(''); $('#select2-ProcedimentoID-container').html('')"" ", oti, "ConvenioID") %>
                         </div>
                         <div class="col-md-3">
                             <button type="button" onclick="selRap()" class="mt25 btn btn-alert btn-block"><i class="far fa-check"></i> Seleção Rápida</button>

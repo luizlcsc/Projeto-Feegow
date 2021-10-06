@@ -132,6 +132,7 @@ if not Horarios.eof then
                     </a>
 
 <%
+                end if
                     if ref("ObsAgenda")="1" then
                         %>
                         <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
@@ -148,7 +149,6 @@ if not Horarios.eof then
                             <span class="far fa-external-link"></span>
                         </a>
 		        <%
-                end if
                 %>
             </div>
     </div>

@@ -138,7 +138,7 @@
 
 	if aut("|auditoriaV") then
 	%>
-	<li <% If req("P")="audit/Auditoria" Then %> class="active"<% End If %>>
+	<li <% If req("P")="Auditoria" Then %> class="active"<% End If %>>
         <a href="./?P=Auditoria&Mod=audit&Pers=1">
             <span class="far fa-history"></span>
             <span class="sidebar-title"> Auditoria <span class="label label-system label-xs fleft">Novo</span></span>

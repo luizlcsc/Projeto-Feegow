@@ -145,7 +145,11 @@ end if
 	
 			<div class="tab-content">
 				<div id="divContent" class="tab-pane active">
-					Carregando...
+					<div class="panel mt40">
+					    <div class="panel-body">
+                            <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                         </div>
+                    </div>
 				</div>
 
 			</div>

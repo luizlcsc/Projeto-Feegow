@@ -606,7 +606,7 @@ end if
                     if(Ipac>1000000000){
                         $.get("baseExt.asp?OP=insert&I="+Ipac, function(data){ eval(data) });
                     }
-                    $.get("ListaPropostas.asp?Origem=Agenda&PacienteID="+ Ipac, function(data){
+                    $.get("ListaPropostas.asp?Origem=Agenda&PacienteID="+ Ipac+ "&CallID=-999", function(data){
                         if(data.length>5){
                             $("#modal-table").modal("show");
                             $("#modal").html(data);

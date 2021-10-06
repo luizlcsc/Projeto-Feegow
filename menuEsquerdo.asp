@@ -695,10 +695,10 @@ end if
                     <span class="sidebar-title">Dados Principais</span>
                 </a>
             </li>
-            <% IF False and (session("Banco")="clinic5459" or session("Banco")="clinic100000" or session("Banco")="clinic105") THEN %>
+            <% IF (session("Banco")="clinic9021" or session("Banco")="clinic100000" or session("Banco")="clinic105") THEN %>
              <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
-                    <span class="far fa-heart-o bigger-110"></span>
+                    <span class="far fa-heart bigger-110"></span>
                     <span class="sidebar-title">Resumo Clínico</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totallf"></span>
@@ -710,7 +710,7 @@ end if
             if aut("aso")=1 and false then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|`);'>
+                <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|`, this);'>
                     <span class="far fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Medicina ocupacional</span>
                     <span class="sidebar-title-tray">
@@ -723,7 +723,7 @@ end if
 		    if aut("formsae")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-anamneses" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AE|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-anamneses" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AE|`, this);'>
                     <span class="far fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Anamnese e Evolu&ccedil;&otilde;es</span>
                     <span class="sidebar-title-tray">
@@ -740,7 +740,7 @@ end if
 		    if aut("formsl")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|`, this);'>
                     <span class="far fa-notes-medical bigger-110"></span>
                     <span class="sidebar-title">Laudos e Formul&aacute;rios</span>
                     <span class="sidebar-title-tray">
@@ -753,7 +753,7 @@ end if
 		    if aut("diagnosticos")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-diagnosticos" id="tabDiagnosticos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Diagnostico|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-diagnosticos" id="tabDiagnosticos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Diagnostico|`, this);'>
                     <span class="far fa-stethoscope bigger-110"></span>
                     <span class="sidebar-title">Diagn&oacute;sticos &raquo; <small>CID-10</small></span>
                     <span class="sidebar-title-tray">
@@ -767,7 +767,7 @@ end if
 		    %>
 
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|`, this);'>
                     <span class="far fa-pills bigger-110"></span>
                     <span class="sidebar-title">Prescrições Medicamentosas</span>
                     <span class="sidebar-title-tray">
@@ -781,7 +781,7 @@ end if
 		    if aut("atestados")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-textos-e-atestados" id="abaAtestados" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Atestado|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-textos-e-atestados" id="abaAtestados" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Atestado|`, this);'>
                     <span class="far fa-file-medical-alt bigger-110"></span>
                     <span class="sidebar-title">Textos e Atestados</span>
                     <span class="sidebar-title-tray">
@@ -794,7 +794,7 @@ end if
              if aut("tarefas")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|`, this);'>
                     <span class="far fa-tasks bigger-110"></span>
                     <span class="sidebar-title">Tarefas</span>
                     <span class="sidebar-title-tray">
@@ -807,7 +807,7 @@ end if
 		    if aut("pedidosexame")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`, this);'>
                     <span class="far fa-hospital-o bigger-110"></span>
                     <span class="sidebar-title">Pedidos de Exame</span>
                     <span class="sidebar-title-tray">
@@ -822,7 +822,7 @@ end if
 		    if (recursoPermissaoUnimed=4  or session("Banco")="clinic100000") AND lcase(session("table"))="profissionais" then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|`, this);'>
                     <span class="far fa-list-alt bigger-110"></span>
                     <span class="sidebar-title">Resultados de Exames</span>
                     <span class="sidebar-title-tray">
@@ -835,7 +835,7 @@ end if
 		    if aut("vacinapacienteV")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`, this);'>
                     <span class="far fa-syringe bigger-110"></span>
                     <span class="sidebar-title">Vacinas</span>
                     <span class="sidebar-title-tray">
@@ -848,7 +848,7 @@ end if
             if aut("produtilizadosV")=1 then
             %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|`, this);'>
                     <span class="far fa-medkit bigger-110"></span>
                     <span class="sidebar-title">Produtos Utilizados</span>
                     <span class="sidebar-title-tray">
@@ -861,7 +861,7 @@ end if
             end if
             if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
             <li>
-                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|', this);">
                     <span class="far fa-file-text bigger-110"></span>
                     <span class="sidebar-title">Protocolos</span>
                     <span class="sidebar-title-tray">
@@ -877,7 +877,7 @@ end if
                 if not certiDidital.eof then
                 %>
                 <li class="checkStatus">
-                    <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`);'>
+                    <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`, this);'>
                         <span class="far fa-shield"></span>
                         <span class="sidebar-title">Assinatura digital
                             <span class="label label-system label-xs fleft">Novo</span>
@@ -892,7 +892,7 @@ end if
 		    if aut("formsae")=1 then
 		    %>
 		    <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`, this);'>
                     <span class="far fa-book-medical bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
@@ -907,7 +907,7 @@ end if
 		    if aut("imagens")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-imagens" id="tabImagens" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Imagens|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-imagens" id="tabImagens" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Imagens|`, this);'>
                     <span class="far fa-camera bigger-110"></span>
                     <span class="sidebar-title">Imagens</span>
                     <span class="sidebar-title-tray">
@@ -920,7 +920,7 @@ end if
 		    if aut("arquivos")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-arquivos" id="tabArquivos" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Arquivos|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-arquivos" id="tabArquivos" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Arquivos|`, this);'>
                     <span class="far fa-file bigger-110"></span>
                     <span class="sidebar-title">Arquivos</span>
                     <span class="sidebar-title-tray">
@@ -935,7 +935,7 @@ end if
             if session("Odonto")=1 then
                 %>
                 <li class="checkStatus">
-                    <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">
+                    <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>', this)">
                         <span class="far fa-life-bouy bigger-110"></span>
                         <span class="sidebar-title">Odontograma</span>
                     </a>
@@ -944,7 +944,7 @@ end if
             end if
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-agendamentos" href="#pront" onclick="pront('HistoricoPaciente.asp?PacienteID=<%=req("I")%>');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-agendamentos" href="#pront" onclick="pront('HistoricoPaciente.asp?PacienteID=<%=req("I")%>', this);">
                     <span class="far fa-calendar bigger-110"></span>
                     <span class="sidebar-title">Agendamentos</span>
                 </a>
@@ -955,7 +955,7 @@ end if
 		    if aut("recibos")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-recibos" href="#divRecibos" onclick="pront('Recibos.asp?PacienteID=<%=req("I")%>')">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-recibos" href="#divRecibos" onclick="pront('Recibos.asp?PacienteID=<%=req("I")%>', this)">
                     <span class="far fa-edit bigger-110"></span>
                     <span class="sidebar-title">Recibos</span>
                     <span class="sidebar-title-tray">
@@ -968,7 +968,7 @@ end if
 		    if aut("propostas")=1 then
 		    %>
 		    <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-propostas" id="tabPropostas" href="#divPropostas" onclick="pront('ListaPropostas.asp?PacienteID=<%=req("I")%>')">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-propostas" id="tabPropostas" href="#divPropostas" onclick="pront('ListaPropostas.asp?PacienteID=<%=req("I")%>', this)">
                     <span class="far fa-files-o"></span>
                     <span class="sidebar-title">Propostas</span>
                 </a>

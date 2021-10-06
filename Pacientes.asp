@@ -638,6 +638,7 @@ $(".mainTab").click(function(){
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");
+    $("#rbtns").fadeIn();
 	//$("#save").removeClass("hidden");
 });
 $(".tab").click(function(){
@@ -659,6 +660,7 @@ $("#tabExtrato").click(function() {
 });
 
 function pront(U){
+    $("#rbtns").fadeOut();
 	$("#pacientesDadosComplementares").hide();
 	$.ajax({
 		type: "POST",

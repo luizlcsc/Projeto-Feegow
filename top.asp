@@ -426,6 +426,11 @@ else
             <li><a class="sub-menu-click-cadastro-convenio" href="./?P=aso_funcao&Pers=Follow"><i class="far fa-user-plus"></i> Medicina Ocupacional</a></li>
             <%
             end if
+            if aut("origens")=1 then
+            %>
+            <li><a href="./?P=Origens&Pers=0"><i class="far fa-list"></i> Origens</a></li>
+            <%
+            end if
             if aut("procedimentos")=1  then
             %>
             <li><a href="./?P=Procedimentos&Pers=Follow" class="sub-menu-click-cadastro-procedimentos"><i class="far fa-stethoscope"></i> Procedimentos</a></li>
@@ -487,11 +492,6 @@ else
             <%
     end if
     if device()="" or lcase(req("P"))="configuracoes" then
-			    if aut("origens")=1 then
-            %>
-            <li><a href="./?P=Origens&Pers=0"><i class="far fa-list"></i> Origens</a></li>
-            <%
-			    end if
 			    if aut("buiforms")=1  then
             %>
             <li><a href="./?P=buiforms&Pers=Follow"><i class="far fa-bar-chart"></i> Formul&aacute;rios</a></li>

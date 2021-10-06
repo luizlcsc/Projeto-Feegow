@@ -157,7 +157,7 @@ function DefaultForm(tableName, id)
     });
 	function viewProp(P){
 		$("#modal-table").modal("show");
-		$.get("ListaPropostas.asp?PacienteID="+P, function(data){ $("#modal").html(data) });
+		$.get("ListaPropostas.asp?PacienteID="+P+"&CallID=-999", function(data){ $("#modal").html(data) });
 	}
 </script>
 

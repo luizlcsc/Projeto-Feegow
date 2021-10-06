@@ -68,9 +68,11 @@ if req("X")<>"" then
 
     IF PodeApagar THEN
         set Datas = db.execute("SELECT sysDate FROM sys_financialinvoices WHERE id = "&req("X"))
-        IF verificaBloqueioConta(1, 1, 1, session("UnidadeID"),Datas("sysDate")) THEN
-            PodeApagar = FALSE
-        END IF
+        if not isnull(Datas("sysDate")) then
+            IF verificaBloqueioConta(1, 1, 1, session("UnidadeID"),Datas("sysDate")) THEN
+                PodeApagar = FALSE
+            END IF
+        end if
 
         IF NOT PodeApagar THEN %>
             <script>

@@ -447,7 +447,7 @@ end if
 						Conteudo = Conteudo & "<i class=""far fa-exclamation-triangle grey""  title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
 					end if
 					Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"">"&compsHora&"</button></td>"&_ 
-					"<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+					"<td nowrap> "&imoon(comps("StaID"))
 					if comps("Encaixe")=1 then
 						Conteudo = Conteudo & "<span class=""label bg-alert label-pink label-sm arrowed-in mr10 arrowed-in-right"">encaixe</span>"
 					end if

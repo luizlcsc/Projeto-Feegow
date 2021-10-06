@@ -1794,6 +1794,14 @@ $("#Voucher").change(function(){
 		eval(data);
 	});
 });
+
+<%
+if req("Div")="divHistorico" then
+    %>
+    $("#rbtns").fadeIn();
+    <%
+end if
+%>
 </script>
 
 

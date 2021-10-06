@@ -769,6 +769,7 @@ if erro="" then
         $('#btnSave').prop('disabled', true);
         $('#btnSave').html('AGUARDE...');
         ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico');
+        $("#rbtns").fadeOut();
     }else{
         $('#btnSave').prop('disabled', false);
     }

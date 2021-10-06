@@ -4494,7 +4494,7 @@ function imoon(nome)
             icone = "fa-compass"
             cor = "primary"
             fornecedor = "fas"
-        case 4,101,117
+        case 4,117
             icone = "fa-meh"
             cor = "warning"
             fornecedor = "fas"
@@ -4516,7 +4516,7 @@ function imoon(nome)
             icone = "fa-eye"
             cor = "primary"
             fornecedor = "fas"
-        case 16,118
+        case 16,101,118
             icone = "fa-times-circle"
             cor = "dark"
             fornecedor = "fas"

@@ -536,7 +536,7 @@ sqlAgendamentosCancelados = "select * from (select a.id,a.sysActive, a.Data, a.H
                 "left join staconsulta s on s.id=a.StaID "&_
                 "left join convenios c on c.id=a.ValorPlano "&_
                 "left join locais l on l.id=a.LocalID "&_
-                "where a.Data="&mydatenull(Data)&" and (a.sysActive=-1 or a.StaID IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                "where a.Data="&mydatenull(Data)&" and (a.sysActive='-1' or a.StaID IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
 
 set AgendamentosCanceladosSQL = db.execute(sqlAgendamentosCancelados)
 if not AgendamentosCanceladosSQL.eof then
@@ -559,7 +559,7 @@ if not AgendamentosCanceladosSQL.eof then
     while not AgendamentosCanceladosSQL.eof
 
         if AgendamentosCanceladosSQL("sysActive")&""="-1" then
-            Status = "Excluído"
+            Status = imoon(-1)&" Excluído"
         else
             Status = imoon(AgendamentosCanceladosSQL("StaID"))&" "&AgendamentosCanceladosSQL("StaConsulta")
         end if
@@ -586,7 +586,7 @@ if not AgendamentosCanceladosSQL.eof then
         end if
 
         Hora = "-"
-        if len(AgendamentosCanceladosSQL("Hora")) = 5 then
+        if AgendamentosCanceladosSQL("Hora")&""<>"" then
             Hora = formatdatetime( AgendamentosCanceladosSQL("Hora"), 4 )
         end if
         %>
@@ -1026,29 +1026,31 @@ $(document).ready(function(){
  $(document).ready(function()
  {
      // MAKE SURE YOUR SELECTOR MATCHES SOMETHING IN YOUR HTML!!!
-     $('.dia-calendario').each(function() {
-         $(this).qtip({
-            content: {
-                text: function(event, api) {
-                    $.ajax({
-                        url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
-                    })
-                    .then(function(content) {
-                        // Set the tooltip content upon successful retrieval
-                        api.set('content.text', content);
-                    }, function(xhr, status, error) {
-                        // Upon failure... set the tooltip content to error
-                        api.set('content.text', status + ': ' + error);
-                    });
-                    return 'Carregando resumo do dia...'; // Set some initial text
-                }
-            },
-            position: {
-                viewport: $(window)
-            },
-            style: 'qtip-wiki'
+     if(false){
+         $('.dia-calendario').each(function() {
+             $(this).qtip({
+                content: {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
+                        })
+                        .then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Carregando resumo do dia...'; // Set some initial text
+                    }
+                },
+                position: {
+                    viewport: $(window)
+                },
+                style: 'qtip-wiki'
+             });
          });
-     });
+     }
     confereLocal()
  });
 function confereLocal(){

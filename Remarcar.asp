@@ -198,19 +198,77 @@ if Acao="Remarcar" then
     if erro="" then
 
         ProfissionalIDAntigo=AgendamentoSQL("ProfissionalID")
+        StaID =AgendamentoSQL("StaID")
+        sysActive =AgendamentoSQL("sysActive")
 
-        sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
-        db_execute(sql)
+        if StaID=22 or StaID=15 or StaID=11 or StaID=16 or StaID=117 or sysActive&""="-1" then
+            'duplica agendamento com novo status
+            rfTempo=AgendamentoSQL("Tempo")
+            rfProcedimento=AgendamentoSQL("TipoCompromissoID")
+            rfrdValorPlano=AgendamentoSQL("rdValorPlano")
+            rfValorPlano=AgendamentoSQL("ValorPlano")
+            rfPaciente=AgendamentoSQL("PacienteID")
+            rfStaID=1
+            rfLocal=AgendamentoSQL("LocalID")
+            
+            'if ProfissionalID&"" = "" then
+            '	rfProfissionalID =AgendamentoSQL("ProfissionalID")
+            'else
+            '	rfProfissionalID = ProfissionalID
+            'end if
+            
+            rfProfissionalID = ProfissionalID
+            rfNotas=ref("Notas")
+            
+            if EquipamentoID&"" = "" then
+                EquipamentoID = AgendamentoSQL("EquipamentoID")
+            end if
         
-        call agendaUnificada("update", session("RemSol"), ProfissionalIDAntigo)
+        
+            sqlTempo = "SELECT tempo FROM procedimento_tempo_profissional WHERE profissionalid="&treatvalzero(rfProfissionalID)&" AND procedimentoID="&treatvalzero(rfProcedimento)
+            set TempoProProfissionalSQL = db.execute(sqlTempo)
+            if not TempoProProfissionalSQL.eof then
+                rfTempo=TempoProProfissionalSQL("tempo")
+            end if
+        
+            if isNumeric(rfTempo) and not rfTempo="" then TempoSol=rfTempo else TempoSol=0 end if
+            HoraSolIni=cDate(hour(Hora)&":"&minute(Hora))
+            HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
+            HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
-        sql = "INSERT INTO logsmarcacoes (DataHoraFeito,Sta,Motivo, PacienteID, ProfissionalID, ProcedimentoID,Data,Hora,Usuario,ARX,ConsultaID,Obs, UnidadeID) VALUES ('"&now()&"',15,0,"&AgendamentoSQL("PacienteID")&","&treatvalzero(ProfissionalID)&","&AgendamentoSQL("TipoCompromissoID")&","&mydatenull(Data)&","&mytime(Hora)&","&session("User")&", 'R',"&session("RemSol")&",'Remarcado', "&treatvalzero(session("UnidadeID"))&")"
+            db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&AgendamentoSQL("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
+            set pultCon=db.execute("select id, ProfissionalID, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
+            'procedimentos
+            
+            set ap = db.execute("SELECT * FROM agendamentosprocedimentos WHERE AgendamentoID = "&session("RemSol"))
+            if not ap.eof then
+                while not ap.eof
+                    sqlP = "INSERT INTO agendamentosprocedimentos (AgendamentoID,TipoCompromissoID,Tempo,rdValorPlano,ValorPlano,LocalID,EquipamentoID) VALUES ('"&pultCon("id")&"','"&ap("TipoCompromissoID")&"',"&ap("Tempo")&",'"&ap("rdValorPlano")&"',"&ap("ValorPlano")&","&treatvalzero(ap("LocalID"))&","&treatvalzero(ap("EquipamentoID"))&")"
+                    'response.write(sqlP)
+                    db.execute(sqlP)
+                ap.movenext
+                wend
+                ap.close
+                set ap=nothing
+            end if
+        
+            ConsultaID = pultCon("id")
+        else
+            sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
+            db_execute(sql)
+            ConsultaID = session("RemSol")
+        end if
+        
+    
+        call agendaUnificada("update", ConsultaID, ProfissionalIDAntigo)
+
+        sql = "INSERT INTO logsmarcacoes (DataHoraFeito,Sta,Motivo, PacienteID, ProfissionalID, ProcedimentoID,Data,Hora,Usuario,ARX,ConsultaID,Obs, UnidadeID) VALUES ('"&now()&"',15,0,"&AgendamentoSQL("PacienteID")&","&treatvalzero(ProfissionalID)&","&AgendamentoSQL("TipoCompromissoID")&","&mydatenull(Data)&","&mytime(Hora)&","&session("User")&", 'R',"&ConsultaID&",'Remarcado', "&treatvalzero(session("UnidadeID"))&")"
         'response.write(sql)
         db.execute(sql)
-        'call centralSMS(AgendamentoSQL("ConfSMS"), Data, Hora, session("RemSol"))
-        'call centralEmail(AgendamentoSQL("ConfEmail"), Data, Hora, session("RemSol"))
-        call googleCalendar("X", "", session("RemSol"), "", "", "", "", "", "", "")
-        call googleCalendar("I", "vca", session("RemSol"), ProfissionalID, "", "", "", "", "", "")
+        'call centralSMS(AgendamentoSQL("ConfSMS"), Data, Hora, ConsultaID)
+        'call centralEmail(AgendamentoSQL("ConfEmail"), Data, Hora, ConsultaID)
+        call googleCalendar("X", "", ConsultaID, "", "", "", "", "", "", "")
+        call googleCalendar("I", "vca", ConsultaID, ProfissionalID, "", "", "", "", "", "")
         session("RemSol")=""
         redirectID = ProfissionalID
         if isAgendaEquipamento = "equipamento" then

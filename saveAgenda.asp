@@ -498,7 +498,7 @@ if erro="" then
             if recursoAdicional(43) = 4 then
                 if ref("ConfSMS")="S" AND ref("StaID")=7 then 'ENVIO SOMENTE STATUS CONFIRMADO
 
-                    call (webhook(119, true, "[agendamentoID]", ref("ConsultaID")))                
+                    call webhook(119, true, "[agendamentoID]", ref("ConsultaID"))            
 
                 end if
             end if

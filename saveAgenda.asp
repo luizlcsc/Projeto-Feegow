@@ -509,8 +509,7 @@ if erro="" then
                         webhook_body     = replace(webhook_body, "[agendamentoID]",ref("ConsultaID"))
                         webhook_header   = checkEndPoint("id") 'HEADER CUSTOMIZADO
                         
-                        CALL sendWebAPI(webhook_endpoint, webhook_body, "POST", true, Token, webhook_header) 
-                        'CALL addToQueue(webhook_eventID, webhook_body, webhook_endpoint)
+                        CALL sendWebAPI(webhook_endpoint, webhook_body, "POST", true, Token, webhook_header)
 
                     end if
                     checkEndPoint.close

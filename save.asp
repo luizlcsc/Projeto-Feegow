@@ -141,7 +141,7 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
         '<Aciona webhook de sincronização com SalesForce>
         if recursoAdicional(45) = 4 then
             'ID padrão no cliniccentral / webhook_eventos / id
-            call (webhook(118, true, "[PacienteID]", ref("I")))
+            call webhook(118, true, "[PacienteID]", ref("I"))
         end if
         '</Aciona webhook de sincronização com SalesForce>
     end if

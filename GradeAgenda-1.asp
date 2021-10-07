@@ -529,6 +529,97 @@ end if
               <tr class="hidden l l<%= LocalID %>" data-horaid="2359" id="<%= LocalID %>2359"></tr>
           </tbody>
 </table>
+<%
+sqlAgendamentosCancelados = "select * from (select a.id,a.sysActive, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, p.matricula1,  proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal,p.CorIdentificacao, a.Retorno from agendamentos a "&_
+                "left join pacientes p on p.id=a.PacienteID "&_
+                "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
+                "left join staconsulta s on s.id=a.StaID "&_
+                "left join convenios c on c.id=a.ValorPlano "&_
+                "left join locais l on l.id=a.LocalID "&_
+                "where a.Data="&mydatenull(Data)&" and (a.sysActive=-1 or a.StaID IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+
+set AgendamentosCanceladosSQL = db.execute(sqlAgendamentosCancelados)
+if not AgendamentosCanceladosSQL.eof then
+    %>
+<hr class="short alt" />
+<h3>Agendamentos cancelados</h3>
+
+<table class="table">
+    <tr class="danger">
+        <th>Hora</th>
+        <th>Status</th>
+        <th>Paciente</th>
+        <th>Local</th>
+        <th>Procedimento</th>
+        <th>Obs.</th>
+        <th>Valor/Convênio</th>
+        <th></th>
+    </tr>
+    <%
+    while not AgendamentosCanceladosSQL.eof
+
+        if AgendamentosCanceladosSQL("sysActive")&""="-1" then
+            Status = "Excluído"
+        else
+            Status = imoon(AgendamentosCanceladosSQL("StaID"))&" "&AgendamentosCanceladosSQL("StaConsulta")
+        end if
+
+        Valor = AgendamentosCanceladosSQL("ValorPlano")
+
+        if AgendamentosCanceladosSQL("rdValorPlano")="V" then
+            if (lcase(session("table"))="profissionais" and cstr(session("idInTable"))=ProfissionalID) or (session("admin")=1) or aut("|valordoprocedimentoV|")=1 then
+                Valor = AgendamentosCanceladosSQL("ValorPlano")
+                if not isnull(Valor) then
+                    Valor = Valor + ValorProcedimentosAnexos
+                    Valor = "R$ "&formatnumber(Valor, 2)
+                else
+                    Valor = "R$ 0,00"
+                end if
+            else
+                Valor = "Particular"
+            end if
+            if aut("areceberpacienteV")=0 then
+                Valor = ""
+            end if
+        else
+            Valor = AgendamentosCanceladosSQL("NomeConvenio")
+        end if
+
+        Hora = "-"
+        if len(AgendamentosCanceladosSQL("Hora")) = 5 then
+            Hora = formatdatetime( AgendamentosCanceladosSQL("Hora"), 4 )
+        end if
+        %>
+
+        <tr >
+            <td><%=Hora%></td>
+            <td><%=Status%></td>
+            <td><%=AgendamentosCanceladosSQL("NomePaciente")%></td>
+            <td><%=AgendamentosCanceladosSQL("NomeLocal")%></td>
+            <td><%=AgendamentosCanceladosSQL("NomeProcedimento")%></td>
+            <td><small><%=AgendamentosCanceladosSQL("Notas")%></small></td>
+            <td><%=Valor%></td>
+            <td>
+                <%
+                if aut("agendaA")=1 and session("RemSol")="" and AgendamentosCanceladosSQL("StaID")<>15 then
+                %>
+                <button type="button"  onclick="remarcar('<%=AgendamentosCanceladosSQL("id")%>', 'Solicitar', '');" class="btn btn-default">Remarcar</button>
+                <%
+                end if
+                %>
+                <button type="button" onclick="abreAgenda('<%=replace(Hora,":","")%>', '<%=AgendamentosCanceladosSQL("id")%>', '<%=AgendamentosCanceladosSQL("Data")%>', '<%=AgendamentosCanceladosSQL("LocalID")%>', '<%=AgendamentosCanceladosSQL("ProfissionalID")%>', 0)" class="btn btn-sm btn-primary pull-right"><i class="far fa-external-link"></i></button>
+            </td>
+        </tr>
+        <%
+    AgendamentosCanceladosSQL.movenext
+    wend
+    AgendamentosCanceladosSQL.close
+    set AgendamentosCanceladosSQL=nothing
+%>
+</table>
+<%
+end if
+%>
                 <script>
                 $("#AbrirEncaixe").attr("disabled", <% if Ativo<>"on" then %>true<%else %>false<% end if%>);
                 <%
@@ -545,9 +636,9 @@ end if
                 "left join convenios c on c.id=a.ValorPlano "&_
                 "left join locais l on l.id=a.LocalID "
                 if NaoExibirOutrasAgendas = 0 then
-                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
                 else
-                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
                 set comps=db.execute(compsSql&compsWhereSql)
 
@@ -662,7 +753,7 @@ end if
                         matricula1 = "<br>Matrícula: *"
                     end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
+                    Conteudo = "<tr "&linkAg&" id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
@@ -684,7 +775,7 @@ end if
                     'end if
                     Conteudo = Conteudo & "Idade: "& IdadeAbreviada(comps("Nascimento")) &"<br>"
                     Conteudo = Conteudo & """ data-id="""&comps("id")&""">"&_
-                    "<td width=""1%"" "& linkAg &">"
+                    "<td width=""1%"" >"
                     if not isnull(comps("Resposta")) then
                         Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
                     end if
@@ -701,12 +792,12 @@ end if
                         end if
                         FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
                     end if
-                    Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"
+                    Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" >"&compsHora&"</button>"
                     if session("Banco")="clinic4134" then
                         Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""far fa-plus""></i></button>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&"  <span style='position:relative;top:6px;'>"&imoon(comps("StaID"))&"</span>"
+                    "<td  nowrap >"&pacientePrioridadeIcone&"  <span style='position:relative;top:6px;'>"&imoon(comps("StaID"))&"</span>"
                     if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
@@ -727,9 +818,9 @@ end if
                         iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""far fa-undo text-warning pt10""></i>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
-                    "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
+                    "<td class=""text-center hidden-xs"" ><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
+                    "<td class=""text-center hidden-xs"" >"&comps("StaConsulta")&"</td>"&_
+                    "<td class=""text-right nomeConv hidden-xs"" ><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
                     Conteudo = fix_string_chars(Conteudo)
                     if not podeVerAgendamento then

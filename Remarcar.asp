@@ -19,7 +19,6 @@ ProfissionalNaoInformado=False
 
 isAgendaEquipamento = req("tipoAgendamento")
 
-
 if ProfissionalID="" then
     ProfissionalNaoInformado=True
 end if
@@ -84,6 +83,18 @@ end if
 
 if Acao="Remarcar" then
     Encaixe=0
+
+
+
+    if Hora="00:00" or Hora=""  then
+        erro = "Escolha um horário para a remarcação."
+         %>
+            showMessageDialog("<%=erro%>", "danger")
+        <%
+        response.end
+    end if
+
+
 
     if LocalID="Search" then
         LocalID = AgendamentoSQL("localid")

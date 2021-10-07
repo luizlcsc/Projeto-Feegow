@@ -544,7 +544,6 @@ end if
                 else
                     compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
-                dd(compsSql&compsWhereSql)
                 set comps=db.execute(compsSql&compsWhereSql)
   
                 while not comps.EOF

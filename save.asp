@@ -138,32 +138,10 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
             end if
         end if
 
-        
-
         '<Aciona webhook de sincronização com SalesForce>
         if recursoAdicional(45) = 4 then
             'ID padrão no cliniccentral / webhook_eventos / id
-            salesForce_eventoID = 118
-            checkEndPointSQL =  " SELECT webEnd.id, webEnd.URL, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve                      "&chr(13)&_
-                                " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id  "&chr(13)&_
-                                " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&salesForce_eventoID&"  AND webEve.Ativo='S'"
-            
-            SET  checkEndPoint = db.execute(checkEndPointSQL)
-            if not checkEndPoint.eof then
-
-                webhook_eventID  = checkEndPoint("evento_id")
-                webhook_endpoint = checkEndPoint("URL")
-                webhook_body     = checkEndPoint("ModeloJSON")
-                webhook_body     = replace(webhook_body, "[PacienteID]", ref("I")&"")
-                webhook_header   = checkEndPoint("id") 'HEADER CUSTOMIZADO
-
-                CALL sendWebAPI(webhook_endpoint, webhook_body, "POST", true, Token, webhook_header)
-
-                'CALL addToQueue(webhook_eventID, webhook_body, webhook_endpoint)
-
-            end if
-            checkEndPoint.close
-            set checkEndPoint = nothing
+            call (webhook(118, true, "[PacienteID]", ref("I")))
         end if
         '</Aciona webhook de sincronização com SalesForce>
     end if

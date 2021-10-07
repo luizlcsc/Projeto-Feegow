@@ -1,4 +1,31 @@
+
+<!--#include file="./../connect.asp"-->
 <%
+Function webhook(EventId, Async, replaceFrom, replaceTo)
+  if isnumeric(EventID) then
+    checkEndPointSQL =  " SELECT webEnd.id, webEnd.URL, webEve.Metodo, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve                      "&chr(13)&_
+                        " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id  "&chr(13)&_
+                        " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&EventId&"  AND webEve.Ativo='S'"
+    
+    SET  checkEndPoint = db.execute(checkEndPointSQL)
+    if not checkEndPoint.eof then
+
+      webhook_eventID  = checkEndPoint("evento_id")
+      webhook_method   = checkEndPoint("Metodo")
+      webhook_endpoint = checkEndPoint("URL")
+      webhook_body     = checkEndPoint("ModeloJSON")
+      webhook_body     = replace(webhook_body, replaceFrom,replaceTo)
+      webhook_header   = checkEndPoint("id") 'HEADER CUSTOMIZADO
+      
+      CALL sendWebAPI(webhook_endpoint, webhook_body, webhook_method, True, Token, webhook_header)
+
+    end if
+    checkEndPoint.close
+    set checkEndPoint = nothing
+  end if
+
+End Function
+
 '***
 'ENVIO API REST VIA ASP
 '

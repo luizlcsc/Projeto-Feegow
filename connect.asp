@@ -4540,6 +4540,10 @@ function imoon(nome)
             icone = "fa-times-circle"
             cor = "dark"
             fornecedor = "fas"
+        case -1
+            icone = "fa-times-circle"
+            cor = "danger"
+            fornecedor = "fas"
     end select
     if corFixa<>"" then
         styleColor = " color: "&corFixa&" !important;"

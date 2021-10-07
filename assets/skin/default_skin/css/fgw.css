@@ -14812,13 +14812,13 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     display: inline;
     padding: .2em .4em .2em;
     font-size: 84%;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 24px;
     color: #ffffff;
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
-    border-radius: .25em;
+    border-radius: .5em;
 }
 
 .label.label-xs {
@@ -26191,7 +26191,7 @@ a.bg-primary:hover {
 }
 
 .bg-primary.light {
-    background-color: #4ea5e0 !important;
+    background-color: #00a1e9 !important;
 }
 
 .bg-primary.lighter {

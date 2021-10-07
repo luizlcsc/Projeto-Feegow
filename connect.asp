@@ -5946,6 +5946,7 @@ function arqEx(nArquivo, nTipo)
 end function
 
 function getConfig(configName)
+    'cookies nao implementados ainda
     configCookie = Request.Cookies("config-"&configName)
     if configCookie<>"" then
         getConfig = cInt(configCookie)
@@ -5958,8 +5959,6 @@ function getConfig(configName)
                 c = 0
             end if
 
-            'Response.Cookies("config-"&configName) = c
-            'Response.Cookies("config-"&configName).Expires = Date() + 1
             getConfig = c
         end if
     end if

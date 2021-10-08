@@ -1,8 +1,11 @@
 ﻿<!--#include file="connect.asp"-->
+<%
+ProfissionalID = req("I")
+%>
 <div class="panel">
     <div class="panel-heading">
         <span class="panel-title">Datas com grade diferenciada</span>
-        <span class="panel-controls"><button type="button" onclick="ajxContent('Horarios-1&T=Profissionais', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-sm btn-system"><i class="far fa-calendar"></i> VOLTAR PARA GRADE ATUAL</button></span>
+        <span class="panel-controls"><button type="button" onclick="ajxContent('Horarios-1&T=Profissionais', '<%=ProfissionalID%>', 1, 'divHorarios');" class="btn btn-sm btn-system"><i class="far fa-calendar"></i> VOLTAR PARA GRADE ATUAL</button></span>
     </div>
     <div class="panel-body">
         <table class="table table-condensed table-striped">

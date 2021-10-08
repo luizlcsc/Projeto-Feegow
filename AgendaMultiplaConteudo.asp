@@ -391,18 +391,7 @@ cProf = 0
 while not comGrade.eof
 
     MostraGrade=True
-    if comGrade("GradePadrao")=1 then
-        FrequenciaSemanas = comGrade("FrequenciaSemanas")
-        InicioVigencia = comGrade("InicioVigencia")
-        if FrequenciaSemanas>1 then
-            NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
-            RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
-            if RestoDivisaoNumeroSemana>0 then
-                MostraGrade=False
-            end if
-        end if
-    end if
-    
+
     if MostraGrade then
         set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")
         NomeEspecialidade = ""

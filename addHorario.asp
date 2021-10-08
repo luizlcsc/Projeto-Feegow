@@ -6,6 +6,7 @@ ProfissionalID = req("ProfissionalID")
 HorarioID = req("H")
 Intervalo = 30
 TipoGrade = 0
+Unidades = session("Unidades")
 
 if HorarioID<>"" then
     set gh = db.execute("select * from assfixalocalxprofissional where id="& HorarioID)
@@ -135,9 +136,11 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
 	%>
 	<script>
 		$("#modal-table").modal("hide");
-		ajxContent('Horarios-1&T=Profissionais', <%=ProfissionalID%>, 1, 'divHorarios');
+        showMessageDialog("Grade salva com sucesso", "success");
+		ajxContent('Horarios-1&T=Profissionais', '<%=ProfissionalID%>', 1, 'divHorarios');
 	</script>
 	<%
+	Response.end
 	end if
 
 	if erro<> "" then
@@ -237,7 +240,7 @@ end if
     <%
         'if ProfissionalID>0 then
 
-            response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where "&franquia(" COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND")&"  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", "required"))
+            response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('"&Unidades&"',''),'-999')),TRUE) AND  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", "required"))
         'end if
     %>
   </div>
@@ -258,7 +261,7 @@ end if
       <%
       if ccur(req("ProfissionalID"))>0 then
       %>
-        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 3, Especialidades, "select id, especialidade from especialidades where sysActive=1 "&franquia("and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&")")&" order by especialidade", "especialidade", "")%>
+        <%=quickField("multiple", "Especialidades", "Especificar especialidades que o profissional atende neste período", 3, Especialidades, "select id, especialidade from especialidades where sysActive=1 and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&") order by especialidade", "especialidade", "")%>
       <%
       else
       %>
@@ -266,13 +269,13 @@ end if
       <%
       end if
       %>
-        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
+        <%=quickField("multiple", "Procedimentos", "Limitar os procedimentos realizados neste período", 3, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&" and OpcoesAgenda not in (3) order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
         <%
-        sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" order by NomeConvenio"
+        sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('"&Unidades&"',''),'-999')),TRUE)")&" order by NomeConvenio"
         %>
         <%=quickField("multiple", "Convenios", "Limitar os convênios aceitos neste período", 3, Convenios, sqlConvenios, "NomeConvenio", "")%>
         <% if getConfig("ExibirProgramasDeSaude") = 1 then %>
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <label for="Programas">Limitar os programas de saúde aceitos neste período</label><br>
                 <select multiple class="multisel tag-input-style" id="Programas" name="Programas" style="display: none;">
                     <%

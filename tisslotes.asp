@@ -26,6 +26,10 @@
             </select>
         </div>
         <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
+        <%
+            set DiasRecebimentoSQL = db.execute("select NULLIF(0,DiasRecebimento) DiasRecebimento from Convenios where id="&req("ConvenioID"))
+        %>
+        <input type="hidden" id="DiasRecebimento" value="<%=DiasRecebimentoSQL("DiasRecebimento")%>">
         <div class="col-md-2">
             <label>Refer&ecirc;ncia</label><br />
             <select class="form-control" name="Mes">
@@ -440,6 +444,7 @@ $(".data-enviada").on('change', (arg) => {
 
     let data = $(arg.target).val();
     let tr = $(arg.target).parents("tr");
+    let diasRecebimento = parseInt($("#DiasRecebimento").val());
 
     let dias = parseInt(tr.attr("dias-para-recebimento"));
 
@@ -447,7 +452,8 @@ $(".data-enviada").on('change', (arg) => {
         return ;
     }
 
-    dataCalculada = moment(data, "DD/MM/YYYY").add(10, 'days').format('DD/MM/YYYY');
+    dataCalculada = moment(data, "DD/MM/YYYY").add(diasRecebimento, 'days').format('DD/MM/YYYY');
+
     tr.find(".data-previsao").val(dataCalculada);
     tr.find(".data-previsao").focus();
 

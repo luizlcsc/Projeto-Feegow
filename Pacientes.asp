@@ -672,7 +672,7 @@ function pront(U){
 
       gtag('event', 'erro_500', {
           'event_category': 'erro_timeline',
-          'event_label': "Erro ao acessar timeline (<%=req("I")%>)"
+          'event_label': "Erro ao acessar timeline (<%=License&":"&req("I")%>)"
       });
 
     });

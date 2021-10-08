@@ -164,6 +164,30 @@ end if
     50% {transform: translate(0,15px);}
     100% {transform: translate(0,0);}
 }
+
+#btn-config-prescricao .error-badge {
+    display: none;
+    position: absolute; 
+    width: 7px; 
+    height: 7px; 
+    border-radius: 50%; 
+    background-color: #EE5253; 
+    top:13px; 
+    right:10px
+}
+
+#btn-config-prescricao .fa-spin {
+    display: none;
+}
+#btn-config-prescricao.loading .fa-spin {
+    display: inline-block;
+}
+#btn-config-prescricao.loading .fa-cog {
+    display: none;
+}
+#btn-config-prescricao.error .error-badge {
+    display: block;
+}
 </style>
 
 
@@ -384,20 +408,39 @@ select case Tipo
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
+                <% if aut("prescricoesI") and getConfig("MemedDesativada")<>1 then %>
+                    <span class="panel-controls">
+                        <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
+                            <i class="far fa-cog"></i>
+                            <i class="far fa-spin fa-spinner"></i>
+                            <span class="error-badge">&nbsp;</span>
+                        </button>
+                    </span>
+                    <script>
+                    if (memedError) {
+                        $('#btn-config-prescricao').addClass('error');
+                    }
+                    if (memedLoading) {
+                        $('#btn-config-prescricao').addClass('loading');
+                    }
+                </script>
+                <% end if %>
             </div>
             <% if aut("prescricoesI") then %>
                 <div class="panel-body" style="overflow: inherit!important;">
                     <div class="row">
                         <div class="col-md-3">
-                            <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                                <i class="far fa-plus"></i> Inserir Prescrição
-                            </button>
+                            <% if getConfig("MemedDesativada")=1 then %>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
+                                    <i class="far fa-plus"></i> Inserir Prescrição
+                                </button>
+                            <% else %>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao')" <%end if%>>
+                                    <i class="far fa-plus"></i> Inserir Prescrição
+                                </button>
+                            <% end if %>
                         </div>
-                        <div class="col-md-3">
-                            <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed()" <%end if%>>
-                                <i class="far fa-plus"></i> Prescrição MEMED
-                            </button>
-                        </div>
+                    </div>
                 </div>
             <% end if %>
         </div>
@@ -599,6 +642,23 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
                 </span>
+                <% if aut("pedidosexamesI")=1 and getConfig("MemedDesativada")<>1 then %>
+                <span class="panel-controls">
+                    <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
+                        <i class="far fa-cog"></i>
+                        <i class="far fa-spin fa-spinner"></i>
+                        <span class="error-badge">&nbsp;</span>
+                    </button>
+                </span>
+                <script>
+                    if (memedError) {
+                        $('#btn-config-prescricao').addClass('error');
+                    }
+                    if (memedLoading) {
+                        $('#btn-config-prescricao').addClass('loading');
+                    }
+                </script>
+                <% end if %>
             </div>
             <%
             if aut("pedidosexamesI")=1 then
@@ -606,16 +666,20 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
             %>
             <div class="panel-body">
-                <div class="col-md-12">
+                <div class="row">
                     <div class="btn-group col-md-3">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <i class="far fa-plus"></i> Inserir Pedido de Exame
                             <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <%if IntegracaoUnimedLondrina<>4 then%>
-                            <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
                             <%
+                            if IntegracaoUnimedLondrina<>4 then
+                                if getConfig("MemedDesativada")=1 then %>
+                                    <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
+                                <% else %>
+                                    <li><a href="#" onclick="openMemed('exame')"><i class="far fa-plus"></i> Pedido Padrão</a></li>
+                                <% end if
                             end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
@@ -625,11 +689,6 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             end if
                             %>
                         </ul>
-                    </div>
-                    <div class="col-md-3">
-                        <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>>
-                            <i class="far fa-plus"></i> Exame MEMED
-                        </button>
                     </div>
                     <%
                     if IntegracaoUnimedLondrina=4 or session("Banco")="clinic100000" then

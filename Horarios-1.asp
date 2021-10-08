@@ -280,7 +280,7 @@ end if
                         <td class="text-center"><%=formatdatetime(pass("HoraA"),4)%></td>
                         <td class="text-center"><%=pass("Intervalo")%></td>
                         <td><%=pass("NomeProfissional")%></td>
-                        <td><%=pass("NomeLocal")%> <%=getNomeLocalUnidade(pass("UnidadeID"))%></td>
+                        <td><%=pass("NomeLocal")%> - <%=getNomeLocalUnidade(pass("UnidadeID"))%></td>
                         <td class="text-center"><%=getNomeProcedimentos(pass("Procedimentos"))%></td>
                         <td class="text-center"><%=getNomeEspecialidades(pass("Especialidades"))%></td>
                         <td class="text-center"><%=getNomeConvenios(pass("Convenios"))%></td>

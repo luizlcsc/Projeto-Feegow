@@ -27,14 +27,13 @@
         </div>
         <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
         <%
-            set DiasRecebimentoSQL = db.execute("select NULLIF(0,DiasRecebimento) DiasRecebimento from Convenios where id="&treatvalzero(req("ConvenioID")))
-
+            set DiasRecebimentoSQL = db.execute("select NULLIF(10,DiasRecebimento) DiasRecebimento from Convenios where id="&treatvalzero(req("ConvenioID")))
+            DiasRecebimento = 10
             if not DiasRecebimentoSQL.eof then
-            %>
-            <input type="hidden" id="DiasRecebimento" value="<%=DiasRecebimentoSQL("DiasRecebimento")%>">
-            <%
+                DiasRecebimento = DiasRecebimentoSQL("DiasRecebimento")
             end if
         %>
+        <input type="hidden" id="DiasRecebimento" value="<%=DiasRecebimento%>">
         <div class="col-md-2">
             <label>Refer&ecirc;ncia</label><br />
             <select class="form-control" name="Mes">

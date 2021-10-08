@@ -41,6 +41,13 @@ AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
+
+statusCancelados = "22,11, 16, 117"
+
+if LiberarHorarioRemarcado then
+    statusCancelados=statusCancelados&",15"
+end if
+
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
 while not vcaAB.eof
@@ -536,7 +543,7 @@ sqlAgendamentosCancelados = "select * from (select a.id,a.sysActive, a.Data, a.H
                 "left join staconsulta s on s.id=a.StaID "&_
                 "left join convenios c on c.id=a.ValorPlano "&_
                 "left join locais l on l.id=a.LocalID "&_
-                "where a.Data="&mydatenull(Data)&" and (a.sysActive='-1' or a.StaID IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                "where a.Data="&mydatenull(Data)&" and (a.sysActive='-1' or a.StaID IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
 
 set AgendamentosCanceladosSQL = db.execute(sqlAgendamentosCancelados)
 if not AgendamentosCanceladosSQL.eof then
@@ -636,9 +643,9 @@ end if
                 "left join convenios c on c.id=a.ValorPlano "&_
                 "left join locais l on l.id=a.LocalID "
                 if NaoExibirOutrasAgendas = 0 then
-                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
                 else
-                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN (15, 22,11, 16, 117)) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
                 set comps=db.execute(compsSql&compsWhereSql)
 

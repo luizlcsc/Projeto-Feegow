@@ -131,6 +131,12 @@ end if
                                 MaximoRetornos = h("MaximoRetornos")
                                 InicioVigencia = h("InicioVigencia")
                                 FimVigencia = h("FimVigencia")
+                                IconeCompartilhar=""
+
+                                if h("Compartilhada")="S" then
+                                    IconeCompartilhar="<i class='far fa-check-circle text-success'></i>"
+                                end if
+
                                 if isnull(InicioVigencia) then InicioVigencia="sempre" end if
                                 if isnull(FimVigencia) then FimVigencia="sempre" end if
                                     %>
@@ -143,7 +149,8 @@ end if
                                                     Local: <%=h("NomeLocal")%> <%="<br>Unidade: "&left(getNomeLocalUnidade(h("UnidadeID")),20)%><br />
                                                     <% if not isnull(MaximoRetornos) then response.write("Máx. Retornos: "& MaximoRetornos &"<br>") end if %>
                                                     Início em: <%= InicioVigencia %><br />
-                                                    Fim em: <%= FimVigencia %>
+                                                    Fim em: <%= FimVigencia %> <br>
+                                                    Compartilhada: <%=IconeCompartilhar%>
                                                 </em></small>
                                             </div>
                                             <div class="text-right">

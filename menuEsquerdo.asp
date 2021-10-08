@@ -658,12 +658,21 @@ end if
         <a href="?P=MapaSalas&Pers=1"><span class="far fa-street-view bigger-110"></span> <span class="sidebar-title">Mapa de Locais</span></a>
     </li>
     <%
-    case "eventos_emailsms", "sys_smsemail", "configeventos"
+    case "eventos_emailsms", "sys_smsemail", "configeventos","evento_whatsapp"
         %>
         <li>
-            <a href="?P=eventos_emailsms&Pers=Follow"><span class="far fa-calendar bigger-110"></span> <span class="sidebar-title">Eventos</span></a>
+            <a href="?P=eventos_emailsms&Pers=Follow"><span class="far fa-calendar bigger-110"></span> <span class="sidebar-title">Eventos de Email/SMS</span></a>
         </li>
         <%
+        'Só será exibido se tiver o serviço de whatsapp ativo
+        if recursoAdicional(43)=4 then
+        %>
+        <li>
+            <a href="?P=evento_whatsapp&Pers=1"><span class="far fa-calendar bigger-110"></span> <span class="sidebar-title">Evento de WhatsApp <span class="label label-system label-xs fleft sidebar-title">Beta</span>
+            </span></a>
+        </li>
+        <%
+        end if
         if aut("sys_smsemail")=1 then
         %>
         <li>

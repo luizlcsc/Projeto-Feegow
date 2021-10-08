@@ -511,7 +511,7 @@ else
 			    end if
 			    if aut("eventos_emailsms")=1 then
             %>
-            <li><a href="./?P=eventos_emailsms&Pers=Follow"><i class="far fa-calendar bigger-110"></i> Eventos de e-mail e SMS</a></li>
+            <li><a href="./?P=eventos_emailsms&Pers=Follow"><i class="far fa-calendar bigger-110"></i> Configurar Eventos</a></li>
             <%
 			    end if
 

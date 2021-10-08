@@ -123,7 +123,7 @@ end if
 DataDe=date()
 DataA=date()
 HoraDe="08:00"
-HoraA="17:00"
+HoraAHoraA="17:00"
 Intervalo = 30
 if req("LocalID")<>"" then
 	LocalID = ccur(req("LocalID"))

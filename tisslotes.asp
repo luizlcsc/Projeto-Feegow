@@ -27,13 +27,9 @@
         </div>
         <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
         <%
-            set DiasRecebimentoSQL = db.execute("select DiasRecebimento from Convenios where id="&req("ConvenioID"))
-            DiasRecebimento = DiasRecebimentoSQL("DiasRecebimento")
-            if DiasRecebimento&"" = "" then
-                DiasRecebimento = 0
-            end if
+            set DiasRecebimentoSQL = db.execute("select NULLIF(0,DiasRecebimento) DiasRecebimento from Convenios where id="&req("ConvenioID"))
         %>
-        <input type="hidden" id="DiasRecebimento" value="<%=DiasRecebimento%>">
+        <input type="hidden" id="DiasRecebimento" value="<%=DiasRecebimentoSQL("DiasRecebimento")%>">
         <div class="col-md-2">
             <label>Refer&ecirc;ncia</label><br />
             <select class="form-control" name="Mes">

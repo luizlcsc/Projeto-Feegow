@@ -133,7 +133,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             <%
             PermissaoArquivo = true
 
-            if True then
+            if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" then
                 'logica de compartilhamento de prontuario, e arquivos
                 'verifica permissão para acesso dos arquivos
                 set idProfissional = db.execute("select idintable from sys_users where id="&ti("sysUser"))

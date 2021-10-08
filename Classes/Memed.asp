@@ -2,18 +2,18 @@
 
 <script>
 
-    let memedLoading        = false;
-    let memedError          = false;
-    let memedInitialized    = false;
-    let memedOpenAfterInit  = null;
-    let memedTipo           = null;
-    let memedClassic        = false;
-    let memedUploadTemplate = false;
+    // states da integração
+    let memedLoading             = false;
+    let memedError               = false;
+    let memedInitialized         = false;
+    let memedOpenAfterInit       = null;
+    let memedTipo                = null;
+    let memedClassicPrescription = false;
+    let memedClassicExam         = false;
 
     // variáveis do ASP
     <%
     memedSessionKey = session("User")&"" & session("UnidadeID")&""
-    memedUploadTemplate = false
     if session("MemedSessionKey")&"" <> memedSessionKey then
         session("MemedSessionKey") = memedSessionKey
     %>
@@ -36,11 +36,6 @@
         }
 
         memedTipo = type;
-
-        if (memedClassic) {
-            openClassicPrescription();
-            return;
-        }
 
         if (memedLoading) {
             new PNotify({
@@ -111,7 +106,6 @@
                             openConfigMemed();
                         } else {
                             //como fallback em caso de erro, abre a prescrição clássica
-                            memedClassic = true;
                             openClassicPrescription();
                         }
                     }
@@ -139,11 +133,8 @@
         }
 
         setMemedError(false);
-        memedClassic = !data.sysActive;
-
-        if (memedClassic && memedOpenAfterInit) {
-            memedOpenAfterInit = openClassicPrescription;
-        }
+        memedClassicPrescription = data.useClassicPrescription;
+        memedClassicExam         = data.useClassicExam;
 
         if (memedInitialized) {
             return;
@@ -271,6 +262,11 @@
     }
 
     async function newPrescricaoMemed() {
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+            openClassicPrescription();
+            return;
+        }
+
         setMemedLoading(true);
         await setFeaturesMemed();
         await setPacienteMemed();
@@ -339,6 +335,12 @@
                 }
             });
         }
+    }
+
+    function getDadosPrescricao() {
+        MdHub.command.send('plataforma.prescricao', 'getPrescricao').then(function (prescricao) {
+            console.log(prescricao.data);
+        });
     }
     
 </script>

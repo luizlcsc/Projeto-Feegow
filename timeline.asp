@@ -408,11 +408,11 @@ select case Tipo
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
-                <% if aut("prescricoesI") and getConfig("MemedDesativada")<>1 then %>
+                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 then %>
                     <span class="panel-controls">
                         <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                             <i class="far fa-cog"></i>
-                            <i class="far fa-spin fa-spinner"></i>
+                            <i class="far fa-circle-notch fa-spin"></i>
                             <span class="error-badge">&nbsp;</span>
                         </button>
                     </span>
@@ -430,12 +430,12 @@ select case Tipo
                 <div class="panel-body" style="overflow: inherit!important;">
                     <div class="row">
                         <div class="col-md-3">
-                            <% if getConfig("MemedDesativada")=1 then %>
-                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
+                            <% if getConfig("MemedHabilitada")=1 then %>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao')" <%end if%>>
                                     <i class="far fa-plus"></i> Inserir Prescrição
                                 </button>
                             <% else %>
-                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao')" <%end if%>>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
                                     <i class="far fa-plus"></i> Inserir Prescrição
                                 </button>
                             <% end if %>
@@ -642,11 +642,11 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
                 </span>
-                <% if aut("pedidosexamesI")=1 and getConfig("MemedDesativada")<>1 then %>
+                <% if aut("pedidosexamesI")=1 and getConfig("MemedHabilitada")=1 then %>
                 <span class="panel-controls">
                     <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                         <i class="far fa-cog"></i>
-                        <i class="far fa-spin fa-spinner"></i>
+                        <i class="far fa-circle-notch fa-spin"></i>
                         <span class="error-badge">&nbsp;</span>
                     </button>
                 </span>
@@ -675,10 +675,10 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                         <ul class="dropdown-menu" role="menu">
                             <%
                             if IntegracaoUnimedLondrina<>4 then
-                                if getConfig("MemedDesativada")=1 then %>
-                                    <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
-                                <% else %>
+                                if getConfig("MemedHabilitada")=1 then %>
                                     <li><a href="#" onclick="openMemed('exame')"><i class="far fa-plus"></i> Pedido Padrão</a></li>
+                                <% else %>
+                                    <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
                                 <% end if
                             end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")

@@ -233,7 +233,7 @@ end if
             newStringIds = replace(stringIDs&"","|","")
             getNomeConvenios =""
 
-            if instr(newStringIds,"N")>0 then
+            if instr(newStringIds,"N")=0 then
 
                 if newStringIds <> "" then
                     set convs = db.execute("select group_concat( nomeconvenio separator ', ' ) convs from convenios where id in("&newStringIds&")")

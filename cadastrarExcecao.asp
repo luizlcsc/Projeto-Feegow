@@ -88,9 +88,9 @@ else
     %>
     <%=quickField("multiple", "Convenios", "Convênios", 4, Convenios, sqlConvenios, "NomeConvenio", "")%>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <input type="checkbox" class="ace" name="Compartilhada" id="Compartilhada" value="S" style="margin-left:5px" checked="">
-        <label for="Compartilhada">Compartilhar</label>
+        <label for="Compartilhada">Compartilhar esta grade para agendamentos externos</label>
     </div>
 
 </div>

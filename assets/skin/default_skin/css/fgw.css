@@ -30639,13 +30639,6 @@ select[tabindex="-1"], .multisel {
 }
 
 
-@media  (max-width: 1424px) {
-    .navbar-nav.navbar-left > li > a {
-        padding-right: 6px;
-        font-size: 10px;
-        padding-left: 6px;
-    }
-}
 
 .sidebar-menu > li.active {
     border-left: 4px solid #00a1ea;

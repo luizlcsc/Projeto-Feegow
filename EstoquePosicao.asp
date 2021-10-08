@@ -186,7 +186,9 @@ end if
     </div><!-- /.modal-dialog -->
 </div>
 <script>
-    showSalvar(true)
+    $(document).ready(function (){
+        showSalvar(true)
+    });
 
     function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID) {
         $("#modal-table").modal("show");

@@ -5833,7 +5833,7 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
 
     valorCorridoVariacaoPreco = aplicaVariacaoDePreco(procValor, ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
 
-    if valorCorridoVariacaoPreco then
+    if valorCorridoVariacaoPreco&""<>"" and isnumeric(valorCorridoVariacaoPreco) then
         Valor2 = valorCorridoVariacaoPreco
     end if
 

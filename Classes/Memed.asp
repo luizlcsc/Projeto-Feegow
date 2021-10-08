@@ -30,13 +30,20 @@
     const MEMED_EXIBIR_PROTOCOLOS         = <% if getConfig("MemedExibirProtocolos")=1 then response.write("true") else response.write("false") end if %>;
 
     function openMemed (type) {
+        // valida o tipo
         const tiposValidos = ['prescricao', 'exame'];
         if (!tiposValidos.includes(type)) {
             throw new Error("Tipo inválido.");
         }
-
         memedTipo = type;
 
+        // abre diretamente se for prescrição clássica
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+            openClassicPrescription();
+            return;
+        }
+
+        // se já estiver inicializando, exibe mensagem e seta para abrir após a inicialização
         if (memedLoading) {
             new PNotify({
                 title: 'Aguarde',
@@ -48,11 +55,13 @@
             return;
         }
 
+        // se não estiver inicializado, inicia o precesso de inicialização
         if (!memedInitialized) {
             initMemed(newPrescricaoMemed);
             return;
         }
 
+        // abre a prescrição
         newPrescricaoMemed();
     }
 
@@ -62,6 +71,7 @@
         } else {
             iPront('Prescricao', MEMED_PACIENTE_ID, 0, '', '');
         }
+        memedOpenAfterInit = null;
     }
 
     function setMemedLoading(loading) {
@@ -102,10 +112,16 @@
                     setMemedError(true);
 
                     if (memedOpenAfterInit) {
-                        if (response.status === 403) {
+                        // status 401 não força a prescrição Memed e usa a clássica como padrão.
+                        if (response.status === 401) {
+                            memedClassicPrescription = true;
+                            memedClassicExam = true;
+                            openClassicPrescription();
+                        // status 403 tenta forçar o uso da prescrição Memed como padrão
+                        } else if (response.status === 403) {
                             openConfigMemed();
+                        // como fallback em caso de qualquer outro status, abre a prescrição clássica
                         } else {
-                            //como fallback em caso de erro, abre a prescrição clássica
                             openClassicPrescription();
                         }
                     }
@@ -274,6 +290,7 @@
         await MdHub.command.send('plataforma.prescricao', 'newPrescription');
         MdHub.module.show('plataforma.prescricao');
         setMemedLoading(false);
+        memedOpenAfterInit = null;
     }
 
     function savePrescricaoMemed(id) {
@@ -316,6 +333,7 @@
         await setPacienteMemed();
         await setAdditionalDataMemed();
         MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
+        memedOpenAfterInit = null;
     }
 
     function deletePrescricaoMemedExcluida(id) {

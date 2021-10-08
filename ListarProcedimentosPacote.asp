@@ -176,6 +176,10 @@ if(count=="0"){
         $("#rdValorPlanoV"+count).click();
         setTimeout(function() { 
             s2aj("ProcedimentoID"+count, 'procedimentos', 'NomeProcedimento', '', '','agenda');
+            
+            if(idPacote){
+                $("#ProcedimentoID"+count+"").change();
+            }
         },50*i+1);
 
    }

@@ -321,7 +321,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
     recursoPermissaoUnimed = recursoAdicional(12)
     if session("User")="14128" or session("Banco")="clinic5351" or session("Banco")="clinic100000" or recursoPermissaoUnimed=4 then
     %>
-    if('<%=req("IFR")%>'!=="S"){
+    if('<%=req("IFR")%>'!=="S" && false){
         $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
             $("#conteudo-timeline").html(data)
         });
@@ -332,7 +332,10 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $("#conteudo-timeline").toggle(1000);
+            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+                $("#conteudo-timeline").html(data)
+                $("#conteudo-timeline").toggle(1000);
+            });
         })
     });
 

@@ -1,4 +1,4 @@
-﻿﻿<!--#include file="connect.asp"-->
+﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
 ExistePedidoExame="display:none;"
@@ -266,7 +266,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
     recursoPermissaoUnimed = recursoAdicional(12)
     if session("User")="14128" or session("Banco")="clinic5351" or session("Banco")="clinic100000" or recursoPermissaoUnimed=4 or true then
     %>
-    if('<%=req("IFR")%>'!=="S"){
+    if('<%=req("IFR")%>'!=="S" && false){
         $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
             $("#conteudo-timeline").html(data)
         });
@@ -277,7 +277,10 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $("#conteudo-timeline").toggle(1000);
+            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+                $("#conteudo-timeline").html(data)
+                $("#conteudo-timeline").toggle(1000);
+            });
         })
     });
 function NovoPedido(){

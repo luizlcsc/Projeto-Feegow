@@ -668,7 +668,14 @@ function pront(U){
 		success:function(data){
 			$("#pront").html(data);
 		}
-	});
+	}).fail(function(data) {
+
+      gtag('event', 'erro_500', {
+          'event_category': 'erro_timeline',
+          'event_label': "Erro ao acessar timeline (<%=License&":"&req("I")%>)"
+      });
+
+    });
 }
 
 

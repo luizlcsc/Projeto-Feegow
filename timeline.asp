@@ -129,8 +129,15 @@ end if
     pointer-events:auto;
 }
 
-.compartilhamentoSelect{
+.dropdown-item-selected{
     background-color: #4198D5;
+    color: #FFFFFF !important;
+    border-radius: 6px;
+}
+
+
+
+.dropdown-item-selected i{
     color: #FFFFFF !important;
 }
 
@@ -247,30 +254,56 @@ select case Tipo
             <div class="panel-heading">
                 <span class="panel-title "> <%=subTitulo %>
                 </span>
-            </div>
-            <div class="panel-body" style="overflow: inherit!important;">
-                <%
-                if req("Tipo")="|L|" then
-                %>
-                <div class="col-md-3">
+
+                <div class="panel-controls">
                     <%
-                    qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
-                                                " ORDER BY p.NomeProfissional ASC                    "
-                    
-                    if session("Table")="profissionais" then
-                        valorCheck = session("idInTable")
+                    set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
+                    restoreVisible = "none"
+                    if not exe.eof then
+                        restoreVisible = "inline"
                     end if
-                    response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", "", valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+
+                    %>
+                    <button type="button" class="btn btn-default" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-history"></i> Restaurar Formulário</button>
+                    <%
+                    if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
+                    %>
+                        <button class="btn btn-info" type="button" onclick="curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</button>
+                    <%
+                    end if
+
+                    if Tipo = "|L|" then
+                        De = DateAdd("d", -7, date())
+                    %>
+                        <button type="button" class="btn btn-system" onclick="javascript:location.href='./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1'" ><i class="far fa-external-link"></i> Ir para Laudos</button>
+                     <%
+                    end if
                     %>
                 </div>
-                <%
-                end if 
-                %>
+
+            </div>
+            <div class="panel-body" style="overflow: inherit!important;">
+
                 <div class="col-md-3">
-                        <br>
                         <%
-                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by Nome"
+                         if False then
+                             set UltimosFormsSQL = db.execute("SELECT GROUP_CONCAT(DISTINCT ModeloID) modelos FROM ( "&_
+                             "SELECT bp.ModeloID, COUNT(bp.id) qtd from buiformspreenchidos bp join buiforms b on b.id=ModeloID WHERE bp.DataHora >= DATE_SUB(NOW(), INTERVAL 30 DAY) and bp.sysUser="&session("User")&" and   "&sqlForm&"  "&_
+                             "GROUP BY bp.ModeloID "&_
+                             "ORDER BY qtd desc "&_
+                             "LIMIT 5 "&_
+                             ")t ")
+
+                            if not UltimosFormsSQL.eof then
+                                favoritos = UltimosFormsSQL("modelos")
+                                if favoritos<> "" then
+                                    sqlOrderFavoritos = " IF(id in ("&favoritos&"),0,1),"
+                                end if
+                            end if
+                        end if
+
+
+                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by "&sqlOrderFavoritos&" Nome"
                         nForms = 0
 			            set forms = db.execute(sqlBuiforms)
 			            while not forms.eof
@@ -297,9 +330,16 @@ select case Tipo
 
 			                while not forms.eof
 				                if autForm(forms("id"), "IN", "") then
+
+				                    badgeFavorito = ""
+
+				                    if instr(favoritos, forms("id")) then
+				                        badgeFavorito = " <i class='fas fa-star text-warning'></i>"
+                                    end if
+
                                 %>
                                 <li  <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%>><a  <% if EmAtendimento=1 then%>
-                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%></a></li>
+                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%> <%=badgeFavorito%></a> </li>
                                 <%
 				                end if
 			                forms.movenext
@@ -326,37 +366,6 @@ select case Tipo
 	                else
 		                formTipo = " and bf.Tipo IN(1,2)"
 	                end if
-
-                set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
-                restoreVisible = "none"
-                if not exe.eof then
-                    restoreVisible = "block"
-                end if
-
-                %>
-                    <div class="col-md-3 col-xs-12">
-                        <br>
-                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-external-link"></i> Restaurar Formulário</a>
-                    </div>
-                <%
-                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
-                %>
-                    <div class="col-md-3">
-                        <br>
-                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</a>
-                    </div>
-                <%
-                end if
-
-                if Tipo = "|L|" then
-                    De = DateAdd("d", -7, date())
-                %>
-                <div class="col-md-3">
-                    <br>
-                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="far fa-external-link"></i> Ir para Laudos</a>
-                </div>
-                 <%
-                end if
                 %>
             </div>
         </div>
@@ -620,7 +629,7 @@ function carregaAbaVacina(aba,pacienteID) {
 function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 
     $.post(pagina, { valor1: valor1,
                      valor2: valor2,
@@ -685,6 +694,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
+                                <li ><a <% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>href="javascript:openMemed(true)"><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
                                 <%
                             end if
                             %>
@@ -922,7 +932,23 @@ end select
     </script>
 
     <%
-    if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
+    if req("Tipo")="|L|" then
+    %>
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4"></div>
+        <%
+        qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
+                                    " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
+                                    " ORDER BY p.NomeProfissional ASC                    "
+
+        if session("Table")="profissionais" then
+            valorCheck = session("idInTable")
+        end if
+        response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", 4, valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+        %>
+    <%
+    elseif instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
     %>
     <div class="col-xs-12">
         <div class="row">
@@ -994,6 +1020,14 @@ End If
 <script type="text/javascript">
 
 LocalStorageRestoreHabilitar();
+    function handleFormOpenError(t, p, m, i, a, FormID, CampoID){
+            showMessageDialog("Ocorreu um erro ao abrir este registro. Tente novamente mais tarde.");
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_prontuario',
+                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+            });
+    }
 
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -1016,17 +1050,19 @@ LocalStorageRestoreHabilitar();
             scr = "iPront";
         }
         var pl = $("#ProfissionalLaudadorID").val();
-        $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $(divAff).html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
+        }).fail(function (data){
+            handleFormOpenError(t, p, m, i, a, FormID, CampoID);
         });
     }
 
     <%
     ELSE
     %>
-        function iPront(t, p, m, i, a) {
-            $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        function iPront(t, p, m, i, a, FormID, CampoID) {
+            $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
                     $.magnificPopup.open({
@@ -1053,7 +1089,10 @@ LocalStorageRestoreHabilitar();
             var pl = $("#ProfissionalLaudadorID").val();
             $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
                 $("#modal-form .panel").html(data);
-            })
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID);
+                $("#modal-form").magnificPopup("close");
+            });
         }
     <%
     END IF

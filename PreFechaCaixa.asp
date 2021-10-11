@@ -519,7 +519,7 @@ end if
     <input type="hidden" name="Cheque" value="<%= Cheque %>" />
     <input type="hidden" name="Credito" value="<%= Credito %>" />
     <input type="hidden" name="Debito" value="<%= Debito %>" />
-    <input type="hidden" name="Debito" value="<%= Pix %>" />
+    <input type="hidden" name="Pix" value="<%= Pix %>" />
 
     <div class="row" id="divDinheiroInformado">
        <div class="col-md-12">

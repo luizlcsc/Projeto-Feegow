@@ -1,14 +1,21 @@
 <link href="assets/css/core-screen.css" rel="stylesheet" media="screen" type="text/css" />
 <link href="assets/css/core.css" rel="stylesheet" media="print" type="text/css" />
 <link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/fgw.css">
-
+<style>
+#areaImpressao{
+    padding: 36px;
+}
+</style>
 <%
 response.Charset="utf-8"
 %>
 <!--#include file="connect.asp"-->
 <!--#include file="./Classes/TagsConverte.asp"-->
-<a style="position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" onclick="javascript:print();" class="hidden-print" rel="areaImpressao">
-	<img src="assets/img/printer.png" border="0" alt="IMPRIMIR" title="IMPRIMIR" align="absmiddle"> <strong>IMPRIMIR</strong>
+<a style="
+    border-radius: 8px;
+    padding: 5px;
+    margin: 15px; position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" onclick="javascript:print();" class="hidden-print" rel="areaImpressao">
+	<strong>IMPRIMIR</strong>
 </a>
 <div id="areaImpressao" class="container-fluid">
 <%

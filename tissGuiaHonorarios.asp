@@ -71,6 +71,7 @@ if not reg.eof then
 	CodigoCNES = reg("CodigoCNES")
 	ContratadoLocalCodigoNaOperadora = reg("ContratadoLocalCodigoNaOperadora")
 	ContratadoLocalNome = reg("ContratadoLocalNome")
+	LocalExternoID = reg("LocalExternoID")
 	ContratadoLocalCNES = reg("ContratadoLocalCNES")
 	DataInicioFaturamento = reg("DataInicioFaturamento")
 	DataFimFaturamento = reg("DataFimFaturamento")
@@ -442,7 +443,8 @@ end if
             </div>
 				<div class="row">
 					<%= quickField("text", "ContratadoLocalCodigoNaOperadora", "* C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", " required ") %>
-					<%= quickField("text", "ContratadoLocalNome", "* Nome do Hospital/Local", 7, ContratadoLocalNome, "", "", " required ") %>
+					<input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
+					<%= quickField("simpleSelect", "LocalExternoID", "* Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
 					<%= quickField("text", "ContratadoLocalCNES", "* C&oacute;digo CNES", 2, ContratadoLocalCNES, "", "", " required='required'") %>
 				</div>
 			<br />
@@ -517,12 +519,15 @@ function tissCompletaDados(T, I){
     });
 
     $("#Contratado, #UnidadeID").change(function(){
-        //	    alert(1);
         tissCompletaDados("Contratado", $(this).val());
     });
 
     $("#ContratadoSolicitanteID").change(function(){
         tissCompletaDados("ContratadoSolicitante", $(this).val());
+    });
+
+	$("#LocalExternoID").change(function(){
+        tissCompletaDados("LocalExterno", $(this).val());
     });
 
 
@@ -570,7 +575,7 @@ function itemHonorarios(T, I, II, A){
 	    $("#l"+T+II).fadeOut();
 	    $("#"+T+II).fadeIn();
 	    $("#"+T+II).removeClass('hidden');
-	    $("#"+T+II).html("Carregando...");
+	    $("#"+T+II).html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalhonorarios.asp?T="+T+"&I="+I+"&II="+II,

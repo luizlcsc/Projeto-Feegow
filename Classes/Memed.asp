@@ -296,7 +296,8 @@
     function savePrescricaoMemed(id) {
         postUrl('prescription/memedv2/save-prescription', {
              prescriptionId: id,
-             patientId: MEMED_PACIENTE_ID
+             patientId: MEMED_PACIENTE_ID,
+             tipo: memedTipo,
          }, function (data) {
             const tipo = memedTipo === 'exame' ? 'Pedido' : 'Prescricao';
             if (data.success) {
@@ -360,7 +361,7 @@
             console.log(prescricao.data);
         });
     }
-    
+
 </script>
 <style>
     @font-face {

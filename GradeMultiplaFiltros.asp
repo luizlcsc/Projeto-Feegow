@@ -61,7 +61,7 @@ if not ab.eof then
 
                     'response.write(ProcedimentoID&"|"&TabelaID&"|"&UnidadeID&"|"&ProfissionalID&"|"&EspecialidadeID&"|"&GrupoID)
 
-                    ValorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+                    ValorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID,0)
 
                 %>
                 <tr class="linha-unidade" style="display: none;" data-unidade="<%=UnidadeID%>" data-profissional="<%=ProfissionalID%>">

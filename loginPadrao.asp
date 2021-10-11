@@ -306,7 +306,7 @@ if not tryLogin.EOF then
         session("RazaoSocial") = RazaoSocial
         session("PorteClinica") = tryLogin("PorteClinica")
 
-		if permiteMasterLogin then
+		if permiteMasterLogin and AppEnv="production" then
 			session("MasterPwd") = "S"
 		end if
 

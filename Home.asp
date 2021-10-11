@@ -347,7 +347,7 @@ if session("Banco")="clinic5459" or session("Banco")="clinic8039" then
     malSucedidoText = "<br>"
 
     if not ultimoAcessoBemSucedido.eof then
-        bemSucedidoText = "<i style='color:green' class='far fa-check-circle-o'></i> Últ. acesso: <strong>"&ultimoAcessoBemSucedido("DataHora")&"</strong>"
+        bemSucedidoText = "<i style='color:green' class='far fa-check-circle'></i> Últ. acesso: <strong>"&ultimoAcessoBemSucedido("DataHora")&"</strong>"
     end if
     if not ultimoAcessoMalSucedido.eof then
         mais = ""

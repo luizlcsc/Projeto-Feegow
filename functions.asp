@@ -64,6 +64,18 @@ function reqf(P)
     end if
 end function
 
+startTime = timer
+
+function getPageLoadtime()
+    endTime = timer
+    timeDiff = endTime-startTime
+    if startTime<=0 then
+        timeDiff = 0
+    end if
+
+    dd(timeDiff)
+end function
+
 function dd(variable)
     description=""
     variableType = TypeName(variable)

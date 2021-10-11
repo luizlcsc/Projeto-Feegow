@@ -36,7 +36,7 @@ if ConciliacaoID<>"" then
         db.execute("delete from sys_financialmovement where id="& parc("InvoiceReceiptID") &" or MovementAssociatedID="& parc("InvoiceReceiptID"))
     end if
     'Cria uma movement com o Name Transação [id da transaction] - Parcela/Parcelas, AccountAssCred/Deb=1, AccCred=Cartao da trans, AccDeb=Conta do cartao da trans, PMID=3, Value=ValorClinica, CD=C, Type=CCCred ou Deb, unidadeID do dono da conta
-    db.execute("insert into sys_financialmovement set Name='Transação "& parc("Transacao") &" - "& Parcela &"/"& Parcelas &"', AccountAssociationIDCredit=1, AccountIDCredit="& parc("ContaCartao") &", AccountAssociationIDDebit=1, AccountIDDebit="& treatvalzero(parc("ContaBancariaRecto")) &", PaymentMethodID=3, Value="& treatvalzero(ValorClinica) &", Date="& mydatenull(DataPagto) &", CD='C', Type='CCCred', Currency='BRL', Rate=1, sysUser="& session("User") )
+    db.execute("insert into sys_financialmovement set Name='Transação "& parc("Transacao") &" - "& Parcela &"/"& Parcelas &"', AccountAssociationIDCredit=1, AccountIDCredit="& parc("ContaCartao") &", AccountAssociationIDDebit=1, AccountIDDebit="& treatvalzero(parc("ContaBancariaRecto")) &", PaymentMethodID=3, Value="& treatvalzero(ValorClinica) &", Date="& mydatenull(DataPagto) &", CD='C', Type='CCCred', Currency='BRL', Rate=1, UnidadeID=0, sysUser="& session("User") )
     'Pega o ID dessa movement e grava no InvoiceReceiptID, assim como Fee perc, Value ValorClinica, Split, Anticipation, DateToReceive DataPagto
     set pult = db.execute("select id from sys_financialmovement where Type='CCCred' ORDER BY id desc LIMIT 1")
     MovID = pult("id")
@@ -47,11 +47,11 @@ if ConciliacaoID<>"" then
     end if
     'SE SPLIT >0 Cria uma movement com o Name Split trans. [id da transaction] - Parcela/Parcelas, AccountAssCred=1, Deb=0, AccCred=Cartao da trans, AccDeb=0, PMID=3, Value=ValorTaxa, CD=C, Type=CCSpli, unidadeID do dono da conta
     if ValorSplit>0 then
-        db.execute("insert into sys_financialmovement set Name='Split Trans. "& parc("Transacao") &" - "& Parcela &"/"& Parcelas &"', AccountAssociationIDCredit=1, AccountIDCredit="& parc("ContaCartao") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=3, Value="& treatvalzero(ValorSplit) &", Date="& mydatenull(DataPagto) &", CD='C', Type='CCFee', Currency='BRL', Rate=1, MovementAssociatedID="& MovID &", sysUser="& session("User") )
+        db.execute("insert into sys_financialmovement set Name='Split Trans. "& parc("Transacao") &" - "& Parcela &"/"& Parcelas &"', AccountAssociationIDCredit=1, AccountIDCredit="& parc("ContaCartao") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=3, Value="& treatvalzero(ValorSplit) &", Date="& mydatenull(DataPagto) &", CD='C', Type='CCFee', Currency='BRL', Rate=1, MovementAssociatedID="& MovID &", UnidadeID=0, sysUser="& session("User") )
     end if
     'SE ANTECIP >0 Cria uma movement com o Name Split trans. [id da transaction] - Parcela/Parcelas, AccountAssCred=1, Deb=0, AccCred=Cartao da trans, AccDeb=0, PMID=3, Value=ValorTaxa, CD=C, Type=CCAnte, unidadeID do dono da conta
     if ValorAntecipacao>0 then
-        db.execute("insert into sys_financialmovement set Name='Antec. Trans. "& parc("Transacao") &" - "& Parcela &"/"& Parcelas &"', AccountAssociationIDCredit=1, AccountIDCredit="& parc("ContaCartao") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=3, Value="& treatvalzero(ValorAntecipacao) &", Date="& mydatenull(DataPagto) &", CD='C', Type='CCFee', Currency='BRL', Rate=1, MovementAssociatedID="& MovID &", sysUser="& session("User") )
+        db.execute("insert into sys_financialmovement set Name='Antec. Trans. "& parc("Transacao") &" - "& Parcela &"/"& Parcelas &"', AccountAssociationIDCredit=1, AccountIDCredit="& parc("ContaCartao") &", AccountAssociationIDDebit=0, AccountIDDebit=0, PaymentMethodID=3, Value="& treatvalzero(ValorAntecipacao) &", Date="& mydatenull(DataPagto) &", CD='C', Type='CCFee', Currency='BRL', Rate=1, MovementAssociatedID="& MovID &", UnidadeID=0, sysUser="& session("User") )
     end if
     'Na CartaoConciliacao colocar Conciliado=1
     db.execute("update cartaoconciliacao set Conciliado=1 where id="& ConciliacaoID)
@@ -88,7 +88,8 @@ Adquirentes = adq("Adquirentes")
                 <div class="panel-heading">
                     <span class="panel-title">NOVO ARQUIVO: </span>
                     <%
-                    if session("Admin")=1 then
+                    'config migrada para Cliniccentral
+                    if session("Admin")=1 and False then
                         %>
                         <span class="panel-controls">
                             <button type="button" class="btn btn-default" onclick="location.href='./?P=CartaoLayouts&Pers=Follow'">Editar Layouts</button>
@@ -101,7 +102,7 @@ Adquirentes = adq("Adquirentes")
                     <div class="col-md-5">
                         SELECIONE O ARQUIVO CSV: <input required type="file" name="Arquivo" size="14">
                     </div>
-                    <%= quickfield("simpleSelect", "LayoutID", "Layout", 3, "", "select * from cartaolayouts where sysActive=1 order by NomeLayout", "NomeLayout", " required semVazio ") %>
+                    <%= quickfield("simpleSelect", "LayoutID", "Layout", 3, "", "select * from cliniccentral.cartaolayouts where sysActive=1 order by NomeLayout", "NomeLayout", " required semVazio ") %>
                     <div class="col-md-4">
                         <button type="submit" class="btn-block btn btn-primary mt25" name="submit">ENVIAR</button>
                     </div>
@@ -202,7 +203,7 @@ elseif req("E")="E" then
 elseif req("E")<>"E" AND NOT ISNUMERIC(req("E")) then
 
     'Pegando ordem das colunas
-    set cols = db.execute("SELECT ccol.NomeColuna, ccol.Descricao, ccol.Tipo, ccol.id ColunaCentralID, cl.Posicao FROM cliniccentral.conciliacaocolunas ccol LEFT JOIN cartaocolunaslayout cl ON (cl.LayoutID="& req("LayoutID") &" AND cl.ColunaCentralID=ccol.id) ORDER BY ccol.id")
+    set cols = db.execute("SELECT ccol.NomeColuna, ccol.Descricao, ccol.Tipo, ccol.id ColunaCentralID, cl.Posicao FROM cliniccentral.conciliacaocolunas ccol LEFT JOIN cliniccentral.cartaocolunaslayout cl ON (cl.LayoutID="& req("LayoutID") &" AND cl.ColunaCentralID=ccol.id) ORDER BY ccol.id")
     while not cols.eof
         strNomeColuna = strNomeColuna & cols("NomeColuna") &";"
         strPosicao = strPosicao & cols("Posicao") &";"

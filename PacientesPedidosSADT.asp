@@ -80,17 +80,54 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
         <div class="row">
             <div class="col-xs-8">
                 <div class="row">
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-info btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="far fa-plus"></i></button>
+                    <div>
+                        <%
+                        disabledProf = " required"
+                        if Solicitante&""<>"" then
+                            disabledProf = " disabled"
+                        end if
+                        if lcase(session("Table"))="profissionais" then
+                            Solicitante = session("IdInTable")
+                            disabledProf = " disabled"
+                        end if
+                        %>
+                        <%=quickField("simpleSelect", "ProfissionalID", " ", 3, Solicitante, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "  empty='' "&disabledProf) %>
                     </div>
-                    <div class="col-md-2">
-                        <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="far fa-save"></i> Salvar</button>
-                    </div>
-                    <div class="col-md-3">
-                        <form method="post">
-                            <div class="btn-group btn-block">
 
-                                <button type="button" class="btn btn-info btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <div class="col-md-2 ">
+                          <div class="btn-group text-left">
+                              <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                  Grupos
+                                  <span class="caret ml5"></span>
+                              </button>
+
+                              <ul class="dropdown-menu btn-block dropdown-default">
+                                    <%
+                                    set g = db.execute("select distinct trim(NomeGrupo) NomeGrupo from procedimentosgrupos where not NomeGrupo like '' order by trim(NomeGrupo)")
+                                    while not g.eof
+                                    %>
+                                  <li>
+                                      <a href="javascript:grupo('<%=g("NomeGrupo") %>')"><small> <%=g("NomeGrupo") %></small></a>
+                                  </li>
+                                    <%
+                                    g.movenext
+                                    wend
+                                    g.close
+                                    set g=nothing
+                                    %>
+                              </ul>
+                          </div>
+
+                    </div>
+
+                    <div class="col-md-2">
+                    </div>
+
+                    <div class="col-md-2">
+                        <form method="post">
+                            <div class="btn-group ">
+
+                                <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <i class="far fa-print"></i> Imprimir
                                     <span class="caret ml5"></span>
                                 </button>
@@ -114,63 +151,93 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
                         </form>
                     </div>
-                    <div class="col-md-3 text-right">
-                          <div class="btn-group text-left">
-                              <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-                                  Grupos
-                                  <span class="far fa-caret-down icon-on-right"></span>
-                              </button>
 
-                              <ul class="dropdown-menu dropdown-default">
-                                    <%
-                                    set g = db.execute("select distinct trim(NomeGrupo) NomeGrupo from procedimentosgrupos where not NomeGrupo like '' order by trim(NomeGrupo)")
-                                    while not g.eof
-                                    %>
-                                  <li>
-                                      <a href="javascript:grupo('<%=g("NomeGrupo") %>')"><small> <%=g("NomeGrupo") %></small></a>
-                                  </li>
-                                    <%
-                                    g.movenext
-                                    wend
-                                    g.close
-                                    set g=nothing
-                                    %>
-                              </ul>
-                          </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-success btn-block" onClick="GerarNovo('PedidosSADT', '<%=PacienteID%>', '0', '', '');"><i class="far fa-plus"></i></button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" onclick="saveConteudoPedidoSADT('E')" class="btn btn-primary btn-block"><i class="far fa-save"></i> Salvar</button>
+                    </div>
 
-                    </div>
-                    <div>
-                    <%
-                    disabledProf = " required"
-                    if Solicitante&""<>"" then
-                        disabledProf = " disabled"
-                    end if
-                    if lcase(session("Table"))="profissionais" then
-                        Solicitante = session("IdInTable")
-                        disabledProf = " disabled"
-                    end if
-                    %>
-                    <%=quickField("simpleSelect", "ProfissionalID", " ", 3, Solicitante, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "  empty='' "&disabledProf) %>
-                    </div>
                 </div>
+                <%
+                set PedidosNoMesmoDiaSQL = db.execute("SELECT id, GuiaID FROM pedidossadt ps "&_
+                        "WHERE ps.PacienteID="&PacienteID&" AND ps.sysUser="&session("User")&" AND ps.sysActive=1 AND date(ps.sysDate)=curdate() LIMIT 6")
+
+                set GruposExamesSQL = db.execute("SELECT tc.Capitulo, count(pp.id) qtd FROM pedidossadtprocedimentos pp "&_
+                "JOIN cliniccentral.tusscorrelacao tc ON tc.Codigo=pp.CodigoProcedimento and tc.Tabela=pp.TabelaID "&_
+                " WHERE pp.PedidoID="&treatvalzero(I)&" GROUP BY tc.Capitulo")
+
+                qtdGrupos = 0
+
+                while not GruposExamesSQL.eof
+                    qtdGrupos = qtdGrupos + 1
+                GruposExamesSQL.movenext
+                wend
+                GruposExamesSQL.close
+                set GruposExamesSQL=nothing
+
+                if qtdGrupos > 1 then
+                    HasGrupoDiferente = True
+                end if
+
+                if not PedidosNoMesmoDiaSQL.eof then
+                    %>
+                    <h4 class="mt15">Pedidos de exame recentes</h4>
+
+                    <div class="btn-group  mb15">
+                    <%
+                    while not PedidosNoMesmoDiaSQL.eof
+                    %>
+                        <button type="button" onclick="iPront('PedidosSADT', '<%=PacienteID%>', '', '<%=PedidosNoMesmoDiaSQL("id")%>', '');" class="btn btn-sm btn-<% if ccur(I)=PedidosNoMesmoDiaSQL("id") then response.write("primary") else response.write("default") end if %>">
+                            <%
+                            if isnull(PedidosNoMesmoDiaSQL("GuiaID")) then
+                                %>
+                                <i class="far fa-exclamation-circle text-warning" title="Guia não gerada"></i>
+                                <%
+                            else
+                                %>
+                                <i class="far fa-check-circle text-success" title="Guia gerada"></i>
+                                <%
+                            end if
+                            %>
+                            Pedido <span>#<%=PedidosNoMesmoDiaSQL("id")%></span>
+                        </button>
+                    <%
+                    PedidosNoMesmoDiaSQL.movenext
+                    wend
+                    PedidosNoMesmoDiaSQL.close
+                    set PedidosNoMesmoDiaSQL=nothing
+                    %>
+                    </div>
+                    <%
+                end if
+                %>
                 <br />
                 <div class="row">
+                    <div class="col-md-12">
+                        <h4 >Exames</h4>
+                    </div>
                     <div class="col-md-12" id="PedidoSADT">
                         <!--#include file="PedidoSADT.asp"-->
                     </div>
-                    <div class="row">
-                        <%=quickfield("simpleSelect", "ConvenioIDPedidoSADT", "Convênio", 4, ConvenioID, "select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", "") %>
-                        <%=quickField("text", "IndicacaoClinicaPedidoSADT", "Indicação Clínica", 7, IndicacaoClinica, "", "", "")%>
-                        <input type="hidden" name="GuiaID" id="GuiaID" value="<%=GuiaID%>" />
+                    <div class="col-md-12">
+                        <div class="row">
+                            <%=quickfield("simpleSelect", "ConvenioIDPedidoSADT", "Convênio", 4, ConvenioID, "select id, NomeConvenio from convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", "") %>
+                            <%=quickField("text", "IndicacaoClinicaPedidoSADT", "Indicação Clínica", 7, IndicacaoClinica, "", "", "")%>
+                            <input type="hidden" name="GuiaID" id="GuiaID" value="<%=GuiaID%>" />
+                        </div>
                     </div>
                     <br>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label>Executante</label><br>
-                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteIDPedidoSADT", "5, 8", Executante, "","")%>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>Executante</label><br>
+                                <%=simpleSelectCurrentAccounts("ProfissionalExecutanteIDPedidoSADT", "5, 8", Executante, "","")%>
+                            </div>
+                            <%=quickfield("datepicker", "DataSolicitacao", "Data Solicitação", 3, DataSolicitacao, "", "", "")%>
+                            <%=quickField("memo", "ObservacoesPedidoSADT", "Observações", 4, Observacoes, "", "", "")%>
                         </div>
-                        <%=quickfield("datepicker", "DataSolicitacao", "Data Solicitação", 3, DataSolicitacao, "", "", "")%>
-                        <%=quickField("memo", "ObservacoesPedidoSADT", "Observações", 4, Observacoes, "", "", "")%>
                     </div>
                 </div>
                 <br />
@@ -183,13 +250,15 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                       <button type="button" onclick="GerarGuiaSADT()" id="GerarGuiaSADT" class="btn btn-primary btn-md"><i class="far fa-external-link"></i> Gerar Guia</button>
                       <a class="btn btn-success btn-md" target="_blank" href="?P=tissguiasadt&I=<%=GuiaID%>&Pers=1" id="AbrirGuiaSADT" ><i class="far fa-expand"></i> Guia <%=GuiaID%></a>
                     <%end if %>
+
+                    <button style="display: <% if HasGrupoDiferente then response.write("inline") else response.write("none") end if %>" type="button" onclick="SepararPedidoPorGrupo()" id="SepararPedidoPorGrupo" class="btn btn-warning btn-md"><i class="far fa-copy"></i> Separar pedido por grupo</button>
                 </div>
             </div>
             <div class="col-xs-4 pn">
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                            <i class="far fa-file-text-o"></i>
+                            <i class="far fa-file-text"></i>
                             Busca de procedimentos - TUSS
                         </span>
                         <div class="panel-controls">
@@ -238,7 +307,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span> </a>
     </div>
     <div id="conteudo-timeline"></div>
 
@@ -252,7 +321,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
     recursoPermissaoUnimed = recursoAdicional(12)
     if session("User")="14128" or session("Banco")="clinic5351" or session("Banco")="clinic100000" or recursoPermissaoUnimed=4 then
     %>
-    if('<%=req("IFR")%>'!=="S"){
+    if('<%=req("IFR")%>'!=="S" && false){
         $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
             $("#conteudo-timeline").html(data)
         });
@@ -263,7 +332,10 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $("#conteudo-timeline").toggle(1000);
+            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+                $("#conteudo-timeline").html(data)
+                $("#conteudo-timeline").toggle(1000);
+            });
         })
     });
 
@@ -325,6 +397,13 @@ $("#savePedidoExameProtocolo").click(function () {
 $("#savePedidoExameProtocoloS").click(function () {
     window.open('guiaPedidoExamePrint.asp?I=0&cabecalho=0&maxRegistros=20&TipoExibicao=Pedido&PedidoSADTID='+ $("#PedidoSADTID").val() +'&ConvenioIDPedidoSADT='+ $("#ConvenioIDPedidoSADT").val() +'&IndicacaoClinicaPedidoSADT='+ $("#IndicacaoClinicaPedidoSADT").val() +'&ObservacoesPedidoSADT='+ $("#ObservacoesPedidoSADT").val()+'&ProfissionalExecutanteIDPedidoSADT='+ $("#ProfissionalExecutanteIDPedidoSADT").val()+'&ProfissionalID='+ $("#ProfissionalID").val()+'&DataSolicitacao='+ $("#DataSolicitacao").val(), "myWindow", "width=1000, height=800, top=50, left=50");
 });
+
+function SepararPedidoPorGrupo(){
+    $.post("SepararPedidoPorGrupo.asp", {PedidoID: "<%=I%>"}, function(data){
+        iPront('PedidosSADT', '<%=PacienteID%>', '', '<%=I%>', '');
+        showMessageDialog("Pedido de exame separar com sucesso", "success");
+    })
+}
 
 function GerarGuiaSADT(){
     var ConvenioIDPedidoSADT = $("#ConvenioIDPedidoSADT").val();

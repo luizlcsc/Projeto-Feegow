@@ -46,8 +46,8 @@ end if
         sfUnidades = " AND Unidades LIKE '%|"& ref("Unidades") &"|%' "
     end if
 
-    sqlDom = "select '0' id, '' nomeDominio, '' Tipo, '' Procedimentos, '' Profissionais, '' Formas, '' GruposProfissionais, '' Tabelas, '' Unidades, '' Dias, '' Horas  UNION ALL SELECT id, nomeDominio, Tipo, Procedimentos, Profissionais, Formas, GruposProfissionais, Tabelas, Unidades, Dias, Horas from rateiodominios WHERE 1 "& sfConvenios & sfTabelasParticulares & sfEspecialidades & sfProfissionais & sfProfissionaisGrupos & sfProcedimentosGrupos & sfProcedimentos & sfUnidades &" ORDER BY id"
-    'response.write( sqlDom )
+    sqlDom = "select '0' id, '' nomeDominio, '' Tipo, '' Procedimentos, '' Profissionais, '' Formas, '' GruposProfissionais, '' Tabelas, '' Unidades, '' Dias, '' Horas  UNION ALL SELECT id, nomeDominio, Tipo, Procedimentos, Profissionais, Formas, GruposProfissionais, Tabelas, Unidades, Dias, Horas from rateiodominios WHERE 1 "& sfConvenios & sfTabelasParticulares & sfEspecialidades & sfProfissionais & sfProfissionaisGrupos & sfProcedimentosGrupos & sfProcedimentos & sfUnidades &" ORDER BY CAST(id AS UNSIGNED)"
+    'dd( sqlDom )
     set dom = db.execute( sqlDom )
     while not dom.eof
         response.flush()

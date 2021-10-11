@@ -13,7 +13,7 @@
     end if
 
 %>
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> class="invoice-linha-item" data-id="<%=id%>">
     <td>
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
     	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
@@ -73,16 +73,18 @@
                 <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
             <% end if %>
                 <%
-                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
-                    set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
-                    TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
+                if id>0 then
+                    if Executado="C" then
+                        set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
+                        TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
 
-                    if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
+                        if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) then
                         %>
                          <input type="hidden" value="C" name="Cancelado<%=id%>">
                         <span class="label label-danger">Cancelado</span>
                         <% '<span class="checkbox-custom checkbox-danger"><input type="checkbox" name="Cancelado id" id="Cancelado id" value="C" checked="checked" /><label for="Cancelado id"> Cancelado</label></span> %>
                         <%
+                        end if
                     end if
                 end if
                 %>
@@ -154,6 +156,11 @@
             notEdit = " notedit "
         end if
 
+        DescontoReadonly = ""
+        if Voucher<> "" then
+            DescontoReadonly = " readonly "
+        end if
+
         if aut("valordoprocedimentoA")=0 and Tipo="S" then
             ValorUnitarioReadonly=" readonly"
             notEdit = " notedit "
@@ -169,7 +176,7 @@
                     <li><a href="javascript:void(0)" onclick="mudarFormatoDesconto(this)" class="dropdown-item">%</a></li>
                 </ul>
             </div>
-            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right disable", "", " data-desconto='"&fn(Desconto)&"' onkeyup=""setInputDescontoEmPorcentagem(this)""")%>
+            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right disable", "", " data-desconto='"&fn(Desconto)&"' onkeyup=""setInputDescontoEmPorcentagem(this)""" &DescontoReadonly)%>
             <%=quickField("text", "PercentDesconto"&id, "", 4, "0.00", " PercentDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0.00' onkeyup=""setInputDescontoEmReais(this)""")%>
         </div>
     </td>
@@ -376,13 +383,13 @@ end if
                 <%
                 if ProfissionalID<> "" then
                     sqlEspecialidades = "select esp.EspecialidadeID id, e.especialidade from (select EspecialidadeID from profissionais where id="& ProfissionalID &" and not isnull(EspecialidadeID) union all	select EspecialidadeID from profissionaisespecialidades where profissionalID="& ProfissionalID &" and not isnull(EspecialidadeID)) esp left join especialidades e ON e.id=esp.EspecialidadeID"
-                
+
                     if Associacao=8 then
                         sqlEspecialidades = "select e.id, e.especialidade FROM profissionalexterno p "&_
                                             "INNER JOIN especialidades e ON e.id=p.EspecialidadeID "&_
                                             "WHERE p.id="&ProfissionalID
                     end if
-                
+
                 else
                     sqlEspecialidades = "select * from especialidades order by especialidade"
                 end if
@@ -404,7 +411,7 @@ end if
                 if EspecialidadeID&""="" or EspecialidadeID&""="0" then
                     camposRequired=""
                 end if
-                
+
                 if Associacao<>2 then
                     response.write(quickField("simpleSelect", "EspecialidadeID"&id, "Especialidade", 2, EspecialidadeID, sqlEspecialidades, "especialidade" , DisabledNaoAlterarExecutante&" empty no-select2 "&camposRequired))
                 end if
@@ -480,7 +487,7 @@ end if
 
 
 
-
+if InvoiceSQL("CD")<>"C" then
 'set vcaRep = db.execute("select rr.*, rr.Funcao, rr.TipoValor, rr.Valor, p.NomeProcedimento, pac.NomePaciente, (ii.Quantidade * (ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal from rateiorateios rr LEFT JOIN itensinvoice ii on ii.id=rr.ItemInvoiceID LEFT JOIN procedimentos p on p.id=ii.ItemID LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID LEFT JOIN pacientes pac on pac.id=i.AccountID WHERE rr.ItemContaAPagar="&treatvalzero(id))
 set vcaRep = db.execute("select rr.* FROM rateiorateios rr WHERE rr.ItemContaAPagar="&treatvalzero(id)&" or  rr.ItemContaAReceber="&treatvalzero(id)&"")
 crr = 0
@@ -603,22 +610,24 @@ if TemRepasse and aut("|repassesA|")=0 then
     </script>
     <%
 end if
+
+end if
 %>
 <script>
 
 $('.deletaGuia').on('click', function(){
     var itemGuiaId = $(this).data('id');
-    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]'); 
+    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]');
 
     if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
         $.post("deletaItemGuia.asp", { itemGuiaId: itemGuiaId }, function(data) {
             if(data){
                 linhaItem.fadeOut('fast', function (){
                     $('#totalGeral').html(data);
-                });              
+                });
             }
-        }) 
+        })
     };
-}) 
+})
 
 </script>

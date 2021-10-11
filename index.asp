@@ -76,18 +76,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           background-color: red;
       }
 
-      .select-insert li {
-        cursor:pointer;
-        list-style-type:none;
-        margin:0;
-        padding:3px;
-        font-size:14px;
-        color:#000;
-        background-color:#FFF;
-      }
-      .select-insert li:hover {
-        background-color:#999;
-      }
       a[href]:after {
         content: ""!important;
       }
@@ -217,7 +205,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.11.21">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -498,8 +486,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     templateSelection: formatRepoSelection
                 });
 
-                $(".proposta-item-procedimentos .select2-selection").css("max-width", "200px")
-                $("#invoiceItens .select2-selection").css("max-width", "400px")
+                $(".proposta-item-procedimentos .select2-container").css("max-width", "200px")
+                $("#invoiceItens .select2-container").css("max-width", "400px")
             });
         }
     </script>
@@ -650,14 +638,35 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
             </div><!-- /.modal-dialog -->
         </div>
 
-  <aside id="main">
+
     <%
     recursoUnimed = recursoAdicional(12)
+    classContext = ""
+
+    if recursoUnimed=4 then
+        classContext = "color-context-unimed"
+    %>
+    <style>
+        .color-context-unimed .bg-primary.darker{
+            border-image-source: linear-gradient(to right, #008654 0%, #00ac6c 100%) !important;
+        }
+        .color-context-unimed #sidebar_left.sidebar-light .sidebar-menu > li > a > span:nth-child(1){
+            color: #00ac6c;
+        }
+
+        .color-context-unimed .dropdown li i, .dropdown-menu li i{
+            color: #00ac6c
+        }
+    </style>
+
+    <%
+    end if
+    %>
+  <aside id="main" class="<%=classContext%>">
+    <%
     if device()="" then %>
-    <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker" <% if recursoUnimed=4 then %>
-    style="background-color: #006600!important;"
- <%end if %> >
-      <div class="navbar-branding dark bg-primary" <% if recursoUnimed=4 then %> style="background-color: #005028!important;" <% end if %>>
+    <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker">
+      <div class="navbar-branding dark bg-primary">
         <a class="navbar-brand" href="./?P=Home&Pers=1">
                     <%
 					if session("Logo")="" then
@@ -666,7 +675,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
 					end if
 					%>
-          <img class="logol" src="<%=Logo %>" height="32" />
+          <img class="logol" src="<%=Logo %>" height="36" />
         </a>
                   <i id="toggle_sidemenu_l" class="far fa-bars"></i>
 
@@ -717,7 +726,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                     <span class="far fa-<%=canais("icone") %>"></span>
                                   </div>
                                   <div class="timeline-desc">
-                                    <b><a href="#" onclick="btb(<%=canais("id") %>, <%=canais("Prompt") %>)"><%=canais("NomeCanal") %></a></b>
+                                    <span><a href="#" onclick="btb(<%=canais("id") %>, <%=canais("Prompt") %>)"><%=canais("NomeCanal") %></a></span>
                                   </div>
                                 </li>
                                 <%
@@ -832,6 +841,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
             </div>
           </div>
         </li>
+        <%
+        if aut("|chat") then
+        %>
 		<li class="dropdown menu-merge menu-right-chat">
 					<div class="navbar-btn btn-group">
 	          <button id="toggle_sidemenu_r" class="btn btn-sm btn-menu-left" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
@@ -843,6 +855,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 		</li>
 
         <%
+        end if
         if session("Status")="T" or session("Status")="F" then
         %>
         <script>
@@ -867,7 +880,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         </li>
         <li class="dropdown menu-merge">
           <a href="#" class="dropdown-toggle fw600 p15 menu-click-meu-perfil" data-toggle="dropdown">
-          	<img src="<%=session("photo") %>" class="mw30 br64">
+          	<img src="<%=session("photo") %>" class="mw30 br64" style="height: 30px;width: 100%;object-fit: cover;">
           	<span class="hidden-xs hidden-sm hidden-md pl15"> <%=left(session("NameUser"), 15) %> </span>
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>
@@ -1115,7 +1128,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <aside id="sidebar_left" class="hidden-print nano nano-light affix sidebar-default has-scrollbar sidebar-light light">
 
       <!-- Start: Sidebar Left Content -->
-      <div class="sidebar-left-content nano-content">
+      <div class="sidebar-left-content nano-content" style="margin-right: -17px;">
 
         <!-- Start: Sidebar Header -->
         <header class="sidebar-header">
@@ -1325,6 +1338,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                   end if
 								END IF
 
+								if req("Mod")<>"" then
+								    FileName = "modulos/"&req("Mod") &"/"& FileName
+								end if
+
 								server.Execute(FileName)
 								%>
 
@@ -1355,7 +1372,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               function vidau(v){
                   dva = $("#videoaula");
                   dva.css("display", "block");
-                  dva.html("Carregando...");
+                  dva.html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                   $.get(v, function(data){
                     dva.html( data );
                     });
@@ -1373,7 +1390,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
 
-                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
+                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" data-toggle="tooltip" data-placement="top"  title="Central de ajuda" class="btn btn-xs btn-default">
                           <i class="far fa-question-circle"></i> Suporte
                       </button>
                       <%end if%>
@@ -1381,7 +1398,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                         <%
                         Versao = session("Versao")
                         if Versao="" then
-                          Versao=" 8"
+                          Versao="8.0"
                         end if
                         %>
                           Feegow  <%=Versao%>
@@ -1410,7 +1427,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                             <% IF False THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+
+                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:'<%=Request.QueryString()%>'}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
+                              <span class="far fa-bug"></span> Reportar bug
+                            </button>
+
+                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -1449,6 +1471,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               end if
               %>
             <span class="footer-meta"><b><%=session("NomeEmpresa")%></b></span>
+
             <a href="#content" class="footer-return-top">
               <span class="far fa-arrow-up"></span>
             </a>
@@ -1758,14 +1781,18 @@ hash_chat: 'FFCHAT01'
   <!-- Widget Javascript -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
+  <!-- Notificações (Alerts, Confirms, etc)  -->
   <script src="./vendor/plugins/pnotify/pnotify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+
+
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/jquery.magnific-popup.js"></script>
 
     <!-- old sms -->
     	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
-		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+		<script src="./assets/js/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -2249,10 +2276,8 @@ function abreModalUnidade(backdrop=true){
         backdrop={};
     }
     $.post("LoginEscolheUnidade.asp", '', function(data){
-        $(document).ready(function() {
-            $("#modalCaixa").modal(backdrop);
-            $("#modalCaixaContent").html(data);
-        });
+        $("#modalCaixa").modal(backdrop);
+        $("#modalCaixaContent").html(data);
     });
 }
 </script>
@@ -2501,7 +2526,7 @@ for i=0 to ubound(splChatWindows)
 			Para = chatID
 			chatID = splChatWindows(i)
 			%>
-			<div id="chat_<%=chatID%>"></div>
+			<div class="chat-popup" id="chat_<%=chatID%>"></div>
             <%
 		end if
 	end if
@@ -2512,9 +2537,9 @@ next
 <div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
 
 <%
-if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
+if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 then
     %>
-    <div id="calls" style="position:fixed; right:10px; bottom:10px; width:350px; border-radius:10px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></div>
+    <div id="calls" class="modal-draggable" style="position:fixed; right:10px; bottom:10px; width:350px; ;"></div>
     <script type="text/javascript">
         function recontatar(I){
             $.get("constante.asp?Recontatar="+I, function(data){
@@ -2582,6 +2607,89 @@ if session("Status")="T" or session("Status")="F" then
 <%
 end if
 %>
+
+<%
+'-> GESTÃO DE AVISOS
+if getConfig("GestaoDeAvisos")=1 then
+  if session("AvisoCarregado")="" and session("UnidadeID")&""<>"-1" then
+    'Admin?
+    if session("Admin")=1 then
+      sqlAdmin = " OR a.Perfis LIKE '%|Administrador|%' "
+    end if
+    'Perfil
+    sqlPerfil = " OR a.Perfis LIKE '%|"& session("Table") &"|%' "
+
+    'RegraID
+    if session("ModoFranquia")=1 then
+      set pRegra = db.execute("select regra from usuarios_regras where unidade="& session("UnidadeID") &" and usuario="& session("User"))
+      if not pRegra.eof then
+        RegraID = pRegra("regra")
+        sqlRegra = " OR a.Perfis LIKE '%|"& RegraID &"|%' "
+      end if
+    else
+        set UserSQL = db.execute("SELECT RegraID FROM sys_users WHERE id="&session("User"))
+        if not UserSQL.eof then
+            sqlRegra = " OR a.Perfis LIKE '%|"& UserSQL("RegraID") &"|%' "
+        end if
+    end if
+
+    'EspecialidadeID
+    if lcase(session("Table")&"")="profissionais" then
+      set pesp = db.execute("select especialidadeID from profissionais WHERE id="& session("idInTable") &" UNION ALL select EspecialidadeID from profissionaisespecialidades where ProfissionalID="& session("idInTable"))
+      while not pesp.eof
+        sqlEsp = sqlEsp & " OR a.Especialidades LIKE '%|"& pesp("EspecialidadeID") &"|%' "
+      pesp.movenext
+      wend
+      pesp.close
+      set pesp = nothing
+    end if
+
+
+    sql = "select a.*, al.sysDate DataLeitura from avisos a "&_
+          "LEFT JOIN avisosleitura al ON (al.AvisoID=a.id AND al.sysUser="& session("User") &" AND al.UnidadeID="& session("UnidadeID") &") "&_
+          "WHERE UnidadesLicencas LIKE '%|"& session("UnidadeID") &"|%' AND CURDATE() BETWEEN DATE(a.Inicio) AND DATE(a.Fim) "&_
+          "AND (0 "& sqlAdmin & sqlRegra & sqlPerfil & sqlEsp &") AND ISNULL(al.id)"
+
+    dim divsAviso(10)
+    ShowAvisoID = 0
+
+    set vcaAviso = db.execute( sql )
+    while not vcaAviso.eof
+      TipoExibicao = vcaAviso("TipoExibicao")
+      if TipoExibicao=1 and req("P")<>"Home" then
+        response.redirect("./?P=Home&Pers=1")
+      else
+
+        divsAviso(vcaAviso("TipoExibicao")) = divsAviso(vcaAviso("TipoExibicao")) & "<div>"& vcaAviso("Texto") &"</div>"
+        ShowAvisoID = vcaAviso("id")
+
+        if vcaAviso("TipoExibicao")=2 then
+          divsAviso(vcaAviso("TipoExibicao")) = divsAviso(vcaAviso("TipoExibicao")) & "<hr class='short alt'><div class='text-right p10'><button type='button' class='btn btn-primary' onclick=""ajxContent('AvisosLido', "& vcaAviso("id") &", 1, '', ''); $(this).fadeOut(); $('#modal-table').modal('hide');""><i class='fa fa-check'></i> MARCAR COMO LIDO</button></div>"
+        end if
+
+        session("AvisoCarregado")=1
+      end if
+    vcaAviso.movenext
+    wend
+    vcaAviso.close
+    set vcaAviso = nothing
+
+  end if
+end if
+
+  '<- GESTÃO DE AVISOS
+  %>
+<script type="text/javascript">
+<%
+
+if ShowAvisoID&""<>"0" and ShowAvisoID&""<>"" then
+%>
+  openComponentsModal( 'CarregaAviso.asp', {AvisoID: '<%=ShowAvisoID%>'}, "Novo aviso");
+<%
+end if
+%>
+</script>
+
 </body>
 <%
 if device()<>"" then

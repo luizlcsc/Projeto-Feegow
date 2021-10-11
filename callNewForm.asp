@@ -46,8 +46,18 @@ session("FP"&FTipo) = FormID
 
 buiFormID = FormID
 
-    'config para DUPLICAR o form inves de editar
+FormInativo = false
+if FormID <> "N" then
+    set getFormPreenchido = db.execute("SELECT sysActive FROM buiformspreenchidos WHERE sysActive = -1 AND id = "&FormID)
+    if not getFormPreenchido.eof then
+		FormInativo = true
+    end if
+end if
+
+'Duplica o formulário se o atual for Inativo ou se a configuração para "Gerar novo formulário ao editar" estiver habilitada
+if getConfig("GerarNovoFormulario")=1 or FormInativo = true then
     buiFormID="N"
+end if
 %>
 <input type="hidden" name="FormID" id="FormID" value="<%=buiFormID%>" />
 <input type="hidden" name="ModeloID" id="ModeloID" value="<%=ModeloID%>" />

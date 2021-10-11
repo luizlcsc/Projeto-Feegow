@@ -4,6 +4,29 @@
         <%
 		if ref("De")<>"" and ref("Ate")<>""  then
 		%>
+
+		<script>
+		function aplicarTaxaAtual() {
+		    let first = null;
+		    $(".lista-tr").each((a,b) => {
+		        if(!first){
+		            first = b;
+		        }
+                let atual = $(b).find(".taxa_atualmente").html().trim().replace("%",'')
+                $(b).find("[name^=Fee]").val(atual)
+
+                atualizaValor($(b).find("[name^=Fee]"))
+            });
+
+             if (typeof recalcValorBaixar !== 'undefined'){
+                         recalcValorBaixar();
+                     }
+		}
+</script>
+        <div class="text-right">
+            <button class="btn btn-dark btn-sm hidden" onclick="aplicarTaxaAtual()" type="button">Aplicar Taxa Atual</button>
+        </div>
+
 		<div class="row">
 			<div class="col-md-12" style="overflow-y: auto;">
 				<table class="table table-striped table-bordered table-condensed">
@@ -99,9 +122,9 @@
 						sqlLimit = "LIMIT "&((PaginaAtual-1)*Limite)&","&Limite
 					end if
 
-                    sql = "select * from (select pac.NomePaciente,reci.UnidadeID, pac.id Prontuario, p.id,p.Value,p.TransactionID,p.DateToReceive,p.InvoiceReceiptID,p.Fee,p.DHUp, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
+                    sql = "select * from (select t.BandeiraCartaoID, t.MovementID MovementID, pac.NomePaciente,reci.UnidadeID, pac.id Prontuario, p.id,p.Value,p.TransactionID,p.DateToReceive,p.InvoiceReceiptID,p.Fee,p.DHUp, m.Date, m.Value Total, t.TransactionNumber, bc.Bandeira , t.AuthorizationNumber, m.AccountAssociationIDCredit, m.AccountIDCredit, m.AccountAssociationIDDebit, m.AccountIDDebit, reci.NumeroSequencial, IFNULL(nfe.numeronfse, fi.nroNFE) NumeroNFe, IF(reci.UnidadeID = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = reci.UnidadeID)) SiglaUnidade, "&_
                           					"  Parcela, "&_
-                          					" Parcelas NumeroParcelas "&queryBlock&" from sys_financialcreditcardreceiptinstallments p  "&_
+                          					" Parcelas NumeroParcelas "&queryBlock&", tef.id tefID from sys_financialcreditcardreceiptinstallments p  "&_
                           					"INNER JOIN sys_financialcreditcardtransaction t on t.id=p.TransactionID  "&_
                           					"INNER JOIN sys_financialmovement m on m.id=t.MovementID "&_
                           					"INNER JOIN pacientes pac on pac.id=m.AccountIDCredit "&_
@@ -112,6 +135,7 @@
                                               "LEFT JOIN nfe_notasemitidas nfe ON nfe.InvoiceID=movrec.InvoiceID AND nfe.situacao=1 "&_
                                               "LEFT JOIN sys_financialinvoices fi ON fi.id=movrec.InvoiceID "&_
                           					"LEFT JOIN cliniccentral.bandeiras_cartao bc on bc.id=t.BandeiraCartaoID "&_
+                          					"LEFT JOIN microtef_logs tef ON tef.AdministrativeCode = t.AuthorizationNumber "&_
                           					"WHERE m.AccountAssociationIDDebit=1 " & sqlConta & sqlAutorizacao & sqlTransacao & sqlData & sqlBaixados & " AND coalesce(NULLIF('"&ref("Bandeira")&"','') like CONCAT('%|',Bandeira,'|%'),true) GROUP BY p.id order by DateToReceive, m.Date, NomePaciente"&_
 											")t "&sqlLimit
 
@@ -152,6 +176,11 @@
 							Taxa = ccur(Fee) / 100
 							Taxa = Taxa * rec("Value")
                             ValorCheio = rec("Value")
+
+                            if rec("tefID")&"" <> "" then
+                                Taxa = 0
+                            end if
+
 							ValorCredito = ccur(rec("Value")) - Taxa
 							Parcela = rec("Parcela")
 
@@ -215,7 +244,14 @@
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
 							        </td>
-							        <td class="text-right"><%= fn(Taxa)%>%</td>
+							        <td align="center">
+							        <%if rec("tefID") then%>
+                                             <button title="Detalhes da movimentação" class="btn btn-xs btn-primary" onclick="modalDetalhesTEF(<%=rec("tefID")%>, <%=rec("MovementID")%>, <%=rec("Parcela")%>, <%=rec("BandeiraCartaoID")%>)"><i class="fa fa-info-circle"></i></button>
+                                         <%else
+                                             call(quickField("text", "Fee"&rec("id"), "", 2, fn(rec("taxa_atualmente")), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' "))
+                                         end if
+                                    %>
+                                    </td>
                                     <td class="text-right"><%=fn(ValorRecebido) %></td>
                                     <td class="text-center"><%=Data %></td>
                                     <td>
@@ -265,7 +301,14 @@
                                       R$ <%= fn(rec("Total")) %>
                                       <input type="hidden" id="parc<%=rec("id") %>" value="<%=fn(rec("Value")) %>" />
 							      </td>
-							      <td><%= quickField("text", "Fee"&rec("id"), "", 2, fn(rec("taxa_atualmente")), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' ") %></td>
+							      <td align="center">
+							      <%if rec("tefID") then%>
+							                <button title="Detalhes da movimentação" class="btn btn-xs btn-primary" onclick="modalDetalhesTEF(<%=rec("tefID")%>, <%=rec("MovementID")%>, <%=rec("Parcela")%>, <%=rec("BandeiraCartaoID")%>)"><i class="fa fa-info-circle"></i></button>
+							            <%else
+							                call(quickField("text", "Fee"&rec("id"), "", 2, fn(rec("taxa_atualmente")), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' "))
+							            end if
+							       %>
+							      </td>
 							      <td>
 							  	    <%= quickField("text", "ValorCredito"&rec("id"), "", 2, fn(ValorCredito), "input-mask-brl text-right", "", " data-id='"&rec("id")&"' ") %>
                                     <input type="hidden" id="Taxa<%=rec("id")%>" name="Taxa<%=rec("id")%>" value="<%=Taxa%>">
@@ -324,13 +367,17 @@
 		<%
 		end if
 		%>
-		<div id="divCartaoLote">
-		    <div class="panel-body"></div>
-        </div>
+
         <%else%>
         <center><em>Busque acima o perfil dos recebimentos que deseja administrar.</em></center>
         <%End if%>
 <script type="text/javascript">
+
+    function modalDetalhesTEF(tefID, movementID, parcela, bandeiraID) {
+        openComponentsModal("microtef/details-transaction", {tefID: tefID, movementID: movementID, parcela: parcela, bandeiraID: bandeiraID}, "Split Realizados - Parcela "+parcela)
+    }
+
+
     $(".chk").click(function () {
 
         if ($(".chk:checked").length == 0) {
@@ -340,6 +387,7 @@
         }
         $.post("cartaoLote.asp", $("input[name=parcCC], input[name^=ValorCheio]").serialize(), function (data) {
             $("#divCartaoLote .panel-body").html(data);
+            $("#divCartaoLote").fadeIn();
         });
     });
 $(function () {

@@ -19,6 +19,10 @@
     cursor: grab;
 }
 
+.tm-popup-dialog{
+    border-radius: 6px;
+}
+
 .container-popup {
     /*display: grid;*/
     grid-template-columns: 1fr 1fr;
@@ -27,7 +31,7 @@
     /*max-width: 320px;*/
     min-width: 80px;
     max-width: 320px;
-    /*border-radius: 6px;*/
+    border-radius: 6px;
     align-items: center;
     column-gap: 20px;
     -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.28);

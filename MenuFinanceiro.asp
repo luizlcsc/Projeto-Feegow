@@ -50,25 +50,7 @@
             </li>
 			<%
 			end if
-
-            if aut("solicitacao_compraV") = 1 then
-            %>
-                <li class="">
-                    <a href="./?P=SolicitacaoDeCompraLista&I=N&Pers=1">
-                        <i class="far fa-shopping-cart"></i>
-                        Solicitação de compra <span class="label label-system label-xs fleft">Novo</span>
-                    </a>
-                </li>
-            <% end if %>
-
-            <% if aut("aprovacompraV") = 1 then %>
-                <li class="">
-                    <a href="./?P=SolicitacaoDeCompraAprovacao&I=N&Pers=1">
-                        <i class="far fa-check"></i>
-                        Aprovação de compra <span class="label label-system label-xs fleft">Novo</span>
-                    </a>
-                </li>
-            <% end if %>
+			%>
         </ul>
     </li>
     <%
@@ -153,6 +135,17 @@
     </li>
 	    <%
 	end if
+
+	if aut("|auditoriaV") then
+	%>
+	<li <% If req("P")="Auditoria" Then %> class="active"<% End If %>>
+        <a href="./?P=Auditoria&Mod=audit&Pers=1">
+            <span class="far fa-history"></span>
+            <span class="sidebar-title"> Auditoria <span class="label label-system label-xs fleft">Novo</span></span>
+        </a>
+    </li>
+	<%
+	end if
 	if aut("|contasareceber") and aut("|contasapagar") then
 	%>
 	<li <% If req("P")="Extrato" Then %> class="active"<% End If %>>
@@ -189,7 +182,7 @@
           <li <% If req("P")="RepassesAConferir" Then %> class="active"<% End If %>>
             <a href="./?P=RepassesAConferir&Pers=1" id="RepassesConsolidacao">
               <i class="far fa-list"></i>
-              Consolidação <span class="label label-system label-xs fleft">Novo</span>
+              Consolidação
             </a>
           </li>
           
@@ -353,6 +346,18 @@
                 </a>
             </li>
             <%
+            if recursoAdicional(25)=4 then
+            %>
+            <li <% If req("P")="CartaoConcilia" Then %> class="active"<% End If %>>
+                <a href="?P=CartaoConcilia&Pers=1">
+                    <span class="fa fa-upload"></span>
+                    <span class="sidebar-title"> Importação CSV </span>
+                </a>
+            </li>
+
+           <%end if%>
+
+            <%
             if 0 then
             %>
             <li style="display: none" <% If req("P")="FaturaCartao" Then %> class="active"<% End If %>>
@@ -380,7 +385,7 @@
     </li>
     <%
     end if
-    if session("Admin")=1 and (session("Banco")="clinic5760" or session("Banco")="clinic100000") then
+    if session("Admin")=1 then
     %>
 
 	<li <% If req("P")="FechamentoData" Then %> class="active"<% End If %>>

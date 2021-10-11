@@ -127,7 +127,7 @@ $(".form-control").change(function(){
 function estilo(){
 	$.post("formEstilo.asp?FormID=<%=I%>", '', function(data, status){
 
-		$("#modal").html("Carregando...");
+		$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		$("#modal-table").modal('show');
 		setTimeout(function(){$("#modal").html(data);}, 1000);
 
@@ -164,7 +164,7 @@ $(".btn-20").click(function(){
 */
 function permissoes(){
 	$.post("formPermissoes.asp?F=<%=I%>", '', function(data, status){
-  		   $("#modal").html("Carregando...");
+  		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	});

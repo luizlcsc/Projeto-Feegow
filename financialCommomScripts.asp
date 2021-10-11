@@ -1,4 +1,4 @@
-﻿function xMov(I){
+﻿function xMov(I, source = ''){
     /*
     if(confirm('ATENÇÃO:\n\nAo cancelar este pagamento, você removerá todos os lançamentos relativos a ele.\n\nTem certeza de que deseja prosseguir?')){
         $.post("xMov.asp", {I:I}, function(data){ eval(data) });
@@ -16,7 +16,13 @@
     $('.rgrec').attr("disabled", true)
     */
 
-    $.post("xMovVerify.asp?I="+I, '', function(data){ $('#pagar .modal-body').html(data); });
+    if(source == 'extrato'){
+        openComponentsModalPost("xMovVerify.asp?I="+I+"&source=extrato",{}, 'Excluir transação', true, false);
+    }else{
+        $.post("xMovVerify.asp?I="+I, '', function(data){
+            $('#pagar .modal-body').html(data);
+        });
+    }
 
 }
 
@@ -49,7 +55,8 @@ function transaction(transactionID, Save, ModalMeuCaixa){
 }
 
 function modalPaymentDetails(movementID, deleteID){
-    $("#pagar").html("Carregando...");
+    $("#pagar").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+
     $("#pagar").fadeIn();
     $.post("modalPaymentDetails.asp",{
 		   movementID:movementID,

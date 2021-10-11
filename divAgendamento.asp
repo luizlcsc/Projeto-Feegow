@@ -6,6 +6,7 @@ HorarioAgoraSQL = db.execute("SELECT DATE_FORMAT(NOW(), '%Y-%m-%dT%H:%i:%s') AS 
 HorarioAgora = HorarioAgoraSQL("now")
 set config = db.execute("select ChamarAposPagamento from sys_config limit 1")
 HorarioVerao="N"
+PermiteParticular = True
 
 omitir = ""
 if session("Admin")=0 then
@@ -319,7 +320,7 @@ function selecionaTabela(GradeID)
 end function
 
 'Atualizando valores da grade de convenios
-if GradeID<> "" and GradeID<>"undefined" then
+if GradeID<> "" and GradeID<>"undefined" and Convenios<> "Nenhum" then
 
     GradeSelecionada= selecionaTabela(GradeID)
 
@@ -330,9 +331,15 @@ if GradeID<> "" and GradeID<>"undefined" then
         GradeApenasConvenios = GradeSQL("Convenios")
         GradeEquipamentoApenasProfissionais = GradeSQL("Profissionais")
         if GradeApenasConvenios <> "" then
+            if instr(GradeApenasConvenios,"|P|")=0 then
+                PermiteParticular = False
+            end if
             GradeApenasConvenios = trataConvenio(GradeApenasConvenios)&""
-
             Convenios = GradeApenasConvenios
+
+            if GradeApenasConvenios="P" then
+                Convenios = "Nenhum"
+            end if
         end if
         
         if not isnull(GradeSQL("MaximoEncaixes")) and GradeSQL("MaximoEncaixes")<>"" then
@@ -599,7 +606,7 @@ end if
                     if(Ipac>1000000000){
                         $.get("baseExt.asp?OP=insert&I="+Ipac, function(data){ eval(data) });
                     }
-                    $.get("ListaPropostas.asp?Origem=Agenda&PacienteID="+ Ipac, function(data){
+                    $.get("ListaPropostas.asp?Origem=Agenda&PacienteID="+ Ipac+ "&CallID=-999", function(data){
                         if(data.length>5){
                             $("#modal-table").modal("show");
                             $("#modal").html(data);
@@ -1034,7 +1041,7 @@ end if
 
             </div>
         </div>
-        <div class="modal-footer">
+        <div class="">
         <%if session("banco")="clinic1773" then%>
         <button class="btn btn-sm btn-primary" title="Enviar sms personalizado." type="button" style="float: left;" id="btnSendSms">
                         <i class="far fa-mobile"></i>
@@ -1088,15 +1095,6 @@ end if
                         hiddenCHK = ""
                     end if
 
-                if session("Banco")="clinic5710" then
-                %>
-                <div class="col-xs-6 col-md-4 pt10">
-                    <button class="btn btn-block btn-sm btn-warning" type="button" onclick="RegistrarMultiplasPendencias('liberar')" id="btnPendenciaAgenda">
-                        Restrição
-                    </button>
-                </div>
-                <%
-                end if
                 %>
 
                 <div class="col-xs-6 col-md-<%= colCHK %> pt10">
@@ -1392,9 +1390,9 @@ function btnSalvarToggleLoading(state, force, waitMessage="Aguarde...") {
   setTimeout(function() {
     if($el.attr("data-force-disabled") !== 'true' || force){
           if(state){
-              $el.attr('disabled', false).html("<i class='far fa-save'></i> Salvar", false);
+              $el.attr('disabled', false).html(`<i class='far fa-save'></i> Salvar`, false);
           }else{
-              $el.attr('disabled', true).html("<i class='far fa-spinner fa-spin'></i> "+waitMessage, true);
+              $el.attr('disabled', true).html(`<i class='far fa-circle-o-notch  fa-spin'></i> `+waitMessage, true);
           }
       }
   }, timeout);
@@ -1529,7 +1527,7 @@ function gravaWorklist () {
 }
 
 var saveAgenda = function(){
-        $("#btnSalvarAgenda").html('salvando');
+        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
 
@@ -1545,7 +1543,13 @@ var saveAgenda = function(){
 
             .fail(function(err){
                 $("#btnSalvarAgenda").prop("disabled", true);
+                showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
+
+                gtag('event', 'erro_500', {
+                    'event_category': 'erro_agenda',
+                    'event_label': "Erro ao salvar agendamento."
+                });
             });
 
         if(typeof callbackAgendaFiltros === "function"){
@@ -1921,7 +1925,7 @@ function CopyToClipboard (text) {
 
 function ObsConvenio(ConvenioID) {
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("ObsConvenio.asp?ConvenioID="+ConvenioID, "", function (data) {
         $("#modal").html(data);
 

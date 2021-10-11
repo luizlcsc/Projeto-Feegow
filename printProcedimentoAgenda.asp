@@ -102,7 +102,7 @@ if TipoImpresso="Etiqueta" then
 end if
 
 if TipoImpresso="Impresso" then
-    set ImpressosModeloSQL = db.execute("SELECT id FROM procedimentosmodelosimpressos WHERE Procedimentos LIKE '%|"&ProcedimentoID&"|%'")
+    set ImpressosModeloSQL = db.execute("SELECT id FROM procedimentosmodelosimpressos WHERE Procedimentos LIKE '%|"&ProcedimentoID&"|%' AND sysActive=1")
     
 
     if ProfissionalID <> "" then

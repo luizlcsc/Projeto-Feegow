@@ -23,6 +23,10 @@ else
     'sqlUnidadesHorarios = " AND l.UnidadeID IN("& session("UnidadeID") &") "
     'joinLocaisUnidades = " LEFT JOIN locais l ON l.id=a.LocalID "
 end if
+FiltroLocalSQL = ""
+if ref("LocalID") <> "" then
+    FiltroLocalSQL = " AND LocalID = "&ref("LocalID")&" "
+end if
 
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
@@ -87,17 +91,33 @@ end if
 
 
 Hora = cdate("00:00")
-sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&sqlUnidadesHorarios &" order by HoraDe"
+sqlHorarios = "select ass.*, l.NomeLocal, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, '' Mensagem, '' Cor from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" " & sqlProcedimentoPermitido& sqlEspecialidadePermitido & sqlConvenioPermitido&sqlUnidadesHorarios & FiltroLocalSQL &" order by HoraDe"
 set Horarios = db.execute(sqlHorarios)
 if Horarios.EOF then
-    sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentoPermitido& sqlEspecialidadePermitido&sqlConvenioPermitido &" order by ass.HoraDe"
+    sqlHorarios2 = "select ass.*, l.NomeLocal, l.UnidadeID, '1' GradePadrao, Mensagem from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentoPermitido& sqlEspecialidadePermitido&sqlConvenioPermitido & FiltroLocalSQL &" order by ass.HoraDe"
     set Horarios = db.execute(sqlHorarios2)
 end if
 'response.write sqlHorarios&"<br>"&sqlHorarios2
 if not Horarios.eof then
+    MostraGrade=True
+    if Horarios("GradePadrao")=1 then
+        FrequenciaSemanas = Horarios("FrequenciaSemanas")
+        InicioVigencia = Horarios("InicioVigencia")
+        if FrequenciaSemanas>1 then
+            NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
+            RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
+            if RestoDivisaoNumeroSemana>0 then
+                MostraGrade=False
+            end if
+        end if
+    end if
+    if instr(Unidades, Horarios("UnidadeID"))<=0 and Unidades <> "" then
+            MostraGrade=False
+    end if
 %>
 
 <table class="table table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">
+
 
     <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
         <span class="panel-title">
@@ -110,28 +130,30 @@ if not Horarios.eof then
                     <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
                         <span class="far fa-cog"></span>
                     </a>
-                    <%
+
+<%
                 end if
-                if ref("ObsAgenda")="1" then
-                    %>
-                    <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
-                    <%
-                end if
-                if aut("|agendaI|")=1 then
-                    GradePadraoID=""
-                    if Horarios("GradePadrao")="1" then
-                        GradePadraoID=Horarios("id")
+                    if ref("ObsAgenda")="1" then
+                        %>
+                        <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
+                        <%
+                    end if
+                    if aut("|agendaI|")=1 then
+                        GradePadraoID=""
+                        if Horarios("GradePadrao")="1" then
+                            GradePadraoID=Horarios("id")
+                        end if
                     end if
                 %>
                     <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= GradePadraoID %>');">
                             <span class="far fa-external-link"></span>
                         </a>
 		        <%
-                end if
                 %>
             </div>
     </div>
     </th></tr></thead><tbody><tr class="hidden l<%=LocalID%>" id="0000"></tr><%
+
     sqlUnidadesBloqueio= ""
 
     while not Horarios.EOF
@@ -466,7 +488,9 @@ while not comps.EOF
     end if
 
     if session("HVazios")="" then
-		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+        statusIcon = imoon(comps("StaID"))
+
+		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap>"&statusIcon&" "
 	    if comps("Encaixe")=1 and getConfig("OmitirEncaixeGrade")=0 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if

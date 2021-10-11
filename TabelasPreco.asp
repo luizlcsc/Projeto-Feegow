@@ -88,6 +88,11 @@ end if
 <div class="panel mt20 mtn hidden-print">
     <div class="panel-heading">
         <span class="panel-title"><i class="fal fa-filter"></i> Filtrar</span>
+
+        <span class="panel-controls">
+            <button type="button" class="btn btn-default " onclick="LimparFiltros()"><i class="fal fa-eraser"> </i> Limpar </button>
+            <button class="btn btn-primary " ><i class="fal fa-search"> </i> Buscar </button>
+        </span>
     </div>
     <div class="panel-body">
         <form action="" id="form-filtro-tabela-de-preco" method="get">
@@ -113,11 +118,6 @@ end if
 				
             </select>
             </div>
-
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fal fa-eraser"> </i> Limpar </button>
-                    <button class="btn btn-primary mt25" ><i class="fal fa-search"> </i> Buscar </button>
-                </div>
             </div>
         </form>
     </div>
@@ -154,7 +154,11 @@ end if
                     sqlFiltros = sqlFiltros & " AND pt.Especialidades LIKE '%|"&replace(Especialidades, "|", "")&"|%'"
                 end if
                 if TipoTabela<>"" then
-                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&replace(TipoTabela,",","")&"'"
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&TipoTabela&"'"
+                end if
+
+                if tiposAutorizados<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo IN ("&tiposAutorizados&")"
                 end if
                 if TabelasParticulares<>"" then
                     sqlFiltros = sqlFiltros & " OR pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
@@ -192,7 +196,7 @@ end if
                 sql = "select pt.*, tp.id HasSolicitacao,coalesce(Fim,date(Now())) as Fim,coalesce(Inicio,date(Now())) as Inicio,(SELECT group_concat(' ',NomeFantasia) FROM vw_unidades WHERE Unidades like CONCAT('%|',id,'|%')) Unidades, Unidades like '%|0|%' as HasCentral "&_
                 "from procedimentostabelas pt "&_
                 " LEFT JOIN solicitacao_tabela_preco tp ON tp.TabelaPrecoID=pt.id AND Status='PENDENTE' "&_
-                "where "&franquiaUnidade(" ( Unidades LIKE '%|"&session("UnidadeID")&"|%' OR Unidades = '' OR Unidades IS NULL) AND ")&" pt.sysActive=1  "&sqlFiltros&" ORDER BY 2 limit "&((pagNumber-1)*10)&",10"
+                "where "&franquiaUnidade(" ( Unidades LIKE '%|"&session("UnidadeID")&"|%' OR Unidades = '' OR Unidades IS NULL) AND ")&" pt.sysActive=1  "&sqlFiltros&" ORDER BY IF(Fim>curdate(),1,0) DESC,NomeTabela limit "&((pagNumber-1)*10)&",10"
 
                 set t = db.execute(sql)
                 'response.write (sql)
@@ -217,7 +221,12 @@ end if
                     TabelasParticulares = t("TabelasParticulares")&""
                     if TabelasParticulares<>"" then
                         set tp = db.execute("select group_concat(NomeTabela separator ', ') tps from tabelaparticular where id in("& replace(TabelasParticulares, "|", "") &")")
-                        TabelasParticulares = tp("tps")&""
+
+                        if len(tp("tps")&"")>100 then
+                            TabelasParticulares = left(tp("tps"),100)&"<a href='#' data-toggle='tooltip' data-placement='right' data-original-title='"&tp("tps")&"' > <strong>...</strong></a>"
+                        else
+                            TabelasParticulares = tp("tps")&""
+                        end if
                     end if
 
                     LabelTabela = ""
@@ -280,10 +289,45 @@ end if
                 </tfoot>
             </tbody>
         </table>
+         <div class="mypage" style="display: flex;">
+
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
+<%
+buscaFiltro = replace(replace(request.querystring()&"","'","''"),"&pagNumber="&req("pagNumber"),"")
+%>
+    function changePagination(numberPag){
+        location.href = `?<%=buscaFiltro%>&pagNumber=${numberPag}`
+    }
+
+    function paginationHtml(page_number,numberPages) {
+        let html = `<ul class="pagination justify-content-center" style="margin: 20px auto;">`;
+
+        for(let i = page_number-3;i < page_number;i++){
+            if(i<1){
+                continue;
+            }
+
+            html += `<li class="page-item" onclick="changePagination(${i});"><a class="page-link" href="#">${i}</a></li>`
+        }
+
+        html += `<li class="page-item active"  ><a class="page-link" href="#">${page_number}</a></li>`
+
+        for(let i = page_number+1;i < page_number+1+3;i++){
+            if(i>numberPages)
+            {
+               break;
+            }
+             html += `<li class="page-item" onclick="changePagination(${i});"><a class="page-link" href="#">${i}</a></li>`
+        }
+        html += `</ul>`;
+        return html;
+    }
+
+    $(".mypage").html(paginationHtml(<%=pagNumber %>,<%=count("qtd")&""%>));
     $(".crumb-active a").html("Preços de Custo e Venda");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("cadastro de preços de custo e venda por vigência");

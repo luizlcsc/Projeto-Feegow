@@ -75,15 +75,13 @@ end if
             <span class="panel-controls">
                 <button class="btn btn-default btn-sm" type="button" onclick="HistoricoAlteracoes()" title="Histórico de alterações"><i class="far fa-history"></i></button>
                 <button type="button" onclick="ajxContent('DiferencaGrade', <%=ProfissionalID%>, 1, 'divHorarios');" class="btn btn-alert btn-sm"><i class="far fa-calendar"></i> LISTAR GRADES POR DATA</button>
+                <button class="btn btn-primary btn-sm"><i class="far fa-save"></i> Salvar</button>
             </span>
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-11">
                     <h4><%= showDate %></h4>
-                </div>
-                <div class="col-md-1">
-                    <button class="btn btn-primary btn-ms"><i class="far fa-save"></i> Salvar</button>
                 </div>
             </div>
             <br>
@@ -133,6 +131,12 @@ end if
                                 MaximoRetornos = h("MaximoRetornos")
                                 InicioVigencia = h("InicioVigencia")
                                 FimVigencia = h("FimVigencia")
+                                IconeCompartilhar=""
+
+                                if h("Compartilhada")="S" then
+                                    IconeCompartilhar="<i class='far fa-check-circle text-success'></i>"
+                                end if
+
                                 if isnull(InicioVigencia) then InicioVigencia="sempre" end if
                                 if isnull(FimVigencia) then FimVigencia="sempre" end if
                                     %>
@@ -145,7 +149,8 @@ end if
                                                     Local: <%=h("NomeLocal")%> <%="<br>Unidade: "&left(getNomeLocalUnidade(h("UnidadeID")),20)%><br />
                                                     <% if not isnull(MaximoRetornos) then response.write("Máx. Retornos: "& MaximoRetornos &"<br>") end if %>
                                                     Início em: <%= InicioVigencia %><br />
-                                                    Fim em: <%= FimVigencia %>
+                                                    Fim em: <%= FimVigencia %> <br>
+                                                    Compartilhada: <%=IconeCompartilhar%>
                                                 </em></small>
                                             </div>
                                             <div class="text-right">
@@ -189,21 +194,129 @@ end if
 <div class="panel">
     <div class="panel-heading">
         <span class="panel-title">Edição de Exceções na Grade de Horários</span>
+
+        <span class="panel-controls">
+            <button onclick="cadastrarExcecao('<%=ProfissionalID%>')" type="button" name="Cadastrar" style="margin-top:8px" class="btn btn-sm btn-success" value="Cadastrar"><i class="far fa-plus"></i></button>
+        </span>
     </div>
     <div class="panel-body pn">
         <%
         ProfissionalID = ccur(req("I"))
 
+
+        function getNomeEspecialidades(stringIDs)
+            newStringIds = replace(stringIDs&"","|","")
+            getNomeEspecialidades =""
+
+            if newStringIds <> "" then
+                set esp = db.execute("select group_concat(especialidade separator ', ' ) as esp from especialidades where id in("&newStringIds&")")
+                if not esp.eof then
+                    getNomeEspecialidades = esp("esp")
+                end if
+            end if
+        end function
+
+        function getNomeProcedimentos(stringIDs)
+            newStringIds = replace(stringIDs&"","|","")
+            getNomeProcedimentos =""
+
+            if newStringIds <> "" then
+                set procs = db.execute("select group_concat( nomeprocedimento separator ', ' ) procs from procedimentos where id in("&newStringIds&")")
+                if not procs.eof then
+                    getNomeProcedimentos = procs("procs")
+                end if
+            end if
+        end function
+
+
+        function getNomeConvenios(stringIDs)
+            newStringIds = replace(stringIDs&"","|","")
+            getNomeConvenios =""
+
+            if instr(newStringIds,"N")=0 then
+
+                if newStringIds <> "" then
+                    set convs = db.execute("select group_concat( nomeconvenio separator ', ' ) convs from convenios where id in("&newStringIds&")")
+                    if not convs.eof then
+                        getNomeConvenios = convs("convs")
+                    end if
+                end if
+
+            end if
+        end function
+
         if aut("|horariosV|") then
 
             if aut("|horariosA|") then
-        %>
-        <!--#include file="formExcecoes.asp"-->
-        <%
+                sqlWhere = " and ProfissionalID="&ProfissionalID
+
+                set pass=db.execute("select h.*, l.NomeLocal, l.UnidadeID, p.NomeProfissional from assPeriodoLocalXProfissional h left join profissionais p on p.id=h.ProfissionalID left join locais l on l.id=h.LocalID where not isnull(h.DataDe) and not isnull(h.DataA) and not isnull(h.HoraDe) and not isnull(h.HoraA) "& sqlWhere &" order by h.DataDe desc, h.DataA desc")
+                if not pass.eof then
+                    %>
+                    <table width="868" align="center" class="table table-striped table-bordered table-hover table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Data Inicio</th>
+                            <th>Data Fim</th>
+                            <th>Hora inicio</th>
+                            <th>Hora fim</th>
+                            <th>Intervalo</th>
+                            <th>Profissional</th>
+                            <th>Local</th>
+                            <th>Procedimentos</th>
+                            <th>Especialidades</th>
+                            <th>Convênios</th>
+                            <th>Compartilhada</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <%
+                    while not pass.EOF
+
+                        IconeCompartilhar=""
+
+                        if pass("Compartilhar")="S" then
+                            IconeCompartilhar="<i class='far fa-check-circle text-success'></i>"
+                        end if
+                    %>
+                    <tr>
+                        <td class="text-center"><%=pass("DataDe")%></td>
+                        <td class="text-center"><%=pass("DataA")%></td>
+                        <td class="text-center"><%=formatdatetime(pass("HoraDe"),4)%></td>
+                        <td class="text-center"><%=formatdatetime(pass("HoraA"),4)%></td>
+                        <td class="text-center"><%=pass("Intervalo")%></td>
+                        <td><%=pass("NomeProfissional")%></td>
+                        <td><%=pass("NomeLocal")%> - <%=getNomeLocalUnidade(pass("UnidadeID"))%></td>
+                        <td class="text-center"><%=getNomeProcedimentos(pass("Procedimentos"))%></td>
+                        <td class="text-center"><%=getNomeEspecialidades(pass("Especialidades"))%></td>
+                        <td class="text-center"><%=getNomeConvenios(pass("Convenios"))%></td>
+                        <td class="text-center"><%=IconeCompartilhar%></td>
+                        <td width="1%">
+                            <%
+                            if aut("|horariosX|") and cdate(pass("DataA"))>=date()  then
+                            %>
+                            <button type="button" value="Excluir" onClick="removeExcecao('<%=pass("id")%>','<%=ProfissionalID%>', '')" style="font-size:10px" class="btn btn-sm btn-danger"><i class="far fa-times"></i> </button>
+                            <%
+                            end if
+                            %>
+                        </td>
+                    </tr>
+                    <%
+                    pass.moveNext
+                    wend
+                    pass.close
+                    set pass=nothing
+                    %>
+                    </tbody>
+                    </table>
+                    <%
+                else
+                    %>
+                    <p class="text-center m10">Nenhuma grade de exceção configurada.</p>
+                    <%
+                end if
             end if
-        %>
-        <iframe width="100%" height="300" name="assHorarios" frameborder="0" src="assHorarios.asp?ProfissionalID=<%= ProfissionalID %>"></iframe>
-        <%
             end if
         %>
     </div>
@@ -216,7 +329,7 @@ end if
     });
 
     function addHorario(Dia){
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`);
         $("#modal-table").modal("show");
         $.post("addHorario.asp?addGrade=0&ProfissionalID=<%=ProfissionalID%>&Dia="+Dia, '', function(data, status){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
@@ -225,7 +338,7 @@ end if
 
     function editGrade(H, ProfissionalID){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`);
         $.get("addHorario.asp?addGrade=1&H="+H+"&ProfissionalID="+ProfissionalID, function(data){
             setTimeout(function(){ $("#modal").html(data) }, 1000 );
         });
@@ -237,6 +350,26 @@ end if
             TipoPai: "ProfissionalID",
             Tabelas: "assfixalocalxprofissional,assperiodolocalxprofissional"
         }, "Log de alterações", true);
+    }
+
+    function cadastrarExcecao(profissionalId){
+        openComponentsModal("cadastrarExcecao.asp", {ProfissionalID: profissionalId}, "Cadastrar grade de exceção", true, function(data){
+            $.post( "cadastrarExcecao.asp?Operacao=Salvar", $("#form-components").serialize(), function(data){
+                eval(data);
+            });
+        }, "lg");
+    }
+
+    function removeExcecao(gradeId, profissionalId, localId){
+        if(confirm("Tem certeza que deseja remover esta exceção?")){
+
+            $.post( "cadastrarExcecao.asp?Operacao=Remover&ProfissionalID="+profissionalId, {
+                GradeID: gradeId,
+                ProfissionalID: profissionalId
+            }, function(data){
+                eval(data);
+            });
+        }
     }
     <!--#include file="jQueryFunctions.asp"-->
 

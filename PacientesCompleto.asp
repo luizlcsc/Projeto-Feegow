@@ -189,7 +189,7 @@ end if
             %>
             <script >
                 $("#NomePaciente").attr("readonly", true);
-                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-default btn-xs'><i class='far fa-edit'></i></button>");
+                $("#NomePaciente").parent("div").parent("div").find("label").after("<button title='Editar nome do paciente' onclick='$(\"#NomePaciente\").attr(\"readonly\", false); $(this).fadeOut(); $(\"#NomePaciente\").focus();' type='button' class='btn btn-link btn-xs'><i class='far fa-edit'></i></button>");
             </script>
             <%
             end if
@@ -461,7 +461,7 @@ end if
 						%>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8 hidden">
                     <div class="row">
                         <%= quickField("text", "Endereco2", "Endereço 2", 4, reg("Endereco2"), "", "", "  ") %>
                         <%= quickField("text", "Numero2", "Número 2", 2, reg("Numero2"), "", "", "") %>
@@ -600,14 +600,14 @@ end if
 <script type="text/javascript">
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
         $("#modal").addClass("modal-lg");
      }
 
      function modalPacienteRelativo(ID, Nome) {
          $("#modal-table").modal("show");
-         $("#modal").html("Carregando...");
+         $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
          $.post("modalPacientesRelativo.asp?I="+ID+"&Nome="+Nome, "", function (data) { $("#modal").html(data) });
          $("#modal").addClass("modal-lg");
       }
@@ -673,7 +673,7 @@ function comparaPaciente(T) {
 			if (T == 'Conta') {
 				eval(data);
 			} else {
-				$("#modal").html("Carregando...");
+				$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 				$("#modal-table").modal("show");
 				$("#modal").html(data);
 			}
@@ -769,7 +769,7 @@ if getConfig("LembreteFormulario")=1 then
                     %>
                     new PNotify({
                             title: "<%=Campo("RotuloCampo")%>",
-                            text: "<%=Valor%>",
+                            text: `<%=Valor%>`,
                             sticky: true,
                             type: 'alert',
                             delay: 5000

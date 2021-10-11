@@ -5,13 +5,19 @@
 FormID = Id
 
 ExibeForm = true
-if getConfig("BloquearEdicaoFormulario") = 1 and FormID <> "N" then
-    set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento FROM buiformspreenchidos WHERE sysActive=1 AND id = "&FormID)
+FormInativo = false
+if FormID <> "N" then
+    set getFormPreenchido = db.execute("SELECT date(DataHora) dataAtendimento, sysActive FROM buiformspreenchidos WHERE sysActive != 0 AND id = "&FormID)
     if not getFormPreenchido.eof then
-        dataAtendimento = getFormPreenchido("dataAtendimento")
-        if dataAtendimento <> date() then
-            ExibeForm = false
-            DisabledBotao = " style='pointer-events:none;' "
+        if getFormPreenchido("sysActive") = -1 then
+            FormInativo = true
+        else
+            dataAtendimento = getFormPreenchido("dataAtendimento")
+            'Bloquea a edição após o dia do atendimento (configuração)
+            if getConfig("BloquearEdicaoFormulario") = 1 and dataAtendimento <> date()  then
+                ExibeForm = false
+                DisabledBotao = " style='pointer-events:none;' "
+            end if
         end if
     end if
 end if
@@ -75,7 +81,7 @@ if not getForm.eof then
     end if
     %>
     <div class="text-left">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 </div>
@@ -149,8 +155,10 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
     }
 */
     <%
-        'config para DUPLICAR o form inves de editar
+    'Duplica o formulário se o atual for Inativo ou se a configuração para Gerar novo formulário ao editar estiver habilitada
+    if getConfig("GerarNovoFormulario")=1 or FormInativo = true then
         FormID="N"
+    end if
     %>
 
     var FormID = "<%=FormID%>";

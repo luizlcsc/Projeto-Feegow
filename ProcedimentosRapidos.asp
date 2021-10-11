@@ -120,7 +120,7 @@ end if
 <script type="text/javascript">
 
     function proc(G, A, I, II, M){
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         if(M){ $("#modal-table").modal("show"); }
         $.post("ProcedimentosRapidos.asp", { G:G, A:A, I:I, II:II}, function(data){
             if(M){

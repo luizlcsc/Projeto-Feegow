@@ -108,6 +108,8 @@ end if
 
 			if req("T") = "GuiaConsulta" then
 				coluna = "ValorProcedimento"
+			elseif req("T") = "GuiaHonorarios" then
+				coluna = "Procedimentos"
 			else
 				coluna = "TotalGeral"
 			end if
@@ -118,8 +120,7 @@ end if
 				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
 										" FROM sys_financialinvoices conta "&_
 										" LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
-										" LEFT JOIN sys_financialmovement mov ON mov.InvoiceID = conta.id "&_
-										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND (mov.ValorPago=0 OR mov.ValorPago IS NULL) AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
+										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
 				' response.write(sqlcontas)
 				set ContasSQL = db.execute(sqlcontas)
 			end if
@@ -136,7 +137,7 @@ end if
 	
 	</div>
     <button class="btn btn-sm btn-default" data-dismiss="modal">
-    	<i class="far fa-remove"></i> Cancelar</button>
+    	Fechar
     </button>
 </div>
 </form>

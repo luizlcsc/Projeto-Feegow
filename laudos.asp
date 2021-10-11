@@ -29,7 +29,7 @@ end if
     <div class="panel">
         <div class="panel-body mt20">
             <div class="row">
-                <%= quickfield("simpleSelect", "ProcedimentoID", "Procedimento", 2, "", "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg inner join procedimentos proc on proc.GrupoID=pg.id where proc.Laudo=1 and proc.sysActive UNION ALL select id, NomeProcedimento from procedimentos where ativo='on' and Laudo", "NomeProcedimento", "empty required=''") %>
+                <%= quickfield("simpleSelect", "ProcedimentoID", "Procedimento", 2, "", "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg inner join procedimentos proc on proc.GrupoID=pg.id where proc.Laudo=1 and proc.sysActive UNION ALL select id, NomeProcedimento from procedimentos where ativo='on' and Laudo", "NomeProcedimento", "empty ") %>
                 <div class="col-md-2">
                     <%= selectInsert("Paciente", "PacienteID", PacienteID, "pacientes", "NomePaciente", "", "", "") %>
                 </div>
@@ -100,7 +100,7 @@ end if
 
     function entrega(I,tipo) {
             $("#modal-table").modal("show");
-            $("#modal").html("Carregando...");
+            $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
             if (tipo == 'html')
             {
                 $.post("laudoEntrega.asp?L="+I, "", function (data) { $("#modal").html(data) });

@@ -23,6 +23,13 @@ end if
 
 set AgendamentoSQL = db.execute("SELECT * FROM agendamentos WHERE id in ("&AgendamentosID&")")
 
+if AgendamentoSQL("StaID")=3 or cdate(AgendamentoSQL("Data"))< date() then
+    %>
+    showMessageDialog("Alteração de status não permitida.");
+    <%
+    Response.End
+end if
+
 set AgendamentosNoMesmoDiaSQL = db.execute("SELECT count(id)Qtd FROM agendamentos WHERE Data="&mydatenull(AgendamentoSQL("Data"))&" AND PacienteID="&AgendamentoSQL("PacienteID"))
 
 if cint(AgendamentosNoMesmoDiaSQL("Qtd"))>1 and Forcar=False then
@@ -48,7 +55,7 @@ else
 
     showMessageDialog("Status alterado.", "success");
     //$("#frm-filtros").submit();
-    $("tr[data-id=<%=AgendamentosID%>]").find(".label-status").find("img").attr("src", "assets/img/<%=StatusID%>.png");
+    $("tr[data-id=<%=AgendamentosID%>]").find(".label-status").html(`<%=imoon(StatusID)%>`);
     getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=AgendamentosID%>", sms: true, email: true })
 
     <%

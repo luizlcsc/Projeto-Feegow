@@ -23,7 +23,7 @@ FormularioNaTimeline = getConfig("FormularioNaTimeline")
                 </tr>
                 <tr>
                     <td><button type="button" onClick="addCampo(4, <%=GrupoID%>)" class="btn btn-app btn-block btn-info btn-sm"><i class="far fa-check-square-o bigger-200"></i><br>Check</button></td>
-                    <td><button type="button" onClick="addCampo(5, <%=GrupoID%>)" class="btn btn-app btn-block btn-info btn-sm"><i class="far fa-check-circle-o bigger-200"></i><br>Radio</button></td>
+                    <td><button type="button" onClick="addCampo(5, <%=GrupoID%>)" class="btn btn-app btn-block btn-info btn-sm"><i class="far fa-check-circle bigger-200"></i><br>Radio</button></td>
                 </tr>
                 <tr>
                     <td><button type="button" onClick="addCampo(6, <%=GrupoID%>)" class="btn btn-app btn-block btn-info btn-sm"><i class="far fa-toggle-down bigger-200"></i><br>Sele&ccedil;&atilde;o</button></td>
@@ -71,7 +71,7 @@ FormularioNaTimeline = getConfig("FormularioNaTimeline")
                     <td><button type="button" onClick="addCampo(20, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-hospital-o bigger-200"></i><br>Pedidos</button></td>
                 </tr>
                 <tr>
-                    <td><button type="button" onClick="addCampo(21, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-file-text-o bigger-200"></i><br>Atestados</button></td>
+                    <td><button type="button" onClick="addCampo(21, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-file-text bigger-200"></i><br>Atestados</button></td>
                     <td><button type="button" onClick="addCampo(16, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-stethoscope bigger-200"></i><br>CID-10</button></td>
                 </tr>
                 <tr>
@@ -151,7 +151,7 @@ function EditarImpressao(I){
     $("#modal").css("margin-left", "-300px");
 
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("ConfigFormPersonalizado.asp?I="+I, "", function (data) {
         $("#modal").html(data);
 
@@ -161,7 +161,7 @@ function EditarImpressao(I){
 
 function infoImpressao(){
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("infoImpressao.asp", "", function (data) {
         $("#modal").html(data);
     });

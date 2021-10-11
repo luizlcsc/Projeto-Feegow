@@ -34,11 +34,12 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                 for i=0 to ubound(spl)
                     TipoGuia = spl(i)
 
+                    Rotulo = "Guia "&TipoGuia
+
                     if TipoGuia<>"Simplificada" then
-                        TipoGuia = "de "&TipoGuia
+                        Rotulo = "Guia de "&TipoGuia
                     end if
 
-                    Rotulo = "Guia "& TipoGuia
                     %>
                     <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="far fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
                     <%
@@ -58,7 +59,7 @@ if req("Checkin")="1" then
     staPagto = "danger"
     %>
 <input id="AccountID" type="hidden" name="AccountID" value="<%= "3_"& PacienteID %>" />
-<div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
+<div id="divLanctoCheckin" class="mt5"><!--#include file="invoiceEstilo.asp"--></div>
     <table class="table table-condensed table-hover">
     <%
     sql = "SELECT ii.desconto, proc.TipoProcedimentoID, t.*, if(conv.registroans='0' or conv.registroans='simplificado' ,'Simplificada', if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia)) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
@@ -197,7 +198,7 @@ if req("Checkin")="1" then
         <%idagp = agp("id")%>
         <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
         <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
-        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
+        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular) %>
 
 
         <%
@@ -266,7 +267,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
 
             $( "#pagar" ).draggable();
 
-            $("#pagar").html("Carregando...");
+            $("#pagar").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
             $.post("Pagar.asp?T=C", {
                 Parcela: '|'+MovementID+'|'
                 }, function (data) {
@@ -536,7 +537,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                                 const divPagar = $('#pagar');
                                 divPagar.fadeIn();
                                 divPagar.draggable();
-                                divPagar.html("Carregando...");
+                                divPagar.html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                                 $.post("Pagar.asp?T=C", {
                                     Parcela: '|' + MOVEMENT_ID + '|'
                                 }, function (data) {
@@ -751,10 +752,14 @@ else
                             <%=quickField("number", "Tempo", "", 2, Tempo, "", "", " placeholder='Em minutos'"&TempoChange)%>
                         </td>
                         <td>
+                            <%
+                            if PermiteParticular then
+                            %>
                             <div class="radio-custom radio-primary">
                                 <input type="radio" onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
                             </div>
                             <%
+                            end if
                     if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
                             %>
                             <div class="radio-custom radio-primary">
@@ -828,7 +833,7 @@ $(document).ready(function() {
                         else
                             if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
                                 %>
-                                <%=quickfield("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where ativo='on' AND sysActive=1 and id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value);""") %>
+                                <%=quickfield("simpleSelect", "ConvenioID", "", 12, ConvenioID, "select id, NomeConvenio from convenios where ativo='on' AND sysActive=1 and id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value);""") %>
                                 <%
                             end if
                         end if
@@ -904,7 +909,7 @@ $(document).ready(function() {
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
             contador = 1
             while not ageprocs.eof
-                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular)
                 contador = contador + 1
   
             ageprocs.movenext

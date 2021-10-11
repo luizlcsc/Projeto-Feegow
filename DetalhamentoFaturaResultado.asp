@@ -59,7 +59,7 @@ if ref("Fatura")<>"" or req("Fatura")<>"" then
                     <td><a href="?P=invoice&I=<%=InvoiceID%>&A=&Pers=1&T=D" target="_blank"><%=Descricao%></a></td>
                     <td><%=ItensFaturaCartaoSQL("Parcela")%>/<%=NumeroParcelas%></td>
                     <td>R$ <%=fn(ItensFaturaCartaoSQL("Value"))%></td>
-                    <td style="display:none"><button type="button" onclick="AlteraFatura('<%=InvoiceID%>')" title="Alterar fatura desta conta" class="btn-default btn btn-xs"><i class="far fa-arrow-circle-o-right"></i></button></td>
+                    <td style="display:none"><button type="button" onclick="AlteraFatura('<%=InvoiceID%>')" title="Alterar fatura desta conta" class="btn-default btn btn-xs"><i class="far fa-arrow-alt-circle-right"></i></button></td>
                 </tr>
                 <%
                 ValorTotal = ValorTotal + ItensFaturaCartaoSQL("Value")

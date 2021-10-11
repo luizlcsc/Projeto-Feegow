@@ -5,6 +5,9 @@
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
+<!--#include file="webhookFuncoes.asp"-->
+
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -93,11 +96,30 @@ rfHora=ref("Hora")
 rfProfissionalID=ref("ProfissionalID")
 rfEspecialidadeID=ref("EspecialidadeID")
 rdEquipamentoID=ref("EquipamentoID")
+GradeID = ref("GradeID")
 indicacaoID=ref("indicacaoId")
 rfData=ref("Data")
 if isdate(rfData) then
     rfData = cdate(rfData)
 end if
+
+if ref("LocalID")<>"" then
+    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(ref("LocalID")))
+
+    if not LocalSQL.eof then
+        AgendamentoUnidadeID=LocalSQL("UnidadeID")
+    end if
+end if
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+if AgendamentoUnidadeID <> "" then
+    contabloqueadacred = verificaBloqueioConta(2, 2, 0, AgendamentoUnidadeID,rfData)
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        erro ="Agenda bloqueada para edição retroativa (data fechada)."
+    end if
+end if
+' #####################################################################################
+
 
 rfProcedimento=ref("ProcedimentoID")
 rfrdValorPlano=ref("rdValorPlano")
@@ -229,13 +251,20 @@ if erro="" then
 	        valpac = "'"&valp&"'"
 	    end if
 
+	    IF "age"&splCamposPedir(z)&"" = "ageCel1" THEN
+            valpac = RemoveCaracters(valpac,"-./ ()")
+        end if
+        IF "age"&splCamposPedir(z)&"" = "ageTel1" THEN
+            valpac = RemoveCaracters(valpac,"-./ ()")
+        end if
         
 	    IF "age"&splCamposPedir(z)&"" = "ageCPF" THEN
             valpac = RemoveCaracters(valpac,"-./")
             valp = RemoveCaracters(valp,"-./")
             hasCpf = true
 
-            IF getConfig("NaoPermitirCPFduplicado") THEN
+            'desativado: Apresentando comportamento estranho. Precisa considerar se o paciente esta sendo adicionado ou nao
+            IF getConfig("NaoPermitirCPFduplicado") and False THEN
                 set PacienteDuplicadoSQL = db.execute("SELECT cpf,id, NomePaciente FROM pacientes WHERE ((cpf='"&valp&"' OR cpf='"&valp&"') and sysActive=1 and '"&valp&"'!='' and id!="&rfPaciente&") ")
                 IF not PacienteDuplicadoSQL.eof THEN
                         %>
@@ -382,6 +411,19 @@ if erro="" then
 	    db.execute("UPDATE agendamentos SET CanalID="&treatvalnull(ref("ageCanal"))&" WHERE id="&ConsultaID)
     end if
 
+    if cdate(ref("Data"))< date() then
+
+        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and pCon("StaID")&"" <> rfStaID then
+            'status de agendamento passado alterado para status em que o atendimento nao foi prestado.
+
+            call registraEventoAuditoria("altera_status_agendamento_passado", ConsultaID, "")
+        else
+            call registraEventoAuditoria("altera_agendamento_passado", ConsultaID, "")
+        end if
+
+    end if
+
+
     if session("Banco")="clinic5459" then
         n = 0
         while n<5
@@ -457,6 +499,16 @@ if erro="" then
         'call centralEmail(ref("ConfEmail"), rfData, rfHora, ConsultaID)
 
         if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
+
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
+            if recursoAdicional(43) = 4 then
+                if ref("ConfSMS")="S" AND ref("StaID")=7 then 'ENVIO SOMENTE STATUS CONFIRMADO
+
+                    call webhook(119, true, "[agendamentoID]", ref("ConsultaID"))            
+
+                end if
+            end if
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             %>
             getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
             <%

@@ -143,7 +143,7 @@ end if
 </div>
 <%
 omitir = ""
-if session("Admin")=0 then
+if session("Admin")=1 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
 		tipo = omit("Tipo")
@@ -172,6 +172,12 @@ if session("MasterPwd")&""="S" then
     %>
 .sensitive-data{
     filter: blur(6px);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
     <%
 end if
@@ -632,6 +638,7 @@ $(".mainTab").click(function(){
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");
+    $("#rbtns").fadeIn();
 	//$("#save").removeClass("hidden");
 });
 $(".tab").click(function(){
@@ -653,6 +660,7 @@ $("#tabExtrato").click(function() {
 });
 
 function pront(U){
+    $("#rbtns").fadeOut();
 	$("#pacientesDadosComplementares").hide();
 	$.ajax({
 		type: "POST",
@@ -660,7 +668,14 @@ function pront(U){
 		success:function(data){
 			$("#pront").html(data);
 		}
-	});
+	}).fail(function(data) {
+
+      gtag('event', 'erro_500', {
+          'event_category': 'erro_timeline',
+          'event_label': "Erro ao acessar timeline (<%=LicenseID&":"&req("I")%>)"
+      });
+
+    });
 }
 
 
@@ -1148,7 +1163,7 @@ $(".form-control").change(function(){
                 if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
                     $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
                 }
-					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(' *');
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(` <i class='fas fa-asterisk text-danger input-required-asterisk' ></i>`);
             }, 500);
 			<%
         next
@@ -1166,6 +1181,15 @@ $(".form-control").change(function(){
 <% end if %>
 
 <script>
+    function handleFormOpenError(t, p, m, i, a, FormID, CampoID){
+            showMessageDialog("Ocorreu um erro ao abrir este registro. Tente novamente mais tarde.");
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_prontuario',
+                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+            });
+    }
+
 	<%
 	FormularioNaTimeline = getConfig("FormularioNaTimeline")
 
@@ -1194,13 +1218,15 @@ $(".form-control").change(function(){
         $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
+        }).fail(function (data){
+            handleFormOpenError(t, p, m, i, a, FormID, CampoID);
         });
     }
 
     <%
     ELSE
     %>
-        function iPront(t, p, m, i, a) {
+        function iPront(t, p, m, i, a, FormID, CampoID) {
             $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
@@ -1228,7 +1254,10 @@ $(".form-control").change(function(){
             var pl = $("#ProfissionalLaudadorID").val();
             $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
                 $("#modal-form .panel").html(data);
-            })
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID)
+                $("#modal-form").magnificPopup("close");
+            });
         }
     <%
     END IF

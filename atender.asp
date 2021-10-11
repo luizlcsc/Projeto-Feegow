@@ -434,6 +434,7 @@ function incluirGuiaSADT(atendimentoid, agendamentoid)
         "where id="&reg("id"))
         set guia = db.execute("select * from tissguiasadt where id="&reg("id"))
         db_execute("update tissguiasadt set TotalGeral="&treatvalzero(n2z(guia("Procedimentos"))+n2z(guia("Medicamentos"))+n2z(guia("Materiais"))+n2z(guia("TaxasEAlugueis"))+n2z(guia("OPME")))&" where id="&reg("id"))
+
     else 
         'Caso já exista a guia gerada atualizar o status da guia para 15 (aprovado e atendido)
         sqlupdate = "UPDATE tissguiasadt SET  GuiaStatus=15  WHERE id='"&rs_guia("id")&"'" 
@@ -747,7 +748,7 @@ if Conteudo="Play" then
 
                     function atEspera() {
                         $.get("atEspera.asp?PacienteID=<%= PacienteID %>&Atendimentos=<%= session("Atendimentos")%>", function (data) {
-                            $("#modal").html("Carregando...");
+                            $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                             $("#modal-table").modal("show");
                             $("#modal").html(data);
                         });
@@ -773,9 +774,9 @@ if Conteudo="Play" then
                 <script type="text/javascript" src="https://get.webpkiplugin.com/Scripts/LacunaWebPKI/lacuna-web-pki-2.12.0.js"></script>
 
                 <div class="col-md-12">
-                    <div style="float: left;">
+                    <div style="float: left; opacity: 0.4; cursor: default" id="content-assinatura" data-toggle="tooltip" data-placement="bottom" title="Carregando...">
                         <div class="switch round switch-xs " style="float: left;">
-                            <input onchange="persistAssinaturaAuto(this)" name="AssinaturaAuto" id="AssinaturaAuto" type="checkbox">
+                            <input disabled onchange="persistAssinaturaAuto(this)" name="AssinaturaAuto" id="AssinaturaAuto" type="checkbox">
                             <label for="AssinaturaAuto"></label>
                         </div>
                         <span style="position: relative; top: 3px;" class="ml10 ">Assinatura digital</span>
@@ -788,9 +789,40 @@ if Conteudo="Play" then
                 <script>
                     $(document).ready(function(){
                         assinaturaAuto = localStorage.getItem("assinaturaAuto");
-                        if(assinaturaAuto !== "0"){
+                        if(assinaturaAuto == "1"){
                             $("#AssinaturaAuto").attr("checked", "checked")
                         }
+
+                        function lacunaNotAvailable(){
+                            const $contentAssinatura = $("#content-assinatura");
+
+                            $contentAssinatura.attr("data-original-title", "Você precisa instalar a extensão WebPki para usar o certificado digital.");
+                            $contentAssinatura.tooltip();
+                        }
+
+                        function lacunaIsAvailable(){
+                            const $contentAssinatura = $("#content-assinatura");
+                            const $inputAssinar = $("#AssinaturaAuto");
+
+                            $inputAssinar.attr("disabled", false);
+                            $contentAssinatura.css("opacity", 1);
+                            $contentAssinatura.attr("data-original-title", "");
+                            $contentAssinatura.tooltip();
+                        }
+
+                        try{
+                            var pki = new LacunaWebPKI();
+                            function start() {
+                                pki.init({
+                                    ready: lacunaIsAvailable,
+                                    notInstalled: lacunaNotAvailable
+                                });
+                            }
+                            start();
+                        }catch (e){
+                            lacunaNotAvailable();
+                        }
+
                     })
                 </script>
             <%

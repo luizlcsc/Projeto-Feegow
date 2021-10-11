@@ -87,7 +87,7 @@ end if
 
 function editDom(D){
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.get("editDom.asp?D="+D, function(data){ $("#modal").html(data) });
 }
 
@@ -98,7 +98,7 @@ function salvaRepasseLinear(){
 }
     function valFun(D){
        $("#modal-table").modal("show");
-       $("#modal").html("Carregando...");
+       $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
        $.get("modalRateioFuncoes.asp?T=&I="+D+"&A=E&Linear=1", function(data){
             $("#modal").html(data);
         });
@@ -151,7 +151,7 @@ function fRateio(T, I, A){
 	   type:"GET",
 	   url:"modalRateioFuncoes.asp?T="+T+"&I="+I+"&A="+A,
 	   success:function(data){
-		   $("#modal").html("Carregando...");
+		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	   }
@@ -159,7 +159,7 @@ function fRateio(T, I, A){
 }
 
 function repasseDesconto(I) {
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $("#modal-table").modal("show");
     $.get("repasseDesconto.asp?I=" + I, function (data) {
         $("#modal").html(data);

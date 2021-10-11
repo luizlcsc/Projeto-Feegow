@@ -184,8 +184,9 @@ function completaConvenio(ConvenioID, PacienteID)
     <%
     end if
     %>
-
-    tissplanosguia(<%=ConvenioID%>);
+	if (typeof tissplanosguia !== "undefined") {
+    	tissplanosguia(<%=ConvenioID%>);
+	}
     <%
     NGuiaPrestador = numeroDisponivel(ConvenioID)
 	%>
@@ -250,10 +251,11 @@ function completaContratado(id, ConvenioID)
 			TabelaID = conv("TabelaPadrao")
 		end if
 	end if
-	%>
 
-	// <%=id%> --- <%=ConvenioID%>
+	if CodigoNaOperadora <> "" then 'para nao limpar o campo se estiver preenchido e vier vazio o código na operadora
+	%>
 	$("#CodigoNaOperadora").val("<%=CodigoNaOperadora%>");
+	<% end if %>
     $("#CodigoCNES").val("<%=CodigoCNES%>");
     $("#TabelaID").val("<%=TabelaID%>");    
 	<%
@@ -754,6 +756,37 @@ function completaProdutoTabela(ProdutoETabela, Nada)
 			%>
 			$("#CodigoProduto").val("<%=produtotabela("Codigo")%>");
 			<%
+		end if
+	end if
+end function
+
+function completaLocalExterno(id, convenioId)
+	conditionConvenio = " AND 1=0 "
+	if convenioId <> "" then
+		conditionConvenio = " AND cle.convenioid = '" & convenioId & "' "
+	end if
+	sqlLocalExterno = "SELECT le.id, le.nomelocal, le.cnes, COALESCE(cle.codigooperadora, le.cnpj) AS codigo FROM locaisexternos le " &_
+	                  "LEFT JOIN convenios_local_externo cle ON cle.localexternoid = le.id AND cle.sysActive = 1 " & conditionConvenio &_
+	                  "WHERE le.id = '" & id & "' and le.sysActive = 1 LIMIT 1"
+
+	set localexterno = db.execute(sqlLocalExterno)
+	if not localexterno.eof then
+		if localexterno("nomelocal") <> "" then 
+		%> 
+			$("#ContratadoLocalNome").val(`<%=localexterno("nomelocal")%>`);
+			$("#NomeHospitalSol").val(`<%=localexterno("nomelocal")%>`);
+		<%
+		end if
+		if localexterno("cnes") <> "" then 
+		%>
+			$("#ContratadoLocalCNES").val('<%=localexterno("cnes")%>');
+		<%
+		end if
+		if localexterno("codigo") <> "" then
+		%>
+			$("#ContratadoLocalCodigoNaOperadora").val('<%=localexterno("codigo")%>'); 
+			$("#CodigoNaOperadora").val('<%=localexterno("codigo")%>');
+		<%
 		end if
 	end if
 end function

@@ -1,5 +1,5 @@
 <!--#include file="Classes/Connection.asp"--><%
-						set tryLogin = dbc.execute("select lu.*, l.Servidor from licencasusuariosmulti lu left join licencas l on l.id=LicencaAtual where lu.Email='"&ref("User")&"' and lu.Senha='"&ref("Password")&"' and lu.Cupom='"&req("Partner")&"'")
+						set tryLogin = dbc.execute("select lu.*, l.Servidor from licencasusuariosmulti lu left join licencas l on l.id=LicencaAtual where lu.Ativo='on' AND lu.Email='"&ref("User")&"' and lu.Senha='"&ref("Password")&"' and lu.Cupom='"&req("Partner")&"'")
                         if not tryLogin.EOF then
 
                             Servidor = tryLogin("Servidor")&""

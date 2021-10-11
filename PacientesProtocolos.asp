@@ -99,7 +99,7 @@ end if
             <div class="panel">
                 <div class="panel-heading">
                     <span class="panel-title">
-                        <i class="far fa-file-text-o"></i>
+                        <i class="far fa-file-text"></i>
                         Protocolos Sugeridos
                     </span>
                 </div>
@@ -134,7 +134,7 @@ end if
     </div>
 
     <div class="text-left mt20">
-        <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+        <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 

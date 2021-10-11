@@ -383,7 +383,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 
 
 				if guias("LoteID")=0 then
-					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
+					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-alt-circle-right""></i></button> FORA DE LOTE")
 				else
                     if aut("loteX")=1 then
 					    response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
@@ -681,7 +681,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
                     response.write(StatusSelectS)
                 'end if
 				if guias("LoteID")=0 then
-					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-circle-o-right""></i></button> FORA DE LOTE")
+					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-alt-circle-right""></i></button> FORA DE LOTE")
 				else
                     if aut("loteX")=1 then
                         response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
@@ -843,14 +843,14 @@ function correcaoValoresProcedimentos(self, guiaId, valorTotalCheck, tabela) {
 
 function modalTissGuiaStatuslog(GuiaID, TipoGuia) {
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("modalTissGuiaStatuslog.asp?GuiaID="+GuiaID+"&TipoGuia="+TipoGuia, "", function (data) { $("#modal").html(data) });
     $("#modal").addClass("modal-lg");
  }
 
 function modalPaciente(ID) {
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
     $("#modal").addClass("modal-lg");
  }

@@ -31,38 +31,43 @@ if ref("NomeEmpresa")<>"" and ref("NomeContato")<>"" then
 end if
 %>
 
-<div class="widget-box transparent">
-    <div class="widget-header widget-header-flat">
-        <h4><i class="far fa-hospital-o blue"></i> CADASTRO DE LICENÇA</h4>
-    </div>
-</div>
+<script >
+$(".crumb-active a").html("Cadastro de licdença");
+    $(".crumb-link").removeClass("hidden");
+    $(".crumb-link").html("Ativas");
+    $(".crumb-icon a span").attr("class", "far fa-hospital");
+</script>
 
-<form method="post" action="">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4">
-        <div class="row">
-        <%
-        if 0 then
-        %>
-            <%=quickField("text", "NomeEmpresa", "Nome da Empresa", 12, NomeEmpresa, "", "", " required")%>
-            <%=quickField("text", "NomeContato", "Responsável", 12, NomeContato, "", "", " required")%>
-            <%=quickField("email", "EmailAdmin", "E-mail do Administrador", 12, EmailAdmin, "", "", " required")%>
-            <%=quickField("password", "SenhaAdmin", "Senha do Administrador", 12, SenhaAdmin, "", "", " required")%>
-            <%=quickField("simpleSelect", "Status", "Status", 12, Status, "select 'C' id, 'Ativo' NomeSta UNION ALL select 'B', 'Bloqueado'", "NomeSta", "")%>
-            <div class="col-md-12 text-center">
-            	<label>&nbsp;</label><br>
-            	<button class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>
-            </div>
-            <%
-            else
-            %>
-<div class="alert alert-warning">
-    Para criar a licença por favor entre em contato conosco.
-</div>
-            <%
-            end if
-            %>
+<div class="panel mt15">
+    <div class="panel-body">
+        <form method="post" action="">
+            <div class="row">
+              <div class="col-md-4 col-md-offset-4">
+                <div class="row">
+                <%
+                if 0 then
+                %>
+                    <%=quickField("text", "NomeEmpresa", "Nome da Empresa", 12, NomeEmpresa, "", "", " required")%>
+                    <%=quickField("text", "NomeContato", "Responsável", 12, NomeContato, "", "", " required")%>
+                    <%=quickField("email", "EmailAdmin", "E-mail do Administrador", 12, EmailAdmin, "", "", " required")%>
+                    <%=quickField("password", "SenhaAdmin", "Senha do Administrador", 12, SenhaAdmin, "", "", " required")%>
+                    <%=quickField("simpleSelect", "Status", "Status", 12, Status, "select 'C' id, 'Ativo' NomeSta UNION ALL select 'B', 'Bloqueado'", "NomeSta", "")%>
+                    <div class="col-md-12 text-center">
+                        <label>&nbsp;</label><br>
+                        <button class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>
+                    </div>
+                    <%
+                    else
+                    %>
+        <div class="alert alert-warning">
+            Para criar a licença por favor entre em contato conosco.
         </div>
-      </div>
+                    <%
+                    end if
+                    %>
+                </div>
+              </div>
+            </div>
+        </form>
     </div>
-</form>
+</div>

@@ -42,13 +42,13 @@ if erro<>"" then
 	<%
 else
 
-    sql = "update agendacirurgica set StatusID='"& ref("StatusID") &"', PacienteID="& treatvalzero(ref("gPacienteID")) &", ConvenioID="& treatvalnull(ref("gConvenioID")) &", PlanoID="& treatvalnull(ref("PlanoID")) &", RegistroANS='"&ref("RegistroANS")&"', rdValorPlano='"& ref("rdValorPlano") &"', Valor="& treatvalzero(ref("Valor")) &", Hora="& mytime(ref("Hora")) &", Senha='"&ref("Senha")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ContratadoLocalCodigoNaOperadora='"&ref("ContratadoLocalCodigoNaOperadora")&"', ContratadoLocalNome='"&ref("ContratadoLocalNome")&"', ContratadoLocalCNES='"&ref("ContratadoLocalCNES")&"', DataEmissao="& mydatenull(ref("DataEmissao")) &", Observacoes='"&ref("Observacoes")&"', Procedimentos="& treatValZero(ref("vProcedimentos")) &", UnidadeID="& treatvalzero(ref("UnidadeID")) &", sysActive=1 where id="&I
+    sql = "update agendacirurgica set StatusID='"& ref("StatusID") &"', PacienteID="& treatvalzero(ref("gPacienteID")) &", ConvenioID="& treatvalnull(ref("gConvenioID")) &", PlanoID="& treatvalnull(ref("PlanoID")) &", RegistroANS='"&ref("RegistroANS")&"', rdValorPlano='"& ref("rdValorPlano") &"', Valor="& treatvalzero(ref("Valor")) &", Hora="& mytime(ref("Hora")) &", Senha='"&ref("Senha")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ContratadoLocalCodigoNaOperadora='"&ref("ContratadoLocalCodigoNaOperadora")&"', ContratadoLocalNome='"&ref("ContratadoLocalNome")&"', ContratadoLocalCNES='"&ref("ContratadoLocalCNES")&"', DataEmissao="& mydatenull(ref("DataEmissao")) &", Observacoes='"&ref("Observacoes")&"', Procedimentos="& treatValZero(ref("vProcedimentos")) &", UnidadeID="& treatvalzero(ref("UnidadeID")) &", LocalExternoID =" & treatvalzero(ref("LocalExternoID")) &", sysActive=1 where id="&I
 
 '	response.Write(sql)
 	db.execute(sql)
 	set guia = db.execute("select * from agendacirurgica where id="&I)
 	%>
-        location.href='./?P=lAgendaCirurgica&Pers=1';
+        location.href='./?P=listaAgendaCirurgica&Pers=1';
     <%
 end if
 %>

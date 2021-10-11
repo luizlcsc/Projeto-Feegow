@@ -98,13 +98,13 @@ while not proc.eof
 
 	    ExibirLancar = 1
         ValorFinal = proc("Valor")
-        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+        ValorFinal = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, "")
 
 		if not isnull(ValorFinal) and ValorFinal<>0 then
 			Valor =  formatnumber(ValorFinal, 2)
 			vp = Valor
             if  aut("valordoprocedimentoV")=0 then
-                Valor = "<i class=""far fa-check-circle-o text-success tooltip-info""></i>"
+                Valor = "<i class=""far fa-check-circle text-success tooltip-info""></i>"
             end if
 		else
 			Valor = "<i class=""far fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento no particular"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento no""></i>"
@@ -173,7 +173,7 @@ while not proc.eof
 
 
             if  aut("valordoprocedimentoV")=0 then
-                Valor = "<i class=""far fa-check-circle-o text-success tooltip-info""></i>"
+                Valor = "<i class=""far fa-check-circle text-success tooltip-info""></i>"
             end if
 		else
 			Valor = "<i class=""far fa-exclamation-triangle grey tooltip-info"" style=""cursor:help"" title=""Não há valor configurado para este procedimento neste convênio"" data-rel=""tooltip"" data-original-title=""Não há valor configurado para este procedimento neste convênio""></i>"

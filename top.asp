@@ -61,17 +61,17 @@ else
             if Aut("|agenda")=1 or session("Table")="profissionais" then%>
     <li class="<%=classMenu %>">
         <a href="#" class="dropdown-toggle menu-click-agenda" onclick="return false;" data-toggle="dropdown">
-            <%=abreSpanTitulo %> <i class="far fa-calendar hidden"></i> <span class=""> Agenda </span> <%= fechaSpanTitulo %>
+            <%=abreSpanTitulo %> <i class="far fa-calendar hidden"></i> <span class=""> Agenda </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
         </a>
         <ul class="dropdown-menu">
-            <li class="sub-menu-click-agenda-diaria"><a href="./?P=Agenda-1&Pers=1"><i class="far fa-calendar"></i> Diária</a></li>
+            <li class="sub-menu-click-agenda-diaria"><a href="./?P=Agenda-1&Pers=1"><i class="far fa-calendar-day"></i> Diária</a></li>
             <li class="sub-menu-click-agenda-semanal"><a href="./?P=Agenda-S&Pers=1"><i class="far fa-calendar-week"></i> Semanal</a></li>
             <%if Aut("|agenda")=1 then%>
             <li class="hidden sub-menu-click-agenda-multipla-por-locais"><a href="./?P=QuadroDisponibilidade&Pers=1"><i class="far fa-star"></i> Múltipla por Locais</a></li>
 		        <%
                 if Aut("|agendaV|")=1  then
                     %>
-                    <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1"><i class="far fa-calendar-star"></i> Múltipla</a></li>
+                    <li class="sub-menu-click-agenda-multipla"><a href="./?P=AgendaMultipla&Pers=1"><i class="far fa-calendar-alt"></i> Múltipla</a></li>
                     <% IF getConfig("AcessoAgendamentoOnline") <> "0" AND getConfig("AcessoAgendamentoOnline") <> "0"  THEN %>
                         <li class="sub-menu-click-agenda-multipla"><a href="javascript:void(0)" onclick="openAgendamentoOnline()">Agedamento Online</a></li>
                         <script>
@@ -84,15 +84,12 @@ else
                     <% END IF %>
 		            <%
                 end if
-                if Aut("|agendaV|")=1 and (session("Banco")="clinic105" or session("Banco")="clinic5710") then
+                ModuloCallCenter = recursoAdicional(41)=4
+
+                if Aut("|agendaV|")=1 and ModuloCallCenter then
                     if aut("agendamultfiltros")=1 then
                     %>
-                    <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1">Múltipla por Filtros</a></li>
-                    <%
-                    end if
-                    if aut("agendapendencias")=1 then
-                    %>
-                    <li  class="sub-menu-click-agenda-pendencias"><a href="./?P=Pendencias&Pers=1">Pendências</a></li>
+                    <li class="sub-menu-click-agenda-multipla-por-filtros"><a href="./?P=MultiplaFiltros2&Pers=1"><i class="far fa-calendar-star"></i> Múltipla por Filtros <span class="label label-alert label-xs fleft">Beta</span> </a></li>
                     <%
                     end if
                 end if
@@ -117,13 +114,20 @@ else
                 %>
                 <li class="hidden sub-menu-click-agenda-consultar-valores"><a href="./?P=ConsultaDePrecos&Pers=1"> Consultar valores <span class="label label-system label-xs fleft">Novo</span> </a></li>
 		        <% end if %>
+		        <%
+		        if aut("agendapendencias")=1 and ModuloCallCenter then
+                %>
+                <li  class="sub-menu-click-agenda-pendencias"><a href="./?P=Pendencias&Pers=1"><i class="far fa-calendar-exclamation"></i> Pendências <span class="label label-alert label-xs fleft">Beta</span></a></li>
+                <%
+                end if
+                %>
             <%end if%>
             <li class="divider"></li>
             <%if aut("|agendaequipamentosV|")=1 or Aut("|agendaV|")=1 then %>
                 <li class="sub-menu-click-agenda-equipamentos-alocados"><a href="./?P=EquipamentosAlocados&Pers=1"><i class="far fa-laptop"></i> Equipamentos Alocados</a></li>
 		    <% end if
 		    if Aut("|agendaV|")=1 then %>
-                <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1"><i class="far fa-map"></i> Mapa de agenda <span class="label label-system label-xs fleft">Novo</span> </a></li>
+                <li class="sub-menu-click-agenda-mapa-de-agenda"><a href="./?P=Ocupacao&Pers=1"><i class="far fa-map"></i> Mapa de agenda </a></li>
 		    <% end if
 
             if aut("agendaV")=1 then
@@ -141,7 +145,7 @@ else
 
             if session("Cir")=1 and AgendaCirurgica=4 then
                 %>
-                <li class="sub-menu-click-agenda-agenda-de-cirurgias"><a href="./?P=listaAgendaCirurgica&Pers=1">Agenda de Cirurgias</a></li>
+                <li class="sub-menu-click-agenda-agenda-de-cirurgias"><a href="./?P=listaAgendaCirurgica&Pers=1"><i class="far fa-scalpel"></i> Agenda de Cirurgias</a></li>
                 <%
             end if
 
@@ -171,7 +175,7 @@ else
     if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
     %>
     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-pacientes" data-toggle="dropdown">
-        <%=abreSpanTitulo %> <i class="far fa-user hidden"></i> <span class=""> Pacientes </span> <%= fechaSpanTitulo %>
+        <%=abreSpanTitulo %> <i class="far fa-user hidden"></i> <span class=""> Pacientes </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
     
                 
 
@@ -203,7 +207,7 @@ else
                 else
                     %>
                     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-estoque" data-toggle="dropdown">
-                        <%=abreSpanTitulo %> <i class="far fa-medkit hidden"></i> <span class=""> Estoque </span> <%= fechaSpanTitulo %>
+                        <%=abreSpanTitulo %> <i class="far fa-medkit hidden"></i> <span class=""> Estoque </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
                 
 
                                                               </a>
@@ -273,7 +277,7 @@ else
 		    if aut("guias")=1 or aut("faturas")=1 then
     %>
     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-tiss" data-toggle="dropdown">
-        <%=abreSpanTitulo %> <i class="far fa-credit-card hidden"></i> <span class=""> Faturamento</span> <%= fechaSpanTitulo %>
+        <%=abreSpanTitulo %> <i class="far fa-credit-card hidden"></i> <span class=""> Faturamento</span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
                                               </a>
         <ul class="dropdown-menu">
             <%
@@ -355,6 +359,12 @@ else
 
     end if 'fechando se device()=""
     if device="" or lcase(req("P"))="cadastros" then
+            if session("Admin")=1 and getConfig("GestaoDeAvisos")=1  then
+            %>
+            <li><a href="./?P=Avisos&Pers=Follow"  class="sub-menu-click-cadastro-avisos" ><i class="fa fa-exclamation-triangle"></i> Avisos</a></li>
+            <%
+            end if
+
             if aut("convenios")=1 then
             %>
             <li><a class="sub-menu-click-cadastro-convenio" href="./?P=Convenios&Pers=Follow"><i class="far fa-credit-card"></i> Conv&ecirc;nios</a></li>
@@ -416,6 +426,11 @@ else
             <li><a class="sub-menu-click-cadastro-convenio" href="./?P=aso_funcao&Pers=Follow"><i class="far fa-user-plus"></i> Medicina Ocupacional</a></li>
             <%
             end if
+            if aut("origens")=1 then
+            %>
+            <li><a href="./?P=Origens&Pers=0"><i class="far fa-list"></i> Origens</a></li>
+            <%
+            end if
             if aut("procedimentos")=1  then
             %>
             <li><a href="./?P=Procedimentos&Pers=Follow" class="sub-menu-click-cadastro-procedimentos"><i class="far fa-stethoscope"></i> Procedimentos</a></li>
@@ -445,6 +460,7 @@ else
             <li><a href="./?P=buscaPropostas&Pers=1"  class="sub-menu-click-cadastro-propostas" ><i class="far fa-files-o"></i> Propostas</a></li>
             <%
             end if
+
 
             if aut("basedeconhecimento")=1 and False then
             %>
@@ -476,11 +492,6 @@ else
             <%
     end if
     if device()="" or lcase(req("P"))="configuracoes" then
-			    if aut("origens")=1 then
-            %>
-            <li><a href="./?P=Origens&Pers=0"><i class="far fa-list"></i> Origens</a></li>
-            <%
-			    end if
 			    if aut("buiforms")=1  then
             %>
             <li><a href="./?P=buiforms&Pers=Follow"><i class="far fa-bar-chart"></i> Formul&aacute;rios</a></li>
@@ -526,7 +537,7 @@ else
             </li>
             <%
             end if
-            if session("Admin")=1 and session("OtherCurrencies")="phone" then
+            if session("Admin")=1 and recursoAdicional(9)="phone" then
             %>
             <li>
                 <a href="?P=chamadasresultados"><i class="far fa-phone"></i> Resultados de Contato</a>
@@ -559,6 +570,11 @@ else
             <li>
                 <a href="?P=VariacoesPrecos&Pers=1"><i class="far fa-dollar"></i> Variações de Preços</a>
             </li>
+            <%
+            end if
+            if aut("voucherV")=1 then
+            %>
+            <li><a href="./?P=voucher&Pers=Follow"  class="sub-menu-click-cadastro-voucher" ><i class="far fa-ticket-alt"></i> Voucher <span class="label label-system label-xs fleft">Novo</span></a></li>
             <%
             end if
             if aut("planocontas")=1 then

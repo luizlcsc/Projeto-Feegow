@@ -642,14 +642,17 @@ end if
                 <input type="hidden" id="hData" name="hData" value="<%=date() %>" />
                 </form>
         <%
-    case "locais", "locaisgrupos", "mapasalas"
+    case "locais", "locaisgrupos", "mapasalas", "locaisexternos"
 
     %>
     <li>
         <a href="?P=Locais&Pers=Follow"><span class="far fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais de Atendimento</span></a>
     </li>
     <li>
-        <a href="?P=LocaisGrupos"><span class="far fa-crosshairs bigger-110"></span> <span class="sidebar-title">Grupos de Locais</span></a>
+        <a href="?P=locaisexternos&Pers=1"><span class="far fa-map-marker bigger-110"></span> <span class="sidebar-title">Locais Externos</span></a>
+    </li>
+    <li>
+        <a href="?P=LocaisGrupos"><span class="fa fa-crosshairs bigger-110"></span> <span class="sidebar-title">Grupos de Locais</span></a>
     </li>
     <li>
         <a href="?P=MapaSalas&Pers=1"><span class="far fa-street-view bigger-110"></span> <span class="sidebar-title">Mapa de Locais</span></a>
@@ -692,10 +695,10 @@ end if
                     <span class="sidebar-title">Dados Principais</span>
                 </a>
             </li>
-            <% IF session("Banco")="clinic5459" or session("Banco")="clinic100000" or session("Banco")="clinic105" THEN %>
+            <% IF (session("Banco")="clinic9021" or session("Banco")="clinic100000" or session("Banco")="clinic105") THEN %>
              <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
-                    <span class="far fa-heart-o bigger-110"></span>
+                    <span class="far fa-heart bigger-110"></span>
                     <span class="sidebar-title">Resumo Clínico</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totallf"></span>
@@ -707,7 +710,7 @@ end if
             if aut("aso")=1 and false then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|`);'>
+                <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AsoPaciente|`, this);'>
                     <span class="far fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Medicina ocupacional</span>
                     <span class="sidebar-title-tray">
@@ -720,7 +723,7 @@ end if
 		    if aut("formsae")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-anamneses" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AE|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-anamneses" id="abaForms" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|AE|`, this);'>
                     <span class="far fa-bar-chart bigger-110"></span>
                     <span class="sidebar-title">Anamnese e Evolu&ccedil;&otilde;es</span>
                     <span class="sidebar-title-tray">
@@ -737,8 +740,8 @@ end if
 		    if aut("formsl")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|`);'>
-                    <span class="far fa-align-justify bigger-110"></span>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#forms" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|L|`, this);'>
+                    <span class="far fa-notes-medical bigger-110"></span>
                     <span class="sidebar-title">Laudos e Formul&aacute;rios</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totallf"></span>
@@ -750,7 +753,7 @@ end if
 		    if aut("diagnosticos")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-diagnosticos" id="tabDiagnosticos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Diagnostico|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-diagnosticos" id="tabDiagnosticos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Diagnostico|`, this);'>
                     <span class="far fa-stethoscope bigger-110"></span>
                     <span class="sidebar-title">Diagn&oacute;sticos &raquo; <small>CID-10</small></span>
                     <span class="sidebar-title-tray">
@@ -764,7 +767,7 @@ end if
 		    %>
 
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-prescricoes" id="abaPrescricoes" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Prescricao|`, this);'>
                     <span class="far fa-pills bigger-110"></span>
                     <span class="sidebar-title">Prescrições Medicamentosas</span>
                     <span class="sidebar-title-tray">
@@ -778,7 +781,7 @@ end if
 		    if aut("atestados")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-textos-e-atestados" id="abaAtestados" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Atestado|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-textos-e-atestados" id="abaAtestados" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Atestado|`, this);'>
                     <span class="far fa-file-medical-alt bigger-110"></span>
                     <span class="sidebar-title">Textos e Atestados</span>
                     <span class="sidebar-title-tray">
@@ -791,7 +794,7 @@ end if
              if aut("tarefas")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-tarefas" id="abaTarefas" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Tarefas|`, this);'>
                     <span class="far fa-tasks bigger-110"></span>
                     <span class="sidebar-title">Tarefas</span>
                     <span class="sidebar-title-tray">
@@ -804,7 +807,7 @@ end if
 		    if aut("pedidosexame")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`, this);'>
                     <span class="far fa-hospital-o bigger-110"></span>
                     <span class="sidebar-title">Pedidos de Exame</span>
                     <span class="sidebar-title-tray">
@@ -819,7 +822,7 @@ end if
 		    if (recursoPermissaoUnimed=4  or session("Banco")="clinic100000") AND lcase(session("table"))="profissionais" then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaResultadosExames" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ResultadosExames|`, this);'>
                     <span class="far fa-list-alt bigger-110"></span>
                     <span class="sidebar-title">Resultados de Exames</span>
                     <span class="sidebar-title-tray">
@@ -832,8 +835,8 @@ end if
 		    if aut("vacinapacienteV")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`);'>
-                    <span class="glyphicon glyphicon-pushpin"></span>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`, this);'>
+                    <span class="far fa-syringe bigger-110"></span>
                     <span class="sidebar-title">Vacinas</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalvacinas"></span>
@@ -845,7 +848,7 @@ end if
             if aut("produtilizadosV")=1 then
             %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-produtos-utilizados" id="abaProdutdosUtilizados" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ProdutosUtilizados|`, this);'>
                     <span class="far fa-medkit bigger-110"></span>
                     <span class="sidebar-title">Produtos Utilizados</span>
                     <span class="sidebar-title-tray">
@@ -858,8 +861,8 @@ end if
             end if
             if recursoAdicional(37) = 4 and aut("protocolosV")=1 then %>
             <li>
-                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|');">
-                    <span class="far fa-file-text-o bigger-110"></span>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-protocolos" id="abaProtocolos" href="#pront" onclick="pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Protocolos|', this);">
+                    <span class="far fa-file-text bigger-110"></span>
                     <span class="sidebar-title">Protocolos</span>
                     <span class="sidebar-title-tray">
                         <span class="label label-xs bg-primary" id="totalprotocolos"></span>
@@ -874,7 +877,7 @@ end if
                 if not certiDidital.eof then
                 %>
                 <li class="checkStatus">
-                    <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`);'>
+                    <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`, this);'>
                         <span class="far fa-shield"></span>
                         <span class="sidebar-title">Assinatura digital
                             <span class="label label-system label-xs fleft">Novo</span>
@@ -889,8 +892,8 @@ end if
 		    if aut("formsae")=1 then
 		    %>
 		    <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`);'>
-                    <span class="far fa-line-chart bigger-110"></span>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`, this);'>
+                    <span class="far fa-book-medical bigger-110"></span>
                     <span class="sidebar-title">Linha do tempo</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary"></span>
@@ -904,7 +907,7 @@ end if
 		    if aut("imagens")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-imagens" id="tabImagens" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Imagens|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-imagens" id="tabImagens" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Imagens|`, this);'>
                     <span class="far fa-camera bigger-110"></span>
                     <span class="sidebar-title">Imagens</span>
                     <span class="sidebar-title-tray">
@@ -917,7 +920,7 @@ end if
 		    if aut("arquivos")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-arquivos" id="tabArquivos" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Arquivos|`);'>
+                <a data-toggle="tab" class="tab menu-aba-pacientes-arquivos" id="tabArquivos" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Arquivos|`, this);'>
                     <span class="far fa-file bigger-110"></span>
                     <span class="sidebar-title">Arquivos</span>
                     <span class="sidebar-title-tray">
@@ -932,7 +935,7 @@ end if
             if session("Odonto")=1 then
                 %>
                 <li class="checkStatus">
-                    <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>')">
+                    <a data-toggle="tab" class="tab menu-aba-pacientes-odontograma" href="#pront" onclick="pront('Odontograma.asp?I=<%=req("I")%>', this)">
                         <span class="far fa-life-bouy bigger-110"></span>
                         <span class="sidebar-title">Odontograma</span>
                     </a>
@@ -941,7 +944,7 @@ end if
             end if
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-agendamentos" href="#pront" onclick="pront('HistoricoPaciente.asp?PacienteID=<%=req("I")%>');">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-agendamentos" href="#pront" onclick="pront('HistoricoPaciente.asp?PacienteID=<%=req("I")%>', this);">
                     <span class="far fa-calendar bigger-110"></span>
                     <span class="sidebar-title">Agendamentos</span>
                 </a>
@@ -952,7 +955,7 @@ end if
 		    if aut("recibos")=1 then
 		    %>
             <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-recibos" href="#divRecibos" onclick="pront('Recibos.asp?PacienteID=<%=req("I")%>')">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-recibos" href="#divRecibos" onclick="pront('Recibos.asp?PacienteID=<%=req("I")%>', this)">
                     <span class="far fa-edit bigger-110"></span>
                     <span class="sidebar-title">Recibos</span>
                     <span class="sidebar-title-tray">
@@ -965,7 +968,7 @@ end if
 		    if aut("propostas")=1 then
 		    %>
 		    <li class="checkStatus">
-                <a data-toggle="tab" class="tab menu-aba-pacientes-propostas" id="tabPropostas" href="#divPropostas" onclick="pront('ListaPropostas.asp?PacienteID=<%=req("I")%>')">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-propostas" id="tabPropostas" href="#divPropostas" onclick="pront('ListaPropostas.asp?PacienteID=<%=req("I")%>', this)">
                     <span class="far fa-files-o"></span>
                     <span class="sidebar-title">Propostas</span>
                 </a>
@@ -1070,9 +1073,9 @@ end if
         %>
         <li class="sidebar-label pt20"></li>
         <%
-    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras", "ProcedimentoLaboratorio"
+    case "procedimentos", "pacotes", "procedimentosgrupos", "ConferenciadeAmostras", "ProcedimentoLaboratorio", "sys_preparos", "sys_restricoes"
         
-        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" and lcase(req("P"))<>"ProcedimentoLaboratorio" then
+        if isnumeric(req("I")) and req("I")<>"" and lcase(req("P"))<>"procedimentosgrupos" and lcase(req("P"))<>"pacotes" and lcase(req("P"))<>"ProcedimentoLaboratorio" and lcase(req("P"))<>"sys_restricoes"  and lcase(req("P"))<>"sys_preparos" then
         %>
         <li class="sidebar-label pt20"></li>
         <li class="active">
@@ -1111,7 +1114,7 @@ end if
                 <a href="./?P=Procedimentos&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos</span></a>
             </li>
             <li>
-                <a href="./?P=Pacotes&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Pacotes</span></a>
+                <a href="./?P=Pacotes&Pers=Follow"><span class="far fa-archive"></span> <span class="sidebar-title">Pacotes</span></a>
             </li>
             <li>
                 <a href="?P=ProcedimentoLaboratorio&Pers=1" >
@@ -1121,7 +1124,7 @@ end if
             if aut("procedimentosgruposV") then
                 %>
                 <li>
-                    <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="far fa-stethoscope"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
+                    <a href="./?P=ProcedimentosGrupos&Pers=Follow"><span class="far fa-object-group"></span> <span class="sidebar-title">Grupos de Procedimentos</span></a>
                 </li>
                 <%
             end if
@@ -1131,12 +1134,23 @@ end if
                 <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-th-list"></span> <span class="sidebar-title">Protocolos</span></a>
             </li>
             <% end if%>
+
+            <li>
+                <a href="?P=sys_restricoes&Pers=Follow" >
+                <span class="far fa-exclamation-circle"></span> <span class="sidebar-title">Restrições</span></a>
+            </li>
+
+            <li>
+                <a href="?P=sys_preparos&Pers=Follow" >
+                <span class="far fa-list-alt"></span> <span class="sidebar-title">Preparo</span></a>
+            </li>
             <%
+
         end if
     case "protocolos", "protocolosgrupos", "tipos_de_arquivos"
         %>
         <li <%if req("P")="Protocolos" then%>class="active"<%end if%>>
-            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text-o"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
+            <a href="./?P=Protocolos&Pers=Follow"><span class="far fa-file-text"></span> <span class="sidebar-title">Protocolos de Atendimento</span></a>
         </li>
         <li <%if req("P")="ProtocolosGrupos" then%>class="active"<%end if%>>
             <a href="./?P=ProtocolosGrupos&Pers=Follow"><span class="far fa-files-o"></span> <span class="sidebar-title">Grupo de Protocolos</span></a>
@@ -1216,11 +1230,20 @@ end if
             <li <%=ativoCadastro%>>
                 <a data-toggle="tab" href="#divCadastroProfissional"><span class="far fa-user-md bigger-110"></span> <span class="sidebar-title">Cadastro do Profissional</span></a>
             </li>
+
             <li>
                 <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('ProfProcAgenda', '<%=req("I")%>', 1, 'divPermissoes');">
             	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos da Agenda</span></a>
             </li>
             <%
+            if recursoAdicional(41)=4 then
+            %>
+            <li>
+                <a  class="menu-aba-meu-perfil-procedimentos-da-agenda" data-toggle="tab" href="#divPermissoes" id="gtProcAgenda" onclick="ajxContent('procedimentounidadeprofissional', '<%=req("I")%>', 1, 'divPermissoes');">
+            	    <span class="far fa-stethoscope"></span> <span class="sidebar-title">Procedimentos por unidade <span class="label label-system label-xs fleft">Novo</span> </span></a>
+            </li>
+            <%
+            end if
 		    if aut("horarios")=1 then
 		    %>
             <li <%=ativoHorarios%>>
@@ -1662,6 +1685,12 @@ end if
     
             </li>
         <% END IF %>
+
+        <li>
+            <a data-toggle="tab" href="#divAutorizador" onclick="ajxContent('IntegracaoAutorizador', '', 1, 'divAutorizador');">
+            <span class="fa fa-exchange"></span> <span class="sidebar-title">Autorizador Online<span class="label label-system label-xs fleft">Novo</span></span></a>
+        </li>
+
         <% IF  1=1 or aut("FaixaEtariaV")=1  THEN %>
             <li>
               <a href="?P=faixaetaria&Pers=1">
@@ -1721,7 +1750,7 @@ end if
             </li>
             <%
         end if
-    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse"
+    case "financeiro", "invoice","configuracaodecompra","solicitacaodecompraaprovacao","solicitacaodecompralista", "solicitacaodecompra", "contascd", "recorrentes", "recorrente", "conferenciacaixa", "caixas", "splits" , "importret" , "boletosemitidos" , "marketplace" ,  "microteflogs" ,"importarconcicartao" , "emissaodeboletos" , "splitscancelamento" , "concilia" , "concicols" , "bancoconcilia" , "stoneconcilia" , "conciliacaoprovedor" ,  "repasses", "regerarrepasses", "extrato", "chequesrecebidos", "cartaocredito", "faturacartao", "detalhamentofatura", "buscapropostas", "gerarrateio", "propostas", "pacientespropostas", "repassesaconferir", "repassesconferidos", "arquivoretorno", "notafiscal", "notafiscalnew","fechamentodata", "descontopendente", "listarempresasnfse", "listarnotasfiscais", "editarempresanfse", "criarempresanfse", "cartaoconcilia", "auditoria"
               %>
               <li class="sidebar-label pt20">Financeiro</li>
     	<!--#include file="MenuFinanceiro.asp"-->
@@ -1776,6 +1805,17 @@ end if
         <li <%if req("P")="ProdutosKits" then%>class="active"<%end if%>>
             <a href="./?P=ProdutosKits&Pers=Follow"><span class="far fa-medkit"></span> <span class="sidebar-title"> Kits</span></a>
         </li>
+
+
+        <%
+    case "operadores", "operador","licenca", "licencas"
+            %>
+            <li <%if req("P")="Operadores" then%>class="active"<%end if%>>
+                <a href="./?P=Operadores&Pers=1"><span class="far fa-user-alt"></span> <span class="sidebar-title"> Operadores</span></a>
+            </li>
+            <li <%if req("P")="Licencas" then%>class="active"<%end if%>>
+                <a href="./?P=Licencas&Pers=1"><span class="far fa-hospital"></span> <span class="sidebar-title"> Licenças</span></a>
+            </li>
 
 
         <%

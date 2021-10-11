@@ -811,8 +811,14 @@ desfazBtnCons = ""
                     ParcelasCartaoConsolidadas = ParcelasCartaoConsolidadas & "|"& rr("ParcelaID") &"|"
                     ItensDescontadosConsolidados = ItensDescontadosConsolidados & "|"& rr("ItemDescontadoID") &"|"
 
+                    set NotasAutorizadasSQL = db_execute("SELECT Status FROM nfse_emitidas WHERE InvoiceID="&InvoiceID&" ORDER BY id DESC")
+                    StatusNotaID = ""
+                    if not NotasAutorizadasSQL.eof then
+                        StatusNotaID = NotasAutorizadasSQL("Status")
+                    end if
+
                     existeSplitRealizado = "  "
-                    if rr("split")&"" = "processed" then
+                    if rr("split")&"" = "processed" or StatusNotaID = "2" or StatusNotaID = "3" then
                         existeSplitRealizado = " disabled "
                     end if
 

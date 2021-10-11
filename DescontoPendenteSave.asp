@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 ID = req("I")
 OP = req("OP")
@@ -6,7 +7,7 @@ OP = req("OP")
 resultado = ""
 if ID <> "" and OP <> "" then
     set rsDescontoPendenteUpdate = db.execute("select * from descontos_pendentes WHERE id = "&ID& " and Status = 0")
-    if not rsDescontoPendenteUpdate.eof then 
+    if not rsDescontoPendenteUpdate.eof then
         
         SysUser = Session("user")
         'Salvar na tabela sys_dinancialinvoice
@@ -47,6 +48,8 @@ if ID <> "" and OP <> "" then
                 'Atualizar a tabela de itens invoice com o valor do desconto
                 sqlUpdateItemInvoice = "update itensinvoice set Desconto = " & Desconto & " WHERE id = " & rsDescontoPendenteUpdate("ItensInvoiceID")
                 db.execute(sqlUpdateItemInvoice)
+
+                call registraEventoAuditoria("aprova_desconto_item_fatura", ID, "")
 
                 set rsInvoice = db.execute("select InvoiceID, Value, ItemID, DataExecucao, ProfissionalID, HoraExecucao from itensinvoice ii inner join sys_financialinvoices sfi on sfi.id = ii.InvoiceID WHERE ii.id = "&rsDescontoPendenteUpdate("ItensInvoiceID"))
                 if not rsInvoice.eof then

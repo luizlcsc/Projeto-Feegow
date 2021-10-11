@@ -39,7 +39,7 @@ set logs = dbc.execute(sql)
         <tbody>
         <%
         while not logs.EOF
-            sucesso = "<i style='color:green' class='far fa-check-circle-o'></i> <strong>Sucesso</strong>"
+            sucesso = "<i style='color:green' class='far fa-check-circle'></i> <strong>Sucesso</strong>"
             if logs("Sucesso") = "0" then
                 sucesso = "<i style='color:orange' class='far fa-exclamation-circle'></i> <strong>Sem sucesso</strong>"
             end if

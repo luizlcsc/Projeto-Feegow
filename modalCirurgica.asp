@@ -100,15 +100,7 @@ elseif Tipo="Procedimentos" then
             <%= quickField("datepicker", "Data", "Data", 3, Data, "", "", " required") %>
             <%= quickField("text", "HoraInicio", "Hora In&iacute;cio", 2, HoraInicio, " input-mask-l-time", "", "") %>
             <%= quickField("text", "HoraFim", "Hora Fim", 2, HoraFim, " input-mask-l-time", "", "") %>
-            <div class="col-md-2"><label>&nbsp;</label><br />
-                <div class="btn-group pull-right">
-                    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Adicionar <i class="far fa-chevron-down"></i></button>
-                    <ul class="dropdown-menu dropdown-primary">
-                        <li><a href="javascript:AddRepasse('<%=id%>', 1, 'F');">Fun&ccedil;&atilde;o ou repasse</a></li>
-                        <li><a href="javascript:AddRepasse('<%=id%>', 1, 'M');">Material ou medicamento</a></li>
-                    </ul>
-                </div>
-            </div>
+
             <div class="divider">&nbsp;</div>
             <div class="row">
                 <div class="col-md-12" id="divRepasses<%=id%>XXXXX"><!--#include file="divRepassesConvenio.asp"--></div>

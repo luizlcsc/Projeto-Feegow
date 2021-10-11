@@ -137,17 +137,17 @@ if profissionalValido = true then
 end if
 
 	%>
-	<div class="alert alert-warning col-md-12 text-center" style="padding: 5px">
+	<div class="alert alert-default col-md-12 text-center" style="padding: 5px">
             Selecione um hor&aacute;rio disponível
-            <button type="button" class="btn btn-sm btn-danger" onClick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+            <button type="button" class="btn btn-sm btn-danger" onClick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
     </div>
 	<%
 end if
 if session("RepSol")<>"" then
 	%>
-	<div class="alert alert-success col-md-12 text-center" style="padding: 5px">
+	<div class="alert alert-default col-md-12 text-center" style="padding: 5px">
         Selecione um hor&aacute;rio disponível
-        <button type="button" class="btn btn-sm btn-danger" onClick="repetir(<%=session("RepSol")%>, 'Cancelar', '')">Parar Repeti&ccedil;&atilde;o</button>
+        <button type="button" class="btn btn-sm btn-danger" onClick="repetir(<%=session("RepSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Parar Repeti&ccedil;&atilde;o</button>
     </div>
 	<%
 end if
@@ -492,9 +492,8 @@ while diaS<n
             end if
         end if
         LocalDiferente=""
-        notas = comps("Notas")
-        notas = fix_string_chars_full(notas)
-		titleSemanal= replace(comps("NomePaciente")&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&notas&"<br>"
+
+		    titleSemanal= replace(fix_string_chars_full(comps("NomePaciente"))&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&fix_string_chars_full(comps("Notas")&"")&"<br>"
                
         Conteudo = "<tr id="""&DiaSemana&HoraComp&""""&CorLinha &" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
@@ -515,8 +514,10 @@ while diaS<n
             end if
             FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
         end if
+        statusIcon = imoon(comps("StaID"))
+
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
-        "<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+        "<td nowrap> "&statusIcon
         if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if
@@ -751,30 +752,32 @@ $(document).ready(function(){
  $(document).ready(function()
  {
      // MAKE SURE YOUR SELECTOR MATCHES SOMETHING IN YOUR HTML!!!
-     $('.dia-calendario').each(function() {
-         $(this).qtip({
-            content: {
-                text: function(event, api) {
-                    $.ajax({
-                        url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
-                    })
-                    .then(function(content) {
-                        // Set the tooltip content upon successful retrieval
-                        api.set('content.text', content);
-                    }, function(xhr, status, error) {
-                        // Upon failure... set the tooltip content to error
-                        api.set('content.text', status + ': ' + error);
-                    });
-        
-                    return 'Carregando resumo do dia...'; // Set some initial text
-                }
-            },
-            position: {
-                viewport: $(window)
-            },
-            style: 'qtip-wiki'
+     if(false){
+         $('.dia-calendario').each(function() {
+             $(this).qtip({
+                content: {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
+                        })
+                        .then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+
+                        return 'Carregando resumo do dia...'; // Set some initial text
+                    }
+                },
+                position: {
+                    viewport: $(window)
+                },
+                style: 'qtip-wiki'
+             });
          });
-     });
+     }
  });
 <%
 if session("RemSol")<>"" or session("RepSol")<>"" then

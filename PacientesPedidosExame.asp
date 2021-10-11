@@ -1,4 +1,4 @@
-﻿﻿<!--#include file="connect.asp"-->
+﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Json.asp"-->
 <%
 ExistePedidoExame="display:none;"
@@ -59,7 +59,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
             <div class="col-xs-12">
                         <div class="row">
                             <div class="col-md-2">
-                                <button type="button" onclick="NovoPedido();" class="btn btn-info btn-block"><i class="far fa-plus icon-plus"></i> Novo</button>
+                                <button type="button" onclick="NovoPedido();" class="btn btn-success btn-block"><i class="far fa-plus icon-plus"></i> Novo</button>
                             </div>
                             <div class="col-md-3">
                                 <button type="button" class="btn btn-primary btn-block" id="savePedido" style="<%=ArquivoAssinado%>"><i class="far fa-save icon-save"></i> Salvar e Imprimir</button>
@@ -198,7 +198,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
-                            <i class="far fa-file-text-o"></i>
+                            <i class="far fa-file-text"></i>
                             Modelos de Pedidos de Exame
                         </span>
                         <% if aut("|modelosprontuarioI|")=1 then%>
@@ -253,7 +253,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
 
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 
@@ -266,7 +266,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
     recursoPermissaoUnimed = recursoAdicional(12)
     if session("User")="14128" or session("Banco")="clinic5351" or session("Banco")="clinic100000" or recursoPermissaoUnimed=4 or true then
     %>
-    if('<%=req("IFR")%>'!=="S"){
+    if('<%=req("IFR")%>'!=="S" && false){
         $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
             $("#conteudo-timeline").html(data)
         });
@@ -277,7 +277,10 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $("#conteudo-timeline").toggle(1000);
+            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+                $("#conteudo-timeline").html(data)
+                $("#conteudo-timeline").toggle(1000);
+            });
         })
     });
 function NovoPedido(){
@@ -298,7 +301,13 @@ function aplicarTextoPedido(id, tipo){
 	$.post("PacientesAplicarFormula.asp?Tipo=E&PacienteID=<%=PacienteID%>", {id:id, idsAdicionados: IdsExamesProcedimentos,Tipo:tipo}, function(data, status){
 
 	    if(tipo === "Exame"){
-            $listaPedidoExames.append("<li><input type='hidden' class='ProcedimentoExameID' value='"+id+"'> <label >"+data+" </label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='far fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info far fa-comment'> </i><textarea style='float:rigth;display:none' class='obs-exame form-control' placeholder='Observações'></textarea>  </li>");
+            data = data[0];
+            displayTextoPedido = "none";
+            if(data.TextoPedido){
+                displayTextoPedido = "block";
+            }
+            $listaPedidoExames.append(`<li><input type='hidden' class='ProcedimentoExameID' value='${id}'> <label >${data.NomeProcedimento}</label> <a href='#' style='float: right' class='excluiritem btn btn-xs btn-danger ml5'><i class='far fa-remove icon-remove '></i></a> <i  style='float: right' class='titulodesc btn btn-xs btn-info far fa-comment'> </i><textarea style='float:right;display:${displayTextoPedido}' class='obs-exame form-control' placeholder='Observações'>${data.TextoPedido}</textarea>  </li>`);
+
 	        $(".exame-procedimento-content").css("display", "");
             $( ".titulodesc" ).unbind("click").on("click", function() {
                 $(this).next(".obs-exame").toggle();

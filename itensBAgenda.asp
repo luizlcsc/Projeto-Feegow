@@ -117,7 +117,7 @@ if not ab.eof then
             AgendamentoID = ab("AgendamentoID")
 
 
-            ValorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+            ValorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, 0)
             %>
         <div class="panel-body">
 

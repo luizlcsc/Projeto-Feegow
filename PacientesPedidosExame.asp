@@ -58,13 +58,13 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
         <div class="row">
             <div class="col-xs-12">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-4">
                                 <button type="button" onclick="NovoPedido();" class="btn btn-success btn-block"><i class="far fa-plus icon-plus"></i> Novo</button>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-3 col-xs-4">
                                 <button type="button" class="btn btn-primary btn-block" id="savePedido" style="<%=ArquivoAssinado%>"><i class="far fa-save icon-save"></i> Salvar e Imprimir</button>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-xs-4">
                                 <input type="hidden" id="PedidoExameId" value="<%=PedidoExameId%>">
                                 <button type="button" style="<%=ExistePedidoExame%>" class="btn btn-info btn-block" id="printPedido"><i class="far fa-print icon-print"></i> Imprimir</button>
                             </div>
@@ -146,7 +146,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
                     </script>
                 </div>
             <% END IF %>
-            <div class="col-xs-8">
+            <div class="col-xs-12 col-md-8">
                 <div class="row">
                     <div class="col-md-12 exame-procedimento-content" id="PedidoExameLista" ><br>
                         <input type="hidden" name="PedidoExameListaID" id="PedidoExameListaID" value="100">
@@ -194,7 +194,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
                 </div>
             </div>
             <% IF getConfig("ExamesCheckbox") = "0" THEN %>
-            <div class="col-xs-4 pn">
+            <div class="col-md-4 col-xs-12 pn">
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">

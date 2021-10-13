@@ -39,9 +39,9 @@ if not getForm.eof then
             <code id="nomeProfissionalPreen"></code>
         </span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-alert btn-sm" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm hidden-xs" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
+                <button class="btn btn-default btn-sm btn-print-form hidden-xs" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
 
             <% if ExibeForm <> false then %>
@@ -87,11 +87,11 @@ if not getForm.eof then
 </div>
     <% if req("IFR")="" then %>
         <div class="panel-footer text-right">
-            <button type="button" class="btn btn-alert btn-sm " onclick="showLog()"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-default hidden-xs btn-sm " onclick="showLog()"><i class="far fa-history"></i> Logs</button>
 
-            <button type="button" class="btn btn-alert btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-default btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
+                <button class="btn btn-default btn-sm hidden-xs btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
             
             <% if ExibeForm <> false then %>

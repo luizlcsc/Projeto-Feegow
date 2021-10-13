@@ -684,14 +684,14 @@ end if
 
                     if CD="C" then
                         %>
-                        <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
+                        <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago hidden-xs">
                             <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
                             <label for="VariosProcedimentos" id="lblprocedimentos" style="margin-bottom:0px">
                                 Adição Rápida
                             </label>
                         </span>
 
-                        <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm">
+                        <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm hidden-xs">
                             <i class="far fa-check-circle"></i> Marcar execução
                         </button>
 
@@ -700,7 +700,7 @@ end if
                         if session("Odonto")=1  then
                             %>
                         <div class="btn-group nao-mostrar-caso-pago">
-                            <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma">
+                            <button type="button" class="btn btn-system btn-sm hidden-xs" id="btn-abrir-modal-odontograma">
                                 <i class="far fa-tooth"></i>
 
                                 Odontograma

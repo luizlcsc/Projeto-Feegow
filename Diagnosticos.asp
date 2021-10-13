@@ -15,10 +15,10 @@ Diagn&oacute;sticos
 </div>
 
 <div class="panel-body">
-	<div class="col-xs-8" id="ListaDiagnosticos">
+	<div class="col-xs-12 col-md-8" id="ListaDiagnosticos">
 		<!--#include file="ListaDiagnosticos.asp"-->
     </div>
-    <div class="col-xs-4">
+    <div class="col-xs-12 col-md-4">
         <div class="panel">
             <div class="panel-heading">
               <span class="panel-title">

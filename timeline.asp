@@ -240,11 +240,11 @@ select case Tipo
                     end if
 
                     %>
-                    <button type="button" class="btn btn-default" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-history"></i> Restaurar Formulário</button>
+                    <button type="button" class="btn btn-default hidden-xs" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-history"></i> Restaurar Formulário</button>
                     <%
                     if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
                     %>
-                        <button class="btn btn-info" type="button" onclick="curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</button>
+                        <button class="btn btn-info hidden-xs" type="button" onclick="curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</button>
                     <%
                     end if
 

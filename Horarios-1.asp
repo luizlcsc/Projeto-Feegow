@@ -1,5 +1,6 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 'on error resume next
 
@@ -203,6 +204,16 @@ end if
         <%
         ProfissionalID = ccur(req("I"))
 
+        function tamanhoTexto (val,tamanho)
+
+            if len(val) > tamanho then 
+                val = right(val, tamanho) &" ..." 
+            end if 
+
+            tamanhoTexto = val
+        end function 
+
+
 
         function getNomeEspecialidades(stringIDs)
             newStringIds = replace(stringIDs&"","|","")
@@ -211,7 +222,9 @@ end if
             if newStringIds <> "" then
                 set esp = db.execute("select group_concat(especialidade separator ', ' ) as esp from especialidades where id in("&newStringIds&")")
                 if not esp.eof then
-                    getNomeEspecialidades = esp("esp")
+                    especialidades = esp("esp")
+                    especialidades = tamanhoTexto(especialidades,300)
+                    getNomeEspecialidades = especialidades
                 end if
             end if
         end function
@@ -223,7 +236,9 @@ end if
             if newStringIds <> "" then
                 set procs = db.execute("select group_concat( nomeprocedimento separator ', ' ) procs from procedimentos where id in("&newStringIds&")")
                 if not procs.eof then
-                    getNomeProcedimentos = procs("procs")
+                    procedimentos = procs("procs")
+                    procedimentos = tamanhoTexto(procedimentos,300)
+                    getNomeProcedimentos = procedimentos
                 end if
             end if
         end function
@@ -236,7 +251,31 @@ end if
             if instr(newStringIds,"N")=0 then
 
                 if newStringIds <> "" then
-                    set convs = db.execute("select group_concat( nomeconvenio separator ', ' ) convs from convenios where id in("&newStringIds&")")
+
+
+                    ' gambi seria
+                    if instr(newStringIds,"P") then
+                        newStringIds = replace(newStringIds,"P,","")
+                        mudei= true
+                    end if 
+
+                    sqlConvs = "select "
+
+                    if mudei then
+                        sqlConvs = sqlConvs&"concat('Particular', ',' ,"
+                    end if 
+
+                    sqlConvs=sqlConvs&" group_concat(nomeconvenio separator ',' ) "
+                    
+                    if mudei then
+                        sqlConvs = sqlConvs&")"
+                    end if 
+
+                    sqlConvs=sqlConvs&"convs from convenios where id in("&fix_array_comma(newStringIds)&")"
+                    
+                     ' fim gambi seria
+
+                    set convs = db.execute(sqlConvs)
                     if not convs.eof then
                         getNomeConvenios = convs("convs")
                     end if

@@ -30,6 +30,9 @@ table tbody tr td input {
     top: -4px;
     height: 27px;
     color: #fff;
+    border-radius: 6px;
+    color: #fff;
+    background-color: #8f8f8f;
 }
 .tbl {
     width:100%;
@@ -266,12 +269,16 @@ var gridster0 = null;
 var gridster1 = null;
 
   $(function(){
+      <%
+      if device()="" then
+      %>
 	gridster0 = $("#demo-0 > ul").gridster({
 		namespace: '#demo-0',
 		widget_base_dimensions: [50, 25],
 		widget_margins: [4, 4]
 	}).data('gridster').disable();
 	<%
+	    end if
 	splGrupos = split(strGrupos, "|")
 	for ig=1 to ubound(splGrupos)
 	%>
@@ -292,9 +299,18 @@ var gridster1 = null;
 	next
 	%>
   });
-
+<%
+if device()="" then
+%>
 $("#demo-0 ul").css("left", "50%");
 $("#demo-0 ul").css("margin-left", "-406px");
+<%
+else
+%>
+$("#demo-0 ul").css("padding-left", "0");
+<%
+end if
+%>
 
 <%=ckrender%>
 if(typeof idsCk !== "undefined"){

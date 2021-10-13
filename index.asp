@@ -205,7 +205,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.11.21">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.12.0">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -495,6 +495,13 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 </head>
 
 <body>
+        <%
+        if session("Logo")="" then
+            Logo = "assets/img/login_logo.png"
+        else
+            Logo = "https://cdn.feegow.com/logos/"&session("Logo")
+        end if
+        %>
 
       <%
       if session("Partner")<>"" then
@@ -504,32 +511,34 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       end if
 
       if device()<>"" then %>
-
-        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class="bg-primary darker pt20">
+        <div onclick="fechar(); fecharSubmenu()" id="cortina" style="width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
+        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class="bg-primary darker pt10">
             <div id="menu" style="position:absolute; width:260px; height:1000px; top:0; left:-260px; z-index:10000000001; background:#fff">
                 <div class="row">
                     <div class="col-md-12">
-                            <div class="bg-primary" style="height:80px">
+                            <div class="bg-primary leftMenuLogoContent" >
                                 <img src="https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png" width="120" class="ml15 mt25" border="0">
                             </div>
-                            <ul class="nav pt15">
-                                <%
-                                set men = db.execute("select * from cliniccentral.menu where App=1 order by id")
-                                while not men.eof
-                                    %>
-                                    <li>
-                                        <a href="<%= men("URL") %>" class="btn btn-block text-left text-dark" style="border:none" onclick='fechar()'>
-                                            <i class="far fa-<%= men("Icone") %>"></i>
-                                            <%= men("Rotulo") %>
-                                        </a>
-                                    </li>
+                            <div class="m10">
+                                <ul class="nav pt15">
                                     <%
-                                men.movenext
-                                wend
-                                men.close
-                                set men=nothing
-                                %>
-                            </ul>
+                                    set men = db.execute("select * from cliniccentral.menu where App=1 order by id")
+                                    while not men.eof
+                                        %>
+                                        <li>
+                                            <a href="<%= men("URL") %>" class="btn btn-block text-left text-dark" style="border:none" onclick='fechar()'>
+                                                <i class="far fa-<%= men("Icone") %>"></i>
+                                                <%= men("Rotulo") %>
+                                            </a>
+                                        </li>
+                                        <%
+                                    men.movenext
+                                    wend
+                                    men.close
+                                    set men=nothing
+                                    %>
+                                </ul>
+                            </div>
 
                     </div>
                 </div>
@@ -537,71 +546,43 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
             <div class="row">
                 <div class="col-xs-4">
-                    <button class="btn btn-primary btn-block ml5 bg-primary darker" onclick="abrir()" style="border:none!important"><i class="far fa-list"></i> MENU</button>
+                    <button class="btn btn-transparent btn-block ml15 btn-menu-mobile" onclick="abrir()" style="text-align:left;border:none!important;font-size: 18px;color: #6a6a6a;"><i class="far fa-bars"></i></button>
                 </div>
                 <div class="col-xs-8">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    <img class="logol" src="<%=logo%>" height="38">
 
 
                 </div>
             </div>
         </div>
 
-        <div onclick="fechar(); fecharSubmenu()" id="cortina" style="width:100%; height:100%; display:table; background:rgba(0,0,0,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
 
 
 
 
 
 
-        <div id="bottomApp" style="position:fixed; z-index:100000000000; width:100%; bottom:0; height:50px; background:#3498db;">
-            <form class="mn pt5" role="search">
-                <div class="col-xs-12">
+
+        <div id="bottomApp" >
+
+
+              <!-- Sidebar Widget - Search (hidden) -->
+              <form class="mn pn" role="search">
+                <label for="sidebar-search">
+                    <div class="sidebar-widget search-widget mn">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Busca rápida..." autocomplete="off" name="q">
-                        <input name="P" value="Busca" type="hidden">
-                        <input name="Pers" value="1" type="hidden">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default">&nbsp;<i class="far fa-search"></i>&nbsp;</button>
-                        </span>
+                      <span class="input-group-addon">
+                        <i class="far fa-search"></i>
+                      </span>
+                    <input type="text" id="sidebar-search" autocomplete="off" name="q" class="form-control" placeholder="Busca rápida...">
+                    <input name="P" value="Busca" type="hidden">
+                    <input name="Pers" value="1" type="hidden">
+
                     </div>
-                    <!-- /input-group -->
                 </div>
-            </form>
+              </label>
+              </form>
+
         </div>
 
         <script type="text/javascript">
@@ -662,19 +643,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <%
     end if
     %>
-  <aside id="main" class="<%=classContext%>">
+  <aside id="main" class="<%=classContext%> <% if device()<>"" then response.write("mobile-content") end if %> ">
     <%
     if device()="" then %>
     <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker">
       <div class="navbar-branding dark bg-primary">
         <a class="navbar-brand" href="./?P=Home&Pers=1">
-                    <%
-					if session("Logo")="" then
-						Logo = "assets/img/login_logo.png"
-					else
-						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
-					end if
-					%>
           <img class="logol" src="<%=Logo %>" height="36" />
         </a>
                   <i id="toggle_sidemenu_l" class="far fa-bars"></i>
@@ -1169,7 +1143,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <section id="content_wrapper">
 
       <!-- Start: Topbar -->
-      <header id="topbar" class="alt affix no-print">
+      <header id="topbar" class="alt affix no-print <% if device()<>"" then response.write("topbar-mobile") end if %>">
         <div class="topbar-left">
 
         <% if device()="" then %>
@@ -1190,7 +1164,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         <% else %>
           <ol class="breadcrumb">
             <li class="crumb-icon pn">
-              <a class="btn btn-sm mn" onclick="abrirSubmenu()" style="max-width:90px; overflow:hidden">
+              <a class="btn btn-sm mn" onclick="abrirSubmenu()" style="border:none;text-decoration:underline;max-width:120px; overflow:hidden">
                 <span class="glyphicon glyphicon-"></span>
               </a>
             </li>
@@ -1208,7 +1182,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       <section id="content" class="table-layout animated fadeIn">
 
           <% if device()<>"" then %>
-            <div class="nano-content sidebar-light" id="submenu" style="background-color:#f3f3f3; height:450px; border:1px solid #ccc; position:fixed; width:260px; margin-right:-260px; right:0; top:65px; z-index:10003">
+            <div class="nano-content sidebar-light" id="submenu" style="background-color:#fff!important; height:450px; position:fixed; width:260px; margin-right:-260px; right:0; top:65px; z-index:10003">
                 <ul id="poney" class="nav sidebar-menu" style="height:300px; overflow:scroll">
                     <!--#include file="menuEsquerdo.asp"-->
                 </ul>

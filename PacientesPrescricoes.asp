@@ -73,13 +73,13 @@ end if
         </div>
         <hr class="short alt" />
         <div class="row">
-	        <div class="col-xs-8 sensitive-data">
+	        <div class="col-xs-12 col-md-8 sensitive-data">
 		        <textarea id="receituario" name="receituario"><%=receituario %></textarea>
 		        <input id="ultimoUso" name="ultimoUso" type="hidden" />
             </div>
 
 
-            <div class="col-xs-4 pn">
+            <div class="col-xs-12 col-md-4 pn">
                 <div class="panel">
                     <div class="panel-heading">
                       <span class="panel-title">

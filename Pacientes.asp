@@ -662,6 +662,14 @@ $("#tabExtrato").click(function() {
 function pront(U){
     $("#rbtns").fadeOut();
 	$("#pacientesDadosComplementares").hide();
+    <%
+    if device()<>"" then
+        %>
+        fechar();
+        fecharSubmenu();
+        <%
+    end if
+    %>
 	$.ajax({
 		type: "POST",
 		url: U,

@@ -719,7 +719,7 @@ $(document).ready(function () {
         $("#block-programas-saude").hide();
     <% end if %>
 
-    <% if getConfig("ExibirCareTeam") = 1 then %>
+    <% if getConfig("ExibirCareTeam") = 1 and aut("timedecuidadoV") then %>
         $("#block-care-team").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="far fa-spin fa-spinner"></i></div>');
         getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
             $("#block-care-team").html(data);

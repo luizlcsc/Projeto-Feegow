@@ -695,7 +695,7 @@ end if
                     <span class="sidebar-title">Dados Principais</span>
                 </a>
             </li>
-            <% IF (session("Banco")="clinic9021" or session("Banco")="clinic100000" or session("Banco")="clinic105") THEN %>
+            <% IF (session("Banco")="clinic9021" or session("Banco")="clinic100000" or session("Banco")="clinic105") and aut("resumoclinicoV") THEN %>
              <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
                     <span class="far fa-heart bigger-110"></span>

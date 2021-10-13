@@ -148,11 +148,14 @@
                                     </td>
 
                                     <td class=" hidden-xs ">
-                                        <button class="btn btn-default" id="mostrar-<%=i%>" onclick="showModal(this, '<%=resposta%>')" data-toggle="modal" data-target="#modalWhatsapp" value="<%=modelo%>"><i class="fa fa-mobile-phone" style="font-size:24px"></i></button>
+                                        <button class="btn btn-xs btn-default btn-block" id="mostrar-<%=i%>" onclick="showModal(this, '<%=resposta%>')" data-toggle="modal" data-target="#modalWhatsapp" value="<%=modelo%>"><i class="fa fa-mobile-phone" style="font-size:24px"></i></button>
                                     </td>
 
-                                    <td class="hidden-xs">
-                                        <input class="checkbox-custom checkbox-primary" type="checkbox" id="ativoCheckbox-<%=i%>" name="ativoCheckbox" onchange="activeModel(this, <%=sysID%>)" value="<%=ativoWhatsApp%>" <%=checked%> />
+                                    <td class=" hidden-xs ">
+                                        <div class="switch switch-info switch-inline">
+                                            <input name="ativoCheckbox-<%=i%>" id="ativoCheckbox-<%=i%>" type="checkbox" onchange="activeModel(this, <%=sysID%>)" value="<%=ativoWhatsApp%>" <%=checked%> />
+                                            <label class="mn" for="ativoCheckbox-<%=i%>"></label>
+                                        </div>
                                     </td>
 
                                 </tr>
@@ -247,7 +250,7 @@
                 $("#updateActive").html(data);
             });
 
-            setTimeout(()=>{boolean === true?showMessageDialog("Ativado", "success"):showMessageDialog("Desativado", "primary");},10)
+            setTimeout(()=>{boolean === true?showMessageDialog("Ativado", "success"):showMessageDialog("Desativado", "warning");},10)
 
         }
 

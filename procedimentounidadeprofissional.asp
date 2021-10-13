@@ -36,17 +36,17 @@ sqlComboGrupo = " SELECT '0' id, "&_
     <div class="panel-body">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6">            
-                    <%=quickfield("simpleSelect", "id_unidade", "Unidade", 12, UnidadeSeleciona, sqlComboEmpresa, "NomeFantasia", "")%>
+                <div class="col-md-5">
+                    <%=quickfield("simpleSelect", "id_unidade", "Unidades", "", "", sqlComboEmpresa, "NomeFantasia", "")%>
                 </div>
-                <div class="col-md-6">
-                    <%=quickfield("simpleSelect", "grupoid", "Grupo de procedimento", 9, "", sqlComboGrupo, "NomeGrupo", "")%>
-                    <div class="col-md-3">
-                        <br>
-                        <button type="button" class="btn btn-primary" onclick="carregaProcedimentos()">
-                            <i class="far fa-search"></i> Buscar procedimentos
-                        </button>
-                    </div>
+                <div class="col-md-4">
+                    <%=quickfield("simpleSelect", "grupoid", "Grupo de procedimento", "", "", sqlComboGrupo, "NomeGrupo", "")%>
+                </div>
+                <div class="col-md-3">
+                    <br>
+                    <button type="button" class="btn btn-primary btn-block" onclick="carregaProcedimentos()">
+                        <i class="far fa-search"></i> Buscar procedimentos
+                    </button>
                 </div>
             </div>
             <br>

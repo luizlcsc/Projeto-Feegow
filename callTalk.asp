@@ -16,6 +16,11 @@ if instr(NomeChat, " ")>0 then
 end if
 
 set msgs = db.execute("select * from chatmensagens where ((De="&De&" and Para="&Para&") or (De="&Para&" and Para="&De&")) and date(DataHora)>date_add(date(now()) , interval -15 day) order by id")
+if msgs.eof then
+    %>
+    <p style="color: #909090" class="text-center mt50">Nenhuma conversa ainda.</p>
+    <%
+end if
 while not msgs.eof
 	if cdate(formatdatetime(msgs("DataHora"),2))=date() then
 		DataMSG = "Hoje"
@@ -31,7 +36,8 @@ while not msgs.eof
             <div class="media-body">
             <h5 class="media-heading" style="color: #fff;"><%'=ShowNome %>
                 <small class="chat-time-sent"> <%=DataMSG &" - "& formatdatetime(msgs("DataHora"), 4)%></small>
-            </h5> <%= msgs("Mensagem") %>
+            </h5>
+            <p style="width: 100%" class="mt10"><%= msgs("Mensagem") %></p>
             </div>
             <div class="media-right">
             <!--<a href="#">

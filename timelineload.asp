@@ -467,7 +467,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     if Valor<>"" then
                                                     set ImagemSQL = db.execute("SELECT a.NomeArquivo,a.NomePasta FROM arquivos a WHERE a.NomeArquivo LIKE '"&Valor&"'")
                                                         if not ImagemSQL.eof then
-                                                            imgHTML = "<img src='"&imgSRC(ImagemSQL("NomePasta"),ImagemSQL("NomeArquivo"))&"&dimension=full' class='mw140 mr25 mb20'>"
+                                                            imgHTML = "<img loading=lazy src='"&imgSRC(ImagemSQL("NomePasta"),ImagemSQL("NomeArquivo"))&"&dimension=full' class='mw140 mr25 mb20'>"
                                                         end if
                                                     ImagemSQL.close
                                                     set ImagemSQL = nothing
@@ -760,10 +760,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                     %>
                                         <span>
                                         <% if ComEstilo = "S" then %>
-                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                                <img loading=lazy style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
                                         <% else %>
                                             <a class="gallery-item" href="<%=arqEx(im("NomeArquivo"), "Imagens")%>" target="_blank">
-                                                <img style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
+                                                <img loading=lazy style="height:150px; width:150px" id-img-arquivos="<%=im("id") %>" src="<%=arqEx(im("NomeArquivo"), "Imagens")%>" class="img-thumbnail" title="<%=im("Descricao") %>" alt="<%=im("Descricao") %>">
                                             </a>
                                         <% end if %>
                                         </span>

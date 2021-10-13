@@ -17784,6 +17784,8 @@ ol.timeline-list li.timeline-item .timeline-date {
 }
 
 .chat-widget .media-own-message .chat-time-sent {
+    position: absolute;
+    right: 10px;
     color: rgba(255, 255, 255, 0.8);
 }
 
@@ -17824,6 +17826,7 @@ ol.timeline-list li.timeline-item .timeline-date {
     word-break: break-all;
     border-radius: 8px;
     max-width: 220px;
+    min-width: 120px;
 }
 
 .media-own-message{
@@ -30335,6 +30338,7 @@ body.timeline-page .panel-clone {
 .panel-chat img {
     width: 25px;
     height: 25px;
+    border-radius: 50%;
 }
 
 .panel-chat h5 {

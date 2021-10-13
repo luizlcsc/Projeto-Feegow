@@ -378,6 +378,7 @@ end if
                              <div class="galery-img sensitive-data">
                                 <${item.formato} href="${item.ArquivoLink}" target="_blank">
                                     <img
+                                        loading=lazy
                                         src="${item.link}"
                                         data-id="${item.id}"
                                         class="${item.extension} img-responsive"
@@ -426,6 +427,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
           </div>
           <div class="galery-img">
             <img
+                loading=lazy
                 src="${item.ArquivoLink}&dimension=full"
                 data-id="${item.id}"
                 class="${item.extension} img-responsive"
@@ -579,6 +581,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                               </div>
                               <div class="galery-img">
                                 <img
+                                    loading=lazy
                                     src="${item.ArquivoLink}&dimension=full"
                                     width="100%"
                                     height="100%"

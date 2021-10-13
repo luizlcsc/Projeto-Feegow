@@ -257,7 +257,9 @@ end if
                         </div>
                         <br />
 
-
+                        <%
+                        if recursoAdicional(40)=4 then
+                        %>
                         <div class="col-md-12">
                         <hr/>
                             <div class="row">
@@ -312,6 +314,9 @@ end if
 
                             </div>
                         </div>
+                        <%
+                        end if
+                        %>
 
                     </div>
                 </div>

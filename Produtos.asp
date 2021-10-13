@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
+ModuloCompras = recursoAdicional(40)
 
 TipoProduto = req("TipoProduto")&""
 if TipoProduto&""="" then
@@ -241,7 +242,7 @@ end if
                         </div>
 
                         <br />
-                        <div class="row">
+                        <div class="row hidden">
                             <div class="col-md-6">
                                 <div class="ml15" style="color: #AAA;"><h4> - Brasíndice</h4></div>
                                 <%=quickField("text", "CodigoTabela", "Código da Tabela", 4, CodigoTabela, "", "", "")%>
@@ -257,9 +258,7 @@ end if
                         </div>
                         <br />
 
-                        <%
-                        if recursoAdicional(40)=4 then
-                        %>
+
                         <div class="col-md-12">
                         <hr/>
                             <div class="row">
@@ -284,9 +283,15 @@ end if
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
                                 </div>
+                                <%
+                                if ModuloCompras=4 then
+                                %>
                                 <div class="col-md-4">
                                     <%=selectInsert("Plano de Contas - Despesa", "CategoriaDespesaID", reg("CategoriaDespesaID"), "sys_financialexpensetype", "Name", "", "", "")%>
                                 </div>
+                                <%
+                                end if
+                                %>
                             </div>
                             <div class="row">
                                 <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 4, reg("PrecoVenda"), "", "", "")%>
@@ -298,9 +303,15 @@ end if
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
                                 </div>
+                                <%
+                                if ModuloCompras=4 then
+                                %>
                                 <div class="col-md-4">
                                     <%=selectInsert("Plano de Contas - Receita", "CategoriaReceitaID", reg("CategoriaReceitaID"), "sys_financialincometype", "Name", "", "", "")%>
                                 </div>
+                                <%
+                                end if
+                                %>
                             </div>
                             <div class="row">
 
@@ -314,9 +325,6 @@ end if
 
                             </div>
                         </div>
-                        <%
-                        end if
-                        %>
 
                     </div>
                 </div>

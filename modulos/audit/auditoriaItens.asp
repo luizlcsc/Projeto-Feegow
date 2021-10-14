@@ -33,12 +33,14 @@ if Status="" or Unidades="" or Eventos="" then
     Response.End
 end if
 
-sql = "SELECT ai.StatusID, u.NomeFantasia, lu.Nome Usuario, ai.id,ai.RegistroID,ai.AuditoriaEventoID, a.Descricao EventoAuditoria, ai.Data, ai.Hora, ai.Explanacao, ai.sysUser "&_
+sql = "SELECT ai.StatusID, u.NomeFantasia, IF(lu.Admin=1,'Administrador',rp.Regra) PerfilUsuario, lu.Nome Usuario, ai.id,ai.RegistroID,ai.AuditoriaEventoID, a.Descricao EventoAuditoria, ai.Data, ai.Hora, ai.Explanacao, ai.sysUser "&_
                           "FROM auditoria_itens ai "&_
                           "LEFT JOIN vw_unidades u ON u.id=ai.UnidadeID "&_
                           "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=ai.sysUser "&_
+                          "LEFT JOIN sys_users su ON su.id=lu.id "&_
+                          "LEFT JOIN regraspermissoes rp ON rp.id=su.RegraID "&_
                           "INNER JOIN cliniccentral.auditoria_eventos a ON a.id=ai.AuditoriaEventoID "&_
-                          "WHERE Data BETWEEN "& mydatenull(ref("De")) &" AND "& mydatenull(ref("Ate")) &" AND ai.StatusID IN ("&Status&")  AND a.id IN ("&Eventos&") AND UnidadeID IN("& Unidades &") ORDER BY a.id, ai.Data, ai.Hora LIMIT 200"
+                          "WHERE Data BETWEEN "& mydatenull(ref("De")) &" AND "& mydatenull(ref("Ate")) &" AND ai.StatusID IN ("&Status&")  AND a.id IN ("&Eventos&") AND ai.UnidadeID IN("& Unidades &") ORDER BY a.id, ai.Data, ai.Hora LIMIT 200"
 set ListaAuditoriaSQL = db.execute(sql)
 
 if not ListaAuditoriaSQL.eof then
@@ -52,6 +54,7 @@ if not ListaAuditoriaSQL.eof then
                 <th>Status</th>
                 <th>Unidade</th>
                 <th>Usuário</th>
+                <th>Perfil</th>
                 <th>Registro</th>
                 <th>Data</th>
                 <th>Hora</th>
@@ -63,6 +66,7 @@ if not ListaAuditoriaSQL.eof then
     <%
     while not ListaAuditoriaSQL.eof
         novoBloco = 0
+        Perfil = ListaAuditoriaSQL("PerfilUsuario")
         if ultAI<>ListaAuditoriaSQL("AuditoriaEventoID") then
             novoBloco = 1
             %>
@@ -73,7 +77,7 @@ if not ListaAuditoriaSQL.eof then
                         <label for="allAuditoria<%=ListaAuditoriaSQL("AuditoriaEventoID")%>"></label>
                     </div>
                 </td>
-                <td colspan="8"><center><i class="far fa-info-circle"></i> <%=ListaAuditoriaSQL("EventoAuditoria")%></center></td>
+                <td colspan="9"><center><i class="far fa-info-circle"></i> <%=ListaAuditoriaSQL("EventoAuditoria")%></center></td>
             </tr>
             <%
         end if
@@ -94,6 +98,7 @@ if not ListaAuditoriaSQL.eof then
                 </td>
                 <td><%=ListaAuditoriaSQL("NomeFantasia")%></td>
                 <td><%=ListaAuditoriaSQL("Usuario")%></td>
+                <td><%=Perfil%></td>
                 <td><%=ListaAuditoriaSQL("RegistroID")%></td>
                 <td><%=ListaAuditoriaSQL("Data")%></td>
                 <td><%=formatdatetime(ListaAuditoriaSQL("Hora"), 4)%></td>

@@ -437,16 +437,19 @@ select case Tipo
             </div>
             <%
 
+            prescricaoDefault = "memed"
+            memedHabilitada = getConfig("MemedHabilitada")=1
+
             if aut("prescricoesI") then
                 prescricaoMemed = getConfig("MemedHabilitada")=1
 
-                set DefaultPrescriptionModeSQL = db.execute("SELECT coalesce(COUNT(id),0) qtd  FROM pacientesprescricoes WHERE sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE();")
+                set DefaultPrescriptionModeSQL = db.execute("SELECT coalesce(COUNT(id),0) qtd  FROM pacientesprescricoes WHERE sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE() and MemedID is null;")
 
                 if not DefaultPrescriptionModeSQL.eof then
                     qtdPrescricaoClassica = ccur(DefaultPrescriptionModeSQL("qtd"))
                     if isnumeric(qtdPrescricaoClassica) then
                         if qtdPrescricaoClassica > 15 then
-                            prescricaoMemed=False
+                            prescricaoDefault="feegow"
                             %>
 <script >
 setMemedError("Prescrição clássica ativa.")
@@ -459,14 +462,29 @@ setMemedError("Prescrição clássica ativa.")
                 <div class="panel-body" style="overflow: inherit!important;">
                     <div class="row">
                         <div class="col-md-3">
-                            <% if prescricaoMemed then %>
-                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao')" <%end if%>>
+                            <% if memedHabilitada and prescricaoDefault="feegow" then %>
+                                <div class="btn-group col-md-12">
+                                <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="far fa-plus"></i> Inserir Prescrição
+                                    <span class="caret ml5"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Prescrição Clássica</a></li>
+                                    <li><a href="javascript:openMemed('prescricao');"><i class="far fa-plus"></i> Prescrição Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                                </ul>
+                            </div>
+
+                            <% else
+                                if prescricaoDefault="memed" then
+                            %>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao');"<%end if%>>
                                     <i class="far fa-plus"></i> Inserir Prescrição
                                 </button>
                             <% else %>
                                 <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
                                     <i class="far fa-plus"></i> Inserir Prescrição
                                 </button>
+                            <% end if %>
                             <% end if %>
                         </div>
                     </div>
@@ -703,12 +721,10 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <%
-                            if IntegracaoUnimedLondrina<>4 then
-                                if getConfig("MemedHabilitada")=1 then %>
-                                    <li><a href="#" onclick="openMemed('exame')"><i class="far fa-plus"></i> Pedido Padrão</a></li>
-                                <% else %>
+                            if IntegracaoUnimedLondrina<>4 then%>
                                     <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
-                                <% end if
+                                <%
+
                             end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then

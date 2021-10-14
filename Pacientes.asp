@@ -1184,7 +1184,7 @@ $(".form-control").change(function(){
     <input id="photo-data" name="photo-data" type="hidden">
 </form>
 
-<% if getConfig("MemedHabilitada")=1 then %>
+<% if getConfig("MemedHabilitada")=1 and lcase(session("Table"))="profissionais" then %>
 <!--#include file="Classes/Memed.asp"-->
 <% end if %>
 

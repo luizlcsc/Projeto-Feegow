@@ -87,6 +87,13 @@ end if
                 text-align: center;
             }
 
+            .carousel{
+
+            background-color: #ddddddbf;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            }
+
             .copyright{
                 font-size: 10px;
                 color: #a6a6a6;

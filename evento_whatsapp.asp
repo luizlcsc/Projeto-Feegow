@@ -81,7 +81,7 @@
 
 <body>
     <% 
-        MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
+        MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorCusto FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
         SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
 
         if  MensalidadeIndividual.eof then

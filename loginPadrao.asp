@@ -243,6 +243,9 @@ if not tryLogin.EOF then
     
 
 	if erro<>"" then
+
+	    ErroLogin = True
+        ErroLoginMsg = erro
         if deslogarUsuario then
             ' session("User")=tryLogin("id")
             ' session("Banco")="clinic"&tryLogin("LicencaID")
@@ -281,7 +284,7 @@ if not tryLogin.EOF then
         else
             %>
                 <script>
-                    alert('<%=erro%>');
+                    //alert('<%=erro%>');
                 </script>
             <%
         end if
@@ -641,21 +644,11 @@ else
     end if
 
 	If masterLoginErro Then
-	%>
-    <div id="divError" class="step-pane active m10 pt10">
-        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
-            <i class="far fa-remove"></i>
-            <strong>Senha expirada</strong>
-        </div>
-    </div>
-    <% else %>
-    <div id="divError" class="step-pane active m10 pt10">
-        <div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
-            <i class="far fa-remove"></i>
-            <strong>E-mail de acesso ou senha não confere.</strong>
-        </div>
-    </div>
-    <%
+	    ErroLogin = True
+	    ErroLoginMsg = "Senha expirada"
+	else
+	    ErroLogin = True
+        ErroLoginMsg = "E-mail de acesso ou senha não confere."
 	end if
 end if
 %>

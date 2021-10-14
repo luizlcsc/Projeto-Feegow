@@ -41,9 +41,8 @@ end if
     <!-- Favicon -->
     <link rel="shortcut icon" href="assets/img/feegowclinic.ico" type="image/x-icon" />
 
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Raleway&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
 
     <script src="js/components.js?a=2"></script>
 
@@ -61,11 +60,58 @@ end if
     <style type="text/css">
 
             body {
-              background-color: #eaeaea;
-              background-image: url("assets/img/login_squared_background.png");
-              background-repeat: no-repeat;
-              background-position: 50% 50%;
+              /*background-color: #eaeaea;*/
+              /*background-image: url("assets/img/login_squared_background.png");*/
+
+              /*background-repeat: no-repeat;*/
+              /*background-position: 50% 50%;*/
               line-height: 10px;
+              font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            }
+            body {
+                background: linear-gradient(52deg, #00b4fc, #17df93, #00b4fc, #17df93);
+                background-size: 800% 800%;
+
+                -webkit-animation: AnimationName 180s ease infinite;
+                -moz-animation: AnimationName 190s ease infinite;
+                animation: AnimationName 180s ease infinite;
+            }
+
+            .login-erro{
+                background-color: #fff3f3;
+                padding: 10px;
+                margin-top: 10px;
+                border-radius: 6px;
+                font-size: 12px;
+                color: #ff4d4d;
+                text-align: center;
+            }
+
+            .copyright{
+                font-size: 10px;
+                color: #a6a6a6;
+                position: absolute;
+                bottom: 0;
+                text-align: center;
+                margin-bottom: 25px;
+                margin-left: 25px;
+            }
+
+
+            @-webkit-keyframes AnimationName {
+                0%{background-position:0% 87%}
+                50%{background-position:100% 14%}
+                100%{background-position:0% 87%}
+            }
+            @-moz-keyframes AnimationName {
+                0%{background-position:0% 87%}
+                50%{background-position:100% 14%}
+                100%{background-position:0% 87%}
+            }
+            @keyframes AnimationName {
+                0%{background-position:0% 87%}
+                50%{background-position:100% 14%}
+                100%{background-position:0% 87%}
             }
 
             @media screen and (max-width: 994px) {
@@ -84,8 +130,51 @@ end if
             .formloginCol1 {
                 background-color: #ffffff;
                 box-sizing: border-box;
-                padding: 40px;
+                padding: 80px;
+                padding-top: 100px;
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
 
+            }
+
+            .login-bem-vindo{
+                border-top-right-radius: 20px;
+                border-bottom-right-radius: 20px;
+                height: 610px;
+            }
+            .trigger-error {
+              animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+              transform: translate3d(0, 0, 0);
+              backface-visibility: hidden;
+              perspective: 1000px;
+            }
+
+            @keyframes shake {
+              10%, 90% {
+                transform: translate3d(-1px, 0, 0);
+              }
+
+              20%, 80% {
+                transform: translate3d(2px, 0, 0);
+              }
+
+              30%, 50%, 70% {
+                transform: translate3d(-4px, 0, 0);
+              }
+
+              40%, 60% {
+                transform: translate3d(4px, 0, 0);
+              }
+            }
+            .carousel-inner{
+                border-top-right-radius: 20px;
+                border-bottom-right-radius: 20px;
+            }
+
+            .content-login{
+                display: flex;
+                box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
+                border-radius: 20px;
             }
 
             div .col {
@@ -101,7 +190,6 @@ end if
             .Agradecimento {
                 width: 259px;
                 height: 55px;
-                font-family: Montserrat;
                 font-size: 45px;
                 font-style: normal;
                 font-stretch: normal;
@@ -112,7 +200,6 @@ end if
             }
 
             .textoRecuperarSenha {
-                font-family: Open Sans;
                 font-size: 12px;
                 font-weight: bold;
                 color: #7c7c7c;
@@ -121,7 +208,6 @@ end if
             }
 
             .textoDicaSenha {
-                font-family: Open Sans;
                 font-size: 11px;
                 color: #7c7c7c;
                 padding-bottom:2px;
@@ -129,36 +215,31 @@ end if
 
             .textoCodigoVerificacao {
                 font-size: 11px;
-                font-family: Open Sans;
                 font-weight: bold;
             }
 
             .textoTitulo {
                 width: 214px;
                 height: 21px;
-                font-family: Raleway;
-                font-size: 18px;
+                font-size: 27px;
                 font-weight: 600;
                 font-style: normal;
                 font-stretch: normal;
                 line-height: 1.17;
                 letter-spacing: normal;
                 text-align: left;
-                color: #9b9b9b;
+                color: #052B3B;
             }
 
             .textoTituloInput {
                 width: 46px;
-                height: 22px;
-                font-family: Open Sans;
-                font-size: 16px;
+                font-size: 13px;
                 font-weight: normal;
                 font-style: normal;
                 font-stretch: normal;
-                line-height: 1.38;
                 letter-spacing: normal;
                 text-align: left;
-                color: #9b9b9b;
+                color: #052B3B;
             }
 
 
@@ -169,18 +250,16 @@ end if
             input:-webkit-autofill:valid {
                 -webkit-transition-delay: 99999s;
                 -webkit-text-fill-color: #aeaeae;
-                -webkit-background-image: url("assets/img/login_senha.png");
-                -webkit-background-size: 9.2px 10.2px;
             }
 
 
             input[type=password], input[type=email], input[type=text] {
                 outline: none;
                 border: none;
-                padding-left: 18px;
-                padding-bottom: 3px;
-                border-bottom: 1px solid #d8d8d8;
-                font-family: Open Sans;
+                border-radius: 6px;
+                padding: 6px;
+                padding-left: 32px!important;
+                border: 1px solid #DFDFDF;
                 font-size: 14px;
                 font-weight: normal;
                 font-style: normal;
@@ -189,57 +268,78 @@ end if
                 letter-spacing: normal;
                 color: #aeaeae;
                 width: 100%;
+                -webkit-transition: border-color ease-in-out .3s;
+                -o-transition: border-color ease-in-out .3s;
+                transition: border-color ease-in-out .3s;
             }
 
             input:focus {
                 outline: none;
-                border: none;
-                padding-left: 18px;
-                padding-bottom: 3px;
-                border-bottom: 1px solid #00bad7;
-                font-family: Open Sans;
-                font-size: 14px;
-                font-weight: normal;
-                font-style: normal;
-                font-stretch: normal;
-                line-height: 1.36;
-                letter-spacing: normal;
+                border: 1px solid #00bad7;
                 color: #aeaeae;
-                width: 100%;
+            }
+
+            .botao:disabled {
+
             }
 
             .botao {
-                background-color: #00bad7;
+                background: rgba(0,180,252,1);
+
                 border: none;
                 text-align: center;
                 display: inline-block;
                 border-radius: 6px;
                 cursor: pointer;
-                width: 150px;
+                width: 100%;
                 height: 37px;
-                font-family: Montserrat;
                 font-size: 14px;
-                font-weight: bold;
+                font-weight: 500;
                 font-style: normal;
                 font-stretch: normal;
                 line-height: 1.29;
-                letter-spacing: normal;
+                letter-spacing: 0.2px;
                 color: #ffffff;
+                -webkit-transition-duration: 0.3s;
+                transition-duration: 0.3s;
+                text-decoration: none;
 
+            }
+
+            .botao:hover {
+              color: white;
+                background: rgba(9,197,210,1);
+                letter-spacing: 0.4px;
+            }
+            .botao:active {
+              letter-spacing: 1px;
             }
 
             .senha {
                 background-image: url("assets/img/login_senha.png");
                 background-repeat: no-repeat;
-                background-size: 9.2px 10.2px;
+                background-size: 11px;
                 background-position-y: center;
+                background-position-x: 10px;
+            }
+
+            @-webkit-keyframes autofill_usuario {
+                to {
+                    background-image:url("assets/img/login_usuario.png");
+                }
+            }
+
+            .usuario:-webkit-autofill {
+                -webkit-animation-name: autofill_usuario;
+                -webkit-animation-fill-mode: both;
             }
 
             .usuario {
                 background-image: url("assets/img/login_usuario.png");
                 background-repeat: no-repeat;
-                background-size: 8.2px 9.2px;
+                background-size: 11px;
                 background-position-y: center;
+                background-position-x: 10px;
             }
 
             /* The container */
@@ -250,7 +350,6 @@ end if
                 margin-bottom: 5px;
                 cursor: pointer;
                 font-size: 10px;
-                font-family: Raleway;
                 color: #b5b1bd;
                 -webkit-user-select: none;
                 -moz-user-select: none;
@@ -270,19 +369,21 @@ end if
                 position: absolute;
                 top: 0px;
                 left: 0;
-                height: 10px;
-                width: 10px;
-                background-color: #eee;
+                height: 12px;
+                border-radius: 2px;
+                width: 12px;
+                background-color: #fff;
+                border: 1px solid #ddd;
             }
 
             /* On mouse-over, add a grey background color */
             .container-checkbox:hover input ~ .checkmark {
-                background-color: #ccc;
+                background-color: #f0f0f0;
             }
 
             /* When the checkbox is checked, add a blue background */
             .container-checkbox input:checked ~ .checkmark {
-                background-color: #00BAD7;
+                background-color: #ffffff;
             }
 
             /* Create the checkmark/indicator (hidden when not checked) */
@@ -299,11 +400,11 @@ end if
 
             /* Style the checkmark/indicator */
             .container-checkbox .checkmark:after {
-                left: 4px;
-                top: 1px;
-                width: 2px;
-                height: 6px;
-                border: solid white;
+                left: 3px;
+                top: 0;
+                width: 4px;
+                height: 8px;
+                border: solid #00B4FC;
                 border-width: 0 1px 1px 0;
                 -webkit-transform: rotate(45deg);
                 -ms-transform: rotate(45deg);
@@ -311,6 +412,24 @@ end if
             }
 
 
+            .onclic {
+              border-color: #bbbbbb;
+              border-width: 3px;
+              opacity: 0.7;
+              font-size: 0;
+              width: 40px;
+              border-left-color: #1ECD97;
+              -webkit-animation: rotating 1s 0.2s linear infinite;
+                      animation: rotating 1s 0.2s linear infinite;
+            }
+
+            .validate {
+              font-size: 13px;
+              color: white;
+              background: #1ECD97;
+            }
+            .validate:after {
+            }
             /* The container */
             .container-radio {
                 display: block;
@@ -388,7 +507,6 @@ end if
             }
 
             ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-                font-family: Open Sans;
                 font-size: 14px;
                 font-weight: normal;
                 font-style: normal;
@@ -399,7 +517,6 @@ end if
             }
 
             :-ms-input-placeholder { /* Internet Explorer 10-11 */
-                font-family: Open Sans;
                 font-size: 14px;
                 font-weight: normal;
                 font-style: normal;
@@ -410,7 +527,6 @@ end if
             }
 
             ::-ms-input-placeholder { /* Microsoft Edge */
-                font-family: Open Sans;
                 font-size: 14px;
                 font-weight: normal;
                 font-style: normal;
@@ -447,6 +563,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 %>
         <!--#include file="loginPadrao.asp"-->
 <%
+
         else
 %>
         <!--#include file="loginPartner.asp"-->
@@ -468,14 +585,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <form method="post" action="<%=URLRedirectLogin%>">
         <div class="container">
             <div class="row formlogin">
-                <div class="col-lg-5 col-xl-5 formloginCol1">
+                <div class="content-login">
+                <div class="col-lg-6 col-xl-6 formloginCol1">
                     <a href="./?P=Login2" title="Logo">
                         <input type="hidden" name="RedirectLogin" value="<% if LoginFTP then %>S<% end if %>">
                         <%
                         if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
                             if req("Partner")="" then
                         %>
-                                <img class="login-logo" src="assets/img/login_logo.png" border="0" width="124" height="36">
+                                <img class="login-logo" src="assets/img/login_logo.svg" border="0" width="124" height="36">
                         <%
                             else
                         %>
@@ -515,20 +633,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <div id="divFormLogin">
                             <!--#include file="LoginPrincipal.asp"-->
                         </div>
+
+                        <div class="copyright">
+                            <i class="far fa-copyright"></i> <%=year(date())%> Feegow S.A - Todos direitos reservados
+                        </div>
                 </div>
-                <div id="carouselExampleIndicators" class="col-lg-7 col-xl-7 d-none d-lg-block d-xl-block carousel slide" data-ride="carousel" style="width: 506px">
+                <div id="carouselExampleIndicators" class="col-lg-8 col-xl-8 d-none d-lg-block d-xl-block carousel slide" data-ride="carousel" style="width: 506px">
                     <!-- ol class="carousel-indicators">
                         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                     </ol -->
                     <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="login-bem-vindo" src="assets/img/login_bem_vindo.png">
+                        <img class="login-bem-vindo" src="https://cdn.feegow.com/marketing/assets/fw-login/login_bem_vindo.webp">
                     </div>
                     <!--div class="carousel-item">
                         <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>
                     </div-->
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -587,6 +710,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     }, 200);
                 }
             });
+
+            <%
+                if ErroLogin then
+                %>
+                $(".login-erro").addClass("trigger-error");
+                <%
+                end if
+            %>
 
             $('#certificateSelect').on("change",function(){
                 var selectedCertThumb = $('#certificateSelect').val();
@@ -717,6 +848,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
             $('form').on('submit', function(e){
+                $(".btn-entrar-txt").fadeOut(150);
+                $( ".botao" ).addClass( "onclic");
+                $( ".icon-btn-login" ).removeClass("fa-arrow-right").addClass( "fa-spinner-third fa-spin");
 
                 if($('#tokenLogin').val()=='')
                 {

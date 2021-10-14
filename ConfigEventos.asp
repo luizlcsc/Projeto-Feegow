@@ -61,6 +61,14 @@ if session("admin")=1 then
 
     end if
 
+    MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
+    SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
+    
+    custoMSG  = MensalidadeIndividual("custo")
+    custoMSG = formatNumber(custoMSG, 2)
+    MensalidadeIndividual.close
+    SET MensalidadeIndividual  = nothing
+
     set reg = db.execute("select * from configeventos where id=1")
     if not reg.EOF then
         EnvioAutomaticoEmail=reg("EnvioAutomaticoEmail")
@@ -111,7 +119,7 @@ if session("admin")=1 then
                                 </div>
                                 <div class="col-md-2">
                                     <label>
-                                        <%=LabelSmsZap%> <small><span class="badge badge-pink">R$ 0,12</span></small>
+                                        <%=LabelSmsZap%> <small><span class="badge badge-pink">R$ <%=custoMSG%></span></small>
                                         <br />
                                         <div class="switch round">
                                             <input type="checkbox" <% If AtivarServicoSMS="S" Then %> checked="checked"<%end if%> value="S" class="checkbox-ativo" data-type="SMS" data-group="AtivarSMS" name="AtivarServicoSMS" id="AtivarServicoSMS">
@@ -149,7 +157,7 @@ if session("admin")=1 then
                                         E-mail
                                         <br />
                                         <div class="switch round">
-                                            <input type="checkbox" <% If EnvioAutomaticoEmail="S" Then %> checked="checked"<%end if%> value="S" data-group="AtivarEmail" data-type="Email" class="marcar-envio" name="EnvioAutomaticoEmail" id="EnvioAutomaticoEmail">
+                                            <input type="checkbox" <% If EnvioAutomaticoEmail="S" Then %> checked="checked" <%end if%> value="S" data-group="AtivarEmail" data-type="Email" class="marcar-envio" name="EnvioAutomaticoEmail" id="EnvioAutomaticoEmail">
                                             <label for="EnvioAutomaticoEmail"></label>
                                         </div>
 
@@ -160,7 +168,7 @@ if session("admin")=1 then
                                         <%=LabelSmsZap%>
                                         <br />
                                         <div class="switch round">
-                                            <input type="checkbox" <% If EnvioAutomaticoSMS="S" Then %> checked="checked"<%end if%> value="S" data-group="AtivarSMS" data-type="SMS" class="marcar-envio" name="EnvioAutomaticoSMS" id="EnvioAutomaticoSMS">
+                                            <input type="checkbox" <% If EnvioAutomaticoSMS="S" Then %> checked="checked" <%end if%> value="S" data-group="AtivarSMS" data-type="SMS" class="marcar-envio" name="EnvioAutomaticoSMS" id="EnvioAutomaticoSMS">
                                             <label for="EnvioAutomaticoSMS"></label>
                                         </div>
 

@@ -134,9 +134,17 @@
                             i = 1
                             while not modeloDeMensagem.eof
 
-                                sysID = modeloDeMensagem("sysID")
-
+                                sysID = modeloDeMensagem("sysID")&""
                                 tipo = modeloDeMensagem("Nome")
+
+                                if sysID = "" then
+
+                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `sysActive`) VALUES ('"&tipo&"', 0)"
+                                    db.execute(AddModeloNoSysSQL) %>
+                                    
+                                    <script type="text/javascript">document.location.reload(true);</script> <%
+
+                                end if
                                 descricao = modeloDeMensagem("descricao")
                                 modelo = modeloDeMensagem("Conteudo")
                                 resposta = modeloDeMensagem("ExemploResposta")

@@ -120,6 +120,19 @@ end if
                   background-image: none;
                 }
 
+                .content-login {
+                    box-shadow: none!important;
+                    border-radius: 0!important;
+                }
+
+                .formloginCol1{
+                    padding: 10px!important;
+                    padding-top: 20px!important;
+                }
+
+                .copyright{
+                    display: none;
+                }
             }
 
             .formlogin {
@@ -498,19 +511,6 @@ end if
                 .formlogin {
                   padding: 2%;         /* 5% of container width, for medium screens */
                 }
-                .content-login {
-                    box-shadow: none;
-                    border-radius: 0;
-                }
-
-                .formloginCol1{
-                    padding: 10px;
-                    padding-top: 20px;
-                }
-
-                .copyright{
-                    display: none;
-                }
             }
 
             @media screen and (min-width: 893px) {
@@ -658,7 +658,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </ol -->
                     <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="login-bem-vindo" src="assets/img/login_bem_vindo.png">
+                        <img class="login-bem-vindo" src="https://cdn.feegow.com/marketing/assets/fw-login/login_bem_vindo.webp">
                     </div>
                     <!--div class="carousel-item">
                         <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>

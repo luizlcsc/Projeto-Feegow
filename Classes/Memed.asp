@@ -1,19 +1,98 @@
 <!--#include file="Environment.asp"-->
 
 <script>
-    var memedLoading       = false;
-    var memedInitialized   = false;
-    var memedOpenAfterInit = null;
-    var memedToken         = null;
-    var memedTipo          = null;
 
-    function openMemed (exame) {
-        const fnOpen = exame ? exameMemed : prescricaoMemed;
-        if (!memedInitialized) {
-            initMemed(fnOpen);
+    // states da integração
+    let memedLoading             = false;
+    let memedError               = false;
+    let memedInitialized         = false;
+    let memedOpenAfterInit       = null;
+    let memedTipo                = null;
+    let memedClassicPrescription = false;
+    let memedClassicExam         = false;
+
+    // variáveis do ASP
+    <%
+    memedSessionKey = session("User")&"" & session("UnidadeID")&""
+    if session("MemedSessionKey")&"" <> memedSessionKey then
+        session("MemedSessionKey") = memedSessionKey
+    %>
+        localStorage.removeItem('MEMED_TEMPLATE_UPLOADED');
+    <% end if %>
+
+    const MEMED_PACIENTE_ID               = '<%=req("I")%>';
+    const MEMED_UNIDADE_ID                = '<%=session("UnidadeID")%>';
+    const MEMED_PROFESSIONAL_ID           = '<%=session("idInTable")%>';
+    const MEMED_LICENSE_ID                = '<%=replace(session("Banco"), "clinic","")%>';
+    const MEMED_NUMERO_PRONTUARIO         = '<%=session("Banco")%>' +  '-' + '<%=req("I")%>';
+    const MEMED_EXIBIR_OPCOES_RECEITUARIO = <% if getConfig("MemedExibirOpcoesReceituario")=1 then response.write("true") else response.write("false") end if %>;
+    const MEMED_EXIBIR_HISTORICO          = <% if getConfig("MemedExibirHistorico")=1 then response.write("true") else response.write("false") end if %>;
+    const MEMED_EXIBIR_PROTOCOLOS         = <% if getConfig("MemedExibirProtocolos")=1 then response.write("true") else response.write("false") end if %>;
+
+    function openMemed (type) {
+        // valida o tipo
+        const tiposValidos = ['prescricao', 'exame'];
+        if (!tiposValidos.includes(type)) {
+            throw new Error("Tipo inválido.");
+        }
+        memedTipo = type;
+
+        // abre diretamente se for prescrição clássica
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+            openClassicPrescription();
             return;
         }
-        fnOpen();
+
+        // se já estiver inicializando, exibe mensagem e seta para abrir após a inicialização
+        if (memedLoading) {
+            new PNotify({
+                title: 'Aguarde',
+                text: 'Inicializando...',
+                type: 'info',
+                delay: 500
+            });
+            memedOpenAfterInit = newPrescricaoMemed;
+            return;
+        }
+
+        // se não estiver inicializado, inicia o precesso de inicialização
+        if (!memedInitialized) {
+            initMemed(newPrescricaoMemed);
+            return;
+        }
+
+        // abre a prescrição
+        newPrescricaoMemed();
+    }
+
+    function openClassicPrescription() {
+        if (memedTipo === 'exame') {
+            iPront('Pedido', MEMED_PACIENTE_ID, 0, '', '');
+        } else {
+            iPront('Prescricao', MEMED_PACIENTE_ID, 0, '', '');
+        }
+        memedOpenAfterInit = null;
+    }
+
+    function setMemedLoading(loading) {
+        memedLoading = loading;
+        const elBtnConfig = $('#btn-config-prescricao');
+        if (elBtnConfig) {
+            elBtnConfig.toggleClass('loading', loading);
+            if (loading) {
+                elBtnConfig.attr('disabled', 'disabled');
+            } else {
+                elBtnConfig.removeAttr('disabled');
+            }
+        }
+    }
+
+    function setMemedError(error) {
+        memedError = error;
+        const elBtnConfig = $('#btn-config-prescricao');
+        if (elBtnConfig) {
+            elBtnConfig.toggleClass('error', error);
+        }
     }
 
     function initMemed(openAfterInit) {
@@ -21,35 +100,29 @@
         if (memedLoading) {
             return;
         }
-        memedLoading = true;
+        setMemedLoading(true);
 
         getUrl('prescription/memedv2/init', {
-            unidadeId: "<%=session("UnidadeID")%>"
+            unidadeId: MEMED_UNIDADE_ID
         },
             function (response) {
 
                 if (response.success !== true) {
-                    memedLoading = false;
-                    if (memedOpenAfterInit) {
-                        if (response.status === 401) {
-                            new PNotify({
-                                title: 'Acesso negado',
-                                text: 'Você não tem permissão para MEMED. Apenas usuários do tipo `profissionais` podem acessar.',
-                                type: 'danger'
-                            });
-                        } else if (response.status === 403) {
-                            openComponentsModal("prescription/memedv2/register", {
-                                professionalId: "<%=session("idInTable")%>",
-                                unidadeId: "<%=session("UnidadeID")%>",
-                                modal: true,
+                    setMemedLoading(false);
+                    setMemedError(true);
 
-                            }, "Cadastro Memed", false);
+                    if (memedOpenAfterInit) {
+                        // status 401 não força a prescrição Memed e usa a clássica como padrão.
+                        if (response.status === 401) {
+                            memedClassicPrescription = true;
+                            memedClassicExam = true;
+                            openClassicPrescription();
+                        // status 403 tenta forçar o uso da prescrição Memed como padrão
+                        } else if (response.status === 403) {
+                            openConfigMemed();
+                        // como fallback em caso de qualquer outro status, abre a prescrição clássica
                         } else {
-                            new PNotify({
-                                title: 'Serviço indisponível.',
-                                text: 'Tente novamente mais tarde',
-                                type: 'danger'
-                            });
+                            openClassicPrescription();
                         }
                     }
                     return;
@@ -61,12 +134,29 @@
     }
     initMemed();
 
+    function openConfigMemed() {
+        openComponentsModal("prescription/memedv2/register", {
+            professionalId: MEMED_PROFESSIONAL_ID,
+            unidadeId: MEMED_UNIDADE_ID,
+            modal: true
+
+        }, "Cadastro Memed", false);
+    }
+
     function initScriptMemed(data) {
         if (!data || !data.token || !data.domain) {
             return;
         }
 
-        memedLoading = true;
+        setMemedError(false);
+        memedClassicPrescription = data.useClassicPrescription;
+        memedClassicExam         = data.useClassicExam;
+
+        if (memedInitialized) {
+            return;
+        }
+
+        setMemedLoading(true);
         const script = document.createElement('script');
         script.setAttribute('id', 'script-memed');
         script.setAttribute('type', 'text/javascript');
@@ -76,7 +166,7 @@
         script.onload = function() {
             initEventsMemed(data.workplace);
         };
-        memedToken = data.token;
+
         document.body.appendChild(script);
         console.info('[INTEGRACAO MEMED] Script injetado com sucesso.');
 
@@ -86,7 +176,7 @@
     function initEventsMemed(workplace) {
         MdSinapsePrescricao.event.add('core:moduleInit', function moduleInitHandler(module) {
             if (module.name === 'plataforma.prescricao') {
-                memedLoading     = false;
+                setMemedLoading(false);
                 memedInitialized = true;
 
                 if (workplace) {
@@ -117,25 +207,20 @@
     }
 
     function updateMemedPrintTemplate() {
-        <%
-        ' POG para reenviar o papel timbrado apenas quando o profissional logar ou trocar de unidade
-        if session("MemedPapelTimbrado")&"" <> session("UnidadeID")&"" then
-        %>
+        if (!localStorage.getItem('MEMED_TEMPLATE_UPLOADED')) {
             console.info('[INTEGRACAO MEMED] Enviando Papel timbrado...');
             postUrl('prescription/memedv2/update-print-template', {
-                professionalId: "<%=session("idInTable")%>",
-                unidadeId: "<%=session("UnidadeID")%>",
+                professionalId: MEMED_PROFESSIONAL_ID,
+                unidadeId: MEMED_UNIDADE_ID,
             }, function() {
                 console.info('[INTEGRACAO MEMED] Papel timbrado enviado com sucesso.');
             });
-        <%
-            session("MemedPapelTimbrado") = session("UnidadeID")&""
-        end if
-        %>
+            localStorage.setItem('MEMED_TEMPLATE_UPLOADED', 'true');
+        }
     }
 
-    function setFeaturesMemed(exame) {
-        const features = exame ?
+    function setFeaturesMemed() {
+        const features = memedTipo === 'exame' ?
             {
                 autocompleteIndustrialized: false,
                 autocompleteManipulated: false,
@@ -151,23 +236,22 @@
                 autocompleteExams: false
             };
 
-        memedTipo = exame ? 'exame' : 'prescricao';
+        return MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {...features, ...{
+            removePatient: false,
+            deletePatient: false,
+            editPatient: false,
+            optionsPrescription: MEMED_EXIBIR_OPCOES_RECEITUARIO,
+            historyPrescription: MEMED_EXIBIR_HISTORICO,
+            showProtocol: MEMED_EXIBIR_PROTOCOLOS,
+        }});
+    }
 
-        return Promise.all([
-            MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {...features, ...{
-                removePatient: false,
-                deletePatient: false,
-                editPatient: false,
-                optionsPrescription: <% if getConfig("MemedExibirOpcoesReceituario")=1 then response.write("true") else response.write("false") end if %>,
-                historyPrescription: <% if getConfig("MemedExibirHistorico")=1 then response.write("true") else response.write("false") end if %>,
-                showProtocol: <% if getConfig("MemedExibirProtocolos")=1 then response.write("true") else response.write("false") end if %>,
-            }}),
-            MdHub.command.send('plataforma.prescricao', 'setAdditionalData', {
-                licenseId: <%=replace(session("Banco"), "clinic","")%>,
-                numeroProntuario: '<%=session("Banco")%>' +  '-' + '<%=req("I")%>',
-                tipo: memedTipo,
-            })
-        ]);
+    function setAdditionalDataMemed(){
+        return MdHub.command.send('plataforma.prescricao', 'setAdditionalData', {
+            licenseId: MEMED_LICENSE_ID,
+            numeroProntuario: MEMED_NUMERO_PRONTUARIO,
+            tipo: memedTipo,
+        });
     }
 
     function setPacienteMemed() {
@@ -188,38 +272,36 @@
             cidade: cidade,
             peso: peso,
             altura: altura,
-            idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
+            idExterno: MEMED_NUMERO_PRONTUARIO
         };
         return MdHub.command.send('plataforma.prescricao', 'setPaciente', dadosPaciente);
     }
 
-    function prescricaoMemed() {
-        Promise.all([setFeaturesMemed(false), setPacienteMemed()]).then(function() {
-            setTimeout(function() {
-                MdHub.module.show('plataforma.prescricao');
-                MdHub.command.send('plataforma.prescricao', 'newPrescription');
-            }, 500);
-        });
-    }
+    async function newPrescricaoMemed() {
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+            openClassicPrescription();
+            return;
+        }
 
-    function exameMemed() {
-        Promise.all([setFeaturesMemed(true), setPacienteMemed()]).then(function() {
-            setTimeout(function() {
-                MdHub.module.show('plataforma.prescricao');
-                MdHub.command.send('plataforma.prescricao', 'newPrescription');
-            }, 500);
-        });
+        setMemedLoading(true);
+        await setFeaturesMemed();
+        await setPacienteMemed();
+        await setAdditionalDataMemed();
+        await MdHub.command.send('plataforma.prescricao', 'newPrescription');
+        MdHub.module.show('plataforma.prescricao');
+        setMemedLoading(false);
+        memedOpenAfterInit = null;
     }
 
     function savePrescricaoMemed(id) {
         postUrl('prescription/memedv2/save-prescription', {
              prescriptionId: id,
-             patientId: '<%=req("I")%>',
+             patientId: MEMED_PACIENTE_ID,
              tipo: memedTipo,
          }, function (data) {
             const tipo = memedTipo === 'exame' ? 'Pedido' : 'Prescricao';
             if (data.success) {
-                pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|${tipo}|`);
+                pront(`timeline.asp?PacienteID=${MEMED_PACIENTE_ID}&Tipo=|${tipo}|`);
             } else {
                 new PNotify({
                     title: 'Erro ao gravar a prescrição.',
@@ -230,13 +312,13 @@
          });
     }
 
-    function viewPrescricaoMemed(id, tipo) {
+    async function viewPrescricaoMemed(id, tipo) {
         if (memedLoading) {
             new PNotify({
-                title: 'Aguarde...',
-                text: 'O serviço Memed está sendo inicializado.',
-                type: 'warning',
-                delay: 250
+                title: 'Aguarde',
+                text: 'Inicializando...',
+                type: 'info',
+                delay: 500
             });
             return;
         }
@@ -247,20 +329,18 @@
             return;
         }
 
-        Promise.all([
-            setFeaturesMemed(tipo === 'exame'),
-            setPacienteMemed(),
-        ]).then(function() {
-            setTimeout(function() {
-                MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
-            }, 500);
-        });
+        memedTipo = tipo;
+        await setFeaturesMemed();
+        await setPacienteMemed();
+        await setAdditionalDataMemed();
+        MdHub.command.send('plataforma.prescricao', 'viewPrescription', id);
+        memedOpenAfterInit = null;
     }
 
     function deletePrescricaoMemedExcluida(id) {
         const tipo = memedTipo === 'exame' ? 'Pedido' : 'Prescricao';
         postUrl('prescription/memedv2/delete-prescription', {deletedMemedId: id}, function () {
-            pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|${tipo}|`);
+            pront(`timeline.asp?PacienteID=${MEMED_PACIENTE_ID}&Tipo=|${tipo}|`);
         });
     }
 
@@ -268,14 +348,20 @@
         if (confirm(`Tem certeza de que deseja apagar ${tipo === 'exame' ? 'este pedido de exame' : 'esta prescrição'}?`)) {
             postUrl('prescription/memedv2/delete-prescription', {prescriptionId: id, tipo: tipo}, function () {
                 if (tipo === 'exame') {
-                    pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Pedido|');
+                    pront(`timeline.asp?PacienteID=${MEMED_PACIENTE_ID}&Tipo=|Pedido|`);
                 } else {
-                    pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
+                    pront(`timeline.asp?PacienteID=${MEMED_PACIENTE_ID}&Tipo=|Prescricao|`);
                 }
             });
         }
     }
-    
+
+    function getDadosPrescricao() {
+        MdHub.command.send('plataforma.prescricao', 'getPrescricao').then(function (prescricao) {
+            console.log(prescricao.data);
+        });
+    }
+
 </script>
 <style>
     @font-face {

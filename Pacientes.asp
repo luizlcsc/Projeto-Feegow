@@ -1184,7 +1184,9 @@ $(".form-control").change(function(){
     <input id="photo-data" name="photo-data" type="hidden">
 </form>
 
+<% if getConfig("MemedHabilitada")=1 then %>
 <!--#include file="Classes/Memed.asp"-->
+<% end if %>
 
 <script>
     function handleFormOpenError(t, p, m, i, a, FormID, CampoID){

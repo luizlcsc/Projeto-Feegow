@@ -309,10 +309,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
                                 set rsMemed = db.execute(sqlMemed)
                             %>
-                                <% if cstr(session("User"))=ti("sysUser")&"" then %>
-                                    <a href="javascript:viewPrescricaoMemed(<%=ti("MemedID")%>, '<%=rsMemed("tipo")%>')">
-                                        <i class="far fa-search-plus"></i>
-                                    </a>
+                                <% if getConfig("MemedHabilitada")=1 and cstr(session("User"))=ti("sysUser")&"" then %>
+                                    <button class="btn" onclick="viewPrescricaoMemed(<%=ti("MemedID")%>, '<%=rsMemed("tipo")%>')">
+                                        Reutilizar
+                                    </button>
                                 <% end if %>
                                 <%
                                 if not rsMemed.eof then
@@ -323,7 +323,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                     </a>
                                     <%
                                     end if
-                                    if cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
+                                    if getConfig("MemedHabilitada")=1 and cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
                                         <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>, '<%=rsMemed("tipo")%>')">
                                             <i class="far fa-remove"></i>
                                         </a>

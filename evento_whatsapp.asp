@@ -83,8 +83,14 @@
     <% 
         MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
         SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
-        
-        custoMSG  = MensalidadeIndividual("custo")
+
+        if  MensalidadeIndividual.eof then
+            %>
+            Recurso não habilitado
+            <%
+            Response.End
+        end if
+        custoMSG  = MensalidadeIndividual("ValorUnitario")
         custoMSG = formatNumber(custoMSG, 2)
         MensalidadeIndividual.close
         SET MensalidadeIndividual  = nothing

@@ -88,44 +88,55 @@ select case lcase(req("P"))
 
         <%
             cpd = 0
-            set pacDia = db.execute("select a.StaID, a.Hora, a.PacienteID, p.NomePaciente, ifnull(p.Foto, '') Foto from agendamentos a left join pacientes p on a.PacienteID=p.id where a.Data=curdate() and a.ProfissionalID="&session("idInTable")&" AND a.sysActive=1 order by Hora")
-            while not pacDia.eof
-                cpd = cpd+1
-                Foto = pacDia("Foto")
-                if Foto="" then
-                    Foto = "./assets/img/user.png"
-                else
-                    Foto = "/uploads/"& Foto
-                end if
+            LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
+            statusCancelados = "22,11, 16, 117"
+
+            if LiberarHorarioRemarcado then
+                statusCancelados=statusCancelados&",15"
+            end if
+            set pacDia = db.execute("select a.StaID, a.Hora, a.PacienteID, p.NomePaciente, ifnull(p.Foto, '') Foto from agendamentos a left join pacientes p on a.PacienteID=p.id where a.Data=curdate() and a.ProfissionalID="&session("idInTable")&" AND a.sysActive=1 AND StaID NOT IN ("&statusCancelados&") order by Hora")
+
+            if not pacDia.eof then
+
+                while not pacDia.eof
+                    cpd = cpd+1
+                    Foto = pacDia("Foto")
+                    if Foto="" then
+                        Foto = "./assets/img/user.png"
+                    else
+                        Foto = "/uploads/"& Foto
+                    end if
+
+                    if cpd>10 then
+                        cpdH = " hidden"
+                    else
+                        cpdH = ""
+                    end if
+                    %>
+                <li class="pacdia <%=cpdH %>">
+                    <a href="./?P=pacientes&I=<%=pacDia("PacienteID") %>&Pers=1">
+                        <%=imoon(pacDia("StaID")) %>
+                        <span class="sidebar-title"> <%=left(pacDia("NomePaciente")&"", 40) %></span>
+                    <span class="sidebar-title-tray">
+                    <span class="label label-xs bg-white"><%=ft(pacDia("Hora")) %></span>
+                  </span>
+                    </a>
+                </li>            <%
+                pacDia.movenext
+                wend
+                pacDia.close
+                set pacDia=nothing
 
                 if cpd>10 then
-                    cpdH = " hidden"
-                else
-                    cpdH = ""
+                    %>
+                <li class="vertodos">
+                    <a href="javascript:void(0)" onclick="$('.vertodos').addClass('hidden'); $('.pacdia').removeClass('hidden');"><span class="far fa-chevron-down"></span> <span class="sidebar-title"> Ver Todos</span>
+                    <span class="sidebar-title-tray">
+                    <span class="label label-xs bg-primary"><%= cpd %></span>
+                  </span>
+                    </a>
+                </li>            <%
                 end if
-                %>
-            <li class="pacdia <%=cpdH %>">
-                <a href="./?P=pacientes&I=<%=pacDia("PacienteID") %>&Pers=1">
-                    <%=imoon(pacDia("StaID")) %>
-                    <span class="sidebar-title"> <%=left(pacDia("NomePaciente")&"", 40) %></span>
-                <span class="sidebar-title-tray">
-                <span class="label label-xs bg-white"><%=ft(pacDia("Hora")) %></span>
-              </span>
-                </a>
-            </li>            <%
-            pacDia.movenext
-            wend
-            pacDia.close
-            set pacDia=nothing
-            if cpd>10 then
-                %>
-            <li class="vertodos">
-                <a href="javascript:void(0)" onclick="$('.vertodos').addClass('hidden'); $('.pacdia').removeClass('hidden');"><span class="far fa-chevron-down"></span> <span class="sidebar-title"> Ver Todos</span>
-                <span class="sidebar-title-tray">
-                <span class="label label-xs bg-primary"><%= cpd %></span>
-              </span>
-                </a>
-            </li>            <%
             end if
         end if
     end if
@@ -178,9 +189,9 @@ end if
     if lcase(req("P"))="home" then
 %>
             <div class="col-sm-12">
-                <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system"><i class="far fa-plus"></i> VER NOVIDADES</button>
+                <button onclick="getNews(0)" class="btn btn-sm btn-block btn-system hidden"><i class="far fa-plus"></i> VER NOVIDADES</button>
 
-                <a href='https://www.feegowclinic.com.br/blog-medico/?utm_source=software-feegow&utm_medium=referral&utm_campaign=botao-de-conteudo' target="_blank" class="btn btn-sm btn-block" style="background:#FF8C00;color:#fff">ACESSE O BLOG FEEGOW</a>
+                <a href='https://www.feegowclinic.com.br/blog/?utm_source=software-feegow&utm_medium=referral&utm_campaign=botao-de-conteudo' target="_blank" class="btn btn-sm btn-block" style="background:#FF8C00;color:#fff">ACESSE O BLOG FEEGOW</a>
             </div>
 
             <div id="feedbackButton" style="margin-top: 10px; visibility: hidden" class="col-sm-12">

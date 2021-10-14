@@ -32,7 +32,6 @@ if session("Admin")=0 then
 	set omit = nothing
 	Tipo=""
 end if
-LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 NaoExibirNaAgendaOsStatus = getConfig("NaoExibirNaAgendaOsStatus")
 ExibirCorPacienteAgenda = getConfig("ExibirCorPacienteAgenda")
 NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
@@ -41,7 +40,7 @@ AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
 
-
+LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 statusCancelados = "22,11, 16, 117"
 
 if LiberarHorarioRemarcado then

@@ -184,7 +184,7 @@ if Acao="" then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
 
-				if not integracaofeita.eof or DataCancelamento&""<>"" then
+				if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -257,7 +257,7 @@ if Acao="" then
 				end if
 				'response.write("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))			
 				
-				if not integracaofeita.eof or DataCancelamento&"" <>"" then
+				if not integracaofeita.eof or DataCancelamento&"" <>"" and req("T")<>"D" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -406,7 +406,7 @@ elseif Acao="I" then
 	if ref("T")<>"P"  and ref("T")<>"K" then
 		ItemID = 0'id do procedimento
 		ValorUnitario = 0
-		if not integracaofeita.eof or DataCancelamento&"" <>"" then
+		if not integracaofeita.eof or DataCancelamento&"" <>"" and req("T")<>"D" then
 		%>
 			<!--#include file="invoiceLinhaItemRO.asp"-->
 		<%
@@ -424,7 +424,7 @@ elseif Acao="I" then
 			Subtotal = ValorUnitario * Quantidade
             PacoteID = II
             Executado="U"
-			if not integracaofeita.eof or DataCancelamento&""<>"" then
+			if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
@@ -445,7 +445,7 @@ elseif Acao="I" then
 			ValorUnitario = pct("ValorUnitario")
 			Subtotal = ValorUnitario
             PacoteID = II
-			if not integracaofeita.eof or DataCancelamento&""<>"" then
+			if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%

@@ -189,13 +189,16 @@
             </div>
             <div class="col">
                 <label class="container-checkbox">
-                    <span id="esqueciSenha"><img src="assets/img/login_esqueceu_senha.png" style="width: 10.2px;"> Esqueceu sua senha?</span>
+                    <span id="esqueciSenha"><i class="fal fa-question-circle"></i> Esqueceu sua senha?</span>
                 </label>
             </div>
         </div>
     </div>
     <div style="margin-top: 50px; text-align:center;">
-        <button type="submit" class="botao" data-style="zoom-in" id="Entrar">ENTRAR</button>
+        <button type="submit" class="botao" data-style="zoom-in" id="Entrar"> <span class="btn-entrar-txt" style="padding-right: 10px;">Entrar</span><i style="font-size: 12px" class="icon-btn-login fal fa-arrow-right"></i></button>
+    </div>
+    <div class="login-erro" style="display: <% if ErroLogin then response.write("block") else response.write("none") end if%>">
+        <%=ErroLoginMsg%>
     </div>
     <script>
         $(document).ready(function() {

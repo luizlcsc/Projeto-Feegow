@@ -497,7 +497,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 <body>
         <%
         if session("Logo")="" then
-            Logo = "assets/img/login_logo.png"
+            Logo = "assets/img/login_logo.svg"
         else
             Logo = "https://cdn.feegow.com/logos/"&session("Logo")
         end if

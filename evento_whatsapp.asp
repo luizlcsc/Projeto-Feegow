@@ -11,7 +11,7 @@
     flex-direction: column;
     justify-content: space-between; 
     position: absolute;
-    top:160px;
+    top:200px;
     left:86px;
   }
   .waRemetente {
@@ -20,7 +20,7 @@
 
     word-wrap: break-word;
 
-    background: #CCFF90;
+    background: #DCF8C6;
     border-radius: 4.8px;
   }
 
@@ -44,7 +44,7 @@
     position: absolute;
     border-left: 14px solid transparent;
     border-right: 14px solid transparent;
-    border-bottom: 20px solid #CCFF90;
+    border-bottom: 20px solid #DCF8C6;
     top: -4.28px;
     right: -6.4%;
     transform: rotate(54deg);
@@ -186,7 +186,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="waImagem">
-                        <img src="./eventos-whatsapp-images/demo-eventos.png" alt="whatsapp-events">
+                        <img src="./eventos-whatsapp-images/demo-iphonex.png" alt="whatsapp-events">
                         <div id="waConteudo">                     
                         </div>
                     </div>

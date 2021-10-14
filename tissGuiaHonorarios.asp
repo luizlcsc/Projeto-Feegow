@@ -31,7 +31,7 @@ if not reg.eof then
         end if
     	Procedimentos = reg("Procedimentos")
 
-        if LoteID&"" <> "" and aut("guiadentrodeloteA") then
+        if LoteID&"" <> "" and aut("guiadentrodeloteA")=0 then
             set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
             if not LoteSQL.eof then
             %>

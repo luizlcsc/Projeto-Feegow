@@ -288,7 +288,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
     end if
 
     ' Alterado ANDRE SOUZA EM 04/10/2019 Tarefa:1084
-    sql = "select cp.NomePlano, g.*, l.Lote, tgi.ItemInvoiceID, tgi.InvoiceID, tgs.Cor, tgs.Status, tgs.Icone from tissguiaconsulta g"
+    sql = "select cp.NomePlano, g.*, l.Lote, tgi.ItemInvoiceID, tgi.InvoiceID, tgs.Cor, tgs.Status, tgs.Icone, l.Enviado from tissguiaconsulta g"
     sql = sql & " LEFT JOIN cliniccentral.tissguiastatus tgs ON tgs.id = COALESCE(g.GuiaStatus, 0) left join tisslotes l on l.id=g.LoteID "
     sql = sql & " LEFT JOIN pacientes p ON p.id = g.PacienteID "
     sql = sql & " LEFT JOIN tissguiasinvoice tgi on (tgi.GuiaID=g.id and tgi.TipoGuia='" & lcase(req("T"))&"')" 
@@ -385,7 +385,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
 				if guias("LoteID")=0 then
 					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-alt-circle-right""></i></button> FORA DE LOTE")
 				else
-                    if aut("loteX")=1 then
+                    if aut("loteX")=1 and (guias("Enviado")&""<>"1" or aut("guiadentrodeloteA")=1) then
 					    response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
 					end if
 					response.Write("<strong>Lote: </strong> "&guias("Lote"))
@@ -565,7 +565,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
     end if
         c=0
         ValorTotal=0
-    sql = "select cp.NomePlano, g.*, l.Lote, tgi.ItemInvoiceID, tgi.InvoiceID, tgs.Cor,tgs.Status from "&tabela&" g "
+    sql = "select cp.NomePlano, g.*, l.Lote, tgi.ItemInvoiceID, tgi.InvoiceID, tgs.Cor,tgs.Status, l.Enviado from "&tabela&" g "
     sql = sql & " LEFT JOIN cliniccentral.tissguiastatus tgs ON tgs.id = COALESCE(g.GuiaStatus, 0) left join tisslotes l on l.id=g.LoteID "
     sql = sql & " LEFT JOIN pacientes p ON p.id = g.PacienteID "
     sql = sql & " LEFT JOIN tissguiasinvoice tgi on (tgi.GuiaID=g.id and tgi.TipoGuia='"&lcase(req("T"))&"') "
@@ -683,7 +683,7 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 				if guias("LoteID")=0 then
 					response.Write("<button type=""button"" onclick=""insereGuia("&guias("id")&")"" title=""Adicionar a um Lote"" class=""btn-default btn btn-xs""><i class=""far fa-arrow-alt-circle-right""></i></button> FORA DE LOTE")
 				else
-                    if aut("loteX")=1 then
+                    if aut("loteX")=1 and (guias("Enviado")&""<>"1" or aut("guiadentrodeloteA")=1) then
                         response.Write("<button type=""button"" "& disabled &" onclick=""$('.guia').prop('checked', false); $('#ckGuia"& guias("id") &"').prop('checked', true); retiraGuia('Guia="&guias("id")&"')"" title=""Retirar do Lote"" class=""btn-warning btn btn-xs""><i class=""far fa-arrow-circle-left""></i></button>")
 				    end if
                         response.Write("<strong> Lote: </strong> "&guias("Lote")&"")

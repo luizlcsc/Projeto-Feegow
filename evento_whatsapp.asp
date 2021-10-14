@@ -124,15 +124,27 @@
         
                     <tbody>
                         <% 
-                            modeloDeMensagemSQL = "SELECT se.id sysID, w.id whatsappID, se.AtivoWhatsApp, se.sysActive, w.Nome, w.Descricao, w.Conteudo, w.ExemploResposta FROM sys_smsemail se LEFT JOIN cliniccentral.eventos_whatsapp w ON w.Nome = se.Descricao WHERE w.id IS NOT NULL"
+                            modeloDeMensagemSQL =   " SELECT                                                              "&chr(13)&_
+                                                    " se.id sysID, se.AtivoWhatsApp, se.sysActive,                        "&chr(13)&_
+                                                    " w.id whatsappID,  w.Nome, w.Descricao, w.Conteudo, w.ExemploResposta"&chr(13)&_
+                                                    " FROM cliniccentral.eventos_whatsapp w                               "&chr(13)&_
+                                                    " LEFT JOIN sys_smsemail se ON se.Descricao = w.Nome                  "
                             SET modeloDeMensagem = db.execute(modeloDeMensagemSQL)
 
                             i = 1
                             while not modeloDeMensagem.eof
 
-                                sysID = modeloDeMensagem("sysID")
-
+                                sysID = modeloDeMensagem("sysID")&""
                                 tipo = modeloDeMensagem("Nome")
+
+                                if sysID = "" then
+
+                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `sysActive`) VALUES ('"&tipo&"', 0)"
+                                    db.execute(AddModeloNoSysSQL) %>
+                                    
+                                    <script type="text/javascript">document.location.reload(true);</script> <%
+
+                                end if
                                 descricao = modeloDeMensagem("descricao")
                                 modelo = modeloDeMensagem("Conteudo")
                                 resposta = modeloDeMensagem("ExemploResposta")

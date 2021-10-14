@@ -6,18 +6,19 @@ Data = ref("Data")
 DataOri = req("DataOri")
 ProfOri = req("ProfOri")
 
-if cdate(Data)<date() then
 
-    %>
-<div class="panel">
-    <div class="panel-body">
-        <div class="alert alert-warning"><i class="far fa-exclamation-circle"></i> Não é possível transferir agendas de datas passadas.</div>
-    </div>
-</div>
-    <%
-    Response.End
-end if
 if Data<>"" then
+    if cdate(Data)<date() then
+
+        %>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="alert alert-warning"><i class="far fa-exclamation-circle"></i> Não é possível transferir agendas de datas passadas.</div>
+        </div>
+    </div>
+        <%
+        Response.End
+    end if
     %>
 <div class="panel">
     <div class="panel-heading">

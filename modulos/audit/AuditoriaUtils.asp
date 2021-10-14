@@ -2,8 +2,7 @@
 <%
 
 function registraEventoAuditoria(event_slug, id_audit, details)
-    set AuditoriaEventoSQL = db_execute("select id, NivelID from cliniccentral.auditoria_eventos WHERE Slug='"&event_slug&"'")
-
+    set AuditoriaEventoSQL = db_execute("select id, NivelID from cliniccentral.auditoria_eventos WHERE Slug='"&event_slug&"' and sysActive=1")
     if not AuditoriaEventoSQL.eof then
         AuditoriaEventoID = AuditoriaEventoSQL("id")
 

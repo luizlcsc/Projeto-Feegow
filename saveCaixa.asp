@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 '->Removendo plick do nome para previnir erro de sql
 nameUser = Replace(nameInTable(session("User")),"'","")
@@ -27,11 +28,18 @@ if ref("Acao")="Abrir" then
 	else
 		SaldoInicial = ccur(SaldoInicial)
 	end if
-	
+
+    set CaixaDuplicadoSQL = db.execute("select id from caixa where sysUser="&session("User")&" and date(dtAbertura)=curdate() order by id desc LIMIT 1")
+
+
 	db_execute("insert into caixa (sysUser, dtAbertura, SaldoInicial, ContaCorrenteID, Descricao) values ("&session("User")&", "&mydatetime(now())&", "&treatvalzero(SaldoInicial)&", "&ref("ContaCorrenteID")&", '"&Descricao&"')")
 
 	set plast = db.execute("select id from caixa where sysUser="&session("User")&" and isnull(dtFechamento) order by id desc LIMIT 1")
 	session("CaixaID") = plast("id")
+
+    if not CaixaDuplicadoSQL.eof then
+        call registraEventoAuditoria("abre_caixa_repetido", session("CaixaID"), "Caixa fechado com divergência de "&fn(Diferenca))
+    end if
 
 	if SaldoInicial>0 then
 		db_execute("insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Rate, CaixaID, sysUser, UnidadeID) values ('Saldo para abertura de caixa', 1, "&treatvalzero(ref("ContaCorrenteID"))&", 7, "&plast("id")&", 1, "&treatvalzero(SaldoInicial)&", "&mydatenull(date())&", '', 'Transfer', 1, "&plast("id")&", "&session("User")&", "&session("UnidadeID")&")")

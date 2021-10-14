@@ -90,7 +90,7 @@
             <%
             Response.End
         end if
-        custoMSG  = MensalidadeIndividual("Custo")
+        custoMSG  = MensalidadeIndividual("ValorCusto")
         custoMSG = formatNumber(custoMSG, 2)
         MensalidadeIndividual.close
         SET MensalidadeIndividual  = nothing

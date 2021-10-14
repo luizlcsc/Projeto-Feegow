@@ -43,12 +43,31 @@ if not reg.eof then
     sysUser = reg("sysUser")
     sysActive = reg("sysActive")
     sysDate = reg("sysDate")
+    LoteID = reg("LoteID")
 	%>
 	<script>
 	$(document).ready(function(){
 		$("#ContratadoID").val('<%=Contratado%>');
 		$("#Contratado").attr("disabled",false);
 		$("#ContratadoID").attr("disabled",true);
+
+        <%
+        if LoteID&"" <> "" and aut("guiadentrodeloteA") then
+            set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
+
+            if not LoteSQL.eof then
+            %>
+            var numeroLote = '<%=LoteSQL("Lote")%>';
+            var dataEnvioLote = '<%=LoteSQL("DataEnvio")%>';
+            $("#GuiaConsulta .admin-form").css("pointer-events","none").css("opacity","0.8").css("pointer-events","none").css("user-select","none");
+            $(".alert-error-guia").html(`<strong><i class="fa fa-exclamation-circle"></i> Atenção! </strong> Não é possivel editar uma guia em lote já enviado. <br> Número do lote: ${numeroLote} <br> Data do envio: ${dataEnvioLote}`).fadeIn();
+            setTimeout(function (){
+                $("#salvar-guia").attr("disabled", true);
+            }, 500);
+            <%
+            end if
+        end if
+        %>
 	});
 
 	</script>
@@ -486,6 +505,7 @@ end if
 
             <div class="row">
     <div class="col-md-12">
+    <div class="alert alert-warning alert-error-guia" style="display: none"></div>
 	<table width="100%" cellspacing="0" class="table" cellpading="0">
 
     <div class="section-divider mt20 mb40">
@@ -493,7 +513,7 @@ end if
     </div>
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
 	<td width="60%"><div class="col-md-12"><%= selectInsert("Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-link' type='button' style=""position:absolute; top:-5px""><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
-	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", "") %></td>
+	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", " read-only-input ") %></td>
 	</tr></table></td></tr>
 
 	<tr><td><table class="table table-bordered"><tr>

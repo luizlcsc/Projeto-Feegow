@@ -11,6 +11,8 @@ if not reg.eof then
 	if reg("sysActive")=1 then
 		DataEmissao = reg("DataEmissao")
 		UnidadeID = reg("UnidadeID")
+        LoteID = reg("LoteID")
+
         if not isnull(reg("ConvenioID")) and reg("ConvenioID")<>0 then
             set convBloq=db.execute("select BloquearAlteracoes from convenios where id="&reg("ConvenioID"))
             if not convBloq.eof then
@@ -28,6 +30,23 @@ if not reg.eof then
             end if
         end if
     	Procedimentos = reg("Procedimentos")
+
+        if LoteID&"" <> "" and aut("guiadentrodeloteA") then
+            set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
+            if not LoteSQL.eof then
+            %>
+            <script>
+            $(document).ready(function(){
+                var numeroLote = '<%=LoteSQL("Lote")%>';
+                var dataEnvioLote = '<%=LoteSQL("DataEnvio")%>';
+                $("#GuiaHonorarios .admin-form").css("pointer-events","none").css("opacity","0.8").css("pointer-events","none").css("user-select","none");
+                $(".alert-error-guia").html(`<strong><i class="fa fa-exclamation-circle"></i> Atenção! </strong> Não é possivel editar uma guia em lote já enviado. <br> Número do lote: ${numeroLote} <br> Data do envio: ${dataEnvioLote}`).fadeIn();
+                $("#btnSalvar").attr("disabled", true);
+            });
+            </script>
+            <%
+            end if
+        end if
 	else
 		DataEmissao = date()
 		sqlExecute = "delete from tissprocedimentoshonorarios where GuiaID="&reg("id")
@@ -414,6 +433,7 @@ end if
 
 		<input type="hidden" name="tipo" value="GuiaHonorarios" />
 	<div class="admin-form theme-primary">
+	    <div class="alert alert-warning alert-error-guia" style="display: none"></div>
 		<div class="panel heading-border panel-primary">
 			<div class="panel-body">
 				<div class="section-divider mt20 mb40">
@@ -495,7 +515,7 @@ end if
 				</div>
 			<br />
 				<div class="clearfix form-actions no-margin">
-					<button class="btn btn-primary btn-md"><i class="far fa-save"></i> Salvar</button>
+					<button class="btn btn-primary btn-md" id="btnSalvar"><i class="far fa-save"></i> Salvar</button>
 					<button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaHonorarios', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
 				</div>
 			</div>

@@ -4520,6 +4520,10 @@ function imoon(nome)
             icone = "fa-times-circle"
             cor = "dark"
             fornecedor = "fas"
+        case 109
+            icone = "fa-exclamation-circle"
+            cor = "warning"
+            fornecedor = "fas"
         case 33
             icone = "fa-pause-circle"
             cor = "dark"

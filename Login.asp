@@ -498,6 +498,19 @@ end if
                 .formlogin {
                   padding: 2%;         /* 5% of container width, for medium screens */
                 }
+                .content-login {
+                    box-shadow: none;
+                    border-radius: 0;
+                }
+
+                .formloginCol1{
+                    padding: 10px;
+                    padding-top: 20px;
+                }
+
+                .copyright{
+                    display: none;
+                }
             }
 
             @media screen and (min-width: 893px) {
@@ -586,7 +599,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="container">
             <div class="row formlogin">
                 <div class="content-login">
-                <div class="col-lg-6 col-xl-6 formloginCol1">
+                <div class="col-lg-6 col-xs-12 col-xl-6 formloginCol1">
                     <a href="./?P=Login2" title="Logo">
                         <input type="hidden" name="RedirectLogin" value="<% if LoginFTP then %>S<% end if %>">
                         <%

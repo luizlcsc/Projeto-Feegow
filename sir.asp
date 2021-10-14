@@ -273,6 +273,17 @@ if aut(lcase(ref("resource"))&"A")=1 then
             tableName = dadosResource("tableName")
             Pers = dadosResource("Pers")
             mainFormColumn = dadosResource("mainFormColumn")
+            
+        elseif ref("t")="locaisexternos" then
+            Typed= ref("q")
+	        sql = "select * from "&ref("t")&" where "&ref("c")&" like '%"&Typed&"%'"
+            initialOrder = ref("c")
+            ResourceID = 1
+            initialOrder = "NomePaciente"
+            tableName = ref("t")
+            Pers = 1
+            mainFormColumn = ""
+
         else
     	    set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName = '"&ref("t")&"'")
     	    Typed= ref("q")

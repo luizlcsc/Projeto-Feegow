@@ -453,7 +453,9 @@ width: 100%!important;
             </div>
             <div class="row">
                 <input type="hidden" id="NomeHospitalSol" value="<%=NomeHospitalSol%>"/>
-                <%= quickField("simpleSelect", "LocalExternoID", "Nome do Hospital / Local Solicitado", 5, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" ") %>
+                <div class="col-md-5">
+                    <%= selectInsert("Nome do Hospital / Local Solicitado", "LocalExternoID", LocalExternoID, "locaisexternos", "nomelocal", "", "", "") %>
+                </div>
                 <%= quickField("text", "CodigoNaOperadora", "Código na Operadora / CNPJ", 2, CodigoNaOperadora, "", "", "") %>
                 <%= quickField("datepicker", "DataSugInternacao", "Data sugerida para internação", 3, DataSugInternacao, "", "", "required='required'") %>
                 <%= quickField("simpleSelect", "AtendimentoRN", "Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>

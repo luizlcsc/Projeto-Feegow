@@ -444,7 +444,9 @@ end if
 				<div class="row">
 					<%= quickField("text", "ContratadoLocalCodigoNaOperadora", "* C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", " required ") %>
 					<input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
-					<%= quickField("simpleSelect", "LocalExternoID", "* Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
+					<div class="col-md-7">
+						<%= selectInsert("Nome do Hospital / Local Solicitado", "LocalExternoID", LocalExternoID, "locaisexternos", "nomelocal", " empty="""" required=""required""", "", "") %>
+					</div>
 					<%= quickField("text", "ContratadoLocalCNES", "* C&oacute;digo CNES", 2, ContratadoLocalCNES, "", "", " required='required'") %>
 				</div>
 			<br />

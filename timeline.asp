@@ -440,10 +440,10 @@ select case Tipo
             if aut("prescricoesI") then
                 prescricaoMemed = getConfig("MemedHabilitada")=1
 
-                set DefaultPrescriptionModeSQL = db.execute("SELECT COUNT(id) qtd  FROM pacientesprescricoes WHERE sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE();")
+                set DefaultPrescriptionModeSQL = db.execute("SELECT coalesce(COUNT(id),0) qtd  FROM pacientesprescricoes WHERE sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE();")
 
                 if not DefaultPrescriptionModeSQL.eof then
-                    qtdPrescricaoClassica = DefaultPrescriptionModeSQL("qtd")
+                    qtdPrescricaoClassica = ccur(DefaultPrescriptionModeSQL("qtd"))
                     if isnumeric(qtdPrescricaoClassica) then
                         if qtdPrescricaoClassica > 15 then
                             prescricaoMemed=False

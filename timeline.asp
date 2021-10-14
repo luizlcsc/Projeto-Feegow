@@ -435,11 +435,31 @@ select case Tipo
                 </script>
                 <% end if %>
             </div>
-            <% if aut("prescricoesI") then %>
+            <%
+
+            if aut("prescricoesI") then
+                prescricaoMemed = getConfig("MemedHabilitada")=1
+
+                set DefaultPrescriptionModeSQL = db.execute("SELECT COUNT(id) qtd  FROM pacientesprescricoes WHERE sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE();")
+
+                if not DefaultPrescriptionModeSQL.eof then
+                    qtdPrescricaoClassica = DefaultPrescriptionModeSQL("qtd")
+                    if isnumeric(qtdPrescricaoClassica) then
+                        if qtdPrescricaoClassica > 15 then
+                            prescricaoMemed=False
+                            %>
+<script >
+setMemedError("Prescrição clássica ativa.")
+</script>
+                            <%
+                        end if
+                    end if
+                end if
+            %>
                 <div class="panel-body" style="overflow: inherit!important;">
                     <div class="row">
                         <div class="col-md-3">
-                            <% if getConfig("MemedHabilitada")=1 then %>
+                            <% if prescricaoMemed then %>
                                 <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao')" <%end if%>>
                                     <i class="far fa-plus"></i> Inserir Prescrição
                                 </button>

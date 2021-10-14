@@ -20,7 +20,7 @@ end if
 <html>
 
 <head>
-    <% if GTM_ID <> "" then %>
+    <% if GTM_ID <> "" and False then %>
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -645,7 +645,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </ol -->
                     <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="login-bem-vindo" src="https://cdn.feegow.com/marketing/assets/fw-login/login_bem_vindo.webp">
+                        <img class="login-bem-vindo" src="assets/img/login_bem_vindo.png">
                     </div>
                     <!--div class="carousel-item">
                         <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>

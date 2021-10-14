@@ -4544,6 +4544,10 @@ function imoon(nome)
             icone = "fa-times-circle"
             cor = "dark"
             fornecedor = "fas"
+        case 111
+            icone = "fa-bell"
+            cor = "danger"
+            fornecedor = "fas"
         case -1
             icone = "fa-times-circle"
             cor = "danger"

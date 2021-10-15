@@ -438,7 +438,12 @@ select case Tipo
             <%
 
             prescricaoDefault = "memed"
-            memedHabilitada = getConfig("MemedHabilitada")=1 and lcase(session("Table"))="profissionais"
+            memedHabilitada = getConfig("MemedHabilitada")=1
+
+            if lcase(session("Table"))<>"profissionais" then
+                memedHabilitada = False
+                prescricaoDefault = "feegow"
+            end if
             UsarPrescricaoClassica = False
 
             if aut("prescricoesI") then

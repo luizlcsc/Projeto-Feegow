@@ -209,11 +209,11 @@
                     <button type="button" class="close btn btn-secondary" onclick="removeModalContent()" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h2 class="modal-title mt20 text-center" id="modalWhatsappLongTitle">Modelo de mensagem disparada</h2>
+                    <h2 class="modal-title mt20 text-center noselect" id="modalWhatsappLongTitle">Modelo de mensagem disparada</h2>
                 </div>
                 <div class="modal-body">
-                    <div id="waImagem">
-                        <img class="noselect" src="./eventos-whatsapp-images/demo-iphonex.png" alt="whatsapp-events">
+                    <div class="noselect" id="waImagem">
+                        <img src="./eventos-whatsapp-images/demo-iphonex.png" alt="whatsapp-events">
                         <div id="waConteudo">                     
                         </div>
                     </div>
@@ -245,9 +245,8 @@
                                                 ${answerType}
                                             </p>
                                         </div>`);
-            }, 3000);
+            }, 2000);
 
-            elem.preventDefault();
         }
 
         function removeModalContent() {

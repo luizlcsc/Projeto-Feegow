@@ -439,11 +439,17 @@ select case Tipo
 
             prescricaoDefault = "memed"
             memedHabilitada = getConfig("MemedHabilitada")=1 and lcase(session("Table"))="profissionais"
+            UsarPrescricaoClassica = False
 
             if aut("prescricoesI") then
                 prescricaoMemed = getConfig("MemedHabilitada")=1
 
-                set DefaultPrescriptionModeSQL = db.execute("SELECT coalesce(COUNT(id),0) qtd  FROM pacientesprescricoes WHERE sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE() and MemedID is null;")
+                set DefaultPrescriptionModeSQL = db.execute("SELECT coalesce(COUNT(pp.id),0) qtd  FROM pacientesprescricoes pp WHERE pp.sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE() and pp.MemedID is null;")
+                set MemedTokenSQL =   db.execute("SELECT coalesce(mt.UsarPrescricaoClassica,0) UsarPrescricaoClassica FROM memed_tokens mt  WHERE mt.sysUser="&session("User")&" ;")
+
+                if not MemedTokenSQL.eof then
+                    UsarPrescricaoClassica = MemedTokenSQL("UsarPrescricaoClassica")
+                end if
 
                 if not DefaultPrescriptionModeSQL.eof then
                     qtdPrescricaoClassica = ccur(DefaultPrescriptionModeSQL("qtd"))
@@ -462,7 +468,7 @@ setMemedError("Prescrição clássica ativa.")
                 <div class="panel-body" style="overflow: inherit!important;">
                     <div class="row">
                         <div class="col-md-3">
-                            <% if memedHabilitada and prescricaoDefault="feegow" then %>
+                            <% if memedHabilitada and (prescricaoDefault="feegow" or UsarPrescricaoClassica) then %>
                                 <div class="btn-group col-md-12">
                                 <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <i class="far fa-plus"></i> Inserir Prescrição

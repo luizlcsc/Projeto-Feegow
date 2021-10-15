@@ -52,9 +52,12 @@ if not ItemAuditoriaSQL.eof then
                 <strong>Detalhes: </strong> <%=RegistroSQL("Detalhes")%> <br>
                 <strong>Data original: </strong> <%=RegistroSQL("DataOriginal")%> <br>
                 <strong>Executante: </strong> <%=RegistroSQL("Executante")%> <br>
-
-                <a target="_blank" href="<%=RegistroSQL("Url")%>" class="btn btn-sm btn-default mt15"><i class="far fa-external-link"></i> Ver mais </a>
                 <%
+                    if RegistroSQL("Url")&"" <> "" then
+                    %>
+                    <a target="_blank" href="<%=RegistroSQL("Url")%>" class="btn btn-sm btn-default mt15"><i class="far fa-external-link"></i> Ver mais </a>
+                    <%
+                    end if
                 end if
             end if
             %>

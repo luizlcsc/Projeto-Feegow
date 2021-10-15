@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 PessoaID = req("I")
@@ -27,6 +28,8 @@ if req("AplicaRegra")<>"" then
 	if not pr.eof then
 
 	    sqlAplicaRegra="update sys_users set RegraID="&pr("id")&", Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
+
+	    call registraEventoAuditoria("altera_permissionamento", req("UsId"), "Regra "&pr("Regra")&" aplicada")
         call gravaLogs(sqlAplicaRegra, "AUTO", "Regra "&pr("Regra")&" aplicada", "")
 		db_execute(sqlAplicaRegra)
 		%>
@@ -62,6 +65,8 @@ if ref("e")<>"" then
 		end if
 	else
 	    sqlUpdatePermissoes = "update sys_users set Permissoes='"&ref("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e")
+
+	    call registraEventoAuditoria("altera_permissionamento", ref("e"), "Permissões alteradas")
 	    call gravaLogs(sqlUpdatePermissoes, "AUTO", "Permissões alteradas", "")
 
 		db_execute(sqlUpdatePermissoes)

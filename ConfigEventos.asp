@@ -61,10 +61,10 @@ if session("admin")=1 then
 
     end if
 
-    MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
+    MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorUnitario FROM cliniccentral.servicosadicionais sa WHERE sa.id = 31;"
     SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
     
-    custoMSG  = MensalidadeIndividual("custo")
+    custoMSG  = MensalidadeIndividual("ValorUnitario")
     custoMSG = formatNumber(custoMSG, 2)
     MensalidadeIndividual.close
     SET MensalidadeIndividual  = nothing

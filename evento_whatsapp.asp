@@ -77,6 +77,15 @@
     border: 0.564453px solid #E6E6E6;
   }
 
+  .noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    }   
+
 </style>
 
 <body>
@@ -204,7 +213,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="waImagem">
-                        <img src="./eventos-whatsapp-images/demo-iphonex.png" alt="whatsapp-events">
+                        <img class="noselect" src="./eventos-whatsapp-images/demo-iphonex.png" alt="whatsapp-events">
                         <div id="waConteudo">                     
                         </div>
                     </div>
@@ -217,19 +226,10 @@
     </div>
 
     <script>
-
-        $( document ).ready(() => {
-            const statusServicos = document.querySelectorAll("[id^=ativoCheckbox-]");
-            const servicosArray = [].map.call(statusServicos, elem => elem.value);
-
-            for(let i=0; i<servicosArray.length; i++) {
-                if(servicosArray[i] == 1) {
-                    $("input[type=checkbox]").prop("checked", true);
-                }
-            }
-        });
-
+    
         function showModal(elem, answerType) {
+
+            removeModalContent();
 
             setTimeout(() => {
                 $('#waConteudo').append(`<div id="insertModel" class="waRemetente border">

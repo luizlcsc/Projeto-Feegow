@@ -286,7 +286,7 @@ end if
                 font-stretch: normal;
                 line-height: 1.36;
                 letter-spacing: normal;
-                color: #aeaeae;
+                color: #464646;
                 width: 100%;
                 -webkit-transition: border-color ease-in-out .3s;
                 -o-transition: border-color ease-in-out .3s;
@@ -296,7 +296,7 @@ end if
             input:focus {
                 outline: none;
                 border: 1px solid #00bad7;
-                color: #aeaeae;
+                color: #2e2e2e;
             }
 
             .botao:disabled {

@@ -417,7 +417,7 @@ select case Tipo
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
-                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 then %>
+                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and lcase(session("table"))="profissionais" then %>
                     <span class="panel-controls">
                         <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                             <i class="far fa-cog"></i>

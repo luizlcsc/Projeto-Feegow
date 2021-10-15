@@ -88,10 +88,11 @@ end if
             }
 
             .carousel{
-
-            background-color: #ddddddbf;
-            border-top-right-radius: 20px;
-            border-bottom-right-radius: 20px;
+                background-image: url(https://cdn.feegow.com/marketing/assets/fw-login/login_bem_vindo.webp);
+                background-size: cover;
+                background-color: #ddddddbf;
+                border-top-right-radius: 20px;
+                border-bottom-right-radius: 20px;
             }
 
             .copyright{
@@ -269,7 +270,7 @@ end if
             input:-webkit-autofill:active,
             input:-webkit-autofill:valid {
                 -webkit-transition-delay: 99999s;
-                -webkit-text-fill-color: #aeaeae;
+                -webkit-text-fill-color: #2e2e2e;
             }
 
 
@@ -664,9 +665,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                     </ol -->
                     <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <img class="login-bem-vindo" src="https://cdn.feegow.com/marketing/assets/fw-login/login_bem_vindo.webp">
-                    </div>
                     <!--div class="carousel-item">
                         <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>
                     </div-->

@@ -313,7 +313,7 @@ function recalcularEscalonamento(GuiaID)
 
     if NOT (totalNone("quantidade") > "0")  then
 
-        set ordenacao = db.execute("SELECT * FROM tissprocedimentossadt WHERE CalcularEscalonamento=1 AND TotalGeral is not null AND GuiaID = "&GuiaID&" ORDER BY TotalGeral DESC;")
+        set ordenacao = db.execute("SELECT *, coalesce(Quantidade,1)Quantidade FROM tissprocedimentossadt WHERE CalcularEscalonamento=1 AND TotalGeral is not null AND GuiaID = "&GuiaID&" ORDER BY TotalGeral DESC;")
 
         Escalonamentox = 0
         while not ordenacao.eof
@@ -321,9 +321,10 @@ function recalcularEscalonamento(GuiaID)
             PlanoIDx              = ordenacao("CalculoPlanoID")
             ProcedimentoIDx       = ordenacao("ProcedimentoID")
             Contratosx            = ordenacao("CalculoContratos")
+            Quantidade            = ordenacao("Quantidade")
 
             Total = 0
-            For xi = 1 To ordenacao("Quantidade")
+            For xi = 1 To Quantidade
                 Escalonamentox        = Escalonamentox +1
                 SET escalonamentoOBJ  = GetEscalonamento(ConvenioIDx,PlanoIDx,ProcedimentoIDx,Contratosx,Escalonamentox)
                 Total = Total+ ordenacao("TotalCH")*escalonamentoOBJ("TotalCH")

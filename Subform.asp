@@ -61,7 +61,10 @@ response.Write(abreDivMaster)
 					set countfields = db.execute("select count(*) as total from cliniccentral.sys_resourcesFields where resourceID="&getResource("id")&" and not ColumnName='"&Coluna&"'")
 					percentual = cint( 100/ccur(countfields("total")) )
 					set getFields = db.execute("select rf.*, rft.typeName from cliniccentral.sys_resourcesFields rf LEFT JOIN cliniccentral.sys_resourcesFieldTypes rft on rf.fieldTypeID=rft.id where resourceID="&getResource("id")&" and not ColumnName='"&Coluna&"' order by id")
+
+					qtdCol = 0
 					while not getFields.EOF
+
 						strCampos = strCampos&getFields("columnName")&"|"
 						strTipos = strTipos&getFields("typeName")&"|"
 						strSelectSQL = strSelectSQL&getFields("selectSQL")&"|"
@@ -70,6 +73,7 @@ response.Write(abreDivMaster)
 						%>
                         <th width="<%=percentual%>%"><%=getFields("label")%></th>
 						<%
+						qtdCol = qtdCol + 1
                     getFields.movenext
                     wend
                     getFields.close
@@ -114,8 +118,16 @@ response.Write(abreDivMaster)
 				'response.Write(regsSql)
                 set regs = db.execute(regsSql)
 				if regs.EOF then
-					db_execute("insert into "&NomeTabela&" (sysActive, sysUser, "&Coluna&") values (1, "&session("User")&", "&idNaColuna&")")
-					set regs = db.execute(regsSql)
+				    'desabilita auto insert
+				    if False then
+					    db_execute("insert into "&NomeTabela&" (sysActive, sysUser, "&Coluna&") values (1, "&session("User")&", "&idNaColuna&")")
+					    set regs = db.execute(regsSql)
+                    end if
+					%>
+					<tr>
+					    <td colspan="<%=qtdCol%>" class="text-center">Clique no <i>"+"</i> para adicionar. </td>
+                    </tr>
+					<%
 				end if
                 while not regs.eof
                     counter = counter + 1

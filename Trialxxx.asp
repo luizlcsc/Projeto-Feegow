@@ -14,7 +14,12 @@
     <!-- Font CSS (Via CDN) -->
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'>
 
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.12.0">
     <!-- Theme CSS -->
+     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
     <link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/theme.css">
     <link rel="stylesheet" type="text/css" href="vendor/plugins/ladda/ladda.min.css">
 
@@ -31,9 +36,13 @@
    <![endif]-->
    <style type="text/css">
        body.external-page #main{
-           background-image:url(css/funda_sis.jpg)!important;/*<%= request.ServerVariables("SERVER_NAME") %>*/
-           background-size:cover;
-           background-color:#256189!important;
+               background: linear-gradient(
+           52deg, #00b4fc, #17df93, #00b4fc, #17df93);
+               background-size: 800% 800%;
+               -webkit-animation: AnimationName 180s ease infinite;
+               -moz-animation: AnimationName 190s ease infinite;
+               animation: AnimationName 180s ease infinite;
+           }
        }
 
         @font-face {
@@ -104,7 +113,7 @@
 
                             <div style="margin: 30px 50px">
                                 <div>
-                                    <span style="color: #008bd0;font-size: 42px; font-family: rubidBold">Versão FREE</span>&nbsp;
+                                    <span style="color: #00b4fc;font-size: 42px; font-family: rubidBold">Versão FREE</span>&nbsp;
                                     <span style="color: #CCCCCC;font-size: 22px; font-family: rubidBold">Software Feegow clinic</span>
                                 </div>
                                 <div>
@@ -123,7 +132,7 @@
                                     <br/><br/>
                                     Entendemos que para um melhor aproveitamento da fase de teste, a apresentação é necessária.
                                     <br/><br/>
-                                    <span style="color:#008bd0;font-size: 18px; font-family: 'Arial Black'"><strong>Está pronto para ter a melhor experiência em software clínico?</strong></span>
+                                    <span style="color:#00b4fc;font-size: 18px; font-family: 'Arial Black'"><strong>Está pronto para ter a melhor experiência em software clínico?</strong></span>
                                 </div>
                             </div>
 
@@ -210,7 +219,7 @@
                                                             <label for="NomeEmpresa" class="field prepend-icon">
                                                                 <input type="text" required name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
                                                                 <label for="NomeEmpresa" class="field-icon">
-                                                                <i class="fa far fa-hospital-o"></i>
+                                                                <i class="far fa-hospital-o"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -260,6 +269,11 @@
                                                                 </label>
                                                             </label>
                                                         </div>
+                                                        <div class="col-md-12">
+                                                            <br>
+                                                            <div class="g-recaptcha" data-sitekey="6LcYU94cAAAAAE-wjHMKmWdjz5-JlEukwcyVqzj4"></div>
+                                                        </div>
+
                                                     </div>
                                                 </div>
 
@@ -308,12 +322,12 @@
                                             </div>
                             </div>
                             <!-- end .form-body section -->
-                            <div class="panel-footer clearfix p10 ph15">
-                                    <button class="btn btn-primary" id="btnGenerate"><i class="far fa-ok"></i>INICIAR TESTE</button>
+                            <div class="panel-footer clearfix p10 ph15" >
+                                    <button class="btn btn-primary" style="float: right" id="btnGenerate"><i class="far fa-ok"></i>INICIAR TESTE</button>
                             </div>
                             <!-- end .form-footer section -->
                         </form>
-						<form method="post" action="/v7/?P=Login" id="form_fake" style="display:none">
+						<form method="post" action="./?P=Login" id="form_fake" style="display:none">
 							<input type="password" name="password" id="fake_password" class="gui-input" placeholder="Senha" required="">
 							<input type="email" name="User" id="fake_User" class="gui-input" placeholder="Digite seu e-mail de acesso" autofocus="" required="">
 						</form>

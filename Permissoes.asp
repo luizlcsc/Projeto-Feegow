@@ -23,6 +23,24 @@ if req("ExcluiRegra")<>"" then
 	db_execute("delete from RegrasDescontos where RegraID = '"&req("ExcluiRegra")&"'")
 end if
 
+if req("DuplicarRegra")<>"" then
+    set pr=db.execute("select * from regraspermissoes where id = '"&req("DuplicarRegra")&"'")
+    NomeRegra = pr("Regra")&" (Cópia)"
+
+    db.execute("INSERT INTO regraspermissoes (Regra, Permissoes, limitarecpag, LimitarContasPagar) VALUES ('"&NomeRegra&"', '"&pr("Permissoes")&"', '"&pr("limitarecpag")&"', '"&pr("LimitarContasPagar")&"')")
+
+    %>
+    <script type="text/javascript">
+    new PNotify({
+        title: 'Sucesso!',
+        text: 'Regra duplicada com sucesso.',
+        type: 'success',
+        delay: 1500
+    });
+    </script>
+    <%
+end if
+
 if req("AplicaRegra")<>"" then
 	set pr=db.execute("select * from regraspermissoes where id = '"&req("AplicaRegra")&"'")
 	if not pr.eof then
@@ -277,6 +295,7 @@ else
 	    <tr>
         <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="far fa-check green"></i><%end if%></td>
 	    <td width="92%"><%=pr("Regra")%></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-default" onclick="ajxContent('Permissoes&T=<%=req("T")%>&DuplicarRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-copy"></i> Duplicar</button></td>
 	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=req("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-check"></i> Aplicar</button></td>
 	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="far fa-edit"></i> Editar</button></td>
 	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=req("T")%>&ExcluiRegra=<%=pr("id")%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-remove"></i> Excluir</button></td></tr>
@@ -327,7 +346,7 @@ function editaRegra(I){
 	$.post("EditaPermissoes.asp?I="+I+"&T=<%=req("T")%>&PessoaID=<%=req("I")%>", "", function(data, status){ $("#modal").html(data) });
 }
 
-	          <!--#include file="JQueryFunctions.asp"-->
+<!--#include file="JQueryFunctions.asp"-->
 
 function MostraLogsPermissoes() {
     openComponentsModal("LogPermissoes.asp", {I: '<%=UserID%>', R: 'sys_users'},"Log das permissões")

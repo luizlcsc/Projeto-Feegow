@@ -648,7 +648,7 @@ else
 	    ErroLoginMsg = "Senha expirada"
 	else
 	    ErroLogin = True
-        ErroLoginMsg = "E-mail de acesso ou senha não confere."
+        ErroLoginMsg = "E-mail de acesso ou senha não conferem."
 	end if
 end if
 %>

@@ -85,6 +85,9 @@ end if
                 font-size: 12px;
                 color: #ff4d4d;
                 text-align: center;
+                border-left: 3px solid #ff7272;
+                border-top-left-radius: 2px;
+                border-bottom-left-radius: 2px;
             }
 
             .carousel{

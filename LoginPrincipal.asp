@@ -198,6 +198,7 @@
         <button type="submit" class="botao" data-style="zoom-in" id="Entrar"> <span class="btn-entrar-txt" style="padding-right: 10px;">Entrar</span><i style="font-size: 12px" class="icon-btn-login fal fa-arrow-right"></i></button>
     </div>
     <div class="login-erro" style="display: <% if ErroLogin then response.write("block") else response.write("none") end if%>">
+        <i class="far fa-exclamation-circle"></i>
         <%=ErroLoginMsg%>
     </div>
     <script>

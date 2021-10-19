@@ -1,6 +1,7 @@
 <!--#include file="./Classes/imagens.asp"-->
 <%
 'variaveis estão no arquivo timeline.asp
+CareTeam = getConfig("ExibirCareTeam")
 
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
@@ -136,46 +137,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" then
                 'logica de compartilhamento de prontuario, e arquivos
                 'verifica permissão para acesso dos arquivos
-                set idProfissional = db.execute("select idintable from sys_users where id="&ti("sysUser"))
-                idInTable=0
-                if not idProfissional.eof then
-                    idInTable = session("idInTable")
-                end if
-
-                set Compart = db.execute("select * from prontuariocompartilhamento where ProfissionalID="&idInTable&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&ti("Tipo")&"')")
-                set ArquivoCompart = db.execute("select * from arquivocompartilhamento where ProfissionalID="&idInTable&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&ti("Tipo")&"') and DocumentoID="&ti("id"))
-                tipocompartilhamento = 0
-
-                if not Compart.EOF then
-                    tipocompartilhamento = Compart("TipoCompartilhamentoID")
-                    if tipocompartilhamento = 1 then
-                        PermissaoArquivo = true
-                        elseif tipocompartilhamento = 2 then
-                            PermissaoArquivo = false
-                        elseif tipocompartilhamento = 3 then
-                            if instr(Compart("Compartilhados"), "|"&idUsuario&"|")>0 then
-                                PermissaoArquivo = true
-                                else
-                                PermissaoArquivo = false
-                            end if
-                    end if
-                end if
-                if not ArquivoCompart.EOF then
-                        if ArquivoCompart("TipoCompartilhamentoID") <> 0 then
-                            tipocompartilhamento = ArquivoCompart("TipoCompartilhamentoID")
-                        end if
-
-                        if tipocompartilhamento = 1 then
-                            PermissaoArquivo = true
-                        elseif tipocompartilhamento = 2 then
-                            PermissaoArquivo = false
-                        elseif tipocompartilhamento = 3 then
-                            if instr(ArquivoCompart("Compartilhados"), "|"&idUsuario&"|")>0 then
-                                PermissaoArquivo = true
-                                else
-                                PermissaoArquivo = false
-                            end if
-                    end if
+                permissao = VerificaProntuarioCompartilhamento(session("User"), ti("Tipo"), ti("id"))
+                if permissao <> "" then
+                    permissaoSplit = split(permissao,"|")
+                    PermissaoArquivo = permissaoSplit(0)
                 end if
             end if
 
@@ -189,7 +154,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
             ' Verifica se o registro foi feito por um profissional
             ' que pertence ao Care Team do paciente, permitindo a exibição
-            if (autCareTeam(ti("sysUser"), PacienteID)) then
+            if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
                 PermissaoArquivo=true
             end if
 
@@ -200,7 +165,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 if SinalizarFormulariosSemPermissao&""<>"1" then
                     hiddenRegistro = " hidden "
                 end if
-            
+
                 %>
             <div class="timeline-item <%=hiddenRegistro%>">
                 <div class="timeline-icon hidden-xs">

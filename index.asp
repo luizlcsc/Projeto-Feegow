@@ -569,7 +569,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               <!-- Sidebar Widget - Search (hidden) -->
               <form class="mn pn" role="search">
                 <label for="sidebar-search">
-                    <div class="sidebar-widget search-widget mn">
+                    <div class="sidebar-widget search-widget mn" id="sidebar-search-content">
                     <div class="input-group">
                       <span class="input-group-addon">
                         <i class="far fa-search"></i>
@@ -1111,7 +1111,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           <!-- Sidebar Widget - Search (hidden) -->
               <form class="mn pn" role="search">
                   <label for="sidebar-search">
-          <div class="sidebar-widget search-widget mn">
+          <div class="sidebar-widget search-widget mn" id="sidebar-search-content">
             <div class="input-group">
               <span class="input-group-addon">
                 <i class="far fa-search"></i>
@@ -1913,7 +1913,16 @@ function openRedefinirSenha(){
 }
 
 $(document).ready(function() {
-  
+
+    var $iptSearch = $("#sidebar-search");
+    var $contentSearch = $("#sidebar-search-content");
+
+    $iptSearch.focus(function(){
+        $contentSearch.addClass("active");
+    }).blur(function(){
+        $contentSearch.removeClass("active");
+    });
+
     var lenMenu = $(".sidebar-menu li").length
     setTimeout(function() {
         if(lenMenu === 0){

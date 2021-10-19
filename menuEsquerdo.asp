@@ -497,7 +497,7 @@ end if
             </li>
             <li class="row sidebar-stat">
                 <div class="fs11 col-xs-12" id="divCalendario">
-                    <div class="panel panel-body pn bs-component">
+                    <div class="panel panel-body pn bs-component calendario-resumo-agenda-content">
                         <%server.Execute("AgendamentoCalendario.asp")%>
                     </div>
                 </div>

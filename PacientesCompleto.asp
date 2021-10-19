@@ -733,7 +733,7 @@ $(document).ready(function () {
 
 </script>
 <%
-if getConfig("LembreteFormulario")=1 then
+if getConfig("LembreteFormulario")=1 and device()="" then
     set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&PacienteID)
     if not lembrarme.EOF then
         %>
@@ -787,7 +787,7 @@ if getConfig("LembreteFormulario")=1 then
         <%
     end if
 end if
-if getConfig("AvisosPendenciasProntuario")=1 and instr(Omitir, "|pendencias|")=0 then
+if getConfig("AvisosPendenciasProntuario")=1 and instr(Omitir, "|pendencias|")=0 and device()="" then
     if reg("lembrarPendencias")="S" then
     %>
     <script type="text/javascript">

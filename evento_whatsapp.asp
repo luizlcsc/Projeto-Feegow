@@ -90,7 +90,7 @@
 
 <body>
     <% 
-        MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorCusto FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
+        MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorUnitario FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
         SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
 
         if  MensalidadeIndividual.eof then
@@ -99,7 +99,7 @@
             <%
             Response.End
         end if
-        custoMSG  = MensalidadeIndividual("ValorCusto")
+        custoMSG  = MensalidadeIndividual("ValorUnitario")
         custoMSG = formatNumber(custoMSG, 2)
         MensalidadeIndividual.close
         SET MensalidadeIndividual  = nothing

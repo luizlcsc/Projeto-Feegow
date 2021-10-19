@@ -57,7 +57,6 @@ end if
             <th>À vista</th>
             <th>3x</th>
             <th>6x</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -120,10 +119,6 @@ end if
                             response.write(" - ")
                         end if %>
                     </td>
-                    <td style="text-align:center">
-                        <button class="btn btn-warning btn-xs" type="button" onclick="abrirModalRestricao(<%=ProfissionalID%>,<%=ProcedimentoID%>,<%=IdPaciente%>)"><i class="fa fa-caret-square-o-left"></i></button>
-                        <button class="btn btn-success btn-xs" type="button" onclick="abrirModalPreparo2(<%=ProcedimentoID%>,<%=IdPaciente%>,<%=ProfissionalID%>)"><i class="fa fa-lock"></i></button>
-                    </td>
                 </tr>
                 <%
         AgendamentosSQL.movenext
@@ -147,7 +142,6 @@ end if
                     response.write(" - ")
                 end if %>
             </td>
-            <td>&nbsp;</td>
         </tr>
     </tbody>
 </table>

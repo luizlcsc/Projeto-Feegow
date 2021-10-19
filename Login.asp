@@ -80,6 +80,7 @@ end if
             .login-erro{
                 background-color: #fff3f3;
                 padding: 10px;
+                padding-bottom: 14px;
                 margin-top: 10px;
                 border-radius: 6px;
                 font-size: 12px;

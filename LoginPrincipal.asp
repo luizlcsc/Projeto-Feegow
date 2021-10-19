@@ -199,7 +199,7 @@
     </div>
     <div class="login-erro" style="display: <% if ErroLogin then response.write("block") else response.write("none") end if%>">
         <i class="far fa-exclamation-circle"></i>
-        <%=ErroLoginMsg%>
+        <%=ErroLoginMsg%> <% if errorCode <> "" then %><br><small style="float:right;color: #ff000075;"><%=errorCode%></small> <% end if %>
     </div>
     <script>
         $(document).ready(function() {

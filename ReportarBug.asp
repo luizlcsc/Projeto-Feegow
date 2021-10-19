@@ -42,7 +42,7 @@ end if
     <div class="col-md-12 mt10">
         <div class="alert alert-default">
             <strong><i class="far fa-concierge-bell"></i> Dica: </strong>
-             Forneça o máximo de detalhes do ocorrido. Dessa forma conseguiremos lhe auxiliar de forma mais eficiente.
+             Forneça o máximo de detalhes do ocorrido. Dessa forma conseguiremos lhe auxiliar da forma mais eficiente.
              <br>
              <br>
              <i>Ex: "Não consigo criar um agendamento para <strong>hoje</strong> na agenda do <strong>Dr. João</strong>."</i>

@@ -30,12 +30,11 @@ end if
 	}
 </script>
 <form class="panel mt20" id="frmfiltros">
-	<input type="hidden" name="Cx" value="<%=req("Cx")%>">
 
 	<div class="panel-heading">
 		<span class="panel-title">
 		<%
-			if req("Cx")="S" then
+			if req("Cx") = "S" then
 				%>
                 Caixa - Sintético
                 <%

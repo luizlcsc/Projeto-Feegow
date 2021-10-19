@@ -5354,7 +5354,7 @@ end function
 
 private function atuAge(AgendamentoID)
     'set procs = db.execute("select group_concat(concat(replace(ifnull(Cor, ''), '#', '^#'), ' ', NomeProcedimento) separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
-    'set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
+    set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
         set procs = db.execute("SELECT GROUP_CONCAT(t.procedimentos SEPARATOR ', ') procedimentos FROM ( "&_
         "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
         "FROM procedimentos "&_
@@ -5369,9 +5369,9 @@ private function atuAge(AgendamentoID)
         "SELECT TipoCompromissoID "&_
         "FROM agendamentosprocedimentos "&_
         "WHERE AgendamentoID="& AgendamentoID &")) AS t")
-    
+
     procedimentos = procs("procedimentos")
-    db_execute("update agendamentos ag LEFT JOIN pacientes pac ON pac.id=ag.PacienteID set ag.NomePaciente=pac.NomePaciente, ag.Tel1=pac.Tel1, ag.Cel1=pac.Cel1, ag.Email1=pac.Email1, ag.Procedimentos='"& rep(Procedimentos) &"' where ag.id="& AgendamentoID)
+    db_execute("update agendamentos ag SET ag.Procedimentos='"& rep(Procedimentos) &"' where ag.id="& AgendamentoID)
 end function
 
 private function allAtuAge(Data)

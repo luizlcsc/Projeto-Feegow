@@ -668,7 +668,8 @@ end if
                         NomeProcedimento = Left(NomeProcedimento,tamanho)
                         NomeProcedimento = NomeProcedimento&" ..."
                     end if
-	
+                    VariosProcedimentos = comps("Procedimentos")
+
                     'soma o tempo dos procedimentos anexos
                     if VariosProcedimentos<>"" and instr(VariosProcedimentos, ",") then
                         set ProcedimentosAnexosTempoSQL = db.execute("SELECT sum(Tempo)Tempo, sum(IF(rdValorPlano='V',ValorPlano,0))Valor FROM agendamentosprocedimentos WHERE Tempo IS NOT NULL AND AgendamentoID="&comps("id"))

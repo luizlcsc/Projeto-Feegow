@@ -31,7 +31,7 @@ if masterLogin then
     "l.Servidor, "&_
     " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, "&_
     " servHomolog.DNS ServerHomolog, "&_
-    "COALESCE(serv.DNS, l.Servidor) Servidor,u.Tipo as tipoUsuario, UNIX_TIMESTAMP(u.DataHora) as DataCadastro "&_
+    "COALESCE(serv.DNS, l.Servidor) Servidor, serv.Status StatusServidor,u.Tipo as tipoUsuario, UNIX_TIMESTAMP(u.DataHora) as DataCadastro "&_
     " FROM licencasusuarios AS u "&_
     " LEFT JOIN licencas AS l ON l.id='"&tryLoginMaster("licencaId")&"'"&_
     " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID "&_
@@ -65,7 +65,7 @@ else
 	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,                 "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
-	           "COALESCE(serv.DNS, l.Servidor) Servidor,                                                                                            "&_
+	           "COALESCE(serv.DNS, l.Servidor) Servidor, serv.Status StatusServidor,                                                                                           "&_
 	           "servHomolog.DNS ServerHomolog,                                                                                                      "&_
 	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom, UNIX_TIMESTAMP(u.DataHora) as DataCadastro                 "&_
 	           "from licencasusuarios as u                                                                                                          "&_
@@ -94,6 +94,7 @@ if not tryLogin.EOF then
 
     ServerHomolog = tryLogin("ServerHomolog")&""
     Servidor = tryLogin("Servidor")&""
+    StatusServidor = tryLogin("StatusServidor")&""
     ServerRead = tryLogin("ServerRead")&""
 
     if isHomolog and ServerHomolog<>"" then
@@ -134,6 +135,11 @@ if not tryLogin.EOF then
     '     erro = "Prezado cliente, estamos passando por uma instabilidade nos serviços. Tente novamente mais tarde."
     'end if
 
+    if StatusServidor="unavailable" then
+        erro = "Ocorreu um erro ao acessar. Tente novamente mais tarde."
+        errorCode = "server_unavailable"
+    end if
+
 	if erro="" then
 
 	set dbProvi = newConnection("cliniccentral", Servidor)
@@ -145,6 +151,7 @@ if not tryLogin.EOF then
 	IPsAcesso = tryLogin("IPsAcesso")
 	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
 		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
+		errorCode = "ip_restriction"
 	end if
 	if not isnull(tryLogin("FimTeste")) then
 		if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"I" and tryLogin("Status")<>"B" then
@@ -156,6 +163,7 @@ if not tryLogin.EOF then
 	end if
 	if tryLogin("Status")="B" then
 		erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
+		errorCode = "license_status"
 	end if
 	end if
 
@@ -180,6 +188,7 @@ if not tryLogin.EOF then
 			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
+				errorCode = "user_connected"
             else
 
                 if UsuariosContratadosNS>0 and not permiteMasterLogin  then
@@ -189,6 +198,7 @@ if not tryLogin.EOF then
                         Conectados = ccur(contaUsers("Conectados"))
                         if Conectados>=UsuariosContratadosS and sysUser("NameColumn")="NomeFuncionario" then
                             erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
+                            errorCode = "max_users_reached"
                             dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
                         end if
                     else
@@ -223,6 +233,7 @@ if not tryLogin.EOF then
             if not AtivoSQL.eof then
                 if AtivoSQL("Ativo")<>"on" then
                     erro = "Usuário inativo."
+                    errorCode = "inactive_user"
                 end if
             end if
         end if
@@ -326,302 +337,318 @@ if not tryLogin.EOF then
             session("Franqueador") = replace(Cupom&"", "Franqueador:", "")
             session("FranqueadorID") = tryLogin("LicencaID")
         end if
+
+        ConexaoAbertaSucesso = True
+
+        On Error Resume Next
 		%>
 		<!--#include file="connect.asp"-->
 		<%
+        If Err.Number <> 0 and AppEnv="production" Then
+           On Error Goto 0
+           ConexaoAbertaSucesso = False
+        End If
+        On Error Goto 0
 
-        if isnull(tryLogin("ultimoBackup")) then
-            set tbls = db.execute("select i.table_name from information_schema.tables i where i.table_schema='"& session("Banco") &"' AND i.table_type='BASE TABLE'")
-            while not tbls.eof
-                set vdh = db.execute("select i.column_name from information_schema.columns i where i.table_schema='"& session("Banco") &"' and i.table_name='"& tbls("table_name") &"' and i.column_name='DHUp'")
-                if vdh.eof then
-                    db.execute("ALTER TABLE `"& tbls("table_name") &"` ADD COLUMN `DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-                end if
-            tbls.movenext
-            wend
-            tbls.close
-            set tbls = nothing
-            dbc.execute("update cliniccentral.licencas set ultimoBackup=NOW() where id="& tryLogin("LicencaID"))
-        end if
-
-        if ref("Lembrarme")="S" then
-            response.Cookies("User") = User
-            Response.Cookies("User").Expires = Date() + 365
+        if not ConexaoAbertaSucesso then
+            erro = "Ocorreu um erro ao se conectar. Por favor tente novamente mais tarde."
+            errorCode = "connection_error"
+            ErroLogin = True
+            ErroLoginMsg = erro
         else
-            response.Cookies("User") = ""
-        end if
 
-		session("Permissoes") = sysUser("Permissoes")&""
-		session("ModoFranquia") = getConfig("ModoFranquia")
-		if left(session("Permissoes"), 1)<>"|" then
-			db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
-			db_execute("update regraspermissoes set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
-			session("Permissoes") = "|"&replace(session("Permissoes"), ", ", "|, |")&"|"
-		end if
-		set pFoto = db.execute("select * from "&sysUser("Table")&" where id="&sysUser("idInTable"))
-		if not pFoto.EOF then
-			nomeUser = pFoto(""&sysUser("NameColumn")&"")
-
-			if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
-				Foto = "assets/img/user.png"
-			else
-                Foto = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
-			end if
-		end if
-
-        if session("MasterPwd")&""="S" then
-            Foto = "https://feegow-public-cdn.s3.amazonaws.com/img/icone-feegow-cinza.png" 
-            nomeUser = "FEEGOW"
-        end if
-
-        session("Photo") = Foto
-        session("NameUser") = nomeUser
-    		set config = db.execute("select c.* from sys_config c")
-            set v114 = db.execute("select i.TABLE_NAME from information_schema.`COLUMNS` i WHERE i.TABLE_SCHEMA='"& session("banco") &"' AND i.TABLE_NAME='sys_config' AND i.COLUMN_NAME='SepararPacientes'")
-            if v114.eof then
-                db_execute("alter TABLE `sys_config` ADD COLUMN `SepararPacientes` TINYINT NULL DEFAULT '0' AFTER `OtherCurrencies`")
-        		set config = db.execute("select c.* from sys_config c")
-                db_execute("create TABLE `pacientesdelegacao` ( `id` INT NOT NULL AUTO_INCREMENT, `sysUser` INT NOT NULL DEFAULT '0', `DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `Profissionais` TEXT NOT NULL, PRIMARY KEY (`id`) ) COLLATE='utf8_general_ci' ENGINE=MyISAM")
+            if isnull(tryLogin("ultimoBackup")) then
+                set tbls = db.execute("select i.table_name from information_schema.tables i where i.table_schema='"& session("Banco") &"' AND i.table_type='BASE TABLE'")
+                while not tbls.eof
+                    set vdh = db.execute("select i.column_name from information_schema.columns i where i.table_schema='"& session("Banco") &"' and i.table_name='"& tbls("table_name") &"' and i.column_name='DHUp'")
+                    if vdh.eof then
+                        db.execute("ALTER TABLE `"& tbls("table_name") &"` ADD COLUMN `DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+                    end if
+                tbls.movenext
+                wend
+                tbls.close
+                set tbls = nothing
+                dbc.execute("update cliniccentral.licencas set ultimoBackup=NOW() where id="& tryLogin("LicencaID"))
             end if
-        'if config("AlterarSenha") = "-1" then
-        '      session("AlterarSenha") = "-1"
-        ' end if
 
-		session("OtherCurrencies") = config("OtherCurrencies")
-		session("User")=tryLogin("id")
-		session("idInTable")=sysUser("idInTable")
-		session("Table") = lcase(sysUser("Table"))
-        session("SepararPacientes") = config("SepararPacientes")
-        session("Email") = tryLogin("Email")
-        'session("AutoConsolidar") = config("AutoConsolidar") &""
-        session("DataCadastro") = tryLogin("DataCadastro") 
-
-
-		set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
-		session("Unidades") = getUnidades("Unidades")
-
-		qtdUnidadesArray = split(session("Unidades"), ",")
-        UnidadeID=0
-        UnidadeDefinida=False
-
-        'verifica se o usuario ja se logou na data
-		if ubound(qtdUnidadesArray) > 0 then
-			set PrimeiroLoginDoDiaSQL = dbc.execute("SELECT id FROM cliniccentral.licencaslogins WHERE UserID="&tryLogin("id")&" AND date(DataHora)=curdate()")
-			if PrimeiroLoginDoDiaSQL.eof then
-                UnidadeID = -1
-                UnidadeDefinida=True
-                UnidadeMotivoDefinicao = "Primeiro login do dia"
-			end if
-		end if
-
-        'pega a ultima unidade definida
-        if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 and not UnidadeDefinida then
-            UnidadeID = sysUser("UnidadeID")
-            UnidadeDefinida = True
-            UnidadeMotivoDefinicao = "Última unidade do usuário"
-        end if
-
-        'seta a unidade de acordo com a que o usuario tem permissa
-        if not UnidadeDefinida then
-            if ubound(qtdUnidadesArray) > 0 then
-                UnidadeID= replace(qtdUnidadesArray(0), "|","")
+            if ref("Lembrarme")="S" then
+                response.Cookies("User") = User
+                Response.Cookies("User").Expires = Date() + 365
             else
-                if session("Unidades")&"" <> "" then
-                    UnidadeID= replace(session("Unidades"), "|","")
-                end if
-            end if
-            UnidadeDefinida = True
-            UnidadeMotivoDefinicao = "Primeira unidade do array do usuário"
-        end if
-
-        'Verifica se a unidadeId está como null, se sim, pega a primeira unidade do array
-        if isnull(UnidadeID) then
-            UnidadeID= replace(qtdUnidadesArray(0), "|","")
-        end if
-
-        'verifica se o profissional tem grade aberta, se sim, abre a sessao com aquela unidade
-		if lcase(session("Table"))="profissionais" then
-			set gradeHoje = db.execute("select l.UnidadeID, g.HoraDe from assfixalocalxprofissional g "&_
-                                       "INNER JOIN locais l on l.id=g.LocalID "&_
-                                       ""&_
-                                       "where g.ProfissionalID="&session("idInTable")&" and g.DiaSemana="&weekday(date())&" AND "&_
-                                       "(g.InicioVigencia IS NULL or g.InicioVigencia <=curdate()) AND "&_
-                                       "(g.FimVigencia is null or g.FimVigencia >= curdate())"&_
-                                       ""&_
-                                       "order by abs(time_to_sec(TIMEDIFF(g.HoraDe, time(now()))))")
-
-			if not gradeHoje.EOF then
-				if not isnull(gradeHoje("UnidadeID")) then
-					if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then
-						UnidadeID = gradeHoje("UnidadeID")
-                        UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
-					end if
-				end if
-			end if
-		end if
-
-
-
-        'verifica se o usuario tem caixa aberto em alguma unidade
-		set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
-                               "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
-                               "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
-		if not caixa.eof then
-			session("CaixaID") = caixa("id")
-
-			if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
-            	UnidadeID = sysUser("UnidadeID")
-                UnidadeMotivoDefinicao = "Unidade do caixa aberto"
-			end if
-		end if
-
-		session("UnidadeID") = UnidadeID
-		db_execute("update sys_users set UnidadeID="&UnidadeID&" where id="&session("User"))
-
-
-		if session("UnidadeID")=0 then
-			set getNome = db.execute("select * from empresa")
-			if not getNome.eof then
-				session("NomeEmpresa") = getNome("NomeFantasia")
-                session("DDDAuto") = getNome("DDDAuto")
-				'if session("Banco") = "clinic4018" or session("Banco") = "clinic3994" or session("Banco") = "clinic408" then
-					'session("FusoHorario") = getNome("FusoHorario")
-				'end if
-			end if
-		elseif session("UnidadeID")>0 then
-			set getNome = db.execute("select * from sys_financialcompanyunits where id="&session("UnidadeID"))
-			if not getNome.eof then
-				session("NomeEmpresa") = getNome("NomeFantasia")
-				session("FusoHorario") = getNome("FusoHorario")
-                session("DDDAuto") = getNome("DDDAuto")
-			end if
-		end if
-
-
-        if session("ModoFranquia")&""<>"1" then
-            set outrosUsers = db.execute("select * from sys_users where id<>"&tryLogin("id"))
-            while not outrosUsers.eof
-                session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
-            outrosUsers.movenext
-            wend
-            outrosUsers.close
-            set outrosUsers=nothing
-		end if
-
-		if not permiteMasterLogin then
-			dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
-		end if
-
-		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and Data<>'"&myDate(date())&"' and sysUser="&session("User")&" order by id desc limit 1")
-		'db_execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
-		'db_execute("create TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
-
-        set temColunaTelemedicinaSQL = dbProvi.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='procedimentos' and i.COLUMN_NAME='ProcedimentoTelemedicina'")
-        if not temColunaTelemedicinaSQL.eof then
-            FieldTelemedicina=" proc.ProcedimentoTelemedicina "
-        else
-            FieldTelemedicina=" '' "
-        end if
-
-        IF session("ModoFranquia") AND NOT session("Admin") = "1" THEN
-                strOrdem = "Padrao"
-
-                IF lcase(session("Table"))="funcionarios" THEN
-                    strOrdem = "PadraoFuncionario"
-                END IF
-
-                set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
-
-                IF NOT ResultPermissoes.EOF THEN
-                    session("Permissoes") = ResultPermissoes("Permissoes")
-                END IF
-        END IF
-
-        set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
-        if not AtendimentosProf.eof then
-            ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
-
-            if ProcedimentoTelemedicina="S" then
-                session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
+                response.Cookies("User") = ""
             end if
 
-            session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
-        end if
+            session("Permissoes") = sysUser("Permissoes")&""
+            session("ModoFranquia") = getConfig("ModoFranquia")
+            if left(session("Permissoes"), 1)<>"|" then
+                db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
+                db_execute("update regraspermissoes set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")
+                session("Permissoes") = "|"&replace(session("Permissoes"), ", ", "|, |")&"|"
+            end if
+            set pFoto = db.execute("select * from "&sysUser("Table")&" where id="&sysUser("idInTable"))
+            if not pFoto.EOF then
+                nomeUser = pFoto(""&sysUser("NameColumn")&"")
 
-        urlRedir = "./../?P=Home&Pers=1"
-		clic = 0
-		Licencas = ""
-
-		if tryLogin("Franquia")="P" then
-			session("Franquia")=tryLogin("LicencaID")
-			clic = clic + 1
-		end if
-
-		while not tryLogin.EOF
-			if tryLogin("Status")="C" then
-				clic = clic+1
-
-				if licencas<>"" then
-				    licencas = licencas & ","
-				end if
-				licencas = licencas & "|"&tryLogin("LicencaID")&"|"
-                if Versao=7 then
-    				urlRedir = "./?P=Home&Pers=1"
-                elseif Versao=6 then
-		    urlRedir = "/v6/?P=Home&Pers=1"	
-		else
-                    urlRedir = "./../?P=Home&Pers=1"
-                end if
-
-                if tryLogin("Home")&""<>"" and Versao=7 then
-                    urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
-                end if
-            else
-                if Versao=7 then
-                    urlRedir = "./?P=Home&Pers=1"
-                elseif Versao=6 then
-                    urlRedir = "/v6/?P=Home&Pers=1"
+                if pFoto("Foto") = "" or isNull(pFoto("Foto")) then
+                    Foto = "assets/img/user.png"
                 else
-                    urlRedir = "./../?P=Home&Pers=1"
+                    Foto = arqEx(pFoto("Foto")&"&dimension=full", "Perfil")
+                end if
+            end if
+
+            if session("MasterPwd")&""="S" then
+                Foto = "https://feegow-public-cdn.s3.amazonaws.com/img/icone-feegow-cinza.png"
+                nomeUser = "FEEGOW"
+            end if
+
+            session("Photo") = Foto
+            session("NameUser") = nomeUser
+                set config = db.execute("select c.* from sys_config c")
+                set v114 = db.execute("select i.TABLE_NAME from information_schema.`COLUMNS` i WHERE i.TABLE_SCHEMA='"& session("banco") &"' AND i.TABLE_NAME='sys_config' AND i.COLUMN_NAME='SepararPacientes'")
+                if v114.eof then
+                    db_execute("alter TABLE `sys_config` ADD COLUMN `SepararPacientes` TINYINT NULL DEFAULT '0' AFTER `OtherCurrencies`")
+                    set config = db.execute("select c.* from sys_config c")
+                    db_execute("create TABLE `pacientesdelegacao` ( `id` INT NOT NULL AUTO_INCREMENT, `sysUser` INT NOT NULL DEFAULT '0', `DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, `Profissionais` TEXT NOT NULL, PRIMARY KEY (`id`) ) COLLATE='utf8_general_ci' ENGINE=MyISAM")
+                end if
+            'if config("AlterarSenha") = "-1" then
+            '      session("AlterarSenha") = "-1"
+            ' end if
+
+            session("OtherCurrencies") = config("OtherCurrencies")
+            session("User")=tryLogin("id")
+            session("idInTable")=sysUser("idInTable")
+            session("Table") = lcase(sysUser("Table"))
+            session("SepararPacientes") = config("SepararPacientes")
+            session("Email") = tryLogin("Email")
+            'session("AutoConsolidar") = config("AutoConsolidar") &""
+            session("DataCadastro") = tryLogin("DataCadastro")
+
+
+            set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
+            session("Unidades") = getUnidades("Unidades")
+
+            qtdUnidadesArray = split(session("Unidades"), ",")
+            UnidadeID=0
+            UnidadeDefinida=False
+
+            'verifica se o usuario ja se logou na data
+            if ubound(qtdUnidadesArray) > 0 then
+                set PrimeiroLoginDoDiaSQL = dbc.execute("SELECT id FROM cliniccentral.licencaslogins WHERE UserID="&tryLogin("id")&" AND date(DataHora)=curdate()")
+                if PrimeiroLoginDoDiaSQL.eof then
+                    UnidadeID = -1
+                    UnidadeDefinida=True
+                    UnidadeMotivoDefinicao = "Primeiro login do dia"
+                end if
+            end if
+
+            'pega a ultima unidade definida
+            if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 and not UnidadeDefinida then
+                UnidadeID = sysUser("UnidadeID")
+                UnidadeDefinida = True
+                UnidadeMotivoDefinicao = "Última unidade do usuário"
+            end if
+
+            'seta a unidade de acordo com a que o usuario tem permissa
+            if not UnidadeDefinida then
+                if ubound(qtdUnidadesArray) > 0 then
+                    UnidadeID= replace(qtdUnidadesArray(0), "|","")
+                else
+                    if session("Unidades")&"" <> "" then
+                        UnidadeID= replace(session("Unidades"), "|","")
+                    end if
+                end if
+                UnidadeDefinida = True
+                UnidadeMotivoDefinicao = "Primeira unidade do array do usuário"
+            end if
+
+            'Verifica se a unidadeId está como null, se sim, pega a primeira unidade do array
+            if isnull(UnidadeID) then
+                UnidadeID= replace(qtdUnidadesArray(0), "|","")
+            end if
+
+            'verifica se o profissional tem grade aberta, se sim, abre a sessao com aquela unidade
+            if lcase(session("Table"))="profissionais" then
+                set gradeHoje = db.execute("select l.UnidadeID, g.HoraDe from assfixalocalxprofissional g "&_
+                                           "INNER JOIN locais l on l.id=g.LocalID "&_
+                                           ""&_
+                                           "where g.ProfissionalID="&session("idInTable")&" and g.DiaSemana="&weekday(date())&" AND "&_
+                                           "(g.InicioVigencia IS NULL or g.InicioVigencia <=curdate()) AND "&_
+                                           "(g.FimVigencia is null or g.FimVigencia >= curdate())"&_
+                                           ""&_
+                                           "order by abs(time_to_sec(TIMEDIFF(g.HoraDe, time(now()))))")
+
+                if not gradeHoje.EOF then
+                    if not isnull(gradeHoje("UnidadeID")) then
+                        if instr(session("Unidades"),"|"&gradeHoje("UnidadeID")&"|")>0 then
+                            UnidadeID = gradeHoje("UnidadeID")
+                            UnidadeMotivoDefinicao = "Unidade da Grade do profissional"
+                        end if
+                    end if
+                end if
+            end if
+
+
+
+            'verifica se o usuario tem caixa aberto em alguma unidade
+            set caixa = db.execute("select c.id, ca.Empresa UnidadeID from caixa c  "&_
+                                   "INNER JOIN sys_financialcurrentaccounts ca ON ca.id=c.ContaCorrenteID  "&_
+                                   "WHERE c.sysUser="&session("User")&" and isnull(c.dtFechamento)")
+            if not caixa.eof then
+                session("CaixaID") = caixa("id")
+
+                if instr(session("Unidades"),"|"&sysUser("UnidadeID")&"|")>0 then
+                    UnidadeID = sysUser("UnidadeID")
+                    UnidadeMotivoDefinicao = "Unidade do caixa aberto"
+                end if
+            end if
+
+            session("UnidadeID") = UnidadeID
+            db_execute("update sys_users set UnidadeID="&UnidadeID&" where id="&session("User"))
+
+
+            if session("UnidadeID")=0 then
+                set getNome = db.execute("select * from empresa")
+                if not getNome.eof then
+                    session("NomeEmpresa") = getNome("NomeFantasia")
+                    session("DDDAuto") = getNome("DDDAuto")
+                    'if session("Banco") = "clinic4018" or session("Banco") = "clinic3994" or session("Banco") = "clinic408" then
+                        'session("FusoHorario") = getNome("FusoHorario")
+                    'end if
+                end if
+            elseif session("UnidadeID")>0 then
+                set getNome = db.execute("select * from sys_financialcompanyunits where id="&session("UnidadeID"))
+                if not getNome.eof then
+                    session("NomeEmpresa") = getNome("NomeFantasia")
+                    session("FusoHorario") = getNome("FusoHorario")
+                    session("DDDAuto") = getNome("DDDAuto")
+                end if
+            end if
+
+
+            if session("ModoFranquia")&""<>"1" then
+                set outrosUsers = db.execute("select * from sys_users where id<>"&tryLogin("id"))
+                while not outrosUsers.eof
+                    session("UsersChat") = session("UsersChat")&"|"&outrosUsers("id")&"|"'colocando A só pra simular aberto depois tira o A
+                outrosUsers.movenext
+                wend
+                outrosUsers.close
+                set outrosUsers=nothing
+            end if
+
+            if not permiteMasterLogin then
+                dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+            end if
+
+            db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and Data<>'"&myDate(date())&"' and sysUser="&session("User")&" order by id desc limit 1")
+            'db_execute("delete from atendimentos where isnull(HoraFim) and sysUser="&session("User"))
+            'db_execute("create TABLE if not exists `agendaobservacoes` (`id` INT NOT NULL AUTO_INCREMENT,	`ProfissionalID` INT NULL DEFAULT NULL,	`Data` DATE NULL DEFAULT NULL,	`Observacoes` TEXT NULL DEFAULT NULL,	PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=InnoDB")
+
+            set temColunaTelemedicinaSQL = dbProvi.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='procedimentos' and i.COLUMN_NAME='ProcedimentoTelemedicina'")
+            if not temColunaTelemedicinaSQL.eof then
+                FieldTelemedicina=" proc.ProcedimentoTelemedicina "
+            else
+                FieldTelemedicina=" '' "
+            end if
+
+            IF session("ModoFranquia") AND NOT session("Admin") = "1" THEN
+                    strOrdem = "Padrao"
+
+                    IF lcase(session("Table"))="funcionarios" THEN
+                        strOrdem = "PadraoFuncionario"
+                    END IF
+
+                    set ResultPermissoes = db.execute("SELECT Permissoes FROM usuarios_regras JOIN regraspermissoes ON regraspermissoes.id = usuarios_regras.regra WHERE usuario = "&sysUser("id")&" AND unidade = "&session("UnidadeID")&" or "&strOrdem&" = 1 ORDER BY "&strOrdem&" ")
+
+                    IF NOT ResultPermissoes.EOF THEN
+                        session("Permissoes") = ResultPermissoes("Permissoes")
+                    END IF
+            END IF
+
+            set AtendimentosProf = db.execute("select GROUP_CONCAT(CONCAT('|',at.id,'|') SEPARATOR '') AtendimentosIDS, "&FieldTelemedicina&" ProcedimentoTelemedicina, at.AgendamentoID from atendimentos at inner join atendimentosprocedimentos ap ON ap.AtendimentoID=at.id LEFT JOIN procedimentos proc ON proc.id=ap.ProcedimentoID where at.sysUser="&session("User")&" and isnull(at.HoraFim) and at.Data='"&myDate(date())&"' GROUP BY at.id")
+            if not AtendimentosProf.eof then
+                ProcedimentoTelemedicina=AtendimentosProf("ProcedimentoTelemedicina")
+
+                if ProcedimentoTelemedicina="S" then
+                    session("AtendimentoTelemedicina")=AtendimentosProf("AgendamentoID")
                 end if
 
-                if tryLogin("Home")&""<>"" and Versao=7 then
-                    urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
+                session("Atendimentos")=AtendimentosProf("AtendimentosIDS")&""
+            end if
+
+            urlRedir = "./../?P=Home&Pers=1"
+            clic = 0
+            Licencas = ""
+
+            if tryLogin("Franquia")="P" then
+                session("Franquia")=tryLogin("LicencaID")
+                clic = clic + 1
+            end if
+
+            while not tryLogin.EOF
+                if tryLogin("Status")="C" then
+                    clic = clic+1
+
+                    if licencas<>"" then
+                        licencas = licencas & ","
+                    end if
+                    licencas = licencas & "|"&tryLogin("LicencaID")&"|"
+                    if Versao=7 then
+                        urlRedir = "./?P=Home&Pers=1"
+                    elseif Versao=6 then
+                urlRedir = "/v6/?P=Home&Pers=1"
+            else
+                        urlRedir = "./../?P=Home&Pers=1"
+                    end if
+
+                    if tryLogin("Home")&""<>"" and Versao=7 then
+                        urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
+                    end if
+                else
+                    if Versao=7 then
+                        urlRedir = "./?P=Home&Pers=1"
+                    elseif Versao=6 then
+                        urlRedir = "/v6/?P=Home&Pers=1"
+                    else
+                        urlRedir = "./../?P=Home&Pers=1"
+                    end if
+
+                    if tryLogin("Home")&""<>"" and Versao=7 then
+                        urlRedir = "./?P=Home&Pers=1&urlRedir="&tryLogin("Home")
+                    end if
                 end if
-			end if
 
-		tryLogin.movenext
-		wend
-		tryLogin.close
-		set tryLogin=nothing
-		if clic>1 then
-			session("Licencas") = Licencas
-			session("SelecionarLicenca") = 1
-		end if
+            tryLogin.movenext
+            wend
+            tryLogin.close
+            set tryLogin=nothing
+            if clic>1 then
+                session("Licencas") = Licencas
+                session("SelecionarLicenca") = 1
+            end if
 
-        session("AutenticadoPHP")="false"
+            session("AutenticadoPHP")="false"
 
-        'if AppEnv="production" then
-            'set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
-            'if not vcaTrei.eof then
-                'urlRedir = "./?P=AreaDoCliente&Pers=1"
+            'if AppEnv="production" then
+                'set vcaTrei = dbc.execute("select id from clinic5459.treinamentos where LicencaUsuarioID="& session("User") &" and not isnull(Fim) and isnull(Nota)")
+                'if not vcaTrei.eof then
+                    'urlRedir = "./?P=AreaDoCliente&Pers=1"
+                'end if
             'end if
-        'end if
 
-        IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
-            urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
-        END IF
+            IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
+                urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")
+            END IF
 
-        QueryStringParameters = ref("qs")
+            QueryStringParameters = ref("qs")
 
-        call odonto()
+            call odonto()
 
-        if QueryStringParameters<>"" then
-            response.Redirect("./?"&QueryStringParameters)
-        else
-            response.Redirect(urlRedir)
+            if QueryStringParameters<>"" then
+                response.Redirect("./?"&QueryStringParameters)
+            else
+                response.Redirect(urlRedir)
+            end if
         end if
-
 	end if
 else
     set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&User &"' LIMIT 1")
@@ -642,6 +669,7 @@ else
     else
         dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
     end if
+    session.Abandon()
 
 	If masterLoginErro Then
 	    ErroLogin = True

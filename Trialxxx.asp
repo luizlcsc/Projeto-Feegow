@@ -436,6 +436,10 @@
         }
 
         $("#trial").submit(function(){
+            if(!captchaToken){
+                alert("Preencha a verificação Captcha.");
+            }
+
             if($("#senha1").val()!=$("#senha2").val()){
                 alert('As senhas digitadas são diferentes');
             }else{

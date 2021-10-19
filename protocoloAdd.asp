@@ -102,9 +102,10 @@ elseif Tipo = "ciapList" then
             db.execute("update pacientesciap set StatusID="& splU(1) &" WHERE id="& splU(0))
         end if
     end if
-    set pc = db.execute("select pc.id, pc.StatusID, pc.DataEntrada, pc.DataSaida, pc.Hospital, t.Termo, t.CID10_Cd1 FROM pacientesciap pc LEFT JOIN cliniccentral.tesauro t ON t.id=pc.CiapID WHERE pc.FormID="& FormID &" AND pc.CampoID="& CampoID &_
+    sqlBmj = montaSubqueryBMJ("bmj.codcid10 = t.CID10_Cd1")
+    set pc = db.execute("select pc.id, pc.StatusID, pc.DataEntrada, pc.DataSaida, pc.Hospital, t.Termo, t.CID10_Cd1, " & sqlBmj & " bmj_link FROM pacientesciap pc LEFT JOIN cliniccentral.tesauro t ON t.id=pc.CiapID WHERE pc.FormID="& FormID &" AND pc.CampoID="& CampoID &_
         " UNION ALL "&_
-                        "select pt.id, '', NULL, NULL, NULL, t.Tag, 'Tag' FROM pacientestags pt LEFT JOIN tags t ON t.id=pt.TagID WHERE pt.FormID="& FormID &" AND pt.CampoID="& CampoID)
+                        "select pt.id, '', NULL, NULL, NULL, t.Tag, 'Tag', '' bmj_link FROM pacientestags pt LEFT JOIN tags t ON t.id=pt.TagID WHERE pt.FormID="& FormID &" AND pt.CampoID="& CampoID)
 
     if 0 then
     %>
@@ -123,6 +124,7 @@ elseif Tipo = "ciapList" then
                     <tr>
                         <td><% if pc("CID10_Cd1")="Tag" then response.Write("<i style='cursor:pointer' class='fa fa-star'></i> ") end if %> <%= pc("CID10_Cd1") %></td>
                         <td><%= pc("Termo") %></td>
+                        <td><%= pc("bmj_link") %></td>
 
                         <%
                         if cp("NomeCampo")="internações" then %>

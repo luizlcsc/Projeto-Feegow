@@ -36,7 +36,7 @@ if Acao="B" then
 
 		db_execute(sqlInsert)
 		set pult = db.execute("select id from sys_financialmovement where sysUser="&session("User")&" order by id desc LIMIT 1")
-		db_execute("update sys_financialcreditcardreceiptinstallments set InvoiceReceiptID="&pult("id")&" where id="&ParcelaTransacaoID)
+		db_execute("update sys_financialcreditcardreceiptinstallments set Fee='"&replace(replace(Fee,".",""),",",".")&"',InvoiceReceiptID="&pult("id")&" where id="&ParcelaTransacaoID)
 		'fazer insert da taxa e vinculala pra depois apagala
 		if Taxa>0 then
 			sqlInsertFee = "insert into sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Currency, Rate, MovementAssociatedID, sysUser, CategoryID) values ('"&left(NomeFee, 49)&"', 1, "&AccountIDCredit&", 0, 0, 3, "&treatvalzero(Taxa)&", "&mydatenull(DateToReceive)&", 'C', 'CCFee', 'BRL', 1, "&pult("id")&", "&session("User")&",NULLIF('"&CategoriadTaxaID&"',''))"
@@ -70,7 +70,7 @@ if Acao="C" then
 		db_execute("delete from sys_financialmovement where id="&rectoParcela("InvoiceReceiptID")&" or MovementAssociatedID="&rectoParcela("InvoiceReceiptID"))
 
 		'2. torna 0 a parcela do credito
-		db_execute("update sys_financialcreditcardreceiptinstallments set InvoiceReceiptID=0 where id="&ParcelaTransacaoID)
+		db_execute("update sys_financialcreditcardreceiptinstallments set Fee=0,InvoiceReceiptID=0 where id="&ParcelaTransacaoID)
 		%>
 	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-success" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'B\', <%=Parcela%>, <%=Parcelas%>);"><i class="fa fa-check"></i> Baixar</button>');
         $("#btn<%=ParcelaTransacaoID%>").prop("disabled", true);

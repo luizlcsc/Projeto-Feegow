@@ -5790,5 +5790,16 @@ function autCareTeam(SysUserID, PacienteID)
 
 end function
 
+function montaSubqueryBMJ(where)
+    urlbmj = getConfig("urlbmj")
+    if urlbmj <> "" and where <> "" then
+        montaSubqueryBMJ = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""" & urlbmj & "/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
+                           " FROM cliniccentral.cid10_bmj bmj" &_
+                           " WHERE " & where & " ) "
+    else
+        montaSubqueryBMJ = " '' "
+    end if
+end function
+
 
 %>

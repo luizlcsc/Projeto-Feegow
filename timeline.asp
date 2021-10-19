@@ -29,6 +29,10 @@ if req("X")<>"" then
         'db_execute("delete from pacientespedidos where id="& req("X"))
         db_execute("update pacientesdiagnosticos set sysActive=-1 where id="& req("X"))
     end if
+    if req("Tipo")="|Encaminhamentos|" then
+        'db_execute("delete from pacientespedidos where id="& req("X"))
+        db_execute("update pacientesencaminhamentos set sysActive=-1 where id="& req("X"))
+    end if
     if req("Tipo")="|Protocolos|" then
         'db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
     end if
@@ -408,6 +412,33 @@ select case Tipo
             </div>
             <%
             end if
+            %>
+        </div>
+        <%
+    case "|Encaminhamentos|"
+        subTitulo = "Encaminhamentos"
+        %>
+        <div class="panel timeline-add">
+            <div class="panel-heading">
+                <span class="panel-title"> <%=subTitulo %>
+                </span>
+            </div>
+            <%
+            ' if aut("encaminhamentosI")=1 then
+            %>
+            <div class="panel-body" style="overflow: inherit!important;">
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-plus"></i> Inserir
+                        <span class="caret ml5"></span>
+                    </button>
+                    <ul class="dropdown-menu disabled" role="menu">
+                        <li><a href="javascript:iPront('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Encaminhamento </a></li>
+                    </ul>
+                </div>
+            </div>
+            <%
+            ' end if
             %>
         </div>
         <%

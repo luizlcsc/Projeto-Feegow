@@ -514,29 +514,45 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
-                                                    urlbmj = getConfig("urlbmj")
-                                                    IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN
-                                                        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
-                                                                " FROM cliniccentral.cid10_bmj bmj" &_
-                                                                " WHERE bmj.cid10ID = cliniccentral.cid10.id)"
+                                                    IF pcampos("enviardadoscid") = 1 THEN
+                                                        sqlBmj = montaSubqueryBMJ("bmj.cid10ID = cliniccentral.cid10.id")
                                                     ELSE
                                                         sqlBmj = "''"
                                                     END IF
-                                                    sqlBmj = "COALESCE("&sqlBmj&",'') as bmj_link "
+                                                    sqlBmj = sqlBmj & " as bmj_link "
                                                     set pcid = db.execute("select *, "&sqlBmj&" from cliniccentral.cid10 where id = '"&Valor&"'")
                                                     if not pcid.eof then
-                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao") &" "& replace(pcid("bmj_link")&"","[linkbmj]",urlbmj)
+                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao") &" "& pcid("bmj_link")
                                                     end if
                                                     response.Write( Rotulo &"<br>"& NomeCid &"<br>" )
                                                 case else
+
                                                     if Valor<>"" and Valor<>"<p><br></p>" then
-                                                    if left(Valor, 5)="{\rtf" then
-                                                            'problema de conversao de RTF com problema critico
-                                                            'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
+                                                        if left(Valor, 5)="{\rtf" then
+                                                                'problema de conversao de RTF com problema critico
+                                                                'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
+
+                                                        end if
+                                                        response.Write( Rotulo &"<br>"& Valor  &"<br>" )
+                                                    end if
+
+                                                    'CID e BMJ de campos de formulários Estruturados
+                                                    if instr(pcampos("Estruturacao"), "|CID|") > 0 then
+                                                        sqlBmj = montaSubqueryBMJ("bmj.codcid10 = t.CID10_Cd1")
+                                                        sqlCiap = "SELECT t.CID10_Cd1 as Codigo, t.Termo, " & sqlBmj & " as bmj_link " &_
+                                                                  "FROM pacientesciap pc " &_
+                                                                  "INNER JOIN cliniccentral.tesauro t ON t.id=pc.CiapID " &_
+                                                                  "WHERE pc.FormID='" & ti("id") & "' AND pc.CampoID='" & pcampos("id") & "'"
+                                                        set rsCiap = db.execute(sqlCiap)
+                                                        while not rsCiap.eof
+                                                            response.write( rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            rsCiap.movenext
+                                                        wend
+                                                        rsCiap.close
+                                                        set rsCiap = nothing
 
                                                     end if
-                                                    response.Write( Rotulo &"<br>"& Valor  &"<br>" )
-                                                    end if
+
                                             end select
                                             'response.Write( Rotulo & Valor  &"<br>[["& pcampos("TipoCampoID") &"]]" )
                                         pcampos.movenext

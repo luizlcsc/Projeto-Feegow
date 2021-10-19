@@ -310,32 +310,64 @@ if req("T")="C" then
         <tr>
             <th colspan="2">Guia</th>
             <th colspan="4">Paciente</th>
+            <th class="text-right">Valor Guia</th>
             <th class="text-right" colspan="2">Valor Pago</th>
             <th class="text-right" colspan="2"></th>
         </tr>
         <%
+            TotalGuias = 0
+            TotalPago = 0
         while not vcaGuia.eof
             TipoGuia = vcaGuia("TipoGuia")
             idGuia = vcaGuia("id")
             set g = db.execute("select g.*, pac.NomePaciente from tiss"&TipoGuia&" g LEFT JOIN pacientes pac ON pac.id=g.PacienteID where g.id="&vcaGuia("GuiaID"))
+
+            if fn(g("ValorPago")) = 0 then
+                estilo = " text-danger "
+            elseif fn(g("TotalGeral")) <> fn(g("ValorPago")) then
+                estilo = " text-warning "
+            else
+                estilo = " text-success "
+            end if
+
             if not g.eof then
             %>
             <tr class="js-del-linha" id="<%= idGuia %>">
                 <td colspan="2">Guia <%=g("NGuiaPrestador") %></td>
                 <td colspan="4">Paciente: <%=g("NomePaciente") %></td>
-                <td class="text-right" colspan="2">R$ <%=fn(g("ValorPago")) %></td>
+                <td class="text-right">R$ <%=fn(g("TotalGeral")) %></td>
+                <td class="text-right '<%=estilo%>'" colspan="2">R$ <%=fn(g("ValorPago")) %></td>
                 <td class="text-right" colspan="2">
-                    <button type="button" class="btn btn-sm btn-danger deletaGuia" data-id="<%= idGuia %>">
+                    <button type="button" class="btn btn-sm btn-danger disable" onclick="deletaGuia(<%=idGuia%>,<%=id%>,<%=InvoiceID%>)" data-id="<%= idGuia %>">
                         <i class="fa fa-remove"></i>
                     </button>
                 </td>
             </tr>
             <%
+            TotalGuias = (TotalGuias + g("TotalGeral"))
+            TotalPago = (TotalPago + g("ValorPago"))
             end if
         vcaGuia.movenext
         wend
         vcaGuia.close
         set vcaGuia = nothing
+
+        if TotalPago = 0 then
+            estilo = " text-danger "
+        elseif TotalGuias <> TotalPago then
+            estilo = " text-warning "
+        else
+            estilo = " text-success "
+        end if
+                    %>
+            <tr class="js-del-linha" id="<%= idGuia %>">
+                <th colspan="6">Total Guias</th>
+                <th class="text-right" colspan="1">R$ <%=fn(TotalGuias) %></th>
+                <th class="text-right '<%=estilo%>'" colspan="2" >R$ <%= fn(TotalPago) %></th>
+                <th class="text-right" colspan="2">
+                </th>
+            </tr>
+            <%
     end if
 end if
 
@@ -571,20 +603,16 @@ if TemRepasse and aut("|repassesA|")=0 then
 end if
 %>
 <script>
-
-$('.deletaGuia').on('click', function(){
-    var itemGuiaId = $(this).data('id');
-    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]'); 
-
+function deletaGuia(guiaInvoiceID, itemID, InvoiceID){
+    var linhaItem = $('.js-del-linha[id="' + guiaInvoiceID + '"]');
     if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
-        $.post("deletaItemGuia.asp", { itemGuiaId: itemGuiaId }, function(data) {
+        $.post("deletaItemGuia.asp", { guiaInvoiceID: guiaInvoiceID , itemID:itemID, InvoiceID:InvoiceID}, function(data) {
             if(data){
                 linhaItem.fadeOut('fast', function (){
                     $('#totalGeral').html(data);
-                });              
+                });
             }
         }) 
     };
-}) 
-
+}
 </script>

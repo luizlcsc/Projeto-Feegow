@@ -153,10 +153,13 @@ if ref("CadastroAte")<>"" and isdate(ref("CadastroAte")) then
 end if
 if sqlRetorno<>"" then
 	set ret = db.execute("select group_concat(PacienteID) pacientesRet from pacientesretornos where not isnull(PacienteID)" & sqlRetorno)
-	if not isnull(ret("PacientesRet")) then
-		sqlRetorno = " AND p.id in("&ret("PacientesRet")&")"
-	else
-		sqlRetorno = " AND p.id in(0)"
+	if not ret.eof then
+		PacientesRet = ret("PacientesRet")
+		if PacientesRet&"" <> "" then
+			sqlRetorno = " AND p.id in("&PacientesRet&")"
+		else
+			sqlRetorno = " AND p.id in(0)"
+		end if
 	end if
 end if
 if 0 then
@@ -192,9 +195,12 @@ if ref("Procedimentos")<>"" then
 		sqlExecutadoAte = " AND a.Data<="&mydatenull(ref("ExecutadoAte"))
 	end if
 	set procs = db.execute("select group_concat(distinct a.PacienteID) iis from atendimentosprocedimentos ap LEFT JOIN atendimentos a on a.id=ap.AtendimentoID WHERE ap.ProcedimentoID IN("&replace(ref("Procedimentos"), "|", "")&")" & sqlExecutadoDe & sqlExecutadoAte)
-	PacProcs = procs("iis")
-	if PacProcs<>"" and not isnull(PacProcs) then
-		sqlProcedimentos = " AND p.id IN("&PacProcs&")"
+	
+	if not procs.eof then
+		PacProcs = procs("iis")
+		if PacProcs&""<>"" and not isnull(PacProcs) then
+			sqlProcedimentos = " AND p.id IN("&PacProcs&")"
+		end if
 	end if
 end if
 
@@ -226,7 +232,7 @@ sqlConta = "select count(distinct p.id) total "&_
             "WHERE p.sysActive=1 "& sqlWhere & sqlRetorno & sqlAusencia & sqlCons & sqlEmail & sqlCadastro & sqlProcedimentos & sqlUnidade
 'response.Write(sqlAusencia)
 
-'response.write( sqlConta )
+' response.write( sqlConta )
 
 set conta = db.execute(sqlConta)
 

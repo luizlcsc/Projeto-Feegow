@@ -550,7 +550,7 @@ if not AgendamentosCanceladosSQL.eof then
 <hr class="short alt" />
 <h3>Agendamentos cancelados</h3>
 
-<table class="table">
+<table class="table table-condensed">
     <tr class="danger">
         <th>Hora</th>
         <th>Status</th>
@@ -609,11 +609,11 @@ if not AgendamentosCanceladosSQL.eof then
                 <%
                 if aut("agendaA")=1 and session("RemSol")="" and AgendamentosCanceladosSQL("StaID")<>15 then
                 %>
-                <button type="button"  onclick="remarcar('<%=AgendamentosCanceladosSQL("id")%>', 'Solicitar', '');" class="btn btn-default">Remarcar</button>
+                <button type="button"  onclick="remarcar('<%=AgendamentosCanceladosSQL("id")%>', 'Solicitar', '');" class="btn btn-default btn-xs">Remarcar</button>
                 <%
                 end if
                 %>
-                <button type="button" onclick="abreAgenda('<%=replace(Hora,":","")%>', '<%=AgendamentosCanceladosSQL("id")%>', '<%=AgendamentosCanceladosSQL("Data")%>', '<%=AgendamentosCanceladosSQL("LocalID")%>', '<%=AgendamentosCanceladosSQL("ProfissionalID")%>', 0)" class="btn btn-sm btn-primary pull-right"><i class="far fa-external-link"></i></button>
+                <button type="button" onclick="abreAgenda('<%=replace(Hora,":","")%>', '<%=AgendamentosCanceladosSQL("id")%>', '<%=AgendamentosCanceladosSQL("Data")%>', '<%=AgendamentosCanceladosSQL("LocalID")%>', '<%=AgendamentosCanceladosSQL("ProfissionalID")%>', 0)" class="btn btn-xs btn-primary pull-right"><i class="far fa-external-link"></i></button>
             </td>
         </tr>
         <%

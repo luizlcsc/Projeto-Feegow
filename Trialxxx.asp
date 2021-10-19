@@ -271,7 +271,7 @@
                                                         </div>
                                                         <div class="col-md-12">
                                                             <br>
-                                                            <div class="g-recaptcha" data-sitekey="6LcYU94cAAAAAE-wjHMKmWdjz5-JlEukwcyVqzj4"></div>
+                                                            <div data-callback="recaptchaSuccess" class="g-recaptcha" data-sitekey="6LcYU94cAAAAAE-wjHMKmWdjz5-JlEukwcyVqzj4"></div>
                                                         </div>
 
                                                     </div>
@@ -429,6 +429,12 @@
     <!-- END: PAGE SCRIPTS -->
 
     <script type="text/javascript">
+        var captchaToken = null;
+
+        function recaptchaSuccess(token){
+            captchaToken = token;
+        }
+
         $("#trial").submit(function(){
             if($("#senha1").val()!=$("#senha2").val()){
                 alert('As senhas digitadas são diferentes');
@@ -436,7 +442,7 @@
                 $("#btnGenerate").attr("disabled", "disabled");
                 $.ajax({
                     type:"POST",
-                    url:"https://api.feegow.com.br/trial/start",
+                    url:"https://api.feegow.com.br/trial/start?captcha="+captchaToken,
                     data:$("#trial").serialize(),
                     success:function(data){
 						document.getElementById("fake_password").value = $("#senha1").val();

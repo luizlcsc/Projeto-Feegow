@@ -562,7 +562,7 @@ end if
                         end if
                     end if
 
-					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
+					NomeProcedimento = replace(comps("NomeProcedimento")&"", "`", "")
                     tamanho = 60
                     if cint(Len(NomeProcedimento)) > tamanho then
                         NomeProcedimento = Left(NomeProcedimento,tamanho)

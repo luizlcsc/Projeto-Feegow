@@ -663,13 +663,12 @@ end if
                         end if
                     end if
 
-					'NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
-					NomeProcedimento = stringSize(replace(comps("ProcedimentosList"), "`", ""),60)
-                    'tamanho = 60
-                    'if cint(Len(NomeProcedimento)) > tamanho then
-                    '    NomeProcedimento = Left(NomeProcedimento,tamanho)
-                    '    NomeProcedimento = NomeProcedimento&" ..."
-                    'end if
+
+					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
+                    if comps("ProcedimentosList")&"" <>"" then
+					    NomeProcedimento = stringSize(replace(comps("ProcedimentosList"), "`", ""),60)
+                    end if 
+
                     VariosProcedimentos = comps("Procedimentos")
 
                     'soma o tempo dos procedimentos anexos

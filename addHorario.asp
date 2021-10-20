@@ -323,6 +323,9 @@ end if
         <div class="col-md-6">
             <label><input type="checkbox" class="ace" name="Compartilhada" value="S"<%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
         </div>
+        <%
+        if recursoAdicional(41)=4 then
+        %>
         <div class="col-md-6">
             <%
             'QUANDO A OPÇÃO "Grade virtual" OPÇÃO ESTÁ MARCADA não existe limitação de horários e 
@@ -338,6 +341,7 @@ end if
                             
             </div>
         </div>
+        <%end if%>
             <div class="col-md-6"></div>
             <div class="col-md-6" id="marcarOrdemConfig" style="background:#e6e6e6; border:1px dotted #ebebeb; padding: 10px;">
                 <%=quickField("text", "MarcarEmOrdemHoraA", "Horário Inicial", 6, MarcarEmOrdemHoraA, " input-mask-l-time", "", " ")%>

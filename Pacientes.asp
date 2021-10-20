@@ -258,12 +258,15 @@ end if
 	var docMask = ['999.999.999-99', '99.999.999/9999-99'];
 	var doc = document.querySelector("#pPacientesRelativos input[name^='CPF']");
 
-	doc.addEventListener('input', inputHandler.bind(undefined, docMask, 14), false);
-	doc.addEventListener('change', function(arg){
-		if(!((arg.target.value+"").length == 14 || (arg.target.value+"").length == 18)){
-			arg.target.value = ""
-		}
-	});
+    if(doc){
+
+        doc.addEventListener('input', inputHandler.bind(undefined, docMask, 14), false);
+        doc.addEventListener('change', function(arg){
+            if(!((arg.target.value+"").length == 14 || (arg.target.value+"").length == 18)){
+                arg.target.value = ""
+            }
+        });
+    }
 
 </script>
 

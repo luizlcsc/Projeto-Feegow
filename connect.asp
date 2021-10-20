@@ -3209,7 +3209,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		'rbtns = rbtns & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"
 		if recurso<>"profissionais" and recurso<>"funcionarios" and recurso<>"fornecedores" then
 			if (hsysActive=1 and aut(recurso&"A")=1) or (hsysActive=0 and aut(recurso&"I")=1) then
-					rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' id='Salvar' onclick='$(\""#save\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button> "
+					rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' id='Salvar' onclick='$(document).ready(function(){ $(\""#save\"").click(); });'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button> "
             else
                     %>
                     </form>

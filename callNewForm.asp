@@ -340,24 +340,6 @@ function editCurva(CampoID){
 		$("#modal").html(data);
 	});
 }
-
-
-    /*
-    usados abaixo para quando formscompiladorcampopreenchidotextareaativadesativa
-
-$(document).ready(function () {
-	CKEDITOR.on('instanceReady', function (ev) {
-		document.getElementById(ev.editor.id + '_top').style.display = 'none';
-		ev.editor.on('focus', function (e) {
-			document.getElementById(ev.editor.id + '_top').style.display = 'block';
-		});
-		ev.editor.on('blur', function (e) {
-			document.getElementById(ev.editor.id + '_top').style.display = 'none';
-		});
-	});
-});
-*/
-
     <%
     on error resume next
 

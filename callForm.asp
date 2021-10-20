@@ -169,7 +169,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         Inserir="1";
     }
 
-    function saveForm(A, AutoSave) {
+    function saveForm(A, AutoSave,inicio=false) {
         var $btnSave = $(".btn-save-form"),
             $btnPrint = $(".btn-print-form"),
             $btnSaveText = $btnSave.find(".btn-save-form-text");
@@ -182,7 +182,56 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             }
         }
 
-        let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serialize();
+        if(!inicio){
+            let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID")
+            let erro = false;
+            let campoCheck = ""
+            formdata.map((key,input)=>{
+                let required =  $(input).prop('required')
+                if (required){
+                    if ($(input).prop('type')== 'checkbox'){
+                        if(campoCheck != $(input).attr("data-campoid")){
+                            campoCheck = $(input).attr("data-campoid")
+                            var inputs = $(input).parent().parent().find('input');
+                            let temcheckboxselecionado = false
+                            inputs.each(function(key,input){
+                                if ($(input).is(":checked")){
+                                    temcheckboxselecionado = true
+                                }
+                            });
+                            if(!temcheckboxselecionado){
+                                let nome = $(input).data('name').trim()
+                                new PNotify({
+                                        title: 'Ocorreu um erro!',
+                                        text: 'O campo '+nome+' é obrigatório!',
+                                        type: 'danger',
+                                        delay: 3000
+                                    });
+                                    erro = true
+                                    return false
+                            }
+                        }
+                    }else{
+                        let valor = $(input).val()
+                        if(valor.length<=0){
+                            let nome = $(input).data('name').trim()
+                            new PNotify({
+                                title: 'Ocorreu um erro!',
+                                text: 'O campo '+nome+' é obrigatório!',
+                                type: 'danger',
+                                delay: 3000
+                            });
+                            erro = true
+                            return false
+                        }
+                    }
+                }
+            })
+            if(erro){
+                return false
+            }
+        }
+        formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serialize()
 
         if (FormID != "N")
         {
@@ -406,7 +455,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         }
     }
     if("<%=FormID%>" === "N"){
-        saveForm(0, 1);
+        saveForm(0, 1,true);
         saveLog("create");
     }
 

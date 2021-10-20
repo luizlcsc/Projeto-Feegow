@@ -133,6 +133,8 @@ else
 
         if cdate(pCon("Data"))< date() then
             call registraEventoAuditoria("exclui_agendamento_passado", ConsultaID, Obs)
+        else
+            call registraEventoAuditoria("exclui_agendamento", ConsultaID, Obs)
         end if
         
         sqlDel = "update agendamentos set sysActive='-1' where id="&ConsultaID

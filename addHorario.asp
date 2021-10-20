@@ -324,8 +324,11 @@ end if
             <label><input type="checkbox" class="ace" name="Compartilhada" value="S"<%if Compartilhada="S" then response.write(" checked ") end if %> /><span class="lbl"> Compartilhar esta grade para agendamentos externos</span></label>
         </div>
         <div class="col-md-6">
+            <%
+            'QUANDO A OPÇÃO "Grade virtual" OPÇÃO ESTÁ MARCADA não existe limitação de horários e 
+            %>
             <div class="col-sm-6">
-                <label><input type="checkbox" class="ace" id="GradeEncaixe" name="GradeEncaixe" value="S" <%if GradeEncaixe="S" then response.write(" checked ") end if %> /><span class="lbl"> Grade de encaixe</span></label>
+                <label><input type="checkbox" class="ace" id="GradeEncaixe" name="GradeEncaixe" value="S" <%if GradeEncaixe="S" then response.write(" checked ") end if %> /><span class="lbl"> Grade virtual</span></label>
             </div>
             <div class="col-sm-6">
 

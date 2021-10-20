@@ -662,11 +662,17 @@ end if
                             podeVerAgendamento=False
                         end if
                     end if
+                    procedimentosGasto = comps("Procedimentos")
 
 
 					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
-                    if comps("ProcedimentosList")&"" <>"" then
-					    NomeProcedimento = stringSize(replace(comps("ProcedimentosList"), "`", ""),60)
+
+                    if procedimentosGasto&"" <>"" then
+                        NomeProcedimento = replace(procedimentosGasto, "`", "")
+                        if cint(Len(NomeProcedimento)) > 60 then
+                            NomeProcedimento = Left(val,60)
+                            NomeProcedimento = NomeProcedimento&" ..."
+                        end if
                     end if 
 
                     VariosProcedimentos = comps("Procedimentos")

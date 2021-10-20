@@ -302,27 +302,7 @@ if req("changeVersion")<>"" then
 end if
 if 1=1 then
     %>
-<div class="row hidden">
-    <div class="col-md-12 admin-grid hidden-xs">
-        <div class="panel panel-widget">
-            <div class="panel-heading ui-sortable-handle">
-                <span class="panel-title">
-                    Bem-vindo à nova versão do Feegow Clinic!
-                </span>
-                <span class="panel-controls">
-                    <button type="button" onclick="location.href='./?P=Home&Pers=1&changeVersion=6'" class="btn btn-sm btn-alert"><i class="far fa-history"></i> Voltar para versão anterior</button>
-                </span>
-
-            </div>
-
-            <div class="panel-body bg-white p15">
-                <div class="fc fc-ltr fc-unthemed">
-                    Além do novo layout, estamos publicando diversos novos recursos nesta nova versão do software. Caso tenha alguma dificuldade no uso da nova versão, você pode voltar para a versão anterior, e entraremos em contato para entendermos sua dificuldade.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<%server.Execute("modulos/marketing/RenderBanner.asp")%>
     <%
 end if
 %>

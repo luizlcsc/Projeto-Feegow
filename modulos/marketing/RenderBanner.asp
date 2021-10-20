@@ -6,7 +6,7 @@ sql = "SELECT * FROM cliniccentral.popup_comunicados WHERE JSON_CONTAINS(Versao,
 set BannerHomeSQL = db.execute(sql)
 if not BannerHomeSQL.eof then
     %>
-    <div onclick="callToActionBanner('<%=BannerHomeSQL("EndpointModal")%>', '<%=BannerHomeSQL("LinkCallToAction")%>', '<%=BannerHomeSQL("NomeComunicado")%>', '<%=BannerHomeSQL("id")%>')" class="panel panel-tile text-center br-a br-light" style="border-radius: 18px; cursor: pointer">
+    <div onclick="callToActionBanner('<%=BannerHomeSQL("EndpointModal")%>', '<%=BannerHomeSQL("LinkCallToAction")%>', '<%=BannerHomeSQL("NomeComunicado")%>', '<%=BannerHomeSQL("id")%>')" class="panel panel-tile text-center br-a br-light mt10" style="border-radius: 18px; cursor: pointer">
         <div>
             <img style="width: 100% ; object-fit: cover" src="<%=BannerHomeSQL("LinkImagem")%>" alt="<%=BannerHomeSQL("NomeComunicado")%>">
         </div>

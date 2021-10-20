@@ -646,7 +646,6 @@ end if
                 else
                     compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
-                'dd(compsSql&compsWhereSql)
                 set comps=db.execute(compsSql&compsWhereSql)
 
                 while not comps.EOF
@@ -666,11 +665,10 @@ end if
 
 
 					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
-
                     if procedimentosGasto&"" <>"" then
                         NomeProcedimento = replace(procedimentosGasto, "`", "")
                         if cint(Len(NomeProcedimento)) > 60 then
-                            NomeProcedimento = Left(val,60)
+                            NomeProcedimento = Left(NomeProcedimento,60)
                             NomeProcedimento = NomeProcedimento&" ..."
                         end if
                     end if 

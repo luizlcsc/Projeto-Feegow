@@ -4,6 +4,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <style type="text/css">
+    
     .btn-horario-multipla-filtros{
         border-radius: 0px;
     }
@@ -17,6 +18,9 @@
     .labelMargin {
         margin-top:22px;
         padding:0
+    }
+    .horariosLista {
+        padding:5px;       
     }
 </style>
 <%if recursoAdicional(41)<>4 then%>

@@ -72,7 +72,7 @@ elseif acao = "carregaComboSubEspecializacao" then
           " JOIN profissionaissubespecialidades psub ON psub.SubespecialidadeID = sub.id "&_
           " JOIN procedimento_profissional_unidade ppu ON ppu.id_profissional = psub.ProfissionalID "&_
           " JOIN profissionais p ON p.id = ppu.id_profissional "&_
-          " WHERE p.Ativo = 'on'"&_
+          " WHERE p.Ativo = 'on' AND sub.sysActive=1"&_
           " AND ppu.id_procedimento = "&ProcedimentoID&_
           " ORDER BY 2 "
     Response.write(quickfield("simpleSelect", "bSubespecialidadeID", "Sub Especialidade", 4, "", sql, "Subespecialidade", " empty "))

@@ -7,7 +7,10 @@ Versao = req("Versao")
 set VersaoSQL = dbc.execute("SELECT Versao FROM cliniccentral.Versoes WHERE Versao='"&Versao&"'")
 
 if not VersaoSQL.eof then
-    dbc.execute("UPDATE licencas SET PastaAplicacao='"&VersaoSQL("Versao")&"' WHERE id="&LicenseID)
+    sqlUpdate = "UPDATE licencas SET PastaAplicacao='"&VersaoSQL("Versao")&"' WHERE id="&LicenseID
+    dbc.execute(sqlUpdate)
+    db.execute(sqlUpdate)
+
     session("PastaAplicacaoRedirect") = VersaoSQL("Versao")
 
     if getEnv("FC_APP_ENV","local")="production" then

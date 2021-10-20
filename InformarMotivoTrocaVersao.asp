@@ -22,8 +22,7 @@ end if
 %>
 <div class="row">
     <div class="col-md-12">
-        <h3>Retornar versão</h3>
-        <p>Compartilhe conosco o que levou ocorreu.</p>
+        <p>Para que possamos melhorar, por favor compartilhe conosco o motivo da troca da versão.</p>
     </div>
 
     <%= quickField("simpleSelect", "MotivoID", "Qual motivo da troca?", 6, "", "select * from cliniccentral.motivo_troca_versao where 1 order by Motivo", "Motivo", "") %>

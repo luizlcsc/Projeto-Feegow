@@ -48,7 +48,6 @@
             comunicadoId = comunicadoObj[index].id;
             component = comunicadoObj[index].Componente;
 
-            console.log(comunicadoObj[index]);
             if(comunicadoId == 3){
                 component = <TelemedicinaPopup comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }else if(comunicadoId == 2){
@@ -64,7 +63,9 @@
             }else if(component == "GenericImagePopup"){
                 component = <GenericImagePopup imageUrl={comunicadoObj[index].LinkImagem} linkCallToAction={comunicadoObj[index].LinkCallToAction} userId={userId} licenseId={licenseId} onClosePopup={()=>{onCloseModal()}} comunicadoId={comunicadoId} onActionButton={onActionButton}/>;
             }
-            ReactDOM.render(<Popup  modalContentEndpoint={comunicadoObj[index].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));
+            if(component){
+                ReactDOM.render(<Popup  modalContentEndpoint={comunicadoObj[index].EndpointModal} component={component}/>,document.getElementById('react-popup-root'));
+            }
        } }
 
     });

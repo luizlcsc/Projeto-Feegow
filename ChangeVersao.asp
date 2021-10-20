@@ -7,7 +7,7 @@ Versao = req("Versao")
 set VersaoSQL = dbc.execute("SELECT Versao FROM cliniccentral.Versoes WHERE Versao='"&Versao&"'")
 
 if not VersaoSQL.eof then
-    sqlUpdate = "UPDATE licencas SET PastaAplicacao='"&VersaoSQL("Versao")&"' WHERE id="&LicenseID
+    sqlUpdate = "UPDATE cliniccentral.licencas SET PastaAplicacao='"&VersaoSQL("Versao")&"' WHERE id="&LicenseID
     dbc.execute(sqlUpdate)
     db.execute(sqlUpdate)
 

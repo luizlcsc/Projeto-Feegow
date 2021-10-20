@@ -633,7 +633,7 @@ end if
                 if somenteStatus&"" <> "" then
                     sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
                 end if
-                procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento) from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, coalesce((select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id),a.Procedimentos) as procedimento2 "
+                procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento ORDER BY  procedimentos.NomeProcedimento ASC SEPARATOR ', ') from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, coalesce((select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id),a.Procedimentos) as procedimento2 "
                 compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, p.matricula1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, coalesce(proc.NomeProcedimento,a.Procedimentos) as NomeProcedimento, proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao, a.Retorno from agendamentos a "&_
                 "left join pacientes p on p.id=a.PacienteID "&_
                 "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
@@ -646,6 +646,7 @@ end if
                 else
                     compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
+                'dd(compsSql&compsWhereSql)
                 set comps=db.execute(compsSql&compsWhereSql)
 
                 while not comps.EOF
@@ -662,12 +663,13 @@ end if
                         end if
                     end if
 
-					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
-                    tamanho = 60
-                    if cint(Len(NomeProcedimento)) > tamanho then
-                        NomeProcedimento = Left(NomeProcedimento,tamanho)
-                        NomeProcedimento = NomeProcedimento&" ..."
-                    end if
+					'NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
+					NomeProcedimento = stringSize(replace(comps("ProcedimentosList"), "`", ""),60)
+                    'tamanho = 60
+                    'if cint(Len(NomeProcedimento)) > tamanho then
+                    '    NomeProcedimento = Left(NomeProcedimento,tamanho)
+                    '    NomeProcedimento = NomeProcedimento&" ..."
+                    'end if
                     VariosProcedimentos = comps("Procedimentos")
 
                     'soma o tempo dos procedimentos anexos

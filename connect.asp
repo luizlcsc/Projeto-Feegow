@@ -6405,4 +6405,14 @@ function autCareTeam(SysUserID, PacienteID)
     end if
 
 end function
+
+
+function stringSize(val, size)
+
+if cint(Len(val)) > size then
+    NomeProcedimento = Left(val,size)
+    NomeProcedimento = NomeProcedimento&" ..."
+end if
+    stringSize = NomeProcedimento
+end function 
 %>

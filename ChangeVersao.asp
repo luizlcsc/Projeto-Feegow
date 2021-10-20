@@ -11,7 +11,7 @@ if not VersaoSQL.eof then
     session("PastaAplicacaoRedirect") = VersaoSQL("Versao")
 
     if getEnv("FC_APP_ENV","local")="production" then
-        response.Redirect("./"&VersaoSQL("Versao")&"/?P=Home&Pers=1")
+        response.Redirect("/"&VersaoSQL("Versao")&"/?P=Home&Pers=1")
     else
         response.Redirect("./?P=Home&Pers=1")
     end if

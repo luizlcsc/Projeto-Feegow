@@ -114,7 +114,7 @@
             </div>
         </div>
 
-        <div class="panel">
+        <div class="panel" id="conteudoWhatsapp">
             <div class="panel-body mt20">
                 <table id="table-" class="table table-striped table-bordered table-hover">
                     <thead>
@@ -125,44 +125,47 @@
                             
                             <th class=" hidden-xs ">Visualizar</th>
 
-                            <th class=" hidden-xs ">Ativo</th>
-                                
-                            <th width="1%" class="hidden-print"></th>
+                            <th width="1%" class="hidden-print">Editar</th>
                         </tr>
                     </thead>
         
                     <tbody>
                         <% 
-                            modeloDeMensagemSQL =   " SELECT                                                              "&chr(13)&_
-                                                    " se.id sysID, se.AtivoWhatsApp, se.sysActive,                        "&chr(13)&_
-                                                    " w.id whatsappID,  w.Nome, w.Descricao, w.Conteudo, w.ExemploResposta"&chr(13)&_
-                                                    " FROM cliniccentral.eventos_whatsapp w                               "&chr(13)&_
-                                                    " LEFT JOIN sys_smsemail se ON se.Descricao = w.Nome                  "
+                            modeloDeMensagemSQL =   " SELECT                                                                        "&chr(13)&_
+                                                    " eveW.id ModeloID, eveW.Nome, eveW.Descricao, eveW.Conteudo, eve.`Status`,     "&chr(13)&_
+                                                    " eveW.ExemploResposta, eve.id 'EventoID', eve.AntesDepois, eve.IntervaloHoras, "&chr(13)&_
+                                                    " eve.Unidades, eve.Especialidades, eve.ApenasAgendamentoOnline, eve.EnviarPara,"&chr(13)&_
+                                                    " eve.Procedimentos, eve.Profissionais, eve.Ativo, eve.sysActive                "&chr(13)&_
+                                                    " FROM cliniccentral.eventos_whatsapp eveW                                      "&chr(13)&_
+                                                    " LEFT JOIN eventos_emailsms eve ON eve.Descricao = eveW.Nome                   "
                             SET modeloDeMensagem = db.execute(modeloDeMensagemSQL)
 
                             i = 1
                             while not modeloDeMensagem.eof
-
-                                sysID = modeloDeMensagem("sysID")&""
+                                eveID = modeloDeMensagem("EventoID")&""
                                 tipo = modeloDeMensagem("Nome")
 
-                                if sysID = "" then
+                                if eveID = "" then
 
-                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `sysActive`) VALUES ('"&tipo&"', 0)"
-                                    db.execute(AddModeloNoSysSQL) %>
+                                    AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `sysActive`) VALUES ('"&tipo&"', 0)"
+                                    db.execute(AddModeloNoEveSQL) %>
                                     
                                     <script type="text/javascript">document.location.reload(true);</script> <%
 
                                 end if
-                                descricao = modeloDeMensagem("descricao")
+                                descricao = modeloDeMensagem("Descricao")
                                 modelo = modeloDeMensagem("Conteudo")
                                 resposta = modeloDeMensagem("ExemploResposta")
-                                ativoWhatsApp = modeloDeMensagem("AtivoWhatsApp")
-
-                                checked = ""
-                                if ativoWhatsApp = "on" then
-                                    checked = "checked"
-                                end if
+                                ativoWhatsApp = modeloDeMensagem("Ativo")
+                                sysActive = modeloDeMensagem("sysActive")
+                                statusAgenda = modeloDeMensagem("Status")
+                                intervaloHoras = modeloDeMensagem("IntervaloHoras")
+                                antesDepois = modeloDeMensagem("AntesDepois")
+                                paraApenas = modeloDeMensagem("ApenasAgendamentoOnline")
+                                profissionais = modeloDeMensagem("Profissionais")
+                                especialidades = modeloDeMensagem("Especialidades")
+                                procedimentos = modeloDeMensagem("Procedimentos")
+                                enviarPara = modeloDeMensagem("EnviarPara")
                             %>
                                 <tr>
 
@@ -178,14 +181,26 @@
                                         <button class="btn btn-xs btn-default btn-block" id="mostrar-<%=i%>" onclick="showModal(this, '<%=resposta%>')" data-toggle="modal" data-target="#modalWhatsapp" value="<%=modelo%>"><i class="fa fa-mobile-phone" style="font-size:24px"></i></button>
                                     </td>
 
-                                    <td class=" hidden-xs ">
-                                        <div class="switch switch-info switch-inline">
-                                            <input name="ativoCheckbox-<%=i%>" id="ativoCheckbox-<%=i%>" type="checkbox" onchange="activeModel(this, <%=sysID%>)" value="<%=ativoWhatsApp%>" <%=checked%> />
-                                            <label class="mn" for="ativoCheckbox-<%=i%>"></label>
+                                    <td width="1%" nowrap="nowrap" class="hidden-print">
+                                        <div class="action-buttons">
+                                            <a href="#" class="btn btn-xs btn-info tooltip-info" onclick="configWhatsapp(this, <%=eveID%>)" data-rel="tooltip" data-original-title="Editar">
+                                                <i class="far fa-edit bigger-130"></i>
+                                                <input name="statusAgenda" id="statusAgenda-<%=i%>" type="hidden" value="<%=statusAgenda%>"/>
+                                                <input name="intervalo" id="intervalo-<%=i%>" type="hidden" value="<%=intervaloHoras%>"/>
+                                                <input name="antesDepois" id="antesDepois-<%=i%>" type="hidden" value="<%=antesDepois%>" />
+                                                <input name="paraApenas" id="paraApenas-<%=i%>" type="hidden" value="<%=paraApenas%>" />
+                                                <input name="ativoCheckbox" id="ativoCheckbox-<%=i%>" type="hidden" value="<%=ativoWhatsApp%>"/>
+                                                <input name="profissionais" id="profissionais-<%=i%>" type="hidden" value="<%=profissionais%>"/>
+                                                <input name="unidades" id="unidades-<%=i%>" type="hidden" value="<%=unidades%>"/>
+                                                <input name="especialidades" id="especialidades-<%=i%>" type="hidden" value="<%=especialidades%>">
+                                                <input name="procedimentos" id="procedimentos-<%=i%>" type="hidden" value="<%=procedimentos%>"/>
+                                                <input name="enviarPara" id="enviarPara-<%=i%>" type="hidden" value="<%=enviarPara%>"/>
+                                            </a>
                                         </div>
+                
                                     </td>
-
                                 </tr>
+
                             <%
                             i = i+1
                             modeloDeMensagem.movenext
@@ -226,6 +241,45 @@
     </div>
 
     <script>
+
+        function configWhatsapp(elem, eventoWhatsappID) {
+
+            const statusAgenda   = $(elem).children("[name=statusAgenda]").val();
+            const intervalo      = $(elem).children("[name=intervalo]").val();
+            const antesDepois    = $(elem).children("[name=antesDepois]").val();
+            const paraApenas     = $(elem).children("[name=paraApenas]").val();
+            const ativoCheckbox  = $(elem).children("[name=ativoCheckbox]").val();
+            const profissionais  = $(elem).children("[name=profissionais]").val();
+            const unidades       = $(elem).children("[name=unidades]").val();
+            const especialidades = $(elem).children("[name=especialidades]").val();
+            const procedimentos  = $(elem).children("[name=procedimentos]").val();
+            const enviarPara     = $(elem).children("[name=enviarPara]").val();
+
+            $("#conteudoWhatsapp").html("Carregando...");
+
+            $.post("configWhatsapp.asp", 
+                {
+                    statusAgenda:statusAgenda,
+                    intervalo:intervalo,
+                    antesDepois:antesDepois,
+                    paraApenas:paraApenas,
+                    ativoCheckbox:ativoCheckbox,
+                    profissionais:profissionais,
+                    unidades:unidades,
+                    especialidades:especialidades,
+                    procedimentos:procedimentos,
+                    enviarPara:enviarPara,
+                    wppID: eventoWhatsappID
+                }, 
+                function(data){
+                $("#conteudoWhatsapp").html(data);
+            })
+            
+        }
+
+        $(".crumb-active a").html("Configurar Eventos");
+        $(".crumb-icon a span").attr("class", "far fa-");
+        $(".topbar-right").html('<a class="btn btn-sm btn-success" href="?P=configWhatsapp&Pers=1"><i class="far fa-plus"></i> INSERIR</a>');
     
         function showModal(elem, answerType) {
 
@@ -252,23 +306,6 @@
         function removeModalContent() {
             $('#insertModel').remove();
             $('#insertAnswer').remove();
-        }
-
-        function activeModel(elem, sysID) {
-
-            const boolean = elem.checked;
-            const wppActive = boolean===true ? "on" : "";
-
-            $.post("updateWhatsappActive.asp", 
-                {
-                    wppActive:wppActive,
-                    wppID: sysID
-                }, function(data){
-                $("#updateActive").html(data);
-            });
-
-            setTimeout(()=>{boolean === true?showMessageDialog("Ativado", "success"):showMessageDialog("Desativado", "warning");},10)
-
         }
 
             

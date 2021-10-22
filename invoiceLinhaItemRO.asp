@@ -3,8 +3,14 @@
     set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&treatvalzero(InvoiceID))
     'Caso exista alguma integração para este ítem desabilitar o botão
    ' set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
-    set procedimentos  = db.execute("Select * from procedimentos where id= "&treatvalzero(ItemID))
+    if tipo = "M" then
+        set produto  = db.execute("Select NomeProduto from produtos p  where id= "&treatvalzero(ItemID))
+        nome = produto("NomeProduto")
+    else
+        set procedimentos  = db.execute("Select NomeProcedimento from procedimentos where id= "&treatvalzero(ItemID))
+        nome = procedimentos("NomeProcedimento")
 
+    end if
 %>
 
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" class="invoice-linha-item" >
@@ -67,7 +73,7 @@
                     <%
                 end if
 
-         end if %>
+            end if %>
                 <%
                 if id>0 then
                     set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
@@ -97,7 +103,7 @@
             end if
         end if    %>
     <td colspan=2>
-    	<%=procedimentos("NomeProcedimento") %>
+    	<%=nome %>
     </td>
     <td>
         <% if integracaopleres <>"S" then %>

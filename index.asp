@@ -205,7 +205,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.12.0">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.13.0">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -1938,14 +1938,12 @@ function openRedefinirSenha(){
 function reloadTitle(){
     var pageName = $(".crumb-active").text();
 
-    if(pageName){
+    if(pageName.length > 5){
         document.title = "Feegow - "+pageName;
     }
 }
 
-setTimeout(function(){
-    $(".crumb-active").bind('DOMSubtreeModified', reloadTitle);
-}, 1000);
+$(".crumb-active").bind('DOMSubtreeModified', reloadTitle);
 
 $(document).ready(function() {
     reloadTitle();

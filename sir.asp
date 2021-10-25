@@ -19,6 +19,7 @@ end function
 
 
     exibir=ref("exibir")
+    TermoBuscado=ref("q")
     if exibir<>"" then
         exibir = replace(exibir,"|","'")
         sqlExibir = " AND id IN ("&exibir&")"

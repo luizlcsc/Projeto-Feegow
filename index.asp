@@ -188,7 +188,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <link type="text/css" rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.css" />
   <!-- Meta, title, CSS, favicons, etc. -->
   <meta charset="utf-8">
-  <title>Feegow:: <%=session("NameUser")%></title>
+  <title>Feegow</title>
   <meta http-equiv="Content-Language" content="pt-br">
   <meta name="author" content="Feegow">
 
@@ -1935,7 +1935,20 @@ function openRedefinirSenha(){
               },"md",false);
 }
 
+function reloadTitle(){
+    var pageName = $(".crumb-active").text();
+
+    if(pageName){
+        document.title = "Feegow - "+pageName;
+    }
+}
+
+setTimeout(function(){
+    $(".crumb-active").bind('DOMSubtreeModified', reloadTitle);
+}, 1000);
+
 $(document).ready(function() {
+    reloadTitle();
 
     var $iptSearch = $("#sidebar-search");
     var $contentSearch = $("#sidebar-search-content");

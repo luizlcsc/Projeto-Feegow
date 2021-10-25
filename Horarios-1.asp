@@ -251,11 +251,12 @@ end if
             if instr(newStringIds,"N")=0 then
 
                 if newStringIds <> "" then
-
-
                     ' gambi seria
                     if instr(newStringIds,"P") then
                         newStringIds = replace(newStringIds,"P,","")
+                        if  instr(newStringIds,"P") then
+                            newStringIds = replace(newStringIds,"P","")
+                        end if
                         mudei= true
                     end if 
 
@@ -271,10 +272,15 @@ end if
                         sqlConvs = sqlConvs&")"
                     end if 
 
-                    sqlConvs=sqlConvs&"convs from convenios where id in("&fix_array_comma(newStringIds)&")"
+                    sqlConvs=sqlConvs&" convs from convenios" 
+
+                    ' response.write(sqlConvs)
+                    if len(newStringIds) >0 then
+                        sqlConvs=sqlConvs&" where id in("&fix_array_comma(newStringIds)&")"
+                    end if 
+
                     
                      ' fim gambi seria
-
                     set convs = db.execute(sqlConvs)
                     if not convs.eof then
                         getNomeConvenios = convs("convs")

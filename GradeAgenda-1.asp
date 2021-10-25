@@ -278,7 +278,7 @@ end if
 %>
 <script type="text/javascript">
     function crumbAgenda(){
-        $(".crumb-active").html("<a href='./?P=Agenda-1&Pers=1'>Agenda</a>");
+        $(".crumb-active").html("<a href='./?P=Agenda-1&Pers=1'>Agenda diária</a>");
         $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");

@@ -33,7 +33,7 @@ end if
     <meta name="robots" content="noindex">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
-    <title>Feegow :: seja bem-vindo</title>
+    <title>Feegow - Seja bem-vindo</title>
     <meta http-equiv="Content-Language" content="pt-br">
     <meta name="author" content="Feegow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

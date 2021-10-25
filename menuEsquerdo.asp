@@ -1194,19 +1194,24 @@ end if
             end if
             %>
     <%
-    case "tabelaspreco", "autorizacaotabelapreco"
+    case "tabelaspreco", "autorizacaotabelapreco", "consultaprecoprocedimento"
             %>
-            <li>
+            <li <%if lcase(req("P"))="tabelaspreco" then%>class="active"<%end if%>>
                 <a href="?P=TabelasPreco&Pers=1"><span class="fa fa-table"></span> <span class="sidebar-title">Preços de custo e venda</span></a>
             </li>
             <%
             if aut("|aprovacaotabelaprecoV|")=1 and ModoFranquia then
             %>
-            <li>
-                <a href="?P=AutorizacaoTabelaPreco&Pers=1"><span class="fa fa-check"></span> <span class="sidebar-title">Solicitações de preço</span></a>
+            <li <%if lcase(req("P"))="autorizacaotabelapreco" then%>class="active"<%end if%>>
+                <a href="?P=AutorizacaoTabelaPreco&Mod=tabela_preco&Pers=1"><span class="fa fa-check"></span> <span class="sidebar-title">Solicitações de preço</span></a>
             </li>
             <%
             end if
+            %>
+            <li <%if lcase(req("P"))="consultaprecoprocedimento" then%>class="active"<%end if%>>
+                <a href="?P=ConsultaPrecoProcedimento&Mod=tabela_preco&Pers=1"><span class="far fa-search"></span> <span class="sidebar-title">Consulta de preço <span class="label label-system label-xs fleft">Novo</span></span></a>
+            </li>
+            <%
     case "fornecedores"
         if isnumeric(req("I")) and req("I")<>"" then
             %>

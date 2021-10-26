@@ -29,7 +29,7 @@ else
     Unidades= session("Unidades")
 end if
 if Unidade="" then
-    Unidades = "0"
+    Unidades = "-1"
 end if
 if ModoFranquiaUnidade then
     Unidades = "|"&session("UnidadeID")&"|"

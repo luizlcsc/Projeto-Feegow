@@ -501,13 +501,50 @@ if erro="" then
         if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
 
             '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
-            if recursoAdicional(43) = 4 then
-                if ref("ConfSMS")="S" AND ref("StaID")=7 then 'ENVIO SOMENTE STATUS CONFIRMADO
+            if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
+                
+                'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
+                validaEventosSQL =  "SELECT ev.id, ev.Status, ev.Descricao                                            "&chr(13)&_
+                                    "FROM eventos_emailsms ev "&chr(13)&_                                                              
+                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.Nome = ev.Descricao "&chr(13)&_
+                                    "WHERE ev.WhatsApp=1                                                              "&chr(13)&_                                                                                         
+                                    "AND ev.sysActive=1                                                               "&chr(13)&_
+                                    "AND eveWha.id IS NOT NULL                                                        "&chr(13)&_                                                                                          
+                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|1879|%')        "&chr(13)&_               
+                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|0|%')                     "&chr(13)&_                       
+                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|126|%')       "&chr(13)&_           
+                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|16|%')          "&chr(13)&_                
+                                    "AND (ev.Status LIKE '%|ALL|%' OR ev.Status LIKE '%|7|%')"
+                set validaEventos = db.execute(validaEventosSQL)
+                if not validaEventos.eof then
+                    while not validaEventos.eof
+                        
+                        EventoStatus = validaEventos("Status")
+                        EventoID = validaEventos("id")
+                        bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
+                        bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
 
-                    call webhook(119, true, "[agendamentoID]", ref("ConsultaID"))            
+                        'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
+                        if (ref("StaID") = 7 and instr(EventoStatus,"|7|")>0 ) OR (ref("StaID") = 1 and instr(EventoStatus,"|1|")>0 ) then
+                            call webhook(119, true, bodyContentFrom, bodyContentTo)  
+                        end if
+                        '***********************************************************************************
+                        '*APÓS HOMOLOGAR SISTEMA DE MENSAGENS, APROVAR COM A BLIP NOVOS MODELOS DE MENSAGEM*
+                        '*E CRIAR EVENTOS EM NOSSO HOOK NO CLINICCENTRAL COM OS STATUS ABAIXO***************
+                        '***********************************************************************************
+                            'ATENDIDO = 3
+                            'DESMARCADO PELO PACIENTE = 11
+                            'NÃO COMPARECEU = 6
+                            'REMARCADO = 15
 
+                    validaEventos.movenext
+                    wend
                 end if
+                validaEventos.close
+                set validaEventos = nothing
+                
             end if
+
             '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             %>
             getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })

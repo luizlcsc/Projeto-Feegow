@@ -25880,10 +25880,10 @@ body.timeline-page #content {
 
 #timeline.timeline-single .panel:before,
 #timeline.timeline-single .panel:after {
-    right: 99.8%;
+    right: 100%;
     left: auto;
     border-width: 8px 12px 8px 0;
-    border-color: transparent #f0f2f5 transparent transparent;
+    border-color: transparent #f8f9fa transparent transparent;
 }
 
 #timeline.timeline-single .panel:after {

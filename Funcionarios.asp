@@ -127,7 +127,6 @@ end if
                             unidades.close
                             set unidades=nothing
                             %>
-                                unidadesFuncionario = regUnidades
                             </div>
                         </div>
                     </div>

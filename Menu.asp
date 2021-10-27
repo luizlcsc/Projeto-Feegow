@@ -7,20 +7,20 @@
 						<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
 							<a href="./?P=Pacientes">
                             <button class="btn btn-warning tooltip-warning" title="" data-placement="bottom" data-rel="tooltip" data-original-title="Pacientes">
-								<i class="fa fa-group"></i>
+								<i class="far fa-group"></i>
 							</button>
                             </a>
 
 							<button class="btn btn-info tooltip-info" title="" data-placement="bottom" data-rel="tooltip" data-original-title="Agenda">
-								<i class="fa fa-calendar"></i>
+								<i class="far fa-calendar"></i>
 							</button>
 
 							<button class="btn btn-success tooltip-success" title="" data-placement="bottom" data-rel="tooltip" data-original-title="Prontu&aacute;rios">
-								<i class="fa fa-stethoscope"></i>
+								<i class="far fa-stethoscope"></i>
 							</button>
 
 							<button class="btn btn-danger tooltip-danger" title="" data-placement="bottom" data-rel="tooltip" data-original-title="Configura&ccedil;&otilde;es">
-								<i class="fa fa-cog"></i>
+								<i class="far fa-cog"></i>
 							</button>
 						</div>
 
@@ -43,7 +43,7 @@
 						%>
 						<li>
 							<a href="#" class="dropdown-toggle">
-								<i class="fa fa-<%=Cat("Icon")%>"></i>
+								<i class="far fa-<%=Cat("Icon")%>"></i>
 								<span class="menu-text"> <%=Cat("Title")%> </span>
 							<%if not Menu.EOF then%>
 								<b class="arrow icon-angle-down"></b>
@@ -56,7 +56,7 @@
                                 %>
                                     <li>
                                         <a href="<%=Menu("Link")%>">
-                                            <i class="fa fa-double-angle-right"></i>
+                                            <i class="far fa-double-angle-right"></i>
                                             <%=Menu("Title")%>
                                         </a>
                                     </li>
@@ -78,7 +78,7 @@
 					</ul><!-- /.nav-list -->
 
 					<div class="sidebar-collapse" id="sidebar-collapse">
-						<i class="fa fa-double-angle-left" data-icon1="fa fa-double-angle-left" data-icon2="fa fa-double-angle-right"></i>
+						<i class="far fa-double-angle-left" data-icon1="far fa-double-angle-left" data-icon2="far fa-double-angle-right"></i>
 					</div>
 
 					<script type="text/javascript">

@@ -16,7 +16,7 @@ response.Buffer
 
 function buttonDetalharDominio(itemId)
     buttonDetalharDominio="<div class='pb5 ' style='float: right'>" &_
-                          "<button title='Detalhar regras de repasse' data-toggle='tooltip' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='fa fa-question-circle'></i></button>" &_
+                          "<button title='Detalhar regras de repasse' data-toggle='tooltip' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='far fa-question-circle'></i></button>" &_
                           "</div>"
 end function
 
@@ -777,7 +777,7 @@ end if
                 <td rowspan="2" valign="top" style="vertical-align:top">
                     <input id="invoiceID" name="invoiceID" type="hidden" value="<%= InvoiceID %>">
                     <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=Invoice&Pers=1&CD=C&I=<%= InvoiceID %>">
-                        <i class="fa fa-chevron-right"></i>
+                        <i class="far fa-chevron-right"></i>
                     </a>
                 </td>
                 <td> <%= DataExecucao %></td>

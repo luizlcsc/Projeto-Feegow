@@ -20,7 +20,7 @@ end if
 
 if Acao="I" then
 
-    call linhaAgenda(linhas, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+    call linhaAgenda(linhas, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios, true)
 end if
 %>
 <script type="text/javascript">

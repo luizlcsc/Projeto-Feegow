@@ -4,12 +4,12 @@
     $(".crumb-active a").html("Gerenciar Sprints");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("lista de sprints");
-    $(".crumb-icon a span").attr("class", "fa fa-users");
+    $(".crumb-icon a span").attr("class", "far fa-users");
     <%
     if aut("tarefasI")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=sprints&I=N&Pers=1"><i class="fa fa-users"></i><span class="menu-text"> Inserir sprint</span></a>&nbsp;&nbsp;' +
-     '<a class="btn btn-sm btn-primary" href="./?P=listaTarefas&Pers=1"><i class="fa fa-tasks"></i><span class="menu-text"> Tarefas</span></a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success" href="./?P=sprints&I=N&Pers=1"><i class="far fa-users"></i><span class="menu-text"> Inserir sprint</span></a>&nbsp;&nbsp;' +
+     '<a class="btn btn-sm btn-primary" href="./?P=listaTarefas&Pers=1"><i class="far fa-tasks"></i><span class="menu-text"> Tarefas</span></a>');
     <%
     end if
     %>
@@ -71,7 +71,7 @@
                         <td class="text-center"><%=Responsaveis%></td>
                         <td class="text-center"><%=Participantes%></td>
                         <td class="text-center"><%=sprints("Obs")%></td>
-                        <td class="text-center"><a href="./?P=sprints&Pers=1&I=<%=sprints("id") %>" class="btn btn-success btn-xs"><i class="fa fa-edit"></i></a></td>
+                        <td class="text-center"><a href="./?P=sprints&Pers=1&I=<%=sprints("id") %>" class="btn btn-success btn-xs"><i class="far fa-edit"></i></a></td>
                     </tr>
                 <%
                    sprints.movenext

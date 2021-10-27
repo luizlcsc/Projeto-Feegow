@@ -32,7 +32,7 @@
 
 <script type="text/javascript">
     $("#frmLog").submit(function () {
-        $("#logsResult").html("<i class='fa fa-cog fa-spin'></i> Carregando...");
+        $("#logsResult").html("<i class='far fa-cog fa-spin'></i> Carregando...");
         $.post("DefaultLog.asp", $(this).serialize(), function (data) {
             $("#logsResult").html(data);
         });
@@ -40,5 +40,5 @@
     });
 
     $(".crumb-active a").html("Logs de Ações");
-    $(".crumb-icon a span").attr("class", "fa fa-history");
+    $(".crumb-icon a span").attr("class", "far fa-history");
 </script>

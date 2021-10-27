@@ -87,8 +87,8 @@ if ModeloID="0" or ModeloID="X" then
             <td><%=conts("DataHora") %></td>
             <td><%=nameInTable(conts("sysUser")) %></td>
             <td><%=conts("NomeModelo") %></td>
-            <td><button class="btn btn-xs btn-success" onclick="openContrato(<%=conts("id") %>)"><i class="fa fa-edit"></i></button></td>
-            <td><button class="btn btn-xs btn-danger" onclick="javascript:if(confirm('Tem certeza de que deseja apagar este contrato?'))addContrato('X', <%=conts("id") %>, '<%=ContaID %>')"><i class="fa fa-remove"></i></button></td>
+            <td><button class="btn btn-xs btn-success" onclick="openContrato(<%=conts("id") %>)"><i class="far fa-edit"></i></button></td>
+            <td><button class="btn btn-xs btn-danger" onclick="javascript:if(confirm('Tem certeza de que deseja apagar este contrato?'))addContrato('X', <%=conts("id") %>, '<%=ContaID %>')"><i class="far fa-remove"></i></button></td>
         </tr>
         <%
     conts.movenext
@@ -102,8 +102,11 @@ if ModeloID="0" or ModeloID="X" then
 elseif ModeloID<>"" and ModeloID<>"0" then
     
     if req("Tipo")<>"SADT" then
-        set pinv = db.execute("select i.* from sys_financialinvoices i where i.id="&InvoiceID)
+        set pinv = db.execute("select i.*, coalesce(mov.ValorPago) ValorPago from sys_financialinvoices i join sys_financialmovement mov on mov.InvoiceID=i.id where i.id="&InvoiceID)
         if not pinv.eof then
+            ValorPago = pinv("ValorPago")
+            ValorTotal = pinv("Value")
+            TotalPendente = ValorTotal - ValorPago
             PacienteContrato = pinv("AccountID")
             UnidadeInvoiceID = pinv("CompanyUnitID")
         end if
@@ -116,6 +119,11 @@ elseif ModeloID<>"" and ModeloID<>"0" then
         end if
 
         ModeloContrato=replace(ModeloContrato,"AReceber","Receita")
+
+
+        ModeloContrato = replace(ModeloContrato, "[Receita.ValorTotal]", fn(ValorTotal))
+        ModeloContrato = replace(ModeloContrato, "[Receita.TotalPago]", fn(ValorPago))
+        ModeloContrato = replace(ModeloContrato, "[Receita.ValorPendente]", fn(TotalPendente))
 
         if instr(ModeloContrato, "[Receita.PrimeiroVencimento]")>0 and InvoiceID>0 then
             set PrimeiroVencimentoSQL = db.execute("SELECT date FROM sys_financialmovement WHERE InvoiceID="&InvoiceID&" AND Type='Bill' order by Date ASC")
@@ -414,7 +422,6 @@ elseif ModeloID<>"" and ModeloID<>"0" then
             end if
 
 
-
             Contrato = replace(Contrato, "[Contrato.DataPagamento]", DataPagamento)
             Contrato = replace(Contrato, "[-Usuario.Nome-]", UsuarioRecebimento)
             Contrato = replace(Contrato, "[Contrato.FormaPagamento]", FormaPagto)
@@ -567,7 +574,7 @@ end if
 </div>
 <div class="modal-footer">
     <%if exibeCont=1 then %>
-    <button class="btn btn-primary" onclick="saveContrato()"><i class="fa fa-save"></i> Salvar e Imprimir</button>
+    <button class="btn btn-primary" onclick="saveContrato()"><i class="far fa-save"></i> Salvar e Imprimir</button>
     <%end if %>
 </div>
 

@@ -15,7 +15,7 @@ set reg = db.execute("select * from Pacientes where id="&req("I"))
         <div class="col-md-8">
             <ul class="breadcrumb">
                 <li>
-                    <i class="fa fa-dashboard home-icon"></i>
+                    <i class="far fa-dashboard home-icon"></i>
                     <a href="?P=Home&Pers=1">In&iacute;cio</a>
                 </li>
                 <li>
@@ -29,7 +29,7 @@ set reg = db.execute("select * from Pacientes where id="&req("I"))
 		if (reg("sysActive")=1 and aut("pacientesA")=1) or (reg("sysActive")=0 and aut("pacientesI")=1) then
 		%>
             <button class="btn btn-block btn-primary" id="save">
-                <i class="fa fa-save"></i> Salvar
+                <i class="far fa-save"></i> Salvar
             </button>
         <%
 		end if
@@ -37,7 +37,7 @@ set reg = db.execute("select * from Pacientes where id="&req("I"))
         </div>
         <div class="col-md-2">
             <button type="button" id="btnFicha" class="btn btn-block btn-info">
-                <i class="fa fa-print"></i> Imprimir Ficha
+                <i class="far fa-print"></i> Imprimir Ficha
             </button>
         </div>
     </div>
@@ -58,7 +58,7 @@ end if
             </div>
             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
 	            <img id="avatarFoto" src="uploads/<%=reg("Foto")%>" class="img-thumbnail" width="100%" />
-                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
     </div>
     <div class="col-md-10">
@@ -98,7 +98,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="abaForms" href="#forms" onclick="PacientesForms('AE');">
-                <i class="fa fa-bar-chart bigger-110"></i>
+                <i class="far fa-bar-chart bigger-110"></i>
                 <span class="hidden-480">Anamnese e Evolu&ccedil;&otilde;es</span>
             </a>
         </li>
@@ -108,7 +108,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" href="#forms" onclick="PacientesForms('L');">
-                <i class="fa fa-align-justify bigger-110"></i>
+                <i class="far fa-align-justify bigger-110"></i>
                 <span class="hidden-480">Laudos</span>
             </a>
         </li>
@@ -118,7 +118,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="tabDiagnosticos" href="#divDiagnosticos">
-                <i class="fa fa-stethoscope bigger-110"></i>
+                <i class="far fa-stethoscope bigger-110"></i>
                 <span class="hidden-480">Diagn&oacute;sticos &raquo; <small>CID-10</small></span>
             </a>
         </li>
@@ -128,7 +128,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="abaPrescricoes" href="#prescricoes">
-                <i class="fa fa-beaker bigger-110"></i>
+                <i class="far fa-beaker bigger-110"></i>
                 <span class="hidden-480">Prescri&ccedil;&otilde;es</span>
             </a>
         </li>
@@ -138,7 +138,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="abaAtestados" href="#atestados">
-                <i class="fa fa-foursquare bigger-110"></i>
+                <i class="far fa-foursquare bigger-110"></i>
                 <span class="hidden-480">Atestados</span>
             </a>
         </li>
@@ -148,7 +148,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="abaPedidos" href="#pedidosexame">
-                <i class="fa fa-hospital bigger-110"></i>
+                <i class="far fa-hospital bigger-110"></i>
                 <span class="hidden-480">Pedidos de Exame</span>
             </a>
         </li>
@@ -158,7 +158,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="tabImagens" href="#divImagens">
-                <i class="fa fa-camera bigger-110"></i>
+                <i class="far fa-camera bigger-110"></i>
                 <span class="hidden-480">Imagens</span>
             </a>
         </li>
@@ -168,7 +168,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="tabArquivos" href="#divArquivos">
-                <i class="fa fa-file bigger-110"></i>
+                <i class="far fa-file bigger-110"></i>
                 <span class="hidden-480">Arquivos</span>
             </a>
         </li>
@@ -178,7 +178,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" href="#HistoricoPaciente" onclick="agendamentos(<%=req("I")%>);">
-                <i class="fa fa-calendar bigger-110"></i>
+                <i class="far fa-calendar bigger-110"></i>
                 <span class="hidden-480">Agendamentos</span>
             </a>
         </li>
@@ -188,7 +188,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="tabRecibos" href="#divRecibos">
-                <i class="fa fa-edit bigger-110"></i>
+                <i class="far fa-edit bigger-110"></i>
                 <span class="hidden-480">Recibos</span>
             </a>
         </li>
@@ -198,7 +198,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" href="#tiss">
-                <i class="fa fa-exchange"></i>
+                <i class="far fa-exchange"></i>
                 <span class="hidden-480">Guias TISS</span>
             </a>
         </li>
@@ -208,7 +208,7 @@ end if
 		%>
         <li>
             <a data-toggle="tab" class="tab" id="tabExtrato" href="#divExtrato">
-                <i class="fa fa-money"></i>
+                <i class="far fa-money"></i>
                 <span class="hidden-480">Extrato</span>
             </a>
         </li>
@@ -502,8 +502,8 @@ jQuery(function($) {
 	//editables on first profile page
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
-	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="fa fa-ok icon-white"></i></button>'+
-								'<button type="button" class="btn editable-cancel"><i class="fa fa-remove"></i></button>';    
+	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="far fa-ok icon-white"></i></button>'+
+								'<button type="button" class="btn editable-cancel"><i class="far fa-remove"></i></button>';
 	
 	
 	
@@ -526,8 +526,8 @@ jQuery(function($) {
 			</div>\
 			\
 			<div class="modal-footer center">\
-				<button type="submit" class="btn btn-small btn-success"><i class="fa fa-ok"></i> Submit</button>\
-				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="fa fa-remove"></i> Cancel</button>\
+				<button type="submit" class="btn btn-small btn-success"><i class="far fa-ok"></i> Submit</button>\
+				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="far fa-remove"></i> Cancel</button>\
 			</div>\
 			</form>\
 		</div>';

@@ -63,7 +63,7 @@ Valor = regAte("Valor")
 </div>
 <div class="modal-footer no-margin-top">
     <button class="btn btn-sm btn-success pull-right" data-dismiss="modal">
-        <i class="fa fa-remove"></i>
+        <i class="far fa-remove"></i>
         Fechar
     </button>
     

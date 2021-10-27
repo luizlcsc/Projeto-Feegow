@@ -25,6 +25,22 @@ else
 	AccountIDDebit = AccountIDInvoice
 	reverse = "C"
 end if
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
+contabloqueadacred = verificaBloqueioConta(2, 1, AccountIDCredit, UnidadeID,DataPagto)
+contabloqueadadebt = verificaBloqueioConta(2, 1, AccountIDDebit, UnidadeID,DataPagto)
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+	retorno  = " alert('Esta conta está BLOQUEADA e não pode ser alterada!'); " &_
+               " $('.parcela').prop('checked', false); " &_
+			   " $('#modal-table').modal('hide');"&_
+               " geraParcelas('N'); "
+    response.write(retorno)
+	if ref("Lancto")="Dir" then>
+		response.write(" window.opener.ajxContent('Conta', "&AccountIDInvoice&", '1', 'divHistorico');")
+	end if
+    response.end
+end if
+' #####################################################################################
 
 db_execute("insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate, CaixaID, UnidadeID, sysUser) values ('Pagamento', '"&AccountAssociationIDCredit&"', '"&AccountIDCredit&"', '"&AccountAssociationIDDebit&"', '"&AccountIDDebit&"', "&ref("MetodoID")&", '"&treatVal(ValorPagto)&"', '"&myDate(DataPagto)&"', '"&reverse&"', 'Pay', '"&ref("Obs")&"', '"&ref("PaymentCurrency")&"', 1, "&treatvalnull(ref("CaixaID"))&", "&treatvalzero(session("UnidadeID"))&", "&session("User")&")")
 set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")

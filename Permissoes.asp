@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 PessoaID = req("I")
@@ -22,11 +23,31 @@ if req("ExcluiRegra")<>"" then
 	db_execute("delete from RegrasDescontos where RegraID = '"&req("ExcluiRegra")&"'")
 end if
 
+if req("DuplicarRegra")<>"" then
+    set pr=db.execute("select * from regraspermissoes where id = '"&req("DuplicarRegra")&"'")
+    NomeRegra = pr("Regra")&" (Cópia)"
+
+    db.execute("INSERT INTO regraspermissoes (Regra, Permissoes, limitarecpag, LimitarContasPagar) VALUES ('"&NomeRegra&"', '"&pr("Permissoes")&"', '"&pr("limitarecpag")&"', '"&pr("LimitarContasPagar")&"')")
+
+    %>
+    <script type="text/javascript">
+    new PNotify({
+        title: 'Sucesso!',
+        text: 'Regra duplicada com sucesso.',
+        type: 'success',
+        delay: 1500
+    });
+    </script>
+    <%
+end if
+
 if req("AplicaRegra")<>"" then
 	set pr=db.execute("select * from regraspermissoes where id = '"&req("AplicaRegra")&"'")
 	if not pr.eof then
 
 	    sqlAplicaRegra="update sys_users set RegraID="&pr("id")&", Permissoes='"&pr("Permissoes")&" ["&pr("id")&"]', limitarecpag='"& pr("limitarecpag") &"' where id = '"& req("UsId") &"'"
+
+	    call registraEventoAuditoria("altera_permissionamento", req("UsId"), "Regra "&pr("Regra")&" aplicada")
         call gravaLogs(sqlAplicaRegra, "AUTO", "Regra "&pr("Regra")&" aplicada", "")
 		db_execute(sqlAplicaRegra)
 		%>
@@ -62,6 +83,8 @@ if ref("e")<>"" then
 		end if
 	else
 	    sqlUpdatePermissoes = "update sys_users set Permissoes='"&ref("Permissoes")&"', limitarcontaspagar='"& ref("limitarcontaspagar") &"',OcultarLanctoParticular='"& ref("OcultarLanctoParticular") &"' where id="&ref("e")
+
+	    call registraEventoAuditoria("altera_permissionamento", ref("e"), "Permissões alteradas")
 	    call gravaLogs(sqlUpdatePermissoes, "AUTO", "Permissões alteradas", "")
 
 		db_execute(sqlUpdatePermissoes)
@@ -143,7 +166,7 @@ else
             <span class="title">Permissões de <%=Nome%></span>
 
             <button type="button" onclick="MostraLogsPermissoes()" class="btn btn-sm btn-default fright mt10" style="float: right">
-                <i class="fa fa-history"></i>
+                <i class="far fa-history"></i>
             </button>
         </div>
         <div class="panel-body">
@@ -246,7 +269,7 @@ else
 	          <tr class="info">
 		        <td>Se desejar utilizar estas mesmas permiss&otilde;es em outro usu&aacute;rio, d&ecirc; um nome a esta regra:</td>
 		        <td colspan="2"><input type="text" name="Regra" class="form-control" placeholder="Nome da regra (opcional)" /></td>
-		        <td colspan="2"><button class="btn btn-primary"><i class="fa fa-save"></i> Salvar permiss&otilde;es</button></td>
+		        <td colspan="2"><button class="btn btn-primary"><i class="far fa-save"></i> Salvar permiss&otilde;es</button></td>
 	          </tr>
 	        </table>
         </div>
@@ -258,7 +281,7 @@ else
 	<div class="panel-heading success">
         <span class="panel-title">Voc&ecirc; tamb&eacute;m pode aplicar uma das regras predefinidas abaixo</span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-primary btn-sm" onClick="editaRegra('N')"><i class="fa fa-plus"></i>  Inserir Regra</button>
+            <button type="button" class="btn btn-primary btn-sm" onClick="editaRegra('N')"><i class="far fa-plus"></i>  Inserir Regra</button>
         </span>
 	</div>
 	<%
@@ -270,11 +293,12 @@ else
 	    while not pr.eof
 	    %>
 	    <tr>
-        <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="fa fa-check green"></i><%end if%></td>
+        <td width="1%"><%if instr(PermissoesUsuario, "["&pr("id")&"]")>0 then%><i class="far fa-check green"></i><%end if%></td>
 	    <td width="92%"><%=pr("Regra")%></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=req("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="fa fa-check"></i> Aplicar</button></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="fa fa-edit"></i> Editar</button></td>
-	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=req("T")%>&ExcluiRegra=<%=pr("id")%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="fa fa-remove"></i> Excluir</button></td></tr>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-default" onclick="ajxContent('Permissoes&T=<%=req("T")%>&DuplicarRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-copy"></i> Duplicar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-info" onclick="ajxContent('Permissoes&T=<%=req("T")%>&AplicaRegra=<%=pr("id")%>&UsId=<%=UserID%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-check"></i> Aplicar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-success" onclick="editaRegra(<%=pr("id")%>)"><i class="far fa-edit"></i> Editar</button></td>
+	    <td width="4%"><button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir esta regra de permissionamento?'))ajxContent('Permissoes&T=<%=req("T")%>&ExcluiRegra=<%=pr("id")%>', <%=req("I")%>, 1, 'divPermissoes');"><i class="far fa-remove"></i> Excluir</button></td></tr>
 	    <%
 	    pr.movenext
 	    wend
@@ -322,7 +346,7 @@ function editaRegra(I){
 	$.post("EditaPermissoes.asp?I="+I+"&T=<%=req("T")%>&PessoaID=<%=req("I")%>", "", function(data, status){ $("#modal").html(data) });
 }
 
-	          <!--#include file="JQueryFunctions.asp"-->
+<!--#include file="JQueryFunctions.asp"-->
 
 function MostraLogsPermissoes() {
     openComponentsModal("LogPermissoes.asp", {I: '<%=UserID%>', R: 'sys_users'},"Log das permissões")

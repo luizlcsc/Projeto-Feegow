@@ -13,7 +13,7 @@
 
         %>
         new PNotify({
-            title: '<i class="fa fa-save"></i>',
+            title: '<i class="far fa-save"></i>',
             text: 'Descrição alterada com sucesso.',
             type: 'success'
         });
@@ -172,7 +172,7 @@ if ArquivoImagem="Imagem" then
 %>
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs" onclick="comparar()">
-    <span class="fa fa-columns	"></span>
+    <span class="far fa-columns	"></span>
   </button>
   <div class="btn-group">
     <fieldset>
@@ -186,7 +186,7 @@ end if
 %>
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs">
-    <span class="fa fa-tag"></span>
+    <span class="far fa-tag"></span>
   </button>
   <div class="btn-group">
     <fieldset>
@@ -213,7 +213,7 @@ end if
 <div class='max-width' style="display: flex"></div>
 <div class="galery" id="galery">
     <div class="fa-2x" style="text-align: center">
-        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <i class="far fa-circle-o-notch fa-spin"></i>
     </div>
 </div>
 
@@ -349,28 +349,28 @@ end if
                                     </small>
 
                                     <button class="btn btn-xs btn-alert" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
-                                        <i class="fa fa-copy"></i>
+                                        <i class="far fa-copy"></i>
                                     </button>
                                     <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
-                                                              <i class="fa fa-cog"></i>
+                                                              <i class="far fa-cog"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
-                                                              <i class="fa fa-expand icon-external-link"></i>
+                                                              <i class="far fa-expand icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}&dimension=full&rotate=${item.imgRotate}" target="_blank" title="Abrir Imagem em outra aba">
-                                                              <i class="fa fa-external-link icon-external-link"></i>
+                                                              <i class="far fa-external-link icon-external-link"></i>
                                     </a>
                                     <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}', ${item.imgRotate})" title="Girar 90°">
-                                            <i class="fa fa-rotate-right"></i>
+                                            <i class="far fa-rotate-right"></i>
                                     </a>
                                     <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
-                                                        <i class="fa fa-info-circle"></i>
+                                                        <i class="far fa-info-circle"></i>
                                     </a>-->
                                     <a class="hidden btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
-                                                        <i class="fa fa-pencil icon-pencil"></i>
+                                                        <i class="far fa-pencil icon-pencil"></i>
                                     </a>
                                     <a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">
-                                        <i class="fa fa-trash icon-trash"></i>
+                                        <i class="far fa-trash icon-trash"></i>
                                     </a>
                                 </div>
 
@@ -378,6 +378,7 @@ end if
                              <div class="galery-img sensitive-data">
                                 <${item.formato} href="${item.ArquivoLink}" target="_blank">
                                     <img
+                                        loading=lazy
                                         src="${item.link}"
                                         data-id="${item.id}"
                                         class="${item.extension} img-responsive"
@@ -418,7 +419,7 @@ end if
              <div class="data-envio">
             <div class="pull-right">
                 <a class="btn btn-xs btn-danger" onclick="$('.galery-item-max').remove()" id="excluir" title="Excluir Imagem">
-                    <i class="fa fa-times icon-trash"></i>
+                    <i class="far fa-times icon-trash"></i>
                 </a>
             </div>
 Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
@@ -426,6 +427,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
           </div>
           <div class="galery-img">
             <img
+                loading=lazy
                 src="${item.ArquivoLink}&dimension=full"
                 data-id="${item.id}"
                 class="${item.extension} img-responsive"
@@ -478,7 +480,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-success" onClick='saveTipo(${id})'><i class="fa fa-save"></i> Salvar</button>
+                                <button type="button" class="btn btn-success" onClick='saveTipo(${id})'><i class="far fa-save"></i> Salvar</button>
                             </div>
                             </div><!-- /.modal-content -->
                         </div><!-- /.modal-dialog -->
@@ -571,7 +573,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                                  <div class="data-envio">
                                 <div class="pull-right">
                                     <a class="btn btn-xs btn-danger" onclick="$('.galery-item-max').remove()" id="excluir" title="Excluir Imagem">
-                                        <i class="fa fa-times icon-trash"></i>
+                                        <i class="far fa-times icon-trash"></i>
                                     </a>
                                 </div>
                     Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescricao}
@@ -579,6 +581,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                               </div>
                               <div class="galery-img">
                                 <img
+                                    loading=lazy
                                     src="${item.ArquivoLink}&dimension=full"
                                     width="100%"
                                     height="100%"

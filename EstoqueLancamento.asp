@@ -33,7 +33,7 @@ end if
 
 if TipoLancto="E" then
 	tipo = "Entrada"
-	icone = "fa fa-level-down"
+	icone = "far fa-level-down"
 	tipoValor = "Compra"
 	if not isnull(prod("PrecoCompra")) then
 		valor = formatnumber(prod("PrecoCompra"),2)
@@ -41,7 +41,7 @@ if TipoLancto="E" then
     LocalizacaoPadrao = prod("LocalizacaoID")
 else
 	tipo = "Sa&iacute;da"
-	icone = "fa fa-level-up"
+	icone = "far fa-level-up"
 	tipoValor = "Venda"
 	if not isnull(prod("PrecoVenda")) then
 		valor = formatnumber(prod("PrecoVenda"),2)
@@ -109,7 +109,7 @@ if ProdutoInvoiceID<>"" and ProdutoInvoiceID<>"undefined" then
 end if
 %>
     <div class="row">
-        <%=quickField("number", "Quantidade", "Quantidade", 2, Quantidade, " text-right", "", " min='0' ")%>
+        <%=quickField("text", "Quantidade", "Quantidade", 2, fn(Quantidade), " text-right", "", " min='0' ")%>
         <div class="col-md-4"><br>
         	<%if TipoUnidade="C" or TipoLancto="E" then %>
             <label><input class="ace" type="radio" checked name="TipoUnidade" required="required" value="C"<%if prod("Tipo"&tipoValor)="C" then%> checked<%end if%>><span class="lbl"> <%=ApresentacaoNome%> com <%=formatnumber(ApresentacaoQuantidade,2)%>&nbsp;<%=lcase(NomeUnidade)%></span></label>
@@ -249,13 +249,15 @@ end if
     <%
     if ItemInvoiceID<>"" or ProdutoInvoiceID<>"" then
         %>
-        <button type="button" onclick="modalEstoque('<%= ItemInvoiceID %>', <%= req("P") %>, '<%= ProdutoInvoiceID %>')" class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i> Voltar</button>
+        <button type="button" onclick="modalEstoque('<%= ItemInvoiceID %>', <%= req("P") %>, '<%= ProdutoInvoiceID %>')" class="btn btn-default btn-sm"><i class="far fa-chevron-left"></i> Voltar</button>
         <%
     end if
     %>
-	<button class="btn btn-sm btn-success pull-right" type="button" id="lancar"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-sm btn-success pull-right" type="button" id="lancar"><i class="far fa-save"></i> Salvar</button>
 </div>
 <script type="text/javascript">
+$("#Quantidade").maskMoney({prefix:'', thousands:'.', decimal:',', affixesStay: true});
+
 <!--#include file="jQueryFunctions.asp"-->
 function onchangeFornecedor(arg){
     setTimeout(() =>{

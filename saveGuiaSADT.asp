@@ -203,6 +203,11 @@ else
         if isnull(Contratado) then
             Contratado="FALSE"
         end if
+        if ref("GuiaSimplificada")&"" = "1" then
+            GuiaSimplificada = 1
+        else
+            GuiaSimplificada = 0
+        end if
         sql = "update tissguiasadt set UnidadeID='"&ref("UnidadeID")&"', PacienteID='"&ref("gPacienteID")&"', CNS='"&ref("CNS")&"', NumeroCarteira='"&ref("NumeroCarteira")&"', ValidadeCarteira="&mydatenull(ref("ValidadeCarteira"))&", AtendimentoRN='"&ref("AtendimentoRN")&"', ConvenioID='"&ref("gConvenioID")&"', PlanoID='"&ref("PlanoID")&"', RegistroANS='"&ref("RegistroANS")&"', NGuiaPrestador='"&ref("NGuiaPrestador")&"', NGuiaOperadora='"&ref("NGuiaOperadora")&"', Contratado='"&Contratado&"', CodigoNaOperadora='"&ref("CodigoNaOperadora")&"', CodigoCNES='"&ref("CodigoCNES")&"', IndicacaoAcidenteID='"&ref("IndicacaoAcidenteID")&"', TipoConsultaID='"&ref("TipoConsultaID")&"', Observacoes='"&ref("Observacoes")&"', NGuiaPrincipal='"&ref("NGuiaPrincipal")&"', DataAutorizacao="&mydatenull(ref("DataAutorizacao"))&", Senha='"&ref("Senha")&"', DataValidadeSenha="&mydatenull(ref("DataValidadeSenha"))&",ContratadoSolicitanteID='"&ContratadoSolicitanteID&"', ContratadoSolicitanteCodigoNaOperadora='"&ref("ContratadoSolicitanteCodigoNaOperadora")&"', ProfissionalSolicitanteID="&treatvalzero(ProfissionalSolicitanteID)&", ConselhoProfissionalSolicitanteID='"&ref("ConselhoProfissionalSolicitanteID")&"', NumeroNoConselhoSolicitante='"&ref("NumeroNoConselhoSolicitante")&"', UFConselhoSolicitante='"&ref("UFConselhoSolicitante")&"', CodigoCBOSolicitante='"&ref("CodigoCBOSolicitante")&"', CaraterAtendimentoID='"&ref("CaraterAtendimentoID")&"', DataSolicitacao="&mydatenull(ref("DataSolicitacao"))&", IndicacaoClinica='"&ref("IndicacaoClinica")&"', TipoAtendimentoID='"&ref("TipoAtendimentoID")&"', MotivoEncerramentoID='"&ref("MotivoEncerramentoID")&"', DataSerie01="&myDateNULL(ref("DataSerie01"))&", DataSerie02="&myDateNULL(ref("DataSerie02"))&", DataSerie03="&myDateNULL(ref("DataSerie03"))&", DataSerie04="&myDateNULL(ref("DataSerie04"))&", DataSerie05="&myDateNULL(ref("DataSerie05"))&", DataSerie06="&myDateNULL(ref("DataSerie06"))&", DataSerie07="&myDateNULL(ref("DataSerie07"))&", DataSerie08="&myDateNULL(ref("DataSerie08"))&", DataSerie09="&myDateNULL(ref("DataSerie09"))&", DataSerie10="&myDateNULL(ref("DataSerie10"))&", Procedimentos="&treatValZero(ref("Procedimentos"))&", TaxasEAlugueis="&treatValZero(ref("TaxasEAlugueis"))&", Materiais="&treatValZero(ref("Materiais"))&", OPME="&treatValZero(ref("OPME"))&", Medicamentos="&treatValZero(ref("Medicamentos"))&", GasesMedicinais="&treatValZero(ref("GasesMedicinais"))&", TotalGeral="&treatValZero(ref("TotalGeral"))&", sysActive=1, tipoContratadoSolicitante='"&tipoContratadoSolicitante&"', tipoProfissionalSolicitante='"&tipoProfissionalSolicitante&"' where id="&I
     '	response.Write(sql)
 
@@ -286,7 +291,7 @@ else
                 confirm: true,
                 buttons: [{
                     text: 'Utilizar o número <%=GuiaDisponivel%>',
-                    icon: 'fa fa-exclamation-circle',
+                    icon: 'far fa-exclamation-circle',
                     addClass: 'btn-primary',
                     click: function(notice) {
                         $("#NGuiaPrestador").val("<%=GuiaDisponivel%>");

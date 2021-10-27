@@ -78,7 +78,7 @@ if not ListaFranquiasSQL.eof then
             <td><a href="?P=ChangeCp&LicID=<%=ListaFranquiasSQL("id")%>&Pers=1" class="btn btn-xs btn-primary" <%=disabledAcessar%>>Acessar</a></td>
             <td class="<%=hiddenValor%>"><%=ListaFranquiasSQL("Software")%></td>
             <td><%=StatusBtn%></td>
-            <td class="<%=hiddenValor%>"><button class="btn btn-xs btn-primary" type="button" onclick="EditarLicenciado('<%=ListaFranquiasSQL("id")%>')"><i class="fa fa-edit"></i></button></td>
+            <td class="<%=hiddenValor%>"><button class="btn btn-xs btn-primary" type="button" onclick="EditarLicenciado('<%=ListaFranquiasSQL("id")%>')"><i class="far fa-edit"></i></button></td>
             <td>
                 <%=quickField("select", "licencaIDMae"&ListaFranquiasSQL("id"), "", "12", ListaFranquiasSQL("LicencaIDMae")&"", qLicencasSelectSQL&" AND lic.id<>"&ListaFranquiasSQL("id"), "Nome", " onchange='LicencaVinculada(`"&ListaFranquiasSQL("id")&"`)' ")%>
             </td>
@@ -124,7 +124,7 @@ $(document).ready( function () {
 
 function EditarLicenciado(id) {
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("modalConfigFranquia.asp?I="+id, "", function (data) {
         $("#modal").html(data);
 

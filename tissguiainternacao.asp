@@ -343,7 +343,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Solicitação de Internação");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 <style>
 .select2-container{
@@ -370,11 +370,11 @@ width: 100%!important;
             </div>
 
             <div class="row">
-                <div class="col-md-3"><%= selectInsert("* Nome", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div>
-                <%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
-                <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 3, NumeroCarteira, " lt", "", " required""   required title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
+                <div class="col-md-3"><%= selectInsert("Nome", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div>
+                <%= quickField("simpleSelect", "gConvenioID", "Conv&ecirc;nio", 2, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
+                <%= quickField("text", "NumeroCarteira", "N&deg; da Carteira", 3, NumeroCarteira, " lt", "", " required""   required title=""O padrão da matrícula deste convênio está configurado para 10 caracteres""") %>
                 <%= quickField("datepicker", "ValidadeCarteira", "Validade da Carteira", 2, ValidadeCarteira, " input-mask-date ", "", "") %>
-                <%= quickField("text", "RegistroANS", "* Reg. ANS", 2, RegistroANS, "", "", " required") %>
+                <%= quickField("text", "RegistroANS", "Reg. ANS", 2, RegistroANS, "", "", " required") %>
                 <input type="hidden" name="identificadorBeneficiario" value="<%=identificadorBeneficiario%>" />
             </div>
             <br />
@@ -382,7 +382,7 @@ width: 100%!important;
                 <%= quickField("datepicker", "DataAutorizacao", "Data da Autoriza&ccedil;&atilde;o", 2, DataAutorizacao, "", "", "") %>
                 <%= quickField("text", "Senha", "Senha", 2, Senha, "", "", "") %>
                 <%= quickField("datepicker", "DataValidadeSenha", "Data de Validade da Senha", 2, DataValidadeSenha, "", "", "") %>
-                <%= quickField("text", "NGuiaPrestador", "* N&deg; da Guia no Prestador", 2, NGuiaPrestador, "", "", " required") %>
+                <%= quickField("text", "NGuiaPrestador", "N&deg; da Guia no Prestador", 2, NGuiaPrestador, "", "", " required") %>
                 <%
                 if RepetirNumeroOperadora=1 then
                     fcnRepetirNumeroOperadora = " onkeyup=""$('#NGuiaPrestador').val( $(this).val() )"" "
@@ -412,8 +412,8 @@ width: 100%!important;
 			            <%= selectInsert("", "ContratadoExternoID", ContratadoSolicitanteID, "contratadoexterno", "NomeContratado", " onchange=""tissCompletaDados(7, this.value);""", "", "") %>
                     </span>
                 </div>
-                <%= quickField("text", "ContratadoSolicitanteCodigoNaOperadora", "* Código na Operadora", 2, ContratadoSolicitanteCodigoNaOperadora, "", "", "required='required'") %>
-                <%= quickField("datepicker", "DataSolicitacao", "* Data da Solicita&ccedil;&atilde;o", 2, DataSolicitacao, "", "", "required='required'") %>
+                <%= quickField("text", "ContratadoSolicitanteCodigoNaOperadora", "Código na Operadora", 2, ContratadoSolicitanteCodigoNaOperadora, "", "", "required='required'") %>
+                <%= quickField("datepicker", "DataSolicitacao", "Data da Solicita&ccedil;&atilde;o", 2, DataSolicitacao, "", "", "required='required'") %>
 
             </div>
 
@@ -439,10 +439,10 @@ width: 100%!important;
                         <%= selectInsert("", "ProfissionalSolicitanteExternoID", ProfissionalSolicitanteID, "profissionalexterno", "NomeProfissional", " onchange=""tissCompletaDados(8, this.value);""", "", "") %>
                     </span>
                 </div>
-                <%= quickField("simpleSelect", "ConselhoProfissionalSolicitanteID", "* Conselho Profissional", 2, ConselhoProfissionalSolicitanteID, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %>
-                <%= quickField("text", "NumeroNoConselhoSolicitante", "* N&deg; no Conselho", 2, NumeroNoConselhoSolicitante, "", "", " empty='' required='required'") %>
-                <%= quickField("text", "UFConselhoSolicitante", "* UF", 1, UFConselhoSolicitante, "", "", " empty='' required='required' pattern='[A-Za-z]{2}'") %>
-                <%= quickField("text", "CodigoCBOSolicitante", "* C&oacute;digo CBO", 2, CodigoCBOSolicitante, "", "", " empty='' required='required' pattern='[0-9-]{6,7}'") %>
+                <%= quickField("simpleSelect", "ConselhoProfissionalSolicitanteID", "Conselho Profissional", 2, ConselhoProfissionalSolicitanteID, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %>
+                <%= quickField("text", "NumeroNoConselhoSolicitante", "N&deg; no Conselho", 2, NumeroNoConselhoSolicitante, "", "", " empty='' required='required'") %>
+                <%= quickField("text", "UFConselhoSolicitante", "UF", 1, UFConselhoSolicitante, "", "", " empty='' required='required' pattern='[A-Za-z]{2}'") %>
+                <%= quickField("text", "CodigoCBOSolicitante", "C&oacute;digo CBO", 2, CodigoCBOSolicitante, "", "", " empty='' required='required' pattern='[0-9-]{6,7}'") %>
             </div>
 
 
@@ -453,24 +453,26 @@ width: 100%!important;
             </div>
             <div class="row">
                 <input type="hidden" id="NomeHospitalSol" value="<%=NomeHospitalSol%>"/>
-                <%= quickField("simpleSelect", "LocalExternoID", "Nome do Hospital / Local Solicitado", 5, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" ") %>
+                <div class="col-md-5">
+                    <%= selectInsert("Nome do Hospital / Local Solicitado", "LocalExternoID", LocalExternoID, "locaisexternos", "nomelocal", "", "", "") %>
+                </div>
                 <%= quickField("text", "CodigoNaOperadora", "Código na Operadora / CNPJ", 2, CodigoNaOperadora, "", "", "") %>
-                <%= quickField("datepicker", "DataSugInternacao", "* Data sugerida para internação", 3, DataSugInternacao, "", "", "required='required'") %>
-                <%= quickField("simpleSelect", "AtendimentoRN", "* Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
+                <%= quickField("datepicker", "DataSugInternacao", "Data sugerida para internação", 3, DataSugInternacao, "", "", "required='required'") %>
+                <%= quickField("simpleSelect", "AtendimentoRN", "Atendimento RN", 2, AtendimentoRN, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
 
             </div>
             <br />
             <div class="row">
-                <%= quickField("simpleSelect", "CaraterAtendimentoID", "* Caráter do Atendimento", 2, CaraterAtendimentoID, "select * from cliniccentral.tisscarateratendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
-                <%= quickField("simpleSelect", "TipoInternacao", "* Tipo de Internação", 2, TipoInternacao, "select * from tisstipointernacao order by descricao", "descricao", " empty='' required='required' no-select2") %>
-                <%= quickField("simpleSelect", "RegimeInternacao", "* Regime de Internação", 2, RegimeInternacao, "select * from tissregimeinternacao order by descricao", "descricao", " empty='' required='required' no-select2") %>
+                <%= quickField("simpleSelect", "CaraterAtendimentoID", "Caráter do Atendimento", 2, CaraterAtendimentoID, "select * from cliniccentral.tisscarateratendimento order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "TipoInternacao", "Tipo de Internação", 2, TipoInternacao, "select * from tisstipointernacao order by descricao", "descricao", " empty='' required='required' no-select2") %>
+                <%= quickField("simpleSelect", "RegimeInternacao", "Regime de Internação", 2, RegimeInternacao, "select * from tissregimeinternacao order by descricao", "descricao", " empty='' required='required' no-select2") %>
                 <%= quickField("text", "QteDiariasSol", "Qtde. Diarias Solicitadas", 2, QteDiariasSol, "", "", " pattern='[0-9]'") %>
-                <%= quickField("simpleSelect", "PrevUsoOPME", "* Previsão de uso de OPME", 2, PrevUsoOPME, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
-                <%= quickField("simpleSelect", "PrevUsoQuimio", "* Previsão de uso de quimioterápico", 2, PrevUsoQuimio, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "PrevUsoOPME", "Previsão de uso de OPME", 2, PrevUsoOPME, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
+                <%= quickField("simpleSelect", "PrevUsoQuimio", "Previsão de uso de quimioterápico", 2, PrevUsoQuimio, "select 'S' id, 'Sim' SN UNION ALL select 'N', 'Não'", "SN", " empty='' required='required' no-select2 ") %>
                  </div>
             <br />
             <div class="row">
-                <%= quickField("memo", "IndicacaoClinica", "* Indica&ccedil;&atilde;o Cl&iacute;nica", 12, IndicacaoClinica, "", "", " required='required' ") %>
+                <%= quickField("memo", "IndicacaoClinica", "Indica&ccedil;&atilde;o Cl&iacute;nica", 12, IndicacaoClinica, "", "", " required='required' ") %>
             </div>
             <br />
             <div class="row">
@@ -486,7 +488,7 @@ width: 100%!important;
                 <div class="col-md-2">
                     <%= selectInsert("CID 10 (4)", "Cid4", Cid4, "cliniccentral.cid10", "codigo", "", "", "") %>
                  </div>
-                  <%= quickField("simpleSelect", "IndicacaoAcidenteID", "* Indica&ccedil;&atilde;o de acidente", 4, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
+                  <%= quickField("simpleSelect", "IndicacaoAcidenteID", "Indica&ccedil;&atilde;o de acidente", 4, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2 ") %>
             </div>
             <br />
             <div class="section-divider mt20 mb40">
@@ -520,28 +522,37 @@ width: 100%!important;
         </div>
 
 
-        <% if sysActive=1 then response.write("<hr class='short alt'> Inserida por "& nameInTable(sysUser) &" em "& sysDate) end if %>
-
         </div>
+
+        <% if sysActive=1 then %>
+
+            <div class="panel">
+                <div class="panel-body">
+                    Inserida por <%= nameInTable(sysUser) %> em <%=sysDate %> )
+                </div>
+            </div>
+
+        <% end if %>
+
     </div>
 
 <div class="clearfix form-actions no-margin">
     <div class="btn-group">
-        <button class="btn btn-primary btn-md" onclick="isPrint(0)"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" onclick="isPrint(0)"><i class="far fa-save"></i> Salvar</button>
         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu text-center" role="menu">
             <input type="hidden" id="print" value="0">
-            <li><button type="submit" class="btn" style="border:none; background-color:#fff!important;" id="GuiaInternacaoPrint" onclick="isPrint(1)"><i class="fa fa-print"></i> Salvar e imprimir</button></li>
+            <li><button type="submit" class="btn" style="border:none; background-color:#fff!important;" id="GuiaInternacaoPrint" onclick="isPrint(1)"><i class="far fa-print"></i> Salvar e imprimir</button></li>
         </ul>
     </div>
-    <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaInternacao', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
+    <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaInternacao', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
     <% if AutorizadorTiss then %>
-        <!--<button type="button" onclick="Autorizador.autorizaInternacoes();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>-->
-        <button type="button" onclick="autorizadorguiainternacao()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
-        <button type="button" onclick="Autorizador.cancelarGuiaInternacao()" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
-        <button type="button" onclick="Autorizador.verificarStatusGuiaInternacao()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
+        <!--<button type="button" onclick="Autorizador.autorizaInternacoes();" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>-->
+        <button type="button" onclick="autorizadorguiainternacao()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
+        <button type="button" onclick="Autorizador.cancelarGuiaInternacao()" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
+        <button type="button" onclick="Autorizador.verificarStatusGuiaInternacao()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
     <% end if %>
 </div>
 
@@ -693,7 +704,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#gPacienteID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("addContrato.asp?Tipo=Internacao&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID=3_"+$("#gPacienteID").val(), "", function(data){
             $("#modal").html(data);
         });

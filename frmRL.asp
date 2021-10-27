@@ -230,13 +230,13 @@ end if
                                 </button>
                             </td>
                             <td>
-                                <button onclick="editDom(<%= dom("id") %>)" type="button" class="btn btn-success btn-sm"><i class="fa fa-edit"></i></button>
+                                <button onclick="editDom(<%= dom("id") %>)" type="button" class="btn btn-success btn-sm"><i class="far fa-edit"></i></button>
                             </td>
                             <td>
-                                <button onclick="if(confirm('Tem certeza de que deseja duplicar esta regra?'))location.href='./?P=RepasseLinear&Pers=1&Dup=<%= dom("id") %>'" type="button" class="btn btn-alert btn-sm"><i class="fa fa-paste"></i></button>
+                                <button onclick="if(confirm('Tem certeza de que deseja duplicar esta regra?'))location.href='./?P=RepasseLinear&Pers=1&Dup=<%= dom("id") %>'" type="button" class="btn btn-alert btn-sm"><i class="far fa-paste"></i></button>
                             </td>
                             <td>
-                                <button onclick="if(confirm('Tem certeza de que deseja apagar esta regra?'))location.href='./?P=RepasseLinear&Pers=1&X=<%= dom("id") %>'" type="button" class="btn btn-danger btn-sm"><i class="fa fa-remove"></i></button>
+                                <button onclick="if(confirm('Tem certeza de que deseja apagar esta regra?'))location.href='./?P=RepasseLinear&Pers=1&X=<%= dom("id") %>'" type="button" class="btn btn-danger btn-sm"><i class="far fa-remove"></i></button>
                             </td>
                         </tr>
                         <%
@@ -257,7 +257,7 @@ end if
             <span class="panel-title">Descontos adicionais no repasse de acordo com a forma de recebimento</span>
             <span class="panel-controls">
                 <button type="button" onclick="repasseDesconto(0)" class="btn-sm btn btn-primary">
-                    <i class="fa fa-plus"></i> Adicionar
+                    <i class="far fa-plus"></i> Adicionar
                 </button>
             </span>
         </div>

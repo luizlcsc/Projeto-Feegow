@@ -3,11 +3,11 @@
     $(".crumb-active a").html("Configuração de E-mail e SMS");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("confirmação automática de agendamentos");
-    $(".crumb-icon a span").attr("class", "fa fa-<%=dIcone(lcase("configconfirmacoes"))%>");
+    $(".crumb-icon a span").attr("class", "far fa-<%=dIcone(lcase("configconfirmacoes"))%>");
     <%
     'if aut("lancamentosI")=1 then
     %>
-    $("#rbtns").html('<button type="button" onClick="salvarConfig();" class="btn btn-sm btn-primary">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>');
+    $("#rbtns").html('<button type="button" onClick="salvarConfig();" class="btn btn-sm btn-primary">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>');
     <%
     'end if
     %>

@@ -4,7 +4,7 @@
     $(".crumb-active a").html("Plano de Contas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("arraste os itens para reordenar");
-    $(".crumb-icon a span").attr("class", "fa fa-outdent");
+    $(".crumb-icon a span").attr("class", "far fa-outdent");
 </script>
 
 <br />
@@ -49,9 +49,6 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  setTimeout(function() {
-    $("#toggle_sidemenu_l").click()
-  }, 500);
 
   $(".input-codigo").mask('9?9', {
     placeholder: ''

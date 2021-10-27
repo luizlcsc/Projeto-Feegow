@@ -28,6 +28,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 <head>
   <meta name="robots" content="noindex">
   <style type="text/css">
+
+    @font-face {
+         font-family: "Open Sans";
+         src: url('https://cdn.feegow.com/feegowclinic-v7/assets/fonts/open-sans/OpenSans-Regular.ttf');
+    }
+
     .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
       }
@@ -70,18 +76,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           background-color: red;
       }
 
-      .select-insert li {
-        cursor:pointer;
-        list-style-type:none;
-        margin:0;
-        padding:3px;
-        font-size:14px;
-        color:#000;
-        background-color:#FFF;
-      }
-      .select-insert li:hover {
-        background-color:#999;
-      }
       a[href]:after {
         content: ""!important;
       }
@@ -194,7 +188,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <link type="text/css" rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.css" />
   <!-- Meta, title, CSS, favicons, etc. -->
   <meta charset="utf-8">
-  <title>Feegow Software :: <%=session("NameUser")%></title>
+  <title>Feegow</title>
   <meta http-equiv="Content-Language" content="pt-br">
   <meta name="author" content="Feegow">
 
@@ -207,17 +201,41 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/fonts/icomoon/icomoon.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/magnific-popup.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/css/footable.core.min.css">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/skin/default_skin/css/fgw.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/assets/admin-tools/admin-forms/css/admin-forms.css">
-  <link rel="shortcut icon" href="https://cdn.feegow.com/feegowclinic-v7/assets/img/feegowclinic.ico" type="image/x-icon" />
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.13.1">
+  <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
+  <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/old.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.css">
+  <style>
+  /*===============================================
+    Custom Scrollbar
+  ================================================= */
+  /* width */
+  ::-webkit-scrollbar {
+  width: 10px;
+  }
 
+  /* Track */
+  ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+  background: #888;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  }
+  </style>
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/html5shiv.js"></script>
@@ -408,7 +426,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                 }
                 function showCog(redirectTo) {
                     "use strict";
-                    var cog = '<span class="feegow-selectinsert-config"><a href="' + redirectTo + '" class="btn btn-xs btn-primary" style="float: right;margin: 10px;"><i class="fa fa-cog"></i></a></span>',
+                    var cog = '<span class="feegow-selectinsert-config"><a href="' + redirectTo + '" class="btn btn-xs btn-primary" style="float: right;margin: 5px;"><i class="fal fa-cog"></i></a></span>',
                         configSelector = ".feegow-selectinsert-config",
                         $dropdown = $(".select2-dropdown");
 
@@ -491,8 +509,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     templateSelection: formatRepoSelection
                 });
 
-                $(".proposta-item-procedimentos .select2-selection").css("max-width", "200px")
-                $("#invoiceItens .select2-selection").css("max-width", "400px")
+                $(".proposta-item-procedimentos .select2-container").css("max-width", "200px")
+                $("#invoiceItens .select2-container").css("max-width", "400px")
             });
         }
     </script>
@@ -500,6 +518,13 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 </head>
 
 <body>
+        <%
+        if session("Logo")="" then
+            Logo = "assets/img/login_logo.svg"
+        else
+            Logo = "https://cdn.feegow.com/logos/"&session("Logo")
+        end if
+        %>
 
       <%
       if session("Partner")<>"" then
@@ -509,32 +534,34 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       end if
 
       if device()<>"" then %>
-
-        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class="bg-primary darker pt20">
+        <div onclick="fechar(); fecharSubmenu()" id="cortina" style="width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
+        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class="bg-primary darker pt10">
             <div id="menu" style="position:absolute; width:260px; height:1000px; top:0; left:-260px; z-index:10000000001; background:#fff">
                 <div class="row">
                     <div class="col-md-12">
-                            <div class="bg-primary" style="height:80px">
+                            <div class="bg-primary leftMenuLogoContent" >
                                 <img src="https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png" width="120" class="ml15 mt25" border="0">
                             </div>
-                            <ul class="nav pt15">
-                                <%
-                                set men = db.execute("select * from cliniccentral.menu where App=1 order by id")
-                                while not men.eof
-                                    %>
-                                    <li>
-                                        <a href="<%= men("URL") %>" class="btn btn-block text-left text-dark" style="border:none" onclick='fechar()'>
-                                            <i class="fa fa-<%= men("Icone") %>"></i>
-                                            <%= men("Rotulo") %>
-                                        </a>
-                                    </li>
+                            <div class="m10">
+                                <ul class="nav pt15">
                                     <%
-                                men.movenext
-                                wend
-                                men.close
-                                set men=nothing
-                                %>
-                            </ul>
+                                    set men = db.execute("select * from cliniccentral.menu where App=1 order by id")
+                                    while not men.eof
+                                        %>
+                                        <li>
+                                            <a href="<%= men("URL") %>" class="btn btn-block text-left text-dark" style="border:none" onclick='fechar()'>
+                                                <i class="far fa-<%= men("Icone") %>"></i>
+                                                <%= men("Rotulo") %>
+                                            </a>
+                                        </li>
+                                        <%
+                                    men.movenext
+                                    wend
+                                    men.close
+                                    set men=nothing
+                                    %>
+                                </ul>
+                            </div>
 
                     </div>
                 </div>
@@ -542,71 +569,43 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
             <div class="row">
                 <div class="col-xs-4">
-                    <button class="btn btn-primary btn-block ml5 bg-primary darker" onclick="abrir()" style="border:none!important"><i class="fa fa-list"></i> MENU</button>
+                    <button class="btn btn-transparent btn-block ml15 btn-menu-mobile" onclick="abrir()" style="text-align:left;border:none!important;font-size: 18px;color: #6a6a6a;"><i class="far fa-bars"></i></button>
                 </div>
                 <div class="col-xs-8">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    <img class="logol" src="<%=logo%>" height="38">
 
 
                 </div>
             </div>
         </div>
 
-        <div onclick="fechar(); fecharSubmenu()" id="cortina" style="width:100%; height:100%; display:table; background:rgba(0,0,0,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
 
 
 
 
 
 
-        <div id="bottomApp" style="position:fixed; z-index:100000000000; width:100%; bottom:0; height:50px; background:#3498db;">
-            <form class="mn pt5" role="search">
-                <div class="col-xs-12">
+
+        <div id="bottomApp" >
+
+
+              <!-- Sidebar Widget - Search (hidden) -->
+              <form class="mn pn" role="search">
+                <label for="sidebar-search">
+                    <div class="sidebar-widget search-widget mn" id="sidebar-search-content">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Busca rápida..." autocomplete="off" name="q">
-                        <input name="P" value="Busca" type="hidden">
-                        <input name="Pers" value="1" type="hidden">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default">&nbsp;<i class="fa fa-search"></i>&nbsp;</button>
-                        </span>
+                      <span class="input-group-addon">
+                        <i class="far fa-search"></i>
+                      </span>
+                    <input type="text" id="sidebar-search" autocomplete="off" name="q" class="form-control" placeholder="Busca rápida...">
+                    <input name="P" value="Busca" type="hidden">
+                    <input name="Pers" value="1" type="hidden">
+
                     </div>
-                    <!-- /input-group -->
                 </div>
-            </form>
+              </label>
+              </form>
+
         </div>
 
         <script type="text/javascript">
@@ -643,25 +642,39 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
             </div><!-- /.modal-dialog -->
         </div>
 
-  <aside id="main">
+
     <%
     recursoUnimed = recursoAdicional(12)
+    classContext = ""
+
+    if recursoUnimed=4 then
+        classContext = "color-context-unimed"
+    %>
+    <style>
+        .color-context-unimed .bg-primary.darker{
+            border-image-source: linear-gradient(to right, #008654 0%, #00ac6c 100%) !important;
+        }
+        .color-context-unimed #sidebar_left.sidebar-light .sidebar-menu > li > a > span:nth-child(1){
+            color: #00ac6c;
+        }
+
+        .color-context-unimed .dropdown li i, .dropdown-menu li i{
+            color: #00ac6c
+        }
+    </style>
+
+    <%
+    end if
+    %>
+  <aside id="main" class="<%=classContext%> <% if device()<>"" then response.write("mobile-content") end if %> ">
+    <%
     if device()="" then %>
-    <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker" <% if recursoUnimed=4 then %>
-    style="background-color: #006600!important;"
- <%end if %> >
-      <div class="navbar-branding dark bg-primary" <% if recursoUnimed=4 then %> style="background-color: #005028!important;" <% end if %>>
+    <header class="navbar navbar-fixed-top navbar-shadow bg-primary darker">
+      <div class="navbar-branding dark bg-primary">
         <a class="navbar-brand" href="./?P=Home&Pers=1">
-                    <%
-					if session("Logo")="" then
-						Logo = "https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png"
-					else
-						Logo = "https://cdn.feegow.com/logos/"&session("Logo")
-					end if
-					%>
-          <img class="logol" src="<%=Logo %>" height="32" />
+          <img class="logol" src="<%=Logo %>" height="36" />
         </a>
-                  <span id="toggle_sidemenu_l" class="ad ad-lines"></span>
+                  <i id="toggle_sidemenu_l" class="far fa-bars"></i>
 
       </div>
       <ul class="nav navbar-nav navbar-left">
@@ -690,12 +703,12 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         <li class="dropdown menu-merge hidden-md hidden-xs">
           <div class="navbar-btn btn-group">
             <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Interações">
-              <span class="fa fa-phone fs14 va-m"></span>
+              <span class="far fa-phone fs14 va-m"></span>
             </button>
             <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">
               <div class="panel mbn">
                   <div class="panel-menu">
-                     <span class="panel-icon"><i class="fa fa-phone"></i></span>
+                     <span class="panel-icon"><i class="far fa-phone"></i></span>
                      <span class="panel-title fw600"> Gerenciamento de Contatos</span>
                   </div>
                   <div class="panel-body panel-scroller scroller-navbar scroller-overlay scroller-pn pn">
@@ -707,10 +720,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                 %>
                                 <li class="timeline-item">
                                   <div class="timeline-icon bg-dark light">
-                                    <span class="fa fa-<%=canais("icone") %>"></span>
+                                    <span class="far fa-<%=canais("icone") %>"></span>
                                   </div>
                                   <div class="timeline-desc">
-                                    <b><a href="#" onclick="btb(<%=canais("id") %>, <%=canais("Prompt") %>)"><%=canais("NomeCanal") %></a></b>
+                                    <span><a href="#" onclick="btb(<%=canais("id") %>, <%=canais("Prompt") %>)"><%=canais("NomeCanal") %></a></span>
                                   </div>
                                 </li>
                                 <%
@@ -724,8 +737,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
                   </div>
                   <div class="panel-footer text-center p7">
-                    <button  onclick="location.href='./?P=Chamadas&Pers=1'" type="button" class="btn btn-xs btn-default"> <i class="fa fa-phone-square"></i> Contatos Realizados </button>
-                    <button  onclick="location.href='./?P=Funil&Pers=1'" type="button" class="btn btn-xs btn-default"> <i class="fa fa-filter"></i> Funil de Vendas </button>
+                    <button  onclick="location.href='./?P=Chamadas&Pers=1'" type="button" class="btn btn-xs btn-default"> <i class="far fa-phone-square"></i> Contatos Realizados </button>
+                    <button  onclick="location.href='./?P=Funil&Pers=1'" type="button" class="btn btn-xs btn-default"> <i class="far fa-filter"></i> Funil de Vendas </button>
                   </div>
               </div>
             </div>
@@ -739,8 +752,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 		%>
         <li id="licaixa" title="Abrir/Fechar caixa" class="dropdown menu-merge hidden-sm hidden-xs menu-right-caixa">
           <div class="navbar-btn btn-group">
-            <button class="btn btn-sm" type="button" onclick="Caixa();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Meu Caixa">
-              <span class="fa fa-inbox fs14 va-m"></span>
+            <button class="btn btn-sm btn-menu-left" type="button" onclick="Caixa();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Meu Caixa">
+              <span class="far fa-inbox fs14 va-m"></span>
 
                   <span class="badge badge-success" id="badge-caixa"><%if session("CaixaID")<>"" then%>$<%end if%></span>
 
@@ -757,15 +770,15 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
         <li id="liTarefasX" class="dropdown menu-merge menu-right-tarefas">
           <div class="navbar-btn btn-group">
-            <button id="notifTarefas" data-toggle="dropdown" class="btn btn-sm dropdown-toggle" onclick="notifTarefas();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Tarefas">
-              <span class="fa fa-tasks fs14 va-m"></span>
+            <button id="notifTarefas" data-toggle="dropdown" class="btn btn-sm dropdown-toggle btn-menu-left" onclick="notifTarefas();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Tarefas">
+              <span class="far fa-tasks fs14 va-m"></span>
             </button>
             <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">
               <div class="panel mbn">
                   <div class="panel-menu">
-                     <span class="panel-icon"><i class="fa fa-tasks"></i></span>
+                     <span class="panel-icon"><i class="far fa-tasks"></i></span>
                      <span class="panel-title fw600"> Controle de Tarefas</span>
-                      <button class="btn btn-default light btn-xs pull-right" type="button" title="Adicionar Tarefa" onclick="location.href='./?P=Tarefas&I=N&Pers=1'"><i class="fa fa-plus"></i></button>
+                      <button class="btn btn-default light btn-xs pull-right" type="button" title="Adicionar Tarefa" onclick="location.href='./?P=Tarefas&I=N&Pers=1'"><i class="far fa-plus"></i></button>
                   </div>
                   <div class="panel-body panel-scroller scroller-navbar pn">
                     <div class="tab-content br-n pn">
@@ -777,14 +790,14 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </div>
                   </div>
                   <div class="panel-footer text-center p7">
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
-                    <i class="fa fa-list"></i> Listar tarefas
+                    <button type="button" class="btn btn-default btn-sm btn-menu-left" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1'">
+                    <i class="far fa-list"></i> Listar tarefas
                     </button>
                     <%
                     if session("Banco")="clinic5459" then
                     %>
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1&MeusTickets=1'">
-                    <i class="fa fa-list"></i> Meus Tickets
+                    <button type="button" class="btn btn-default btn-sm btn-menu-left" onclick="location.href='./?P=listaTarefas&Tipo=R&Pers=1&MeusTickets=1'">
+                    <i class="far fa-list"></i> Meus Tickets
                     </button>
                     <%
                     end if
@@ -799,14 +812,14 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
         <li class="dropdown menu-merge menu-right-notificacoes" id="box-bell">
           <div class="navbar-btn btn-group">
-            <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Notificações">
-              <span id="bell" class="fa fa-bell<%=animadoGerais%> fs14 va-m"></span>
+            <button data-toggle="dropdown" class="btn btn-sm dropdown-toggle btn-menu-left" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Notificações">
+              <span id="bell" class="far fa-bell<%=animadoGerais%> fs14 va-m"></span>
               <span class="badge badge-danger" id="badge-bell"></span>
             </button>
             <div class="dropdown-menu dropdown-persist w350 animated animated-shorter fadeIn" role="menu">
               <div class="panel mbn">
                   <div class="panel-menu">
-                     <span class="panel-icon"><i class="fa fa-bell"></i></span>
+                     <span class="panel-icon"><i class="far fa-bell"></i></span>
                      <span class="panel-title fw600"> Notificações</span>
                   </div>
                   <div class="panel-body panel-scroller scroller-navbar pn">
@@ -825,10 +838,13 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
             </div>
           </div>
         </li>
+        <%
+        if aut("|chat") then
+        %>
 		<li class="dropdown menu-merge menu-right-chat">
 					<div class="navbar-btn btn-group">
-	          <button id="toggle_sidemenu_r" class="btn btn-sm" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
-		          <span class="fa fa-comments"></span>
+	          <button id="toggle_sidemenu_r" class="btn btn-sm btn-menu-left" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Conversa">
+		          <span class="far fa-comments"></span>
               <span class="badge badge-danger" id="badge-chat"></span>
 		          <!-- <span class="caret"></span> -->
 	          </button>
@@ -836,6 +852,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 		</li>
 
         <%
+        end if
         if session("Status")="T" or session("Status")="F" then
         %>
         <script>
@@ -847,7 +864,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     <div class="navbar-btn btn-group">
               <button id="toggle_sidemenu_tours" class="btn btn-sm" onclick="chatUsers()" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Tutorial">
 
-                  <i class="fa fa-question-circle"></i>
+                  <i class="far fa-question-circle"></i>
                   <!-- <span class="caret"></span> -->
               </button>
             </div>
@@ -856,11 +873,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         end if
         %>
         <li class="menu-divider hidden-xs hidden-sm hidden-md">
-          <i class="fa fa-circle"></i>
+          <i class="far fa-circle"></i>
         </li>
         <li class="dropdown menu-merge">
           <a href="#" class="dropdown-toggle fw600 p15 menu-click-meu-perfil" data-toggle="dropdown">
-          	<img src="<%=session("photo") %>" class="mw30 br64">
+          	<img src="<%=session("photo") %>" class="mw30 br64" style="height: 30px;width: 100%;object-fit: cover;">
           	<span class="hidden-xs hidden-sm hidden-md pl15"> <%=left(session("NameUser"), 15) %> </span>
             <span class="caret caret-tp hidden-xs hidden-sm hidden-md"></span>
           </a>
@@ -878,14 +895,14 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 							%>
 								<li class="list-group-item menu-click-meu-perfil-meu-perfil">
 									<a class="animated animated-short fadeInUp" href="?P=<%=session("Table")%>&Pers=1&I=<%=session("idInTable")%>" style="<%=disabled%>">
-										<i class="fa fa-user"></i>
+										<i class="far fa-user"></i>
 										<%=msgDisabled%>
 									</a>
 								</li>
                                 <%if session("banco")="clinic100000" or session("banco")="clinic5459" then %>
 								<li class="list-group-item menu-click-meu-perfil-ponto-eletronico">
 									<a class="animated animated-short fadeInUp" href="?P=Ponto&Pers=1">
-										<i class="fa fa-hand-o-up"></i>
+										<i class="far fa-hand-o-up"></i>
 										Ponto Eletrônico
 									</a>
 								</li>
@@ -894,7 +911,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                 if session("Admin")=1 then'(session("banco")="clinic2803" or session("banco")="clinic100000" or session("banco")="clinic332") and session("Admin")=1 then %>
 								<li class="list-group-item menu-click-meu-perfil-logs-de-acoes">
 									<a class="animated animated-short fadeInUp" href="?P=Logs&Pers=1">
-										<i class="fa fa-history"></i>
+										<i class="far fa-history"></i>
 										Logs de Ações
 									</a>
 								</li>
@@ -906,7 +923,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								 %>
 								   <li class="list-group-item menu-click-meu-perfil-abrir-fechar-baixa">
 									<a class="animated animated-short fadeInUp" href="javascript:Caixa()">
-										<i class="fa fa-inbox"></i>
+										<i class="far fa-inbox"></i>
 										Abrir/Fechar Caixa
 									</a>
 								   </li>
@@ -937,7 +954,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                  %>
                                     <li class="list-group-item menu-click-meu-perfil-minhas-faturas">
                                         <a class="animated animated-short fadeInUp" href="?P=AreaDoCliente&Pers=1">
-                                            <i class="fa fa-barcode"></i>
+                                            <i class="far fa-barcode"></i>
                                             Minhas Faturas
                                             <% IF session("QuantidadeFaturasAbertas") > "0" THEN %>
                                                 <span class="badge badge-danger" id="badge-bell"><%=session("QuantidadeFaturasAbertas")%></span>
@@ -951,7 +968,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                   %>
                                     <li class="list-group-item menu-click-meu-perfil-arquivos">
                                         <a class="animated animated-short fadeInUp" href="?P=Files&Pers=1">
-                                            <i class="fa fa-file"></i>
+                                            <i class="far fa-file"></i>
                                             Arquivos
                                         </a>
                                     </li>
@@ -963,13 +980,13 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								%>
 								<li class="list-group-item">
 									<a class="red animated animated-short fadeInUp" href="?P=Licencas&Pers=1">
-										<i class="fa fa-hospital-o"></i>
+										<i class="far fa-hospital-o"></i>
 										Licenças
 									</a>
 								</li>
 								<li class="list-group-item">
 									<a class="red animated animated-short fadeInUp" href="?P=Operadores&Pers=1">
-										<i class="fa fa-user"></i>
+										<i class="far fa-user"></i>
 										Operadores
 									</a>
 								</li>
@@ -979,7 +996,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 								<li class="list-group-item">
 									<a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
-										<i class="fa fa-calendar"></i>
+										<i class="far fa-calendar"></i>
 										Confirmação Geral
 									</a>
 								</li>
@@ -1045,7 +1062,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                         %>
                                         <li class="list-group-item">
                                             <a class="animated animated-short fadeInUp" href="javascript:abreModalUnidade(false);">
-                                                <i class="fa fa-building"></i>
+                                                <i class="far fa-building"></i>
                                                 Alterar Unidade
                                             </a>
                                         </li>
@@ -1060,7 +1077,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								%>
                                 <li class="list-group-item">
                                     <a  class="animated animated-short fadeInUp" href="?P=ListaFranquias&Pers=1">
-                                        <i class="fa fa-list"></i>
+                                        <i class="far fa-list"></i>
                                         Listar Licenciados
                                     </a>
                                 </li>
@@ -1077,8 +1094,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 
             <li class="dropdown-footer">
-              <a href="./?P=Login&Log=Off" class="">
-              <span class="fa fa-power-off pr5"></span> Sair </a>
+              <a href="./?P=Login&Log=Off" class="btn-logoff">
+              <span class="far fa-power-off pr5"></span> Sair </a>
             </li>
           </ul>
         </li>
@@ -1108,7 +1125,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <aside id="sidebar_left" class="hidden-print nano nano-light affix sidebar-default has-scrollbar sidebar-light light">
 
       <!-- Start: Sidebar Left Content -->
-      <div class="sidebar-left-content nano-content">
+      <div class="sidebar-left-content nano-content" style="margin-right: -17px;">
 
         <!-- Start: Sidebar Header -->
         <header class="sidebar-header">
@@ -1117,10 +1134,10 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
           <!-- Sidebar Widget - Search (hidden) -->
               <form class="mn pn" role="search">
                   <label for="sidebar-search">
-          <div class="sidebar-widget search-widget mn">
+          <div class="sidebar-widget search-widget mn" id="sidebar-search-content">
             <div class="input-group">
               <span class="input-group-addon">
-                <i class="fa fa-search"></i>
+                <i class="far fa-search"></i>
               </span>
               <input type="text" id="sidebar-search" autocomplete="off" name="q" class="form-control" placeholder="Busca rápida...">
                 <input name="P" value="Busca" type="hidden">
@@ -1149,7 +1166,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     <section id="content_wrapper">
 
       <!-- Start: Topbar -->
-      <header id="topbar" class="alt affix no-print">
+      <header id="topbar" class="alt affix no-print <% if device()<>"" then response.write("topbar-mobile") end if %>">
         <div class="topbar-left">
 
         <% if device()="" then %>
@@ -1170,7 +1187,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         <% else %>
           <ol class="breadcrumb">
             <li class="crumb-icon pn">
-              <a class="btn btn-sm mn" onclick="abrirSubmenu()" style="max-width:90px; overflow:hidden">
+              <a class="btn btn-sm mn" onclick="abrirSubmenu()" style="border:none;text-decoration:underline;max-width:120px; overflow:hidden">
                 <span class="glyphicon glyphicon-"></span>
               </a>
             </li>
@@ -1188,7 +1205,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       <section id="content" class="table-layout animated fadeIn">
 
           <% if device()<>"" then %>
-            <div class="nano-content sidebar-light" id="submenu" style="background-color:#f3f3f3; height:450px; border:1px solid #ccc; position:fixed; width:260px; margin-right:-260px; right:0; top:65px; z-index:10003">
+            <div class="nano-content sidebar-light" id="submenu" style="background-color:#fff!important; height:450px; position:fixed; width:260px; margin-right:-260px; right:0; top:65px; z-index:10003">
                 <ul id="poney" class="nav sidebar-menu" style="height:300px; overflow:scroll">
                     <!--#include file="menuEsquerdo.asp"-->
                 </ul>
@@ -1264,8 +1281,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 					<td>
 						<%= ucase(pendImp("recursoConferir")&"") %>
 					</td>
-					<td> <button type="button" class="btn btn-success btn-xs" onclick="staImport(1, <%= pendImp("id") %>, 'ATENÇÃO: Você está informando que conferiu a importação do CADASTRO DE <%= ucase(pendImp("recursoConferir")&"")%>, cujos dados encontram-se importados corretamente. ')"><i class="fa fa-thumbs-up"></i> CONFERIDO</button></td>
-					<td> <button type="button" class="btn btn-danger btn-xs" onclick="staImport(0, <%= pendImp("id") %>, 'ATENÇÃO: Você está informando que a importação do CADASTRO DE <%= ucase(pendImp("recursoConferir")&"")%> não está em conformidade com o banco de dados enviado. \nNossa equipe de importação será notificada disso e entrará em contato.\n Caso prefira, você também pode entrar em contato a qualquer momento com nossa equipe de importação no telefone (21) 2018-0123.')"><i class="fa fa-thumbs-up"></i> ALGO DEU ERRADO</button></td>
+					<td> <button type="button" class="btn btn-success btn-xs" onclick="staImport(1, <%= pendImp("id") %>, 'ATENÇÃO: Você está informando que conferiu a importação do CADASTRO DE <%= ucase(pendImp("recursoConferir")&"")%>, cujos dados encontram-se importados corretamente. ')"><i class="far fa-thumbs-up"></i> CONFERIDO</button></td>
+					<td> <button type="button" class="btn btn-danger btn-xs" onclick="staImport(0, <%= pendImp("id") %>, 'ATENÇÃO: Você está informando que a importação do CADASTRO DE <%= ucase(pendImp("recursoConferir")&"")%> não está em conformidade com o banco de dados enviado. \nNossa equipe de importação será notificada disso e entrará em contato.\n Caso prefira, você também pode entrar em contato a qualquer momento com nossa equipe de importação no telefone (21) 2018-0123.')"><i class="far fa-thumbs-up"></i> ALGO DEU ERRADO</button></td>
 				</tr>
 				<%
 			pendImp.movenext
@@ -1313,10 +1330,14 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 
 								IF FileName = "Home.asp" THEN
-                  if getConfig("HomeOtimizada")="1" or ModoFranquia then
+                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF
+
+								if req("Mod")<>"" then
+								    FileName = "modulos/"&req("Mod") &"/"& FileName
+								end if
 
 								server.Execute(FileName)
 								%>
@@ -1348,7 +1369,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               function vidau(v){
                   dva = $("#videoaula");
                   dva.css("display", "block");
-                  dva.html("Carregando...");
+                  dva.html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                   $.get(v, function(data){
                     dva.html( data );
                     });
@@ -1360,24 +1381,24 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
                   <button type="button" class="btn btn-xs btn-success light" data-toggle="tooltip" data-placement="top" title="Tutoriais em vídeo"
                   onclick='vidau(`VideoTutorial.asp?refURL=<%=Base64Encode(request.QueryString())%>`, true, `Central de Vídeos`,``,`xl`,``)'>
-                  <i class="fa fa-video-camera"></i> Vídeo-aula
+                  <i class="far fa-video-camera"></i> Vídeo-aula
                   </button>
 
                       <%if session("Admin")<>1 AND recursoAdicional(12)=4 then%>
                       <%else%>
 
-                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" class="btn btn-xs btn-default">
-                          <i class="fa fa-question-circle"></i> Suporte
+                      <button type="button" onclick="location.href='./?P=AreaDoCliente&Pers=1'" data-toggle="tooltip" data-placement="top"  title="Central de ajuda" class="btn btn-xs btn-default">
+                          <i class="far fa-question-circle"></i> Suporte
                       </button>
                       <%end if%>
                       <button type="button" class="btn btn-xs btn-default">
                         <%
                         Versao = session("Versao")
                         if Versao="" then
-                          Versao="v. 7.0"
+                          Versao="8.0"
                         end if
                         %>
-                          Feegow Clinic : <%=Versao%>
+                          Feegow  <%=Versao%>
                       </button>
                       <%
 
@@ -1386,7 +1407,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                         if ChamadaDeSenha=4 then
                           %>
                             <button type="button" class="btn btn-xs btn-default callTicketBtn" onclick="callTicket()" disabled>
-                                <i class="fa fa-users"></i> Chamar senha
+                                <i class="far fa-users"></i> Chamar senha
                             </button>
                             <%
                         end if
@@ -1395,21 +1416,26 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                            if recursoAdicional(17)=4 then
                           %>
                             <button type="button" class="btn btn-xs btn-default" onclick="facialRecognition()">
-                                <i class="fa fa-smile"></i> Reconhecimento facial
+                                <i class="far fa-smile"></i> Reconhecimento facial
                             </button>
                             <%
                             end if
                             %>
-                            <% IF session("Banco")<>"clinic7126" THEN %>
+                            <% IF False THEN %>
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+
+                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:'<%=Request.QueryString()%>'}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
+                              <span class="far fa-bug"></span> Reportar bug
+                            </button>
+
+                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
                             <script>localStorage.setItem("Admin",true);</script>
                             <button class="btn btn-xs btn-success light" id="footer-whats" onclick="location.href='?P=OutrasConfiguracoes&Pers=1&whatsApp=true'"  data-rel="tooltip" data-placement="right" title="" data-original-title="" >
-                                <span class="fa fa-whatsapp"></span>
+                                <span class="far fa-whatsapp"></span>
                             </button>
                             <%
                                 END IF
@@ -1442,8 +1468,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
               end if
               %>
             <span class="footer-meta"><b><%=session("NomeEmpresa")%></b></span>
+
             <a href="#content" class="footer-return-top">
-              <span class="fa fa-arrow-up"></span>
+              <span class="far fa-arrow-up"></span>
             </a>
           </div>
         </div>
@@ -1480,7 +1507,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                 %>
                 <div style="text-align: center; background: #1b74b0; color: #ffffff;margin: 20px 0px; padding: 10px">
                     <h5 style="font-size: 17px">
-                    <strong><i class="fa fa-angle-down"></i></strong>
+                    <strong><i class="far fa-angle-down"></i></strong>
                     Primeiros passos</h5>
                 </div>
                 <style>
@@ -1751,14 +1778,18 @@ hash_chat: 'FFCHAT01'
   <!-- Widget Javascript -->
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
-  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/pnotify/pnotify.js"></script>
+  <!-- Notificações (Alerts, Confirms, etc)  -->
+  <script src="./vendor/plugins/pnotify/pnotify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+
+
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/magnific/jquery.magnific-popup.js"></script>
 
     <!-- old sms -->
     	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
-		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+		<script src="./assets/js/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -1904,8 +1935,28 @@ function openRedefinirSenha(){
               },"md",false);
 }
 
+function reloadTitle(){
+    var pageName = $(".crumb-active").text();
+
+    if(pageName.length > 5){
+        document.title = "Feegow - "+pageName;
+    }
+}
+
+$(".crumb-active").bind('DOMSubtreeModified', reloadTitle);
+
 $(document).ready(function() {
-  
+    reloadTitle();
+
+    var $iptSearch = $("#sidebar-search");
+    var $contentSearch = $("#sidebar-search-content");
+
+    $iptSearch.focus(function(){
+        $contentSearch.addClass("active");
+    }).blur(function(){
+        $contentSearch.removeClass("active");
+    });
+
     var lenMenu = $(".sidebar-menu li").length
     setTimeout(function() {
         if(lenMenu === 0){
@@ -1949,7 +2000,7 @@ if session("Atendimentos")<>"" then
 				set pac = db.execute("select NomePaciente from pacientes where id="&PacienteID)
 				if not pac.eof then
 					contaAtendimentos = contaAtendimentos+1
-					strAtendimentos = strAtendimentos&"<a id=""agePac"&PacienteID&""" class=""btn btn-warning btn-xs btn-block"" href=""?P=Pacientes&Pers=1&I="&PacienteID&""">Voltar para: "&pac("NomePaciente")&"</a>"
+					strAtendimentos = strAtendimentos&"<a id=""agePac"&PacienteID&""" class=""btn btn-default btn-xs"" style='floar:right' href=""?P=Pacientes&Pers=1&I="&PacienteID&""">Voltar para: "&pac("NomePaciente")&"</a>"
 				end if
 			end if
 		end if
@@ -2242,10 +2293,8 @@ function abreModalUnidade(backdrop=true){
         backdrop={};
     }
     $.post("LoginEscolheUnidade.asp", '', function(data){
-        $(document).ready(function() {
-            $("#modalCaixa").modal(backdrop);
-            $("#modalCaixaContent").html(data);
-        });
+        $("#modalCaixa").modal(backdrop);
+        $("#modalCaixaContent").html(data);
     });
 }
 </script>
@@ -2268,7 +2317,7 @@ function abreModalUnidade(backdrop=true){
     <% IF session("BancoOld") <> "" THEN %>
     <script>
         $("body").append(`<div class='voltarTo'>
-           <a href="sys_financialCompanyUnits.asp?back=1"><i class="fa fa-backward"></i>  Voltar a Licença da Franquiadora</a>
+           <a href="sys_financialCompanyUnits.asp?back=1"><i class="far fa-backward"></i>  Voltar a Licença da Franquiadora</a>
         </div>`);
     </script>
 
@@ -2494,7 +2543,7 @@ for i=0 to ubound(splChatWindows)
 			Para = chatID
 			chatID = splChatWindows(i)
 			%>
-			<div id="chat_<%=chatID%>"></div>
+			<div class="chat-popup" id="chat_<%=chatID%>"></div>
             <%
 		end if
 	end if
@@ -2505,9 +2554,9 @@ next
 <div id="videoaula" style="position:fixed; left:10px; width:95%; height:600px; top:10px; border-radius:5px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); z-index:9999"></div>
 
 <%
-if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
+if session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 then
     %>
-    <div id="calls" style="position:fixed; right:10px; bottom:10px; width:350px; border-radius:10px; background-color:#fff; border:1px solid #ccc; display:none; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></div>
+    <div id="calls" class="modal-draggable" style="position:fixed; right:10px; bottom:10px; width:350px; ;"></div>
     <script type="text/javascript">
         function recontatar(I){
             $.get("constante.asp?Recontatar="+I, function(data){
@@ -2575,6 +2624,89 @@ if session("Status")="T" or session("Status")="F" then
 <%
 end if
 %>
+
+<%
+'-> GESTÃO DE AVISOS
+if getConfig("GestaoDeAvisos")=1 then
+  if session("AvisoCarregado")="" and session("UnidadeID")&""<>"-1" then
+    'Admin?
+    if session("Admin")=1 then
+      sqlAdmin = " OR a.Perfis LIKE '%|Administrador|%' "
+    end if
+    'Perfil
+    sqlPerfil = " OR a.Perfis LIKE '%|"& session("Table") &"|%' "
+
+    'RegraID
+    if session("ModoFranquia")=1 then
+      set pRegra = db.execute("select regra from usuarios_regras where unidade="& session("UnidadeID") &" and usuario="& session("User"))
+      if not pRegra.eof then
+        RegraID = pRegra("regra")
+        sqlRegra = " OR a.Perfis LIKE '%|"& RegraID &"|%' "
+      end if
+    else
+        set UserSQL = db.execute("SELECT RegraID FROM sys_users WHERE id="&session("User"))
+        if not UserSQL.eof then
+            sqlRegra = " OR a.Perfis LIKE '%|"& UserSQL("RegraID") &"|%' "
+        end if
+    end if
+
+    'EspecialidadeID
+    if lcase(session("Table")&"")="profissionais" then
+      set pesp = db.execute("select especialidadeID from profissionais WHERE id="& session("idInTable") &" UNION ALL select EspecialidadeID from profissionaisespecialidades where ProfissionalID="& session("idInTable"))
+      while not pesp.eof
+        sqlEsp = sqlEsp & " OR a.Especialidades LIKE '%|"& pesp("EspecialidadeID") &"|%' "
+      pesp.movenext
+      wend
+      pesp.close
+      set pesp = nothing
+    end if
+
+
+    sql = "select a.*, al.sysDate DataLeitura from avisos a "&_
+          "LEFT JOIN avisosleitura al ON (al.AvisoID=a.id AND al.sysUser="& session("User") &" AND al.UnidadeID="& session("UnidadeID") &") "&_
+          "WHERE UnidadesLicencas LIKE '%|"& session("UnidadeID") &"|%' AND CURDATE() BETWEEN DATE(a.Inicio) AND DATE(a.Fim) "&_
+          "AND (0 "& sqlAdmin & sqlRegra & sqlPerfil & sqlEsp &") AND ISNULL(al.id)"
+
+    dim divsAviso(10)
+    ShowAvisoID = 0
+
+    set vcaAviso = db.execute( sql )
+    while not vcaAviso.eof
+      TipoExibicao = vcaAviso("TipoExibicao")
+      if TipoExibicao=1 and req("P")<>"Home" then
+        response.redirect("./?P=Home&Pers=1")
+      else
+
+        divsAviso(vcaAviso("TipoExibicao")) = divsAviso(vcaAviso("TipoExibicao")) & "<div>"& vcaAviso("Texto") &"</div>"
+        ShowAvisoID = vcaAviso("id")
+
+        if vcaAviso("TipoExibicao")=2 then
+          divsAviso(vcaAviso("TipoExibicao")) = divsAviso(vcaAviso("TipoExibicao")) & "<hr class='short alt'><div class='text-right p10'><button type='button' class='btn btn-primary' onclick=""ajxContent('AvisosLido', "& vcaAviso("id") &", 1, '', ''); $(this).fadeOut(); $('#modal-table').modal('hide');""><i class='fa fa-check'></i> MARCAR COMO LIDO</button></div>"
+        end if
+
+        session("AvisoCarregado")=1
+      end if
+    vcaAviso.movenext
+    wend
+    vcaAviso.close
+    set vcaAviso = nothing
+
+  end if
+end if
+
+  '<- GESTÃO DE AVISOS
+  %>
+<script type="text/javascript">
+<%
+
+if ShowAvisoID&""<>"0" and ShowAvisoID&""<>"" then
+%>
+  openComponentsModal( 'CarregaAviso.asp', {AvisoID: '<%=ShowAvisoID%>'}, "Novo aviso");
+<%
+end if
+%>
+</script>
+
 </body>
 <%
 if device()<>"" then

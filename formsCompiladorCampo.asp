@@ -1,7 +1,7 @@
 <li id="<%=CampoID%>" class="<%if TipoCampoID=13 then response.Write("caixaGrupo campo") else response.Write("campo") end if%>" data-row="<%=pTop%>" style="text-align:left" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>"><span class="botoes"><% If TipoCampoID=13 Then 
-	%><button type="button" onClick="menu(<%=CampoID%>)" class="btn btn-xs btn-warning btn-grupo"><i class="fa fa-plus"></i></button>&nbsp;<button type="button" onClick="editField(<%=CampoID%>)" class="btn btn-xs btn-primary btn-grupo"><i class="fa fa-edit"></i></button>&nbsp;<button onClick="removeCampo(<%=CampoID%>, 0)" class="btn btn-xs btn-danger btn-grupo"><i class="fa fa-remove"></i></button><% 
+	%><button type="button" onClick="menu(<%=CampoID%>)" class="btn btn-xs btn-warning btn-grupo"><i class="far fa-plus"></i></button>&nbsp;<button type="button" onClick="editField(<%=CampoID%>)" class="btn btn-xs btn-primary btn-grupo"><i class="far fa-edit"></i></button>&nbsp;<button onClick="removeCampo(<%=CampoID%>, 0)" class="btn btn-xs btn-danger btn-grupo"><i class="far fa-remove"></i></button><%
 else
-	%><i class="fa fa-edit blue" onClick="editField(<%=CampoID%>)"></i>&nbsp;&nbsp;&nbsp;<i class="fa fa-remove red" onClick="removeCampo(<%=CampoID%>, <%=GrupoID%>);"></i><%
+	%><i class="far fa-edit blue" onClick="editField(<%=CampoID%>)"></i>&nbsp;&nbsp;&nbsp;<i class="far fa-remove red" onClick="removeCampo(<%=CampoID%>, <%=GrupoID%>);"></i><%
 End If
 	%></span><%
         if possuiColuna=1 then
@@ -10,7 +10,7 @@ End If
            ' response.Write(sqlVCA)
             'response.Write(session("banco"))
             if vca.eof then
-                %><div style="position:absolute; background-color:red; bottom:0; padding:3px; color:#fff"><i class="fa fa-exclamation-triangle"></i> Houve um problema na renderização deste campo. Por favor, apague e crie novamente. (<%=CampoID %>)</div><%
+                %><div style="position:absolute; background-color:red; bottom:0; padding:3px; color:#fff"><i class="far fa-exclamation-triangle"></i> Houve um problema na renderização deste campo. Por favor, apague e crie novamente. (<%=CampoID %>)</div><%
             end if
         end if
 
@@ -24,9 +24,9 @@ End If
 			end if
 	  	case 2'Data
 			if LadoALado="S" then
-				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div></td></tr></table><%
+				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><div class="input-group"><input name="input_<%=CampoID%>" value="<%=ValorPadrao%>" tabindex="<%=Ordem%>" class="campoInput form-control" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control" name="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span></div><%
+				%><label class="campoLabel"><%=RotuloCampo%></label><div class="input-group"><input tabindex="<%=Ordem%>" class="campoInput form-control" name="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"><span class="input-group-addon"><i class="far fa-calendar bigger-110"></i></span></div><%
 			end if
 	  	case 3'imagem
 				%><label class="campoLabel"><%=RotuloCampo%></label><div class="imagem"></div><%
@@ -96,7 +96,7 @@ End If
 				%><th><input name="<%=CampoID&"_t"&contaLargura%>" value="<%=pTit("c"&contaLargura)%>" class="tabTit" /></th><%
 			wend
 
-			%><th width="1%"><button type="button" onClick="addRow(<%=CampoID%>, 0, 1)" class="btn btn-xs btn-primary btn-20"><i class="fa fa-plus"></i></button></th></thead><tbody><%
+			%><th width="1%"><button type="button" onClick="addRow(<%=CampoID%>, 0, 1)" class="btn btn-xs btn-primary btn-20"><i class="far fa-plus"></i></button></th></thead><tbody><%
 			
 			set pMod = db.execute("select * from buitabelasmodelos where CampoID="&CampoID)
 			while not pMod.EOF
@@ -106,7 +106,7 @@ End If
 					contaLargura = contaLargura+1
 					%><td><input class="campoInput form-control" onblur="regAtualiza(`<%=pMod("id")&"_c"&contaLargura%>`,<%=CampoID%>)" name="<%=pMod("id")&"_c"&contaLargura%>" value="<%=pMod("c"&contaLargura)%>" /></td><%
 				wend
-				%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRow(<%=pMod("id")%>, 0, 0)"><i class="fa fa-remove"></i></button></td></tr><%
+				%><td><button type="button" class="btn btn-xs btn-danger btn-20" onClick="addRow(<%=pMod("id")%>, 0, 0)"><i class="far fa-remove"></i></button></td></tr><%
 			pMod.movenext
 			wend
 			pMod.close
@@ -131,6 +131,6 @@ End If
 		case 14
 			%><div style="background-color:#ECD4D5; position:absolute;">MOVER</div><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="Curva.asp?CampoID=<%=CampoID%>&FormID=<%=I%>" style="width:100%;height:100%"></iframe><%
 		case 15
-			%><div style="background-color:#ECD4D5; position:absolute;"><i class="fa fa-arrows"></i></div><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="CodBarras.asp?NumeroCodigo=7879011" style="width:100%;height:100%"></iframe><%
+			%><div style="background-color:#ECD4D5; position:absolute;"><i class="far fa-arrows"></i></div><iframe id="frm<%=CampoID%>" name="frm<%=CampoID%>" frameborder="0" scrolling="no" src="CodBarras.asp?NumeroCodigo=7879011" style="width:100%;height:100%"></iframe><%
 	  end select
 	  %></li>

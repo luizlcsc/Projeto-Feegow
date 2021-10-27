@@ -220,7 +220,7 @@ wend
 cc.close
 set cc = nothing
 
-sqlPNomeU = "select group_concat(NomeEmpresa) NomeUnidade FROM vw_unidades where id in ("& UnidadeID &")"
+sqlPNomeU = "select group_concat(NomeFantasia) NomeUnidade FROM vw_unidades where id in ("& UnidadeID &")"
 'response.write(sqlPNomeU)
 set pNomeU = db.execute( sqlPNomeU)
 NomeUnidade = pNomeU("NomeUnidade")

@@ -103,7 +103,7 @@
                 <img alt="150x150" height="150" src="<%= fullFile %>" id="image<%=c%>" />
                 <div class="tags">
                     <span class="label-holder">
-                        <span class="label label-info arrowed-in"> <%= imagens("DataHora") %> <i class="fa fa-time icon-time"></i></span>
+                        <span class="label label-info arrowed-in"> <%= imagens("DataHora") %> <i class="far fa-time icon-time"></i></span>
                     </span>
                 </div>
             </a>
@@ -116,19 +116,19 @@
             <div class="tools tools-top">
 
                 <a href="#" title="Editar Imagem" onclick="return launchEditor('image<%=c%>', '<%= fullFile %>');">
-                    <i class="fa fa-pencil icon-pencil"></i>
+                    <i class="far fa-pencil icon-pencil"></i>
                 </a>
 
                 <a href="<%= fullFile %>" target="_blank" title="Abrir Imagem Separadamente">
-                    <i class="fa fa-external-link icon-external-link"></i>
+                    <i class="far fa-external-link icon-external-link"></i>
                 </a>
 
                 <a href="#" class="hide" title="Duplicar Imagem" onclick="duplicate('<%=imagens("NomeArquivo")%>');">
-                   <i class="fa fa-paste icon-paste"></i>
+                   <i class="far fa-paste icon-paste"></i>
                 </a>
 
                 <a href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(<%=imagens("id")%>);" id="excluir" title="Excluir Imagem">
-                    <i class="fa fa-trash icon-trash"></i>
+                    <i class="far fa-trash icon-trash"></i>
                 </a>
             </div>
 
@@ -144,42 +144,42 @@
 
                 <%if instr(imagens("NomeArquivo"), ".pdf")=0 then%>
                 <a class="btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image<%=c%>', '<%=fullFile%>');">
-                    <i class="fa fa-pencil icon-pencil"></i>
+                    <i class="far fa-pencil icon-pencil"></i>
                 </a>
 
                 <a class="btn btn-xs btn-alert" href="<%= fullFile %>" target="_blank" title="Abrir Imagem Separadamente">
-                    <i class="fa fa-external-link icon-external-link"></i>
+                    <i class="far fa-external-link icon-external-link"></i>
                 </a>
 
                 <a class="btn btn-xs btn-alert"  href="javascript:r90('<%= imagens("NomeArquivo") %>', '<%= imagens("id") %>')" title="Girar 90&deg;">
-                    <i class="fa fa-rotate-right"></i>
+                    <i class="far fa-rotate-right"></i>
                 </a>
                 <a class="btn btn-xs btn-alert" href="javascript:MaisInfo('<%= imagens("NomeArquivo") %>')" title="Mais informações">
-                    <i class="fa fa-info-circle"></i>
+                    <i class="far fa-info-circle"></i>
                 </a>
                 <%end if%>
                 <a class="btn btn-xs btn-danger pull-right" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(<%=imagens("id")%>);" id="excluir" title="Excluir Imagem">
-                    <i class="fa fa-trash icon-trash"></i>
+                    <i class="far fa-trash icon-trash"></i>
                 </a>
                 
                 <% if cstr(session("User"))=imagens("sysUser")&"" then %>
                 <div class="btn-group dropup" >
                     <a data-toggle="dropdown" title="Compartilhamento de arquivos" class="btn btn-xs btn-alert dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-share-alt"></i>
+                                    <i class="far fa-share-alt"></i>
                     </a>
                     <ul class="dropdown-menu pull-left" role="menu"  >
                         <li  class="dropdown-item">
-                            <a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" > <i class="fa fa-users"></i> Publico </a>
+                            <a <% if tipoCompartilhamento = 1  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(1,'Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" > <i class="far fa-users"></i> Publico </a>
                         </li>
                         <li class="dropdown-item">
-                            <a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" ><i class="fa fa-lock"></i> Privado</a>
+                            <a <% if tipoCompartilhamento = 2  then %> class="compartilhamentoSelect" <% end if %> href="javascript:saveCompartilhamento(2,'Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" ><i class="far fa-lock"></i> Privado</a>
                         </li>
                         <li class="dropdown-item">
-                            <a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" ><i class="fa fa-eye-slash"></i> Restrito</a>
+                            <a <% if tipoCompartilhamento = 3  then %> class="compartilhamentoSelect" <% end if %> href="javascript:compartilhamentoRestrito('Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" ><i class="far fa-eye-slash"></i> Restrito</a>
                         </li>
                             <li class="divider"></li>
                         <li class="dropdown-item">
-                            <a href="javascript:saveCompartilhamento(0,'Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" > <i class="fa fa-asterisk"></i> Padrão </a>
+                            <a href="javascript:saveCompartilhamento(0,'Imagens',<%=imagens("id") %>,<%=session("idInTable") %>)" > <i class="far fa-asterisk"></i> Padrão </a>
                         </li>
                     </ul>
                 </div>
@@ -188,7 +188,7 @@
             </div>
             <%
             if instr(imagens("NomeArquivo"), ".pdf")>0 then%>
-                <a target="_blank" href="<%= fullFile %>" style="min-height: 190px; padding-top: 70px" class="btn btn-info btn-block"><i class="fa fa-file"></i> PDF</a>
+                <a target="_blank" href="<%= fullFile %>" style="min-height: 190px; padding-top: 70px" class="btn btn-info btn-block"><i class="far fa-file"></i> PDF</a>
             <%else%>
                 <a href="<%= fullFile %>" title="<%=imagens("Descricao") %>" data-rel="colorbox">
                         <img data-id="<%= imagens("id") %>" alt="150x150" height="190" width="100%" style="object-fit:cover!important; height:190px!important" class="img-responsible img-thumbnail" src="<%= fullFile %>?time=<%=time()%>" data-src="<%= fullFile %>" id="image<%=c%>" />
@@ -238,8 +238,8 @@ var colorbox_params = {
 reposition:true,
 scalePhotos:true,
 scrolling:false,
-previous:'<i class="fa fa-arrow-left icon-arrow-left"></i>',
-next:'<i class="fa fa-arrow-right icon-arrow-right"></i>',
+previous:'<i class="far fa-arrow-left icon-arrow-left"></i>',
+next:'<i class="far fa-arrow-right icon-arrow-right"></i>',
 close:'&times;',
 current:'{current} of {total}',
 maxWidth:'100%',

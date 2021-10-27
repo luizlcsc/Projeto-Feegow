@@ -34,7 +34,7 @@ end if
                         <%
 		                if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
 		                    %>
-                            <button class="btn btn-primary btn-sm" id="save"> <i class="fa fa-save"></i> Salvar </button>
+                            <button class="btn btn-primary btn-sm" id="save"> <i class="far fa-save"></i> Salvar </button>
 		                    <%
 		                end if
 		                %>
@@ -68,18 +68,17 @@ end if
                                 </div>
                                 <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
                                     <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
-                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                                    <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="panel">
                             <div class="panel-heading">
                                 <span class="panel-title">
-                                    <i class="fa fa-hospital-o"></i> Unidades
+                                    <i class="far fa-hospital-o"></i> Unidades
                                 </span>
                             </div>
                             <div class="panel-body p7">
-
                                 <% 
                                 QtdUnidades = ubound(split(session("Unidades"), ","))
     
@@ -113,7 +112,6 @@ end if
                                 <% END IF
     
                                 unidadesFuncionario = regUnidades
-
                                 %>
                                 <div class="checkbox-primary checkbox-custom" data-name="Empresa Principal"><input type="checkbox" name="Unidades" id="Unidades0" value="|0|"<%if instr(unidadesFuncionario, "|0|")>0 then%> checked="checked"<%end if%> /><label for="Unidades0"> <small>Empresa principal</small></label></div>
                             <%
@@ -354,6 +352,11 @@ if req("GT")="Permissoes" then
 	<%
 end if
 %>
+
+function selecionarTodasUnidades(cel){
+ $("[name='Unidades']").prop('checked', cel)
+}
+
 </script>
 
 <!--#include file="disconnect.asp"-->

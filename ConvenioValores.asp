@@ -261,8 +261,8 @@ CoeficientePorte = coalesce(CoeficientePorte,1,null)
             <div class="panel-heading">
                 <span class="panel-title">Outras Despesas a Anexar</span>
                 <span class="panel-controls">
-                    <button onclick="Add(1);" class="btn btn-sm btn-success" type="button"><i class="fa fa-plus"></i> Adicionar Item</button>
-                    <button onclick="addProc()" class="btn btn-sm btn-success" type="button"><i class="fa fa-plus"></i> Adicionar Procedimento</button>
+                    <button onclick="Add(1);" class="btn btn-sm btn-success" type="button"><i class="far fa-plus"></i> Adicionar Item</button>
+                    <button onclick="addProc()" class="btn btn-sm btn-success" type="button"><i class="far fa-plus"></i> Adicionar Procedimento</button>
                 </span>
             </div>
             <div class="panel-body">
@@ -294,7 +294,7 @@ CoeficientePorte = coalesce(CoeficientePorte,1,null)
 
 </div>
 <div class="modal-footer no-margin-top">
-	<button id="salvar" class="btn btn-sm btn-primary pull-right"><i class="fa fa-save"></i> Salvar</button>
+	<button id="salvar" class="btn btn-sm btn-primary pull-right"><i class="far fa-save"></i> Salvar</button>
 </div>
 
 </form>

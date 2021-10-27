@@ -1,19 +1,25 @@
 ﻿<!--#include file="connect.asp"-->
+<script >
+$(".crumb-active a").html("Contatos realizados");
+$(".crumb-link").removeClass("hidden");
+$(".crumb-icon a span").attr("class", "far fa-phone");
+</script>
 
-<div class="page-header">
-    <h1>CONTATOS REALIZADOS</h1>
-</div>
+<div class="panel mt15">
+    <div class="panel-body">
+        <form method="post" action="">
+            <div class="clearfix form-actions">
+                <%=quickfield("datepicker", "De", "De", 2, ref("De"), "input-mask-date", "", "") %>
+                <%=quickfield("datepicker", "Ate", "Até", 2, ref("Ate"), "input-mask-date", "", "") %>
+                <%=quickfield("users", "Operador", "Operador", 2, ref("Operador"), "", "", "") %>
+                <%=quickfield("multiple", "Canal", "Canal", 4, ref("Canal"), "select * from chamadascanais", "NomeCanal", "") %>
+                <label>&nbsp;</label><br /><button class="btn btn-sm btn-primary"><i class="far fa-search"></i> Buscar</button>
+            </div>
+        </form>
 
-<form method="post" action="">
-    <div class="clearfix form-actions">
-        <%=quickfield("datepicker", "De", "De", 2, ref("De"), "input-mask-date", "", "") %>
-        <%=quickfield("datepicker", "Ate", "Até", 2, ref("Ate"), "input-mask-date", "", "") %>
-        <%=quickfield("users", "Operador", "Operador", 2, ref("Operador"), "", "", "") %>
-        <%=quickfield("multiple", "Canal", "Canal", 4, ref("Canal"), "select * from chamadascanais", "NomeCanal", "") %>
-        <label>&nbsp;</label><br /><button class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Buscar</button>
+
     </div>
-</form>
-
+</div>
 
 
 <%
@@ -68,7 +74,7 @@
                                     set age = db.execute("select p.NomeProfissional, a.Data, a.Hora from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.id="&cham("AgendamentoID"))
                                     if not age.eof then
                                         %>
-                                        <a href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=cham("AgendamentoID") %>" class="btn btn-success btn-xs"><i class="fa fa-calendar"></i> <%=age("Data") & " - " & formatdatetime(age("Hora"), 4) %></a>
+                                        <a href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=cham("AgendamentoID") %>" class="btn btn-success btn-xs"><i class="far fa-calendar"></i> <%=age("Data") & " - " & formatdatetime(age("Hora"), 4) %></a>
                                         <%
                                     end if
                                 end if

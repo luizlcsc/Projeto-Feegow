@@ -27,7 +27,7 @@ end if
 
 <div class="panel">
     <div class="panel-heading">
-	    <span class="panel-title"><i class="fa fa-calendar"></i> Nome: <%=NomeProfissional%>
+	    <span class="panel-title"><i class="far fa-calendar"></i> Nome: <%=NomeProfissional%>
         </span>
     </div>
     <div class="panel-body">

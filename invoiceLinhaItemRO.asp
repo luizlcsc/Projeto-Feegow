@@ -3,11 +3,17 @@
     set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&treatvalzero(InvoiceID))
     'Caso exista alguma integração para este ítem desabilitar o botão
    ' set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
-    set procedimentos  = db.execute("Select * from procedimentos where id= "&treatvalzero(ItemID))
+    if tipo = "M" then
+        set produto  = db.execute("Select NomeProduto from produtos p  where id= "&treatvalzero(ItemID))
+        nome = produto("NomeProduto")
+    else
+        set procedimentos  = db.execute("Select NomeProcedimento from procedimentos where id= "&treatvalzero(ItemID))
+        nome = procedimentos("NomeProcedimento")
 
+    end if
 %>
 
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" class="invoice-linha-item" >
 
     <td> 
         <input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
@@ -15,7 +21,7 @@
         <input type="hidden" name="Quantidade<%=id%>" id="Quantidade<%=id%>" value="<%=Quantidade%>">
         <input type="hidden" name="ItemID<%=id%>" id="ItemID<%=id%>" value="<%=id%>">
 
-    	<%=Quantidade %>
+    	<span class="pull-right"><%=Quantidade %></span>
     </td>  
           <%
         if Tipo="S" then
@@ -67,9 +73,9 @@
                     <%
                 end if
 
-         end if %>
+            end if %>
                 <%
-                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
+                if id>0 then
                     set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
                     TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
 
@@ -96,8 +102,8 @@
                 end if
             end if
         end if    %>
-    <td colspan=3> 
-    	<%=procedimentos("NomeProcedimento") %>
+    <td colspan=2>
+    	<%=nome %>
     </td>
     <td>
         <% if integracaopleres <>"S" then %>
@@ -113,44 +119,46 @@
                 <span class="checkbox-custom checkbox-primary"><input type="checkbox" class="checkbox-executado" name="Executado<%=id%>" id="Executado<%=id%>" value="S"<%if Executado="S" then%> checked="checked"<%end if%> <%=DisabledNaoAlterarExecutante%> /><label for="Executado<%=id%>"> Executado</label></span>
             <% end if %>
             <%
-                if id>0 and (session("Banco")="clinic5760" or session("Banco")="clinic105" or session("Banco")="clinic100000" or session("Banco")="clinic4421" or session("Banco")="clinic5856" or session("Banco")="clinic5445" or session("Banco")="clinic5968" or session("Banco")="clinic5857" or session("Banco")="clinic6118" or session("Banco")="clinic6273" or session("Banco")="clinic5563" or session("Banco")="clinic6346" or session("Banco")="clinic2665" or session("Banco")="clinic6289" or session("Banco")="clinic5563" or session("Banco")="clinic6451" or session("Banco")="clinic6256") then
-                    set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
-                    TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
+                if id>0 then
+                    if Executado="C" then
+                        set vcaPagto = db.execute("select ifnull(sum(Valor), 0) TotalPagoItem from itensdescontados where ItemID="& id)
+                        TotalPagoItem = ccur(vcaPagto("TotalPagoItem"))
 
-                    if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) and Executado="C" then
+                        if TotalPagoItem>=ccur(Quantidade*(ValorUnitario+Acrescimo-Desconto)) then
                         %>
                         <input type="hidden" value="C" name="Cancelado<%=id%>">
                         <span class="label label-danger">Cancelado</span>
                         <% '<span class="checkbox-custom checkbox-danger"><input type="checkbox" name="Cancelado id" id="Cancelado id" value="C" checked="checked" /><label for="Cancelado id"> Cancelado</label></span> %>
                         <%
+                        end if
                     end if
                 end if
             %>
         <% end if %>
     </td>
     <td> 
-    	R$ <%=formatnumber(ValorUnitario,2)%>
+    	<span class="pull-right">R$ <%=formatnumber(ValorUnitario,2)%></span>
     </td>
     <td> 
-    	R$ <%=formatnumber(Desconto,2)%>
+    	<span class="pull-right">R$ <%=formatnumber(Desconto,2)%></span>
     </td>
     <td> 
-    	R$ <%=formatnumber(Acrescimo,2)%>
+    	<span class="pull-right">R$ <%=formatnumber(Acrescimo,2)%></span>
     </td>
     <td> 
-    	R$ <%=formatnumber(Subtotal,2)%>
+    	<span class="pull-right">R$ <%=formatnumber(Subtotal,2)%></span>
     </td>
-     <td>
+     <td colspan="3">
     <% if Tipo="S" then 
 
     %>
-        <div class="btn-group">
-            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="fa fa-print"></i></button>
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-info btn-sm  dropdown-toggle" data-toggle="dropdown" title="Gerar recibo" aria-expanded="false"><i class="far fa-print"></i></button>
             <ul class="dropdown-menu dropdown-info pull-right">
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="fa fa-plus"></i> Protocolo de laudo </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="fa fa-plus"></i> Impresso </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="fa fa-plus"></i> Etiqueta </a></li>
-                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="fa fa-plus"></i> Preparos </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Protocolo')"><i class="far fa-plus"></i> Protocolo de laudo </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Impresso')"><i class="far fa-plus"></i> Impresso </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Etiqueta')"><i class="far fa-plus"></i> Etiqueta </a></li>
+                <li><a href="javascript:printProcedimento($('#ItemID<%=id %>').val(),$('#AccountID').val().split('_')[1], $('#ProfissionalID<%=id %>').val(),$('#DataExecucao<%=id %>').val(),'Preparos')"><i class="far fa-plus"></i> Preparos </a></li>
             </ul>
         </div>
     <%end if%>

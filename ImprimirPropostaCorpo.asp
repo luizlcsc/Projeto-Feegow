@@ -1,14 +1,21 @@
 <link href="assets/css/core-screen.css" rel="stylesheet" media="screen" type="text/css" />
 <link href="assets/css/core.css" rel="stylesheet" media="print" type="text/css" />
 <link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/fgw.css">
-
+<style>
+#areaImpressao{
+    padding: 36px;
+}
+</style>
 <%
 response.Charset="utf-8"
 %>
 <!--#include file="connect.asp"-->
 <!--#include file="./Classes/TagsConverte.asp"-->
-<a style="position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" onclick="javascript:print();" class="hidden-print" rel="areaImpressao">
-	<img src="assets/img/printer.png" border="0" alt="IMPRIMIR" title="IMPRIMIR" align="absmiddle"> <strong>IMPRIMIR</strong>
+<a style="
+    border-radius: 8px;
+    padding: 5px;
+    margin: 15px; position:fixed; background-color:#0CF; color:#FFF; right:14px; z-index:10000000; text-decoration:none; padding:5px;" href="#" onclick="javascript:print();" class="hidden-print" rel="areaImpressao">
+	<strong>IMPRIMIR</strong>
 </a>
 <div id="areaImpressao" class="container-fluid">
 <%
@@ -83,24 +90,38 @@ if not getImpressos.EOF then
     
 end if
 
-itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
-            "SELECT "&_
-            "         MAX(ii.Prioridade)    AS Prioridade"&_
-            "        ,proc.NomeProcedimento AS NomeProcedimento"&_
-            "        ,ii.ValorUnitario      AS ValorUnitario"&_
-            "        ,SUM(ii.Quantidade)    AS Quantidade"&_
-            "        ,ii.Acrescimo          AS Acrescimo"&_
-            "        ,ii.Desconto           AS Desconto"&_
-            "        ,ii.TipoDesconto       AS TipoDesconto"&_
-            "        ,proc.DiasLaudo        AS DiasLaudo"&_
-            "        ,prop.TabelaID         AS Tabela"&_
-            "      FROM itensproposta ii"&_
-            " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
-            " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
-            " WHERE ii.PropostaID="&PropostaID&" "&_
-            " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
-            " ORDER BY Prioridade DESC, ii.id ASC "&_
-            ") AS T"
+if req("Agrupada")="1" then
+    itensSql = "SELECT T.*, Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) AS total "&_
+        " FROM ( "&_
+        " SELECT MAX(ii.Prioridade) AS Prioridade, group_concat(proc.NomeProcedimento SEPARATOR ', ') AS NomeProcedimento, sum(ii.ValorUnitario) AS ValorUnitario, 1 AS Quantidade, sum(ii.Acrescimo) AS Acrescimo, sum(ii.Desconto) AS Desconto,ii.TipoDesconto AS TipoDesconto,proc.DiasLaudo AS DiasLaudo,prop.TabelaID AS Tabela "&_
+        " FROM itensproposta ii "&_
+        " LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+        " LEFT JOIN propostas prop ON prop.id=ii.PropostaID "&_
+        " WHERE ii.PropostaID="& PropostaID &_
+        " GROUP BY proc.GrupoID "&_
+        " ORDER BY Prioridade DESC, ii.id ASC) AS T"
+else
+    itensSql = "SELECT T.*,Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) as total FROM ("&_
+        "SELECT "&_
+        "         MAX(ii.Prioridade)    AS Prioridade"&_
+        "        ,proc.NomeProcedimento AS NomeProcedimento"&_
+        "        ,ii.ValorUnitario      AS ValorUnitario"&_
+        "        ,SUM(ii.Quantidade)    AS Quantidade"&_
+        "        ,ii.Acrescimo          AS Acrescimo"&_
+        "        ,ii.Desconto           AS Desconto"&_
+        "        ,ii.TipoDesconto       AS TipoDesconto"&_
+        "        ,proc.DiasLaudo        AS DiasLaudo"&_
+        "        ,prop.TabelaID         AS Tabela"&_
+        "      FROM itensproposta ii"&_
+        " LEFT JOIN procedimentos proc  on proc.id=ii.ItemID "&_
+        " LEFT JOIN propostas prop       on prop.id=ii.PropostaID "&_
+        " WHERE ii.PropostaID="&PropostaID&" "&_
+        " GROUP BY proc.NomeProcedimento, ValorUnitario, proc.NomeProcedimento,Acrescimo,Desconto "&_
+        " ORDER BY Prioridade DESC, ii.id ASC "&_
+        ") AS T"
+end if
+
+'rw(itensSql)
 
 set ItensResumoSQL = db.execute(itensSql)
 

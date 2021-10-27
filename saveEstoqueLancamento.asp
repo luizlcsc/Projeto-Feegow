@@ -14,6 +14,18 @@ if PosicaoID="" then
 end if
 spltPosicao = split(PosicaoID,",")
 
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = session("UnidadeID")
+contabloqueada  = "0"
+for i=0 to ubound(spltPosicao)
+    contabloqueada = verificaBloqueioConta(3, 3, 0, UnidadeID,ref("Data"))
+next
+if contabloqueada = 1 then
+    response.write("alert('Esta conta está BLOQUEADA e não pode ser alterada!')")
+    response.end
+end if
+' #####################################################################################
+
 for i=0 to ubound(spltPosicao)
     PosicaoID= spltPosicao(i)
     PrefixoRef = ""

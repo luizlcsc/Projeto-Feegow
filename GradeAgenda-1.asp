@@ -32,7 +32,6 @@ if session("Admin")=0 then
 	set omit = nothing
 	Tipo=""
 end if
-LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
 NaoExibirNaAgendaOsStatus = getConfig("NaoExibirNaAgendaOsStatus")
 ExibirCorPacienteAgenda = getConfig("ExibirCorPacienteAgenda")
 NaoExibirAgendamentoLocal = getConfig("NaoExibirAgendamentoLocal")
@@ -40,6 +39,13 @@ NaoExibirOutrasAgendas = getConfig("NaoExibirOutrasAgendas")
 AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
+
+LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
+statusCancelados = "22,11, 16, 117"
+
+if LiberarHorarioRemarcado then
+    statusCancelados=statusCancelados&",15"
+end if
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
 set vcaAB = db.execute("select id, AgAberto, UltRef from sys_users where AgAberto like '%_%' and id<>"& session("User"))
@@ -212,18 +218,23 @@ end if
 
     if existegradeval or getConfig("PermitirRemarcarSemGrade")=1 then
     %>
-    <div class="panel panel-footer row">
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
-                <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
-                <span class="input-group-btn">
+    <div class="row">
+        <div class="panel  ">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                    <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
+
+                </div>
+                <p><i>*Selecione um hor&aacute;rio abaixo ou digite</i></p>
+            </div>
+            <div class="col-md-2">
+                <span class="btn-group">
                     <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                        <i class="fa fa-clock-o bigger-110"></i>
+                        <i class="far fa-check bigger-110"></i>
                         Remarcar</button>
-                </span>
-                <span class="input-group-btn">
-                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
                 </span>
             </div>
         </div>
@@ -253,7 +264,7 @@ if session("RepSol")<>"" then
             <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRepetir">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" onclick="repetir(<%=session("RepSol")%>, 'Repetir', $('#HoraRepetir').val(), 'Search')">
-                    <i class="fa fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock-o bigger-110"></i>
                     Repetir</button>
             </span>
             <span class="input-group-btn">
@@ -267,14 +278,14 @@ end if
 %>
 <script type="text/javascript">
     function crumbAgenda(){
-        $(".crumb-active").html("<a href='./?P=Agenda-1&Pers=1'>Agenda</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-active").html("<a href='./?P=Agenda-1&Pers=1'>Agenda diária</a>");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(escreveData)%>");
         //$("#rbtns").html("<select class='form-control select-xs' id='select-tipo-agenda'><option value='Agenda-1'>Agenda Diária</option><option value='AgendaMultipla'>Agenda Múltipla</option><option value='Agenda-S'>Agenda Semanal</option>");
         <% if device()<>"" then %>
-            $(".crumb-icon a").html("<i class='fa fa-calendar'></i> <%= Data %>");
+            $(".crumb-icon a").html("<i class='far fa-calendar'></i> <%= Data %>");
             $(".crumb-icon a").css("overflow", "unset");
             $(".crumb-icon a").css("max-width", "unset");
         <% end if %>
@@ -387,7 +398,7 @@ end if
                                 <td colspan="4">
                                 <%if UtilizarFila<>"" then%>
                                     <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(Hora,4)%>')" class="btn btn-xs btn-primary">
-                                        <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                        <i class="far fa-chevron-left"></i> Agendar Aqui
                                     </button>
                                 <%end if%>
                                 </td>
@@ -401,7 +412,7 @@ end if
                                     <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                     <td colspan="4">
                                         <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                            <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                            <i class="far fa-chevron-left"></i> Remarcar Aqui
                                         </button>
                                     </td>
                                 </tr>
@@ -414,7 +425,7 @@ end if
                                 <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(Hora,4) %></button></td>
                                 <td colspan="4">
                                     <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(Hora,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                        <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                        <i class="far fa-chevron-left"></i> Repetir Aqui
                                     </button>
                                 </td>
                             </tr>
@@ -468,7 +479,7 @@ end if
                                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                         <td colspan="4">
                                             <button type="button" onclick="filaEspera('U_<%=session("FilaEspera")%>_<%=formatDateTime(HoraPers,4)%>')" class="btn btn-xs btn-primary">
-                                                <i class="fa fa-chevron-left"></i> Agendar Aqui
+                                                <i class="far fa-chevron-left"></i> Agendar Aqui
                                             </button>
                                         </td>
                                     </tr>
@@ -480,7 +491,7 @@ end if
                                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                         <td colspan="4">
                                             <button type="button" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                                <i class="fa fa-chevron-left"></i> Remarcar Aqui
+                                                <i class="far fa-chevron-left"></i> Remarcar Aqui
                                             </button>
                                         </td>
                                     </tr>
@@ -492,7 +503,7 @@ end if
                                         <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= formatdatetime(HoraPers,4) %></button></td>
                                         <td colspan="4">
                                             <button type="button" onclick="repetir(<%=session("RepSol")%>, 'Repetir', '<%=formatDateTime(HoraPers,4)%>', '<%=LocalID%>')" class="btn btn-xs btn-warning">
-                                                <i class="fa fa-chevron-left"></i> Repetir Aqui
+                                                <i class="far fa-chevron-left"></i> Repetir Aqui
                                             </button>
                                         </td>
                                     </tr>
@@ -524,6 +535,97 @@ end if
               <tr class="hidden l l<%= LocalID %>" data-horaid="2359" id="<%= LocalID %>2359"></tr>
           </tbody>
 </table>
+<%
+sqlAgendamentosCancelados = "select * from (select a.id,a.sysActive, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, p.matricula1,  proc.NomeProcedimento,proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal,p.CorIdentificacao, a.Retorno from agendamentos a "&_
+                "left join pacientes p on p.id=a.PacienteID "&_
+                "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
+                "left join staconsulta s on s.id=a.StaID "&_
+                "left join convenios c on c.id=a.ValorPlano "&_
+                "left join locais l on l.id=a.LocalID "&_
+                "where a.Data="&mydatenull(Data)&" and (a.sysActive='-1' or a.StaID IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+
+set AgendamentosCanceladosSQL = db.execute(sqlAgendamentosCancelados)
+if not AgendamentosCanceladosSQL.eof then
+    %>
+<hr class="short alt" />
+<h3>Agendamentos cancelados</h3>
+
+<table class="table table-condensed">
+    <tr class="danger">
+        <th>Hora</th>
+        <th>Status</th>
+        <th>Paciente</th>
+        <th>Local</th>
+        <th>Procedimento</th>
+        <th>Obs.</th>
+        <th>Valor/Convênio</th>
+        <th></th>
+    </tr>
+    <%
+    while not AgendamentosCanceladosSQL.eof
+
+        if AgendamentosCanceladosSQL("sysActive")&""="-1" then
+            Status = imoon(-1)&" Excluído"
+        else
+            Status = imoon(AgendamentosCanceladosSQL("StaID"))&" "&AgendamentosCanceladosSQL("StaConsulta")
+        end if
+
+        Valor = AgendamentosCanceladosSQL("ValorPlano")
+
+        if AgendamentosCanceladosSQL("rdValorPlano")="V" then
+            if (lcase(session("table"))="profissionais" and cstr(session("idInTable"))=ProfissionalID) or (session("admin")=1) or aut("|valordoprocedimentoV|")=1 then
+                Valor = AgendamentosCanceladosSQL("ValorPlano")
+                if not isnull(Valor) then
+                    Valor = Valor + ValorProcedimentosAnexos
+                    Valor = "R$ "&formatnumber(Valor, 2)
+                else
+                    Valor = "R$ 0,00"
+                end if
+            else
+                Valor = "Particular"
+            end if
+            if aut("areceberpacienteV")=0 then
+                Valor = ""
+            end if
+        else
+            Valor = AgendamentosCanceladosSQL("NomeConvenio")
+        end if
+
+        Hora = "-"
+        if AgendamentosCanceladosSQL("Hora")&""<>"" then
+            Hora = formatdatetime( AgendamentosCanceladosSQL("Hora"), 4 )
+        end if
+        %>
+
+        <tr >
+            <td><%=Hora%></td>
+            <td><%=Status%></td>
+            <td><%=AgendamentosCanceladosSQL("NomePaciente")%></td>
+            <td><%=AgendamentosCanceladosSQL("NomeLocal")%></td>
+            <td><%=AgendamentosCanceladosSQL("NomeProcedimento")%></td>
+            <td><small><%=AgendamentosCanceladosSQL("Notas")%></small></td>
+            <td><%=Valor%></td>
+            <td>
+                <%
+                if aut("agendaA")=1 and session("RemSol")="" and AgendamentosCanceladosSQL("StaID")<>15 then
+                %>
+                <button type="button"  onclick="remarcar('<%=AgendamentosCanceladosSQL("id")%>', 'Solicitar', '');" class="btn btn-default btn-xs">Remarcar</button>
+                <%
+                end if
+                %>
+                <button type="button" onclick="abreAgenda('<%=replace(Hora,":","")%>', '<%=AgendamentosCanceladosSQL("id")%>', '<%=AgendamentosCanceladosSQL("Data")%>', '<%=AgendamentosCanceladosSQL("LocalID")%>', '<%=AgendamentosCanceladosSQL("ProfissionalID")%>', 0)" class="btn btn-xs btn-primary pull-right"><i class="far fa-external-link"></i></button>
+            </td>
+        </tr>
+        <%
+    AgendamentosCanceladosSQL.movenext
+    wend
+    AgendamentosCanceladosSQL.close
+    set AgendamentosCanceladosSQL=nothing
+%>
+</table>
+<%
+end if
+%>
                 <script>
                 $("#AbrirEncaixe").attr("disabled", <% if Ativo<>"on" then %>true<%else %>false<% end if%>);
                 <%
@@ -531,10 +633,8 @@ end if
                 if somenteStatus&"" <> "" then
                     sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
                 end if
-                procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento) from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, coalesce((select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id),a.Procedimentos) as procedimento2 "
-
-                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, p.matricula1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, a.Procedimentos  as NomeProcedimento, proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao, a.Retorno from agendamentos a "&_
-
+                procedimentosQuery = " (select group_concat(procedimentos.NomeProcedimento ORDER BY  procedimentos.NomeProcedimento ASC SEPARATOR ', ') from agendamentosprocedimentos left join procedimentos on procedimentos.id = agendamentosprocedimentos.TipoCompromissoID where agendamentosprocedimentos.AgendamentoID = a.id) as procedimento1, coalesce((select group_concat(procedimentos.NomeProcedimento) from agendamentos left join  procedimentos on procedimentos.id = agendamentos.TipoCompromissoID where agendamentos.id = a.id),a.Procedimentos) as procedimento2 "
+                compsSql = "select *, concat(procedimento1, ', ', procedimento2) as ProcedimentosList, k.ValorPlano+(select if(rdValorPlano = 'V', ifnull(sum(ValorPlano),0),0) from agendamentosprocedimentos where agendamentosprocedimentos.agendamentoid = k.id) as ValorPlano from (select a.id, "& procedimentosQuery &", a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo, a.FormaPagto, a.Notas, p.Nascimento, p.NomePaciente, p.IdImportado,a.PacienteID, p.Tel1, p.Cel1, p.matricula1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, coalesce(proc.NomeProcedimento,a.Procedimentos) as NomeProcedimento, proc.Cor, s.StaConsulta, a.rdValorPlano, a.ValorPlano,a.Procedimentos, a.Primeira, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, p.CorIdentificacao, a.Retorno from agendamentos a "&_
                 "left join pacientes p on p.id=a.PacienteID "&_
                 "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
                 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
@@ -542,12 +642,12 @@ end if
                 "left join convenios c on c.id=a.ValorPlano "&_
                 "left join locais l on l.id=a.LocalID "
                 if NaoExibirOutrasAgendas = 0 then
-                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" order by Hora) as k"
                 else
-                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and a.sysActive= 1 and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
+                    compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
                 set comps=db.execute(compsSql&compsWhereSql)
-  
+
                 while not comps.EOF
                     FormaPagto = comps("FormaPagto")
                     UnidadeID = comps("UnidadeID")
@@ -561,14 +661,20 @@ end if
                             podeVerAgendamento=False
                         end if
                     end if
+                    procedimentosGasto = comps("Procedimentos")
 
-					NomeProcedimento = replace(comps("NomeProcedimento")&"", "`", "")
-                    tamanho = 60
-                    if cint(Len(NomeProcedimento)) > tamanho then
-                        NomeProcedimento = Left(NomeProcedimento,tamanho)
-                        NomeProcedimento = NomeProcedimento&" ..."
-                    end if
-	
+
+					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
+                    if procedimentosGasto&"" <>"" then
+                        NomeProcedimento = replace(procedimentosGasto, "`", "")
+                        if cint(Len(NomeProcedimento)) > 60 then
+                            NomeProcedimento = Left(NomeProcedimento,60)
+                            NomeProcedimento = NomeProcedimento&" ..."
+                        end if
+                    end if 
+
+                    VariosProcedimentos = comps("Procedimentos")
+
                     'soma o tempo dos procedimentos anexos
                     if VariosProcedimentos<>"" and instr(VariosProcedimentos, ",") then
                         set ProcedimentosAnexosTempoSQL = db.execute("SELECT sum(Tempo)Tempo, sum(IF(rdValorPlano='V',ValorPlano,0))Valor FROM agendamentosprocedimentos WHERE Tempo IS NOT NULL AND AgendamentoID="&comps("id"))
@@ -648,23 +754,25 @@ end if
                             AlturaLinha = " style=\'height: "&Tempo&"px\' "
                         end if
                     end if
-                     if comps("matricula1") <>"" then
-					
-						matricula1 = "<br>Matrícula: "&comps("matricula1")
-						
-						if session("banco") = "clinic10402" and len(comps("matricula1")) > 21 then
-							matricula1 = "<br>Matrícula: "&mid(comps("matricula1"),8,7)
+                    Matricula1 = fix_string_chars_full(comps("matricula1"))
+
+                     if Matricula1 <>"" then
+
+						matricula1 = "<br>Matrícula: "&Matricula1
+
+						if session("banco") = "clinic10402" and len(Matricula1) > 21 then
+							matricula1 = "<br>Matrícula: "&mid(Matricula1,8,7)
 						end if
-							
-                    else 
+
+                    else
                         matricula1 = "<br>Matrícula: *"
-                    end if 
+                    end if
                     linkAg = " onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"" "
-                    Conteudo = "<tr id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
+                    Conteudo = "<tr "&linkAg&" id="""&HoraComp&""" "&CorLinha & AlturaLinha&" data-local='"&comps("LocalID")&"' data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&fix_string_chars_full(comps("NomePaciente"))&"<br>Prontuário: "&Prontuario&matricula1&"<br>"
 
                     if session("RemSol")<>"" and session("RemSol")&"" <> comps("id")&"" then
                         remarcarlink = " onclick=""remarcar("&session("RemSol")&", \'Remarcar\', \'"&compsHora&"\', \'"&comps("LocalID")&"\')"" "
-                        remarcarAqui = "<td ><button class=""btn btn-xs btn-info"" "&remarcarlink&" ><i class=""fa fa-external-link""></i> Encaixe </button></td>"
+                        remarcarAqui = "<td ><button class=""btn btn-xs btn-info"" "&remarcarlink&" ><i class=""far fa-external-link""></i> Encaixe </button></td>"
                     end if
 
                     if instr(omitir, "tel1")=0 then
@@ -682,15 +790,15 @@ end if
                     'end if
                     Conteudo = Conteudo & "Idade: "& IdadeAbreviada(comps("Nascimento")) &"<br>"
                     Conteudo = Conteudo & """ data-id="""&comps("id")&""">"&_
-                    "<td width=""1%"" "& linkAg &">"
+                    "<td width=""1%"" >"
                     if not isnull(comps("Resposta")) then
-                        Conteudo = Conteudo & "<i class=""fa fa-envelope pink""></i> "
+                        Conteudo = Conteudo & "<i class=""far fa-envelope pink""></i> "
                     end if
                     if comps("Primeira")=1 then
-                        Conteudo = Conteudo & "<i class=""fa fa-flag blue"" title=""Primeira vez""></i>"
+                        Conteudo = Conteudo & "<i class=""far fa-flag blue"" title=""Primeira vez""></i>"
                     end if
                     ' if comps("LocalID")<>LocalID then
-                        Conteudo = Conteudo & "<i class=""fa fa-exclamation-triangle grey hide"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
+                        Conteudo = Conteudo & "<i class=""far fa-exclamation-triangle grey hide"" title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
                     'end if
                     FirstTdBgColor = ""
                     if ExibirCorPacienteAgenda=1 then
@@ -699,12 +807,12 @@ end if
                         end if
                         FirstTdBgColor = " style=\'border:4px solid "&CorIdentificacao&"!important\' "
                     end if
-                    Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" "& linkAg &">"&compsHora&"</button>"
+                    Conteudo = Conteudo & "</td><td width=""1%"" nowrap "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"" >"&compsHora&"</button>"
                     if session("Banco")="clinic4134" then
-                        Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""fa fa-plus""></i></button>"
+                        Conteudo = Conteudo & "<button type=""button"" onclick=""abreAgenda(\'"&HoraComp&"\', 0, \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\')"" class=""btn btn-xs btn-system ml5""><i class=""far fa-plus""></i></button>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td  nowrap "& linkAg &">"&pacientePrioridadeIcone&" <img src=""assets/img/"&comps("StaID")&".png""> "
+                    "<td  nowrap >"&pacientePrioridadeIcone&"  <span style='position:relative;top:6px;'>"&imoon(comps("StaID"))&"</span>"
                     if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
                         Conteudo = Conteudo & "&nbsp;<span class=""label bg-alert label-sm arrowed-in mr10 arrowed-in-right"">Encaixe</span>"
                     end if
@@ -722,12 +830,12 @@ end if
                     end if
                     iconRetorno = ""
                     if comps("Retorno") then
-                        iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""fa fa-undo text-warning pt10""></i>"
+                        iconRetorno = "<i data-toggle=""tooltip"" title=""Consulta retorno"" class=""far fa-undo text-warning pt10""></i>"
                     end if
                     Conteudo = Conteudo & "</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &"><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
-                    "<td class=""text-center hidden-xs"" "& linkAg &">"&comps("StaConsulta")&"</td>"&_
-                    "<td class=""text-right nomeConv hidden-xs"" "& linkAg &"><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
+                    "<td class=""text-center hidden-xs"" ><span class=""nomePac"" style=""max-width:600px!important"">"&CorProcedimento&replace(replace(NomeProcedimento&" ", "'", "\'"),"\","\\")&"</span> "&iconRetorno&"</td>"&_
+                    "<td class=""text-center hidden-xs"" >"&comps("StaConsulta")&"</td>"&_
+                    "<td class=""text-right nomeConv hidden-xs"" ><small>"& sinalAgenda(FormaPagto) & rotulo &"</small></td>"&_
                     "</tr>"
                     Conteudo = fix_string_chars(Conteudo)
                     if not podeVerAgendamento then
@@ -785,7 +893,7 @@ end if
                                 }
                                 return false;
                            }
-                    });                    
+                    });
                 }
                 	<%
 					if HoraFinal<>"" then
@@ -808,7 +916,7 @@ end if
                 'bloqueioSql = "select c.* from compromissos c where (c.ProfissionalID="&ProfissionalID&" or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"&ProfissionalID&"%|'))) AND ((false "&sqlUnidadesBloqueio&") or c.Unidades='' OR c.Unidades IS NULL) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
 				bloqueioSql = getBloqueioSql(ProfissionalID, Data, sqlUnidadesBloqueio)
                 set bloq = db.execute(bloqueioSql)
-				
+
                 while not bloq.EOF
                     HoraDe = HoraToID(bloq("HoraDe"))
 					HoraA = HoraToID(bloq("HoraA"))
@@ -831,7 +939,7 @@ end if
 						{
 							$(this).removeClass("btn-default");
 							$(this).addClass("btn-danger");
-							$(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+							$(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
 						}
 					});
 					<%
@@ -908,51 +1016,56 @@ $(document).ready(function(){
 			<%
 		end if
 	wend
-    ExcecaoMesAnoSplt = split(Data,"/")
-    ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
-    sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
-	set DiasComExcecaoSQL=db.execute(sExc)
-    while not DiasComExcecaoSQL.eof
-        diasAtende = DiasComExcecaoSQL("DataDe")
-        DataExcecaoClasseSplt = split(diasAtende,"/")
-        DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
-                    %>
-                    //cidiiddid
-    $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
-            <%
-    DiasComExcecaoSQL.movenext
-    wend
-    DiasComExcecaoSQL.close
-    set DiasComExcecaoSQL=nothing
+
+	if instr(Data,"/") then
+        ExcecaoMesAnoSplt = split(Data,"/")
+        ExcecaoMesAno = ExcecaoMesAnoSplt(2)&"-"&ExcecaoMesAnoSplt(1)
+        sExc = "select DataDe from assperiodolocalxprofissional a where a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.DataDe LIKE '"&ExcecaoMesAno&"-%' AND a.ProfissionalID = "&ProfissionalID
+        set DiasComExcecaoSQL=db.execute(sExc)
+        while not DiasComExcecaoSQL.eof
+            diasAtende = DiasComExcecaoSQL("DataDe")
+            DataExcecaoClasseSplt = split(diasAtende,"/")
+            DataExcecaoClasse = DataExcecaoClasseSplt(0)&"-"&DataExcecaoClasseSplt(1)&"-"&DataExcecaoClasseSplt(2)
+                        %>
+                        //cidiiddid
+        $(".dia-calendario.<%=DataExcecaoClasse%>").removeClass("danger");
+                <%
+        DiasComExcecaoSQL.movenext
+        wend
+        DiasComExcecaoSQL.close
+        set DiasComExcecaoSQL=nothing
+    end if
     call agendaOcupacoes(ProfissionalID, Data)
 	%>
 // Create the tooltips only when document ready
  $(document).ready(function()
  {
      // MAKE SURE YOUR SELECTOR MATCHES SOMETHING IN YOUR HTML!!!
-     $('.dia-calendario').each(function() {
-         $(this).qtip({
-            content: {
-                text: function(event, api) {
-                    $.ajax({
-                        url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
-                    })
-                    .then(function(content) {
-                        // Set the tooltip content upon successful retrieval
-                        api.set('content.text', content);
-                    }, function(xhr, status, error) {
-                        // Upon failure... set the tooltip content to error
-                        api.set('content.text', status + ': ' + error);
-                    });
-                    return 'Carregando resumo do dia...'; // Set some initial text
-                }
-            },
-            position: {
-                viewport: $(window)
-            },
-            style: 'qtip-wiki'
+     if(false){
+         $('.dia-calendario').each(function() {
+             $(this).qtip({
+                content: {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
+                        })
+                        .then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+                        return 'Carregando resumo do dia...'; // Set some initial text
+                    }
+                },
+                position: {
+                    viewport: $(window)
+                },
+                style: 'qtip-wiki'
+             });
          });
-     });
+     }
     confereLocal()
  });
 function confereLocal(){

@@ -4,6 +4,8 @@ ParcelaTransacaoID = ref("I")
 Acao = ref("A")
 DateToReceive = ref("DateToReceive")
 Fee = ref("Fee")
+UnidadeID = treatvalzero(ref("unidadeid"))
+
 if Acao="B" then
     ValorParcela = ccur(ref("ValorParcela"))
     ValorCredito = ccur(ref("ValorCredito"))
@@ -24,6 +26,14 @@ if Acao="B" then
 		UnidadeID = rectoParcela("UnidadeID")
 		AccountIDDebit = rectoParcela("CreditAccount")
 		CategoriadTaxaID = rectoParcela("CategoriadTaxaID")
+		' ######################### BLOQUEIO FINANCEIRO ########################################
+
+		contabloqueadacred = verificaBloqueioConta(2, 1, AccountIDCredit, UnidadeID,DateToReceive)
+		contabloqueadadebt = verificaBloqueioConta(2, 1, AccountIDDebit, UnidadeID,DateToReceive)
+		if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+			Erro = "Esta conta ESTA BLOQUEADA e n&atilde;o pode ser alterada!"
+		end if
+		' #####################################################################################
 		if AccountIDDebit=0 or isnull(AccountIDDebit) then
 			Erro = "Não há uma conta corrente definida para recebimentos deste cartão de crédito. Vá até o cadastro de cartões de crédito e defina uma conta corrente para poder dar baixa nos pagamentos."
 		end if
@@ -44,20 +54,17 @@ if Acao="B" then
 		end if
 		
 		%>
-	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-white" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'C\', <%=Parcela%>, <%=Parcelas%>);">Baixado <i class="fa fa-trash red"></i></button>');
+	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-white" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'C\', <%=Parcela%>, <%=Parcelas%>, <%=UnidadeID %> );">Baixado <i class="far fa-trash red"></i></button>');
 
         $("#btn<%=ParcelaTransacaoID%>").prop("disabled", true);
         $("#btn<%=ParcelaTransacaoID%>").html("Baixando...");
         $("#btnBuscar").click();
+
 		<%
 	else
 		%>
-        new PNotify({
-            title: 'Falha!',
-            text: '<%=Erro%>',
-            type: 'danger',
-            delay:5000
-        });
+		showMessageDialog('<%=Erro%>', 'danger');
+		$("#btn<%=ParcelaTransacaoID%>").prop("disabled", false);
 
 		<%
 	end if
@@ -70,9 +77,12 @@ if Acao="C" then
 		db_execute("delete from sys_financialmovement where id="&rectoParcela("InvoiceReceiptID")&" or MovementAssociatedID="&rectoParcela("InvoiceReceiptID"))
 
 		'2. torna 0 a parcela do credito
-		db_execute("update sys_financialcreditcardreceiptinstallments set Fee=0,InvoiceReceiptID=0 where id="&ParcelaTransacaoID)
+		db_execute("update sys_financialcreditcardreceiptinstallments set InvoiceReceiptID=0 where id="&ParcelaTransacaoID)
+
+		'3. Desvincula da tabela cartaoconciliacao
+		db_execute("update cartaoconciliacao set conciliado=0, ParcelaID=0 where Conciliado=1 and ParcelaID="& treatvalzero(ref("I")) )
 		%>
-	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-success" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'B\', <%=Parcela%>, <%=Parcelas%>);"><i class="fa fa-check"></i> Baixar</button>');
+	//	$("#btn<%=ParcelaTransacaoID%>").replaceWith('<button id="btn<%=ParcelaTransacaoID%>" class="btn btn-sm btn-success" type="button" onClick="baixa(<%=ParcelaTransacaoID%>, \'B\', <%=Parcela%>, <%=Parcelas%>);"><i class="far fa-check"></i> Baixar</button>');
         $("#btn<%=ParcelaTransacaoID%>").prop("disabled", true);
         $("#btn<%=ParcelaTransacaoID%>").html("Cancelando...");
         $("#btnBuscar").click();

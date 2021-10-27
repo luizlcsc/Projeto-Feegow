@@ -10,7 +10,7 @@
 		<%=quickField("text", "ValorSMS", "Valor SMS", 2, fn(req("ValorSMS")), " input-mask-brl text-right", "", "")%>
         <div class="col-md-2">
         	<label>&nbsp;</label><br>
-        	<button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Buscar</button>
+        	<button class="btn btn-primary btn-sm"><i class="far fa-search"></i> Buscar</button>
         </div>
     </div>
 

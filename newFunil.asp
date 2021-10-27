@@ -18,6 +18,8 @@
     padding: 5px;
     font-size: 11px;
     width: 211px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
   }
 
 
@@ -122,11 +124,11 @@ while not fun.eof
                         <li class="ui-state-default" id="<%=pac("id") %>">
                             
 
-<button type="button" onclick="interacao('V', '', '<%=pac("Associacao") &"_"& pac("id") %>')" class="btn btn-gradient btn-xs btn-default"><i class="fa fa-search"></i></button>
+<button type="button" onclick="interacao('V', '', '<%=pac("Associacao") &"_"& pac("id") %>')" class="btn btn-gradient btn-xs btn-default"><i class="far fa-search"></i></button>
 
 
 <div class="btn-group">
-    <button type="button" class="btn btn-xs btn-gradient btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-plus"></i></button>
+    <button type="button" class="btn btn-xs btn-gradient btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="far fa-plus"></i></button>
     <ul class="dropdown-menu" role="menu">
         <li>
             <a href="#">NOVA INTERAÇÃO</a>
@@ -138,7 +140,7 @@ while not fun.eof
 			
             %>
             <li>
-                <a href="#" onclick="btb(<%=cc("id") %>, '', '<%= pac("Associacao") &"_"& pac("id") %>')"><i class="fa fa-<%=cc("Icone") %>"></i> <%=cc("NomeCanal") %></a>
+                <a href="#" onclick="btb(<%=cc("id") %>, '', '<%= pac("Associacao") &"_"& pac("id") %>')"><i class="far fa-<%=cc("Icone") %>"></i> <%=cc("NomeCanal") %></a>
             </li>
             <%
         cc.movenext

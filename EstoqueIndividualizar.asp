@@ -7,8 +7,8 @@
     <tbody>
     <%
     ProdutoID = req("ProdutoID")
-    set ultCod = db.execute("select CAST(CBID AS UNSIGNED) CBID from estoqueposicao "&_
-        "where CBID REGEXP ('^[0-9]') and ProdutoID="&ProdutoID&" "&_
+    set ultCod = db.execute("select CAST(CBID AS UNSIGNED) CBID from ( select CBID FROM estoqueposicao "&_
+        "where CBID REGEXP ('^[0-9]') and ProdutoID="&ProdutoID&" order by id desc limit 10) t "&_
         "order by CAST(CBID AS UNSIGNED) desc LIMIT 1")
 
     if not ultCod.eof then

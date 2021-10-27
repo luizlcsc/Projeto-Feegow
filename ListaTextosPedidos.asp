@@ -55,7 +55,7 @@ if lcase(session("Table"))="profissionais" then
                     itemPacotes.close
                 %>
             ">
-                    <i class="fa fa-hand-o-left"></i>&nbsp;<i class="fa fa-folder"></i>
+                    <i class="far fa-hand-o-left"></i>&nbsp;<i class="far fa-folder"></i>
                 </a>
             </td>
             <td id="NomePedido<%=listaTextosPedidos("id")%>"> <code><%=listaTextosPedidos("Tipo")%></code> <%=pacotes("Nome")%></td>
@@ -74,7 +74,7 @@ end if
 <% while not listaTextosPedidos.EOF %>
 	<tr id="<%=listaTextosPedidos("id")%>">
         <td width="1%"><a href="javascript:aplicarTextoPedido(<%=listaTextosPedidos("id")%>,'<%=listaTextosPedidos("Tipo")%>');">
-            <i class="fa fa-hand-o-left"></i>
+            <i class="far fa-hand-o-left"></i>
             </a>
         </td>
 
@@ -85,25 +85,25 @@ end if
         if listaTextosPedidos("Tipo")="Modelo" then
             if aut("pedidosexamesA")=1 then%>
             <a class="btn btn-xs btn-success tooltip-info" href="javascript:modalTextoPedido('TextoPedido','<%=listaTextosPedidos("id") %>')">
-                <i class="fa fa-edit icon-edit bigger-125"></i>
+                <i class="far fa-edit icon-edit bigger-125"></i>
             </a>
             <%
             elseif (aut("pedidosexamesA")=0 and aut("modelosprontuarioA")=1 and listaTextosPedidos("sysUser")=session("User")) then
             %>
             <a class="btn btn-xs btn-success tooltip-info" href="javascript:modalTextoPedido('TextoPedido','<%=listaTextosPedidos("id") %>')">
-                <i class="fa fa-edit icon-edit bigger-125"></i>
+                <i class="far fa-edit icon-edit bigger-125"></i>
             </a>
             <%
             end if
             if aut("pedidosexamesX")=1 then%>
             <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaTextosPedidos('TextoPedido','<%=listaTextosPedidos("id")%>')" class="btn btn-xs btn-danger tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
-                <i class="fa fa-remove icon-remove bigger-125"></i>
+                <i class="far fa-remove icon-remove bigger-125"></i>
             </a>
             <%
             elseif (aut("pedidosexamesX")=0 and aut("modelosprontuarioA")=1 and listaTextosPedidos("sysUser")=session("User")) then
             %>
             <a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaTextosPedidos('TextoPedido','<%=listaTextosPedidos("id")%>')" class="btn btn-xs btn-danger tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
-                <i class="fa fa-remove icon-remove bigger-125"></i>
+                <i class="far fa-remove icon-remove bigger-125"></i>
             </a>
             <%
 		    end if
@@ -111,9 +111,9 @@ end if
 		%>
 		<a href="#" class="btn btn-xs tooltip-info btnfavoritos" title="Favoritos" data-tipo="<%=ListaTextosPedidos("TipoProcedimento")%>" data-id="<%=ListaTextosPedidos("id")%>" data-placement="top" data-rel="tooltip" data-original-title="Favoritos">
         <% if ListaTextosPedidos("TipoID")<>"99999999" then %>
-            <i class="fa fa-star bigger-125" data-favorito="0"></i>
+            <i class="fas fa-star bigger-125" data-favorito="0"></i>
         <% else %>
-            <i class="fa fa-star-o bigger-125" data-favorito="1"></i>
+            <i class="far fa-star bigger-125" data-favorito="1"></i>
         <% end if %>
         </a>
         </td>

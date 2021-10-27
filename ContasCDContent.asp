@@ -1,11 +1,13 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 session("ccDe") = ref("De") 'De
 session("ccAte") = ref("Ate") 'Ate
 session("ccPagto") = ref("Pagto") 'Exibir
 session("ccCompanyUnitID") = ref("CompanyUnitID") 'Unidades
+session("ccCategoriaID") = ref("CategoriaID")
 session("ccAccountID") = ref("AccountID") 'Pagar a / Receber de
 session("ccNotaFiscal") = ref("NotaFiscal") 'Nota Fiscal
 session("ccAccountAssociation") = ref("AccountAssociation") 'Limitar Tipo de Pagador
@@ -20,18 +22,20 @@ end if
 
 geraRecorrente(0)
 
+
+
 if req("X")<>"" then
     PodeApagar = True
 
     if req("T")="C" then
-        set RecursosAdicionaisSQL = db.execute("SELECT RecursosAdicionais FROM sys_config WHERE id=1")
+        set RecursosAdicionaisSQL = db_execute("SELECT RecursosAdicionais FROM sys_config WHERE id=1")
 
         if not RecursosAdicionaisSQL.eof then
             RecursosAdicionais=RecursosAdicionaisSQL("RecursosAdicionais")
 
             if instr(RecursosAdicionais, "|NFe|") and session("Admin")=0 then
 
-                set NotaEmitidaSQL = db.execute("SELECT id FROM nfe_notasemitidas WHERE InvoiceID="&req("X")&" AND Situacao IN (1)")
+                set NotaEmitidaSQL = db_execute("SELECT id FROM nfe_notasemitidas WHERE InvoiceID="&req("X")&" AND Situacao IN (1)")
 
                 if not NotaEmitidaSQL.eof then
                     %>
@@ -44,12 +48,10 @@ if req("X")<>"" then
             end if
         end if
 
-        set RepasseConsolidadoSQL = db.execute("SELECT ii.id, rr.ItemContaAPagar FROM itensinvoice ii INNER JOIN rateiorateios rr ON rr.ItemInvoiceID=ii.id WHERE ii.InvoiceiD='"&req("X")&"'")
+        set RepasseConsolidadoSQL = db_execute("SELECT ii.id, rr.ItemContaAPagar FROM itensinvoice ii INNER JOIN rateiorateios rr ON rr.ItemInvoiceID=ii.id WHERE ii.InvoiceiD='"&req("X")&"'")
         if not RepasseConsolidadoSQL.eof then
 
-            if isnull(RepasseConsolidadoSQL("ItemContaAPagar")) then
-                db.execute("DELETE FROM rateiorateios WHERE ItemInvoiceID="&RepasseConsolidadoSQL("id")&" AND ItemContaAPagar IS NULL")
-            else
+            if not isnull(RepasseConsolidadoSQL("ItemContaAPagar")) then
                 %>
 <script >
                 showMessageDialog("Existe um repasse para esta conta. Para excluir a conta, desconsolide o repasse.");
@@ -57,18 +59,111 @@ if req("X")<>"" then
                 <%
 
                 PodeApagar = False
+            else
+                db.execute("DELETE FROM rateiorateios WHERE ItemInvoiceID="&RepasseConsolidadoSQL("id")&" AND ItemContaAPagar IS NULL")
             end if
 
         end if
     end if
-    if PodeApagar then
+
+    IF PodeApagar THEN
+        set Datas = db.execute("SELECT sysDate FROM sys_financialinvoices WHERE id = "&req("X"))
+        if not isnull(Datas("sysDate")) then
+            IF verificaBloqueioConta(1, 1, 1, session("UnidadeID"),Datas("sysDate")) THEN
+                PodeApagar = FALSE
+            END IF
+        end if
+
+        IF NOT PodeApagar THEN %>
+            <script>
+                  showMessageDialog('Esta conta está BLOQUEADA e não pode ser alterada!', 'danger', 'Conta Bloqueada');
+                 $("#btnSave").prop("disabled", false);
+            </script>
+        <% END IF
+
+    END IF
+
+    IF PodeApagar THEN
+        set Datas = db.execute(" SELECT pay.Date FROM sys_financialmovement bill                                          "&chr(13)&_
+                               " JOIN sys_financialdiscountpayments ON sys_financialdiscountpayments.InstallmentID = bill.id "&chr(13)&_
+                               " JOIN sys_financialmovement pay     ON pay.id = sys_financialdiscountpayments.MovementID     "&chr(13)&_
+                               " WHERE bill.Type = 'bill' AND bill.InvoiceID = "&req("X")&"                                  ")
+
+        while not Datas.eof
+            IF verificaBloqueioConta(1, 1, 1, session("UnidadeID"),Datas("Date")) THEN
+                PodeApagar = FALSE
+            END IF
+        Datas.movenext
+        wend
+        Datas.close
+        set Datas=nothing
+
+        IF NOT PodeApagar THEN %>
+            <script>
+                      new PNotify({
+                         		title: 'Conta Bloqueada',
+                         		text: 'Esta conta ESTA BLOQUEADA e não pode ser alterada!',
+                         		type: 'danger'
+                         	});
+                             $("#btnSave").prop("disabled", false);
+            </script>
+        <% END IF
+
+    END IF
+
+    IF PodeApagar THEN
+
         'gerar o log
-        set iInvoice = db.execute("select * from sys_financialinvoices WHERE id="& req("X"))
+        set iInvoice = db_execute("select * from sys_financialinvoices WHERE id="& req("X"))
+        columns = "|AccountID|AssociationAccountID|Value|Tax|CompanyUnitID|TabelaID|"
+        'oldValues = "|^"&iInvoice("AccountID")&"|^"&iInvoice("AssociationAccountID")&"|^"&iInvoice("Value")&"|^"&iInvoice("Tax")&"|^"&iInvoice("CompanyUnitID")&"|^"&iInvoice("TabelaID")&"|"
+        'call createLog("X", req("X"), "sys_financialinvoices", columns, oldValues, "","")
+        call registraEventoAuditoria("cancela_fatura", req("X") , "")
+
+        'db.execute("INSERT INTO sys_financialinvoices_removidos (id, Name, AccountID, AssociationAccountID, Value, Tax, Currency, Description, AccountPlanID, CompanyUnitID, Recurrence, RecurrenceType, CD, Sta, sysActive, sysUser, FormaID, ContaRectoID, sysDate, CaixaID, FixaID, TabelaID, NumeroFatura, ProfissionalSolicitante, ) SELECT *,now() FROM sys_financialinvoices WHERE id = "&req("X"))
+        'db_execute("delete from sys_financialinvoices where id="&req("X"))
+        db.execute("UPDATE sys_financialinvoices SET sysActive=-1, MotivoCancelamento='"& left(ref("MotivoCancelamento"), 149) &"', sysUserCancelamento="& session("User") &", DataCancelamento=NOW() WHERE id="& req("X"))
+        set vcaII = db_execute("select id from itensinvoice WHERE InvoiceID="& req("X"))
+        while not vcaII.eof
+            db_execute("update rateiorateios set ItemContaAPagar=NULL WHERE ItemContaAPagar="& vcaII("id"))
+            db_execute("update rateiorateios set ItemContaAReceber=NULL WHERE ItemContaAReceber="& vcaII("id"))
+        vcaII.movenext
+        wend
+        vcaII.close
+        set vcaII=nothing
+
+        db.execute("INSERT INTO itensinvoice_removidos SELECT `id`,`InvoiceID`,`Tipo`,`Quantidade`,`CategoriaID`,`ItemID`,`ValorUnitario`,`Desconto`,`Descricao`,`Executado`,`DataExecucao`,`HoraExecucao`,`GrupoID`,`AgendamentoID`,`sysUser`,`sysDate`,`ProfissionalID`,`EspecialidadeID`,`HoraFim`,`Acrescimo`,`AtendimentoID`,`Associacao`,`CentroCustoID`,`OdontogramaObj`,`PacoteID`,`DHUp`,`GeradoAutomaticamente`,now() FROM itensinvoice WHERE InvoiceID = "&req("X"))
+        'db_execute("delete from itensinvoice where InvoiceID="& req("X"))
+        db.execute("UPDATE itensinvoice SET ValorUnitarioOld=ValorUnitario, ValorUnitario=0, Desconto=0, Acrescimo=0 WHERE InvoiceID="& req("X"))
+        db_execute("UPDATE propostas SET StaID=3 WHERE InvoiceID="&req("X"))
+        db_execute("UPDATE solicitacao_compra SET InvoiceID=null WHERE InvoiceID="&req("X"))
+
+        db.execute("INSERT INTO sys_financialmovement_removidos SELECT `id`,`Name`,`AccountAssociationIDCredit`,`AccountIDCredit`,`AccountAssociationIDDebit`,`AccountIDDebit`,`PaymentMethodID`,`Value`,`Date`,`CD`,`Type`,`Obs`,`Currency`,`Rate`,`MovementAssociatedID`,`InvoiceID`,`InstallmentNumber`,`sysUser`,`ValorPago`,`CaixaID`,`ChequeID`,`UnidadeID`,`sysDate`,`ConciliacaoID`,`CodigoDeBarras`,`CategoryID`,`DHUp`,now() FROM sys_financialmovement WHERE InvoiceID = "&req("X"))
+        db_execute("delete from sys_financialmovement where InvoiceID="&req("X"))
+        db.execute("INSERT INTO tissguiasinvoice_removidos SELECT `id`,`ItemInvoiceID`,`InvoiceID`,`GuiaID`,`TipoGuia`,`DHUp`,now() FROM tissguiasinvoice WHERE InvoiceID = "&req("X"))
+        db_execute("delete from tissguiasinvoice where InvoiceID="&req("X"))
+
+        'Apagar a devolução
+        set devolucao = db_execute("select d.invoiceID, group_concat(di.itensInvoiceID) as itensIds from devolucoes d INNER JOIN devolucoes_itens di ON di.devolucoesID=d.id WHERE d.invoiceAPagarID="& req("X"))
+        if not devolucao.eof then
+            db_execute("update devolucoes SET sysActive = -1 WHERE invoiceAPagarID = "&req("X"))
+            InvoiceIDDevolucao = devolucao("invoiceID")
+            itensIds = devolucao("itensIds")
+
+            if itensIds&"" <> "" then
+                db_execute("update itensinvoice set Executado = 'S' WHERE InvoiceID in ("& InvoiceIDDevolucao &") and id in ("& itensIds &") AND Executado = 'C' AND ProfissionalID > 0 ")
+                db_execute("update itensinvoice set Executado = '' WHERE InvoiceID in ("& InvoiceIDDevolucao &") and id in ("& itensIds &") AND Executado = 'C' AND ( ProfissionalID = 0 OR ProfissionalID is null) ")
+            end if
+        end if
+
+    ELSEif PodeApagar and 0 then
+        'gerar o log
+        set iInvoice = db_execute("select * from sys_financialinvoices WHERE id="& req("X"))
         columns = "|AccountID|AssociationAccountID|Value|Tax|CompanyUnitID|TabelaID|"
         'oldValues = "|^"&iInvoice("AccountID")&"|^"&iInvoice("AssociationAccountID")&"|^"&iInvoice("Value")&"|^"&iInvoice("Tax")&"|^"&iInvoice("CompanyUnitID")&"|^"&iInvoice("TabelaID")&"|"
         'call createLog("X", req("X"), "sys_financialinvoices", columns, oldValues, "","")
         db_execute("delete from sys_financialinvoices where id="&req("X"))
-        set vcaII = db.execute("select id from itensinvoice WHERE InvoiceID="& req("X"))
+        set vcaII = db_execute("select id from itensinvoice WHERE InvoiceID="& req("X"))
         while not vcaII.eof
             db_execute("update rateiorateios set ItemContaAPagar=NULL WHERE ItemContaAPagar="& vcaII("id"))
             db_execute("update rateiorateios set ItemContaAReceber=NULL WHERE ItemContaAReceber="& vcaII("id"))
@@ -83,7 +178,7 @@ if req("X")<>"" then
         db_execute("delete from tissguiasinvoice where InvoiceID="&req("X"))
 
         'Apagar a devolução
-        set devolucao = db.execute("select d.invoiceID, group_concat(di.itensInvoiceID) as itensIds from devolucoes d INNER JOIN devolucoes_itens di ON di.devolucoesID=d.id WHERE d.invoiceAPagarID="& req("X"))
+        set devolucao = db_execute("select d.invoiceID, group_concat(di.itensInvoiceID) as itensIds from devolucoes d INNER JOIN devolucoes_itens di ON di.devolucoesID=d.id WHERE d.invoiceAPagarID="& req("X"))
         if not devolucao.eof then
             db_execute("update devolucoes SET sysActive = -1 WHERE invoiceAPagarID = "&req("X"))
             InvoiceIDDevolucao = devolucao("invoiceID")
@@ -96,6 +191,16 @@ if req("X")<>"" then
         end if
     end if
 
+    IF PodeApagar THEN %>
+        <script>
+                  new PNotify({
+                            title: 'Conta cancelada',
+                            text: 'Conta cancelada com sucesso.',
+                            type: 'warning'
+                        });
+                 $("#btnSave").prop("disabled", false);
+        </script>
+    <% END IF
 
     if getConfig("ListarAutomaticamenteContas")="0" then
         Response.End
@@ -138,6 +243,7 @@ end if
 			%>
 			<th>Data</th>
 			<th>Conta</th>
+			<th>Plano de Contas</th>
 			<th>Descri&ccedil;&atilde;o</th>
 			<th>Nota Fiscal</th>
             <th>Valor</th>
@@ -172,11 +278,11 @@ end if
 
 	if CD="D" then
         idUser = session("User")
-        set regraspermissoes = db.execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar, IF( Permissoes like '%[%', SUBSTRING_INDEX(SUBSTRING_INDEX(Permissoes, '[', -1), ']', 1), '') RegraUsuario FROM sys_users WHERE id ="&idUser)
+        set regraspermissoes = db_execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar, IF( Permissoes like '%[%', SUBSTRING_INDEX(SUBSTRING_INDEX(Permissoes, '[', -1), ']', 1), '') RegraUsuario FROM sys_users WHERE id ="&idUser)
         if not regraspermissoes.eof then
             OcultarCategorias = regraspermissoes("limitarcontaspagar")
             RegraUsuario = regraspermissoes("RegraUsuario")
-            set limitarCategoria = db.execute("SELECT limitarcontaspagar FROM regraspermissoes WHERE id = "&treatvalzero(RegraUsuario))
+            set limitarCategoria = db_execute("SELECT limitarcontaspagar FROM regraspermissoes WHERE id = "&treatvalzero(RegraUsuario))
             if not limitarCategoria.eof then
                 OcultarCategorias = limitarCategoria("limitarcontaspagar")
             end if
@@ -186,6 +292,7 @@ end if
             end if
         end if
     end if
+
 
 	if (ref("CategoriaID")<>"" and isnumeric(ref("CategoriaID")) and ref("CategoriaID")<>"0") or sqlOcultarCategorias<>""  then
 		lfCat = " LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id  "
@@ -238,14 +345,15 @@ end if
         sqlAccountAssociation = " AND i.AssociationAccountID IN ("& replace(ref("AccountAssociation"), "|", "") &") "
         sqlAccountAssociationFixa = " AND f.AssociationAccountID IN ("& replace(ref("AccountAssociation"), "|", "") &") "
     end if
-    sqlMov = "select i.AccountID ContaID, i.AssociationAccountID Assoc, i.CompanyUnitID UnidadeID, IFNULL(nfe.numeronfse, i.nroNFe) nroNFe, ifnull(m.Value, 0) Value, m.InvoiceID, m.id, m.Name, m.Date, ifnull(m.ValorPago, 0) ValorPago, m.Obs, i.sysDate, (select count(id) from arquivos where MovementID=m.id) anexos, "&_
+    sqlMov = "select i.AccountID ContaID, i.AssociationAccountID Assoc, i.DataCancelamento, i.CompanyUnitID UnidadeID, IFNULL(nfe.numeronfse, i.nroNFe) nroNFe, ifnull(m.Value, 0) Value, m.InvoiceID, m.id, m.Name, m.Date, ifnull(m.ValorPago, 0) ValorPago, m.Obs, i.sysDate, (select count(id) from arquivos where MovementID=m.id) anexos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and boletos_emitidos.DueDate > now() and StatusID = 1) as boletos_abertos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and now() > boletos_emitidos.DueDate and StatusID <> 3) as boletos_vencidos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and StatusID  = 3) as boletos_pagos "&_
              " ,i.Rateado FROM sys_financialMovement m left join sys_financialinvoices i on i.id=m.InvoiceID "& lfCat & leftFiltroNFeStatus &" WHERE m.Type='Bill' AND m.Date BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" AND m.CD='"&CD&"' AND i.sysActive=1 "& sqlUN & sqlNFe & sqlAccount & sqlPagto & sqlCat & sqlApenasRepasse & sqlFiltroNFeStatus & sqlTabela & sqlAccountAssociation & gpCat &" order by m.Date,m.id"
 
-
-	set mov = db.execute( sqlMov )
+    sqlMov = "SELECT * FROM ("&sqlMov&") AS T"&franquiaUnidade(" WHERE COALESCE(cliniccentral.overlap(CONCAT('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
+    'response.write("<pre>"&sqlMov&"</pre>")
+	set mov = db_execute( sqlMov )
 	while not mov.eof
 
         response.Flush()
@@ -269,11 +377,11 @@ end if
 		Boleto = ""
 
 		IF (mov("boletos_abertos") > "0") THEN
-           Boleto = " <i class='fa fa-barcode text-primary'></i> "
+           Boleto = " <i class='far fa-barcode text-primary'></i> "
 		END IF
 
 		IF (mov("boletos_vencidos") > "0") THEN
-           Boleto = " <i class='fa fa-barcode text-danger'></i> "
+           Boleto = " <i class='far fa-barcode text-danger'></i> "
         END IF
 
         if isnull(ValorPago) then
@@ -283,7 +391,7 @@ end if
 
 		if formatnumber(Valor,2)=formatnumber(ValorPago,2) or ValorPago+0.02 > Valor then
 		    PagoSta = "S"
-			Paid = "<i class='fa fa-check text-success' title='Quitado'></i>"
+			Paid = "<i class='far fa-check text-success' title='Quitado'></i>"
         elseif Valor > ValorPago and ValorPago>0 then
             PagoSta="N"
             Paid = "<i class='glyphicon glyphicon-warning-sign text-warning' title='Pago parcialmente'></i>"
@@ -293,7 +401,7 @@ end if
                 TotalAVencer = TotalAVencer + (Valor-ValorPago)
             else
                 PagoSta="N"
-                Paid = "<i class='fa fa-exclamation-circle text-danger' title='Vencido'></i>"
+                Paid = "<i class='far fa-exclamation-circle text-danger' title='Vencido'></i>"
                 TotalVencido = TotalVencido + (Valor-ValorPago)
             end if
 		end if
@@ -306,7 +414,7 @@ end if
 
 		cItens = 0
 		Descricao = ""
-		set itens = db.execute("select id,Tipo,ItemID,Descricao,Quantidade,CategoriaID,Executado from itensinvoice where InvoiceID="&mov("InvoiceID"))
+		set itens = db_execute("select id,Tipo,ItemID,Descricao,Quantidade,CategoriaID,Executado from itensinvoice where InvoiceID="&mov("InvoiceID"))
 		CategoriaItem=0
 		Mostra=True
         ItemCancelado = false
@@ -320,12 +428,12 @@ end if
 
 		    CategoriaItem = itens("CategoriaID")
 			if itens("Tipo")="S" then
-				set proc = db.execute("select id, NomeProcedimento from procedimentos where id="&itens("ItemID"))
+				set proc = db_execute("select id, NomeProcedimento from procedimentos where id="&itens("ItemID"))
 				if not proc.eof then
 					Descricao = Descricao & "; " & left(proc("NomeProcedimento"), 35)
 				end if
 			elseif itens("Tipo")="M" then
-				set proc = db.execute("select id, NomeProduto from produtos where id="&itens("ItemID"))
+				set proc = db_execute("select id, NomeProduto from produtos where id="&itens("ItemID"))
 				if not proc.eof then
 					Descricao = Descricao & "; " & left(proc("NomeProduto"), 35)
 				end if
@@ -358,7 +466,7 @@ end if
         Anexos = ccur(mov("Anexos"))
         IconeAnexos = ""
         if Anexos>0 then
-            IconeAnexos = "<span class='badge badge-system'><i class='fa fa-paperclip bigger-140'></i> "& Anexos &"</span>"
+            IconeAnexos = "<span class='badge badge-system'><i class='far fa-paperclip bigger-140'></i> "& Anexos &"</span>"
         end if
 
 		if Mostra then
@@ -368,7 +476,7 @@ end if
 		    if session("Banco")="clinic5459" and CD="C" then
 		    if CategoriaItem<>"173" and (CategoriaItem="101" or CategoriaItem="167") and (PagoSta<>"S") then
 		        VenctoOriginal = " ("&mov("sysDate")&")"
-                set FaturaSQL = db.execute("SELECT f.id, f.Total FROM cliniccentral.faturas f LEFT JOIN cliniccentral.licencas l ON l.id = f.LicencaID WHERE l.Cliente="& mov("ContaID")&" AND f.Vencimento BETWEEN "& mydatenull(ref("De")) &" AND "& mydatenull(ref("Ate")))
+                set FaturaSQL = db_execute("SELECT f.id, f.Total FROM cliniccentral.faturas f LEFT JOIN cliniccentral.licencas l ON l.id = f.LicencaID WHERE l.Cliente="& mov("ContaID")&" AND f.Vencimento BETWEEN "& mydatenull(ref("De")) &" AND "& mydatenull(ref("Ate")))
                 if not FaturaSQL.eof then
                     FaturaGerada= "<span class='label label-system'> R$ "& fn(FaturaSQL("Total"))&VenctoOriginal&"</span>"
                 else
@@ -386,14 +494,14 @@ end if
             cc = ""
             'pra ver se pagamento é em cartao '-'
             if not isnull(mov("ContaID")) then
-                set PacienteSQL = db.execute("SELECT Religiao FROM pacientes WHERE Religiao='cc' AND id="&mov("ContaID"))
+                set PacienteSQL = db_execute("SELECT Religiao FROM pacientes WHERE Religiao='cc' AND id="&mov("ContaID"))
                 if not PacienteSQL.eof then
-                    cc = "<i class='fa fa-credit-card'></i>"
+                    cc = "<i class='far fa-credit-card'></i>"
                 end if
             end if
 
             EnvioEmail = ""
-            set EnvioEmailSQL = db.execute("SELECT DataHora, ValorBoleto, VenctoBoleto, Para FROM faturasemails WHERE ReceitaID="&mov("InvoiceID"))
+            set EnvioEmailSQL = db_execute("SELECT DataHora, ValorBoleto, VenctoBoleto, Para FROM faturasemails WHERE ReceitaID="&mov("InvoiceID"))
             if not EnvioEmailSQL.eof then
                 while not EnvioEmailSQL.eof
                     EnvioEmail = EnvioEmail&"<span data-toggle='tooltip' title='Vencimento: "&EnvioEmailSQL("VenctoBoleto")&"<br> Valor: R$ "&fn(EnvioEmailSQL("ValorBoleto"))&" <br> Para: "&EnvioEmailSQL("Para")&"' class='label label-primary'> "&EnvioEmailSQL("DataHora")&" </span><br>"
@@ -407,6 +515,22 @@ end if
 		    <td style="font-size: 11px"><%=EnvioEmail%></td>
 		    <%
 		    end if
+
+		    CategoriaDescricao = ""
+
+            IF CategoriaItem > "0" THEN
+                sqlCategoria = "SELECT Name FROM sys_financialexpensetype WHERE id = "&CategoriaItem
+                IF CD="C" THEN
+                    sqlCategoria = "SELECT Name FROM sys_financialincometype WHERE id = "&CategoriaItem
+                END IF
+
+                set CategoriaOBJ = db.execute(sqlCategoria)
+                IF not CategoriaOBJ.EOF THEN
+                    CategoriaDescricao = CategoriaOBJ("Name")
+                END IF
+
+            END IF
+
             if CD="D" then
             %>
             <td><input type="checkbox" class="conta-a-pagar-checkbox" invoiceapagarid="<%=mov("InvoiceID")%>" value="<%=mov("id")%>"></td>
@@ -415,11 +539,17 @@ end if
 		    %>
 			<td width="8%" class="text-right"><%= mov("Date") %></td>
 			<td><%= Conta &" &nbsp; "& IconeAnexos %></td>
+			<td><%=CategoriaDescricao %></td>
 			<td>	   <a href="<%= linkBill %>"><%=Descricao%>
 					<%if len(mov("Name"))>0 and Descricao<>"" then%> - <%end if%><%=left(mov("Name"),20)%>
 				</a> <% IF ItemCancelado THEN %>
                                     			        <small><span title="Item Cancelado" class="label label-danger">Cancelado</span></small>
                                             <% END IF %><br /><%=mov("Obs")%>
+                    <%
+                    if not isnull(mov("DataCancelamento")) then
+                        response.write("<span class='label label-danger'><i class='far fa-circle-minus'></i> FATURA CANCELADA EM "& mov("DataCancelamento") &"</span>")
+                    end if
+                    %>
 				</td>
             <td><%=mov("nroNFe")%></td>
 			<td class="text-right" nowrap title="Saldo devedor: R$ <%= fn(Devedor) %>"> <span><%= fn(Valor) %></span> <%= Paid %> <%=displayCD%>&nbsp; <%= Boleto %></td>
@@ -427,14 +557,14 @@ end if
 
 
                 <% if mov("Rateado") = True then %>
-                    <span title="Despesa Rateada" class="label label-warning"><i  class=" fa fa-share-alt"></i></span>
+                    <span title="Despesa Rateada" class="label label-warning"><i  class=" far fa-share-alt"></i></span>
                 <% end if %>
             </td>
 			<td nowrap="nowrap">
 				<div class="action-buttons">
-					<a title="Editar" class="btn btn-xs btn-success" href="<%=linkBill%>"><i class="fa fa-edit bigger-130"></i></a>
+					<a title="Editar" class="btn btn-xs btn-success" href="<%=linkBill%>"><i class="far fa-edit bigger-130"></i></a>
 					<a title="Detalhes" class="btn btn-xs btn-info" href="javascript:modalPaymentDetails('<%=mov("id")%>')">
-                       <i class="fa fa-search-plus bigger-130"></i></a>
+                       <i class="far fa-search-plus bigger-130"></i></a>
 				</div>
 			</td>
 		</tr>
@@ -453,12 +583,31 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
             sqlAccount = " AND f.AssociationAccountID="&splAcc(0)&" AND f.AccountID="&splAcc(1)&" "
         end if
         'response.write(mydatenull(ref("Ate")))
-        'set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
-        set fixa = db.execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
-        'response.write("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and DiaVencimento<=SUBSTRING_index("&mydatenull(ref("Ate"))&", '-', -1)"&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
-        while not fixa.eof
 
-            set itens = db.execute("select ifnull(proc.NomeProcedimento, i.Descricao) Item from itensinvoicefixa i left join procedimentos proc on proc.id=i.ItemID where i.InvoiceID="&fixa("id"))
+        'set fixa = db_execute("select f.* from invoicesfixas f "&lfCatFixa&" where "&franquiaUnidade(" CompanyUnitId= "&session("UnidadeID")&" AND ")&"  f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
+
+        if ModoFranquia THEN
+            set fixa = db_execute("select f.* from invoicesfixas f "&lfCatFixa&" where "&franquiaUnidade(" COALESCE(cliniccentral.overlap(CONCAT('|',CompanyUnitID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),FALSE) AND")& " f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
+        else
+            set fixa = db_execute("select f.* from invoicesfixas f "&lfCatFixa&" where f.sysActive=1 AND coalesce(TipoContaFixaID<>2,true) and f.CD='"&CD&"' "&sqlCat&" and PrimeiroVencto<="&mydatenull(ref("Ate"))&sqlAccount&gpCatFixa & sqlAccountAssociationFixa)
+        end if
+
+        while not fixa.eof
+            if ModoFranquia THEN
+                qItensSQL = " SELECT IFNULL(proc.NomeProcedimento, i.Descricao) Item  "&chr(13)&_
+                            " FROM itensinvoicefixa i                                 "&chr(13)&_
+                            " LEFT JOIN procedimentos proc ON proc.id=i.ItemID        "&chr(13)&_
+                            " LEFT JOIN invoicesfixas invFix ON invFix.id=i.InvoiceID "&chr(13)&_
+                            " WHERE i.InvoiceID="&fixa("id")&" AND invFix.CompanyUnitId="&session("UnidadeID")
+            else
+                qItensSQL = " SELECT IFNULL(proc.NomeProcedimento, i.Descricao) Item  "&chr(13)&_
+                            " FROM itensinvoicefixa i                                 "&chr(13)&_
+                            " LEFT JOIN procedimentos proc ON proc.id=i.ItemID        "&chr(13)&_
+                            " WHERE i.InvoiceID="&fixa("id")
+            end if
+
+            'response.write("<pre>"&qItensSQL&"</pre>")
+            set itens = db_execute(qItensSQL)
             ItensFixa = ""
             while not itens.eof
                 ItensFixa = itens("Item") & "<br>" &ItensFixa
@@ -509,7 +658,7 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
                         <td class="text-right">0,00</td>
                         <td>
                             <div class="action-buttons">
-                                <a class="btn btn-xs" href="javascript:if(confirm('Esta conta fixa está prevista. Ao editá-la a mesma será consolidada. Deseja prosseguir?'))consolidar(<%=fixa("id")%>, <%=cFix %>, '<%=Vencto %>')"><i class="fa fa-edit grey bigger-130"></i></a>
+                                <a class="btn btn-xs" href="javascript:if(confirm('Esta conta fixa está prevista. Ao editá-la a mesma será consolidada. Deseja prosseguir?'))consolidar(<%=fixa("id")%>, <%=cFix %>, '<%=Vencto %>')"><i class="far fa-edit grey bigger-130"></i></a>
                             </div>
                         </td>
                     </tr>

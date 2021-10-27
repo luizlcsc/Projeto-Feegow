@@ -434,9 +434,11 @@ else
             fLinha = ""
             rowspan = ""
         end if
+
+        statusIcon = imoon(Sta)
         %>
     <tr <%= fLinha %>>
-    <td nowrap <%= rowspan %> ><img src="assets/img/<%=Sta%>.png" /> <%=Hora%></td>
+    <td nowrap <%= rowspan %> ><%=statusIcon%> <%=Hora%></td>
     <td <%= rowspan %> ><%= HoraSta %></td>
     <%
 
@@ -504,7 +506,7 @@ else
             else
                 %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%
             end if
-            %>><i class="fa fa-bell"></i>
+            %>><i class="far fa-bell"></i>
              <% IF Rechamar THEN %>
                 RECHAMAR
              <% ELSE %>
@@ -539,12 +541,12 @@ else
         if isTelemedicina and TelemedicinaAtiva then
         %>
     	 class="btn btn-xs btn-alert" type="button" <%=disabPagto%> >
-    	 <i class="fa fa-video-camera"></i> ATENDER ONLINE
+    	 <i class="far fa-video-camera"></i> ATENDER ONLINE
     	 <%
     	 else
     	 %>
          class="btn btn-xs btn-success btn-block" type="button" <%=disabPagto%> >
-         <i class="fa fa-play"></i> ATENDER
+         <i class="far fa-play"></i> ATENDER
          <%
          end if
     	 %>
@@ -587,7 +589,7 @@ else
                                 if vcaag.eof then
                                     %>
                                     <a data-toggle="tooltip" title="Não agendado" class="btn btn-xs btn-block btn-<%= classeBtnEsp %>" href="./?P=AgendaMultipla&Pers=1&ProcedimentoID=<%= esp("ProcedimentoID") %>&PacienteID=<%= veseha("PacienteID") %>&SolicitanteID=5_<%= veseha("ProfissionalID") %>">
-                                        <i class="fa fa-calendar"></i> Não agendado
+                                        <i class="far fa-calendar"></i> Não agendado
                                     </a>
                                     <%
                                 else
@@ -596,9 +598,12 @@ else
                                     end if
 
                                     idsExibidos = idsExibidos&","&vcaag("id")
+
+
+                                    statusIcon = vcaag("StaID")
                                     %>
                                     <a data-toggle="tooltip" title="<%=vcaag("StaConsulta")%>" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%= vcaag("id") %>" class="btn btn-block btn-<%= classeBtnEsp %> btn-xs">
-                                        <img src="./assets/img/<%= vcaag("StaID") %>.png" /> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>
+                                        <%=statusIcon%> <%= vcaag("Data") &" - "& ft(vcaag("Hora")) &" - "& vcaag("NomeProfissional") %>
                                     </a>
                                     <%
                                 end if
@@ -691,7 +696,7 @@ else
 
          if(!AtendimentoSimultaneoValidado){
             new PNotify({
-                title: '<i class="fa fa-warning"></i> Finalize o atendimento',
+                title: '<i class="far fa-warning"></i> Finalize o atendimento',
                 text: 'Finalize o atendimento atual para iniciar outro.',
                 type: 'danger'
             });
@@ -699,7 +704,7 @@ else
 
         if(!(arg1 === true)){
             new PNotify({
-                    title: '<i class="fa fa-warning"></i> Certificado Digital',
+                    title: '<i class="far fa-warning"></i> Certificado Digital',
                     text: 'Para iniciar o atendimento, o usuário deverá configurar o certificado digital.',
                     type: 'danger'
             });

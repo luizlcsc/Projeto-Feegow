@@ -85,7 +85,7 @@ end if
     	<%=quickField("simpleSelect", "Tipo", "Tipo", 3, reg("Tipo"), "select * from cliniccentral.buitiposforms where sysActive=1 order by NomeTipo", "NomeTipo", "")%>
     	<%=quickField("multiple", "Especialidade", "Especialidades", 3, reg("Especialidade"), "select * from especialidades order by especialidade", "especialidade", " data-placeholder='Selecione as especialidades'")%>
         <div class="col-md-2">
-        	<label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-sm btn-block" onclick="permissoes()"><i class="fa fa-lock"></i> Permiss&otilde;es</button>
+        	<label>&nbsp;</label><br /><button type="button" class="btn btn-warning btn-sm btn-block" onclick="permissoes()"><i class="far fa-lock"></i> Permiss&otilde;es</button>
         </div>
     </div>
     <hr />
@@ -294,7 +294,7 @@ $(".form-control").change(function(){
 });
 function permissoes(){
 	$.post("formPermissoes.asp?F=<%=FormID%>", '', function(data, status){
-  		   $("#modal").html("Carregando...");
+  		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	});

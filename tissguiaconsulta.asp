@@ -43,12 +43,31 @@ if not reg.eof then
     sysUser = reg("sysUser")
     sysActive = reg("sysActive")
     sysDate = reg("sysDate")
+    LoteID = reg("LoteID")
 	%>
 	<script>
 	$(document).ready(function(){
 		$("#ContratadoID").val('<%=Contratado%>');
 		$("#Contratado").attr("disabled",false);
 		$("#ContratadoID").attr("disabled",true);
+
+        <%
+        if LoteID&"" <> "" and aut("guiadentrodeloteA")=0 then
+            set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
+
+            if not LoteSQL.eof then
+            %>
+            var numeroLote = '<%=LoteSQL("Lote")%>';
+            var dataEnvioLote = '<%=LoteSQL("DataEnvio")%>';
+            $("#GuiaConsulta .admin-form").css("pointer-events","none").css("opacity","0.8").css("pointer-events","none").css("user-select","none");
+            $(".alert-error-guia").html(`<strong><i class="fa fa-exclamation-circle"></i> Atenção! </strong> Não é possivel editar uma guia em lote já enviado. <br> Número do lote: ${numeroLote} <br> Data do envio: ${dataEnvioLote}`).fadeIn();
+            setTimeout(function (){
+                $("#salvar-guia").attr("disabled", true);
+            }, 500);
+            <%
+            end if
+        end if
+        %>
 	});
 
 	</script>
@@ -445,7 +464,7 @@ end if
 
 <script type="text/javascript">
     $(".crumb-active a").html("Guia de Consulta");
-    $(".crumb-icon a span").attr("class", "fa fa-credit-card");
+    $(".crumb-icon a span").attr("class", "far fa-credit-card");
 </script>
 
 
@@ -465,28 +484,48 @@ end if
 <div class="admin-form theme-primary">
    <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
+            <% if True then %>
+                <% if reg("GuiaSimplificada") = 1 then%>
+                    <script>
+                        $(document).ready(function(){
+                            guiaSimplificada();
+                        });
+                    </script>
+                <% end if %>
+                <div class="row hidden">
+                    <div class="text-right">
+                        <label for="check-guia-simplificada">
+                            <input id="check-guia-simplificada" name="GuiaSimplificada" class="form-control" type="checkbox" value="1" style="height: 25px" <% if reg("GuiaSimplificada") = 1 then%>checked="checked"<% end if %>/> Convênio Simplificado
+                        </label>
+                    </div>
+                </div>
+            <% else %>
+                <input id="check-guia-simplificada" name="GuiaSimplificada" type="hidden" value="0" />
+            <% end if %>
+
             <div class="row">
     <div class="col-md-12">
+    <div class="alert alert-warning alert-error-guia" style="display: none"></div>
 	<table width="100%" cellspacing="0" class="table" cellpading="0">
 
     <div class="section-divider mt20 mb40">
         <span> Dados do Benefici&aacute;rio </span>
     </div>
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="60%"><div class="col-md-12"><%= selectInsert("* Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-default' type='button'><i class='fa fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
-	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", "") %></td>
+	<td width="60%"><div class="col-md-12"><%= selectInsert("Nome  <button onclick=""if($('#gPacienteID').val()==''){alert('Selecione um paciente')}else{window.open('./?P=Pacientes&Pers=1&I='+$('#gPacienteID').val())}"" class='btn btn-xs btn-link' type='button' style=""position:absolute; top:-5px""><i class='far fa-external-link'></i></button>", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div></td>
+	<td width="40%"><%= quickField("text", "CNS", "Cart&atilde;o Nacional de Sa&uacute;de", 12, CNS, "", "", " read-only-input ") %></td>
 	</tr></table></td></tr>
 
 	<tr><td><table class="table table-bordered"><tr>
 
-	<td width="20%"><%= quickField("simpleSelect", "gConvenioID", "* Conv&ecirc;nio", 12, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %></td>
+	<td width="20%"><%= quickField("simpleSelect", "gConvenioID", "Conv&ecirc;nio", 12, ConvenioID, "select * from Convenios where sysActive=1 and ativo='on' order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %></td>
     <td width="20%">
     	<div class="col-md-12" id="tissplanosguia">
 	    	<!--#include file="tissplanosguia.asp"-->
         </div>
     </td>
-	<td width="20%"><%= quickField("text", "RegistroANS", "* Registro ANS", 12, RegistroANS, "", "", " required") %></td>
-	<td width="20%"><%= quickField("text", "NGuiaPrestador", "* N&deg; da Guia no Prestador", 12, NGuiaPrestador, "", "", " required") %></td>
+	<td width="20%"><%= quickField("text", "RegistroANS", "Registro ANS", 12, RegistroANS, "", "", " required") %></td>
+	<td width="20%"><%= quickField("text", "NGuiaPrestador", "N&deg; da Guia no Prestador", 12, NGuiaPrestador, "", "", " required") %></td>
     <%
     if RepetirNumeroOperadora=1 then
         fcnRepetirNumeroOperadora = " onkeyup=""$('#NGuiaPrestador').val( $(this).val() )"" "
@@ -499,7 +538,7 @@ end if
 	<tr>
     <td><table width="100%"><tr>
 	<td width="35%">
-	    <%= quickField("text", "NumeroCarteira", "* N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %>
+	    <%= quickField("text", "NumeroCarteira", "N&deg; da Carteira", 12, NumeroCarteira, " lt ", "", " required") %>
 	    <div class="col-md-12 pt5">
 	        <div class="form-group has-error" id="NumeroCarteiraContent" style="display: none;position:absolute;width: 80%;">
 
@@ -514,7 +553,7 @@ end if
 				<%= quickField("text", "IdentificadorBeneficiario", "Identificador - Código de barras da carteira", 12, IdentificadorBeneficiario, "", "", " readonly") %>
 			</td>
 			<td>
-				<button type="button" class="btn btn-xs btn-warning fa fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
+				<button type="button" class="btn btn-xs btn-warning far fa-credit-card mt20" data-toggle="modal" data-target="#modalLeitura" title="Leitura do Cartão do Beneficiário">
 				</button>
 			</td>
 		</tr>
@@ -523,7 +562,7 @@ end if
 	<td width="15%"><%= quickField("datepicker", "ValidadeCarteira", "Validade da Carteira", 12, ValidadeCarteira, "", "", "") %></td>
 	<td width="15%">
       <div class="col-md-12">
-        <label>* Atendimento a RN</label><br>
+        <label>Atendimento a RN *</label><br>
 	    <select name="AtendimentoRN" id="AtendimentoRN" class="form-control" required>
 	    <option value=""></option>
 	    <option value="S"<%if AtendimentoRN="S" then%> selected="selected"<%end if%>>Sim</option>
@@ -544,19 +583,19 @@ end if
 		<input type="hidden" id="ContratadoID" name="Contratado">
 		<% server.Execute("listaContratado.asp") %>
 	</td>
-	<td width="20%"><%= quickField("text", "CodigoNaOperadora", "* C&oacute;digo na Operadora", 12, CodigoNaOperadora, "", "", " required='required'") %></td>
-	<td width="20%"><%= quickField("text", "CodigoCNES", "* C&oacute;digo CNES", 12, CodigoCNES, "", "", " required='required'") %></td>
+	<td width="20%"><%= quickField("text", "CodigoNaOperadora", "C&oacute;digo na Operadora", 12, CodigoNaOperadora, "", "", " required='required'") %></td>
+	<td width="20%"><%= quickField("text", "CodigoCNES", "C&oacute;digo CNES", 12, CodigoCNES, "", "", " required='required'") %></td>
 	</tr></table></td></tr>
 
 	<tr><td><table cellpadding="0" cellspacing="0" width="100%"><tr>
-	<td width="40%"><%= quickField("simpleSelect", "gProfissionalID", "* Nome do Profissional Executante <a class='btn btn-xs btn-default btn-efetivo'>+</a>", 12, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' required='required' no-select2") %></td>
-	<td width="15%"><%= quickField("simpleSelect", "Conselho", "* Conselho", 12, Conselho, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
-	<td width="15%"><%= quickField("text", "DocumentoConselho", "* N&deg; no Conselho", 12, DocumentoConselho, "", "", "empty='' required='required'") %></td>
-	<td width="10%"><%= quickField("text", "UFConselho", "* UF", 12, UFConselho, "", "", "empty='' required='required' maxlength=""2"" ") %></td>
+	<td width="40%"><%= quickField("simpleSelect", "gProfissionalID", "Nome do Profissional Executante <a class='btn btn-xs btn-default btn-efetivo'>+</a>", 12, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' required='required' no-select2") %></td>
+	<td width="15%"><%= quickField("simpleSelect", "Conselho", "Conselho", 12, Conselho, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+	<td width="15%"><%= quickField("text", "DocumentoConselho", "N&deg; no Conselho", 12, DocumentoConselho, "", "", "empty='' required='required'") %></td>
+	<td width="10%"><%= quickField("text", "UFConselho", "UF", 12, UFConselho, "", "", "empty='' required='required' maxlength=""2"" ") %></td>
 	<td width="20%">
 		<%
-		'quickField("text", "CodigoCBO", "* C&oacute;digo CBO", 12, CodigoCBO, "", "", "empty='' required='required'")
-		 response.write(quickField("simpleSelect", "CodigoCBO", "* C&oacute;digo CBO", 12, CodigoCBO, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' "))
+		'quickField("text", "CodigoCBO", "C&oacute;digo CBO", 12, CodigoCBO, "", "", "empty='' required='required'")
+		 response.write(quickField("simpleSelect", "CodigoCBO", "C&oacute;digo CBO", 12, CodigoCBO, "select * from (select e.codigoTiss as id, concat( e.codigoTiss,' - ',e.especialidade) as Nome from especialidades as e where e.codigoTiss<>'' and e.codigoTiss is not null order by id)t", "Nome", "empty='' required='required' "))
 		%>
 	</td>
 	</tr></table></td></tr>
@@ -581,25 +620,25 @@ end if
 	<tr><td>
         <table width="100%" border="0">
             <tr>
-                <td width="33%"><%= quickField("simpleSelect", "IndicacaoAcidenteID", "* Indica&ccedil;&atilde;o de acidente", 12, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
-                <td width="34%"><%= quickField("datepicker", "DataAtendimento", "* Data do atendimento", 12, DataAtendimento, "", "", " empty='' required='required'") %></td>
+                <td width="33%"><%= quickField("simpleSelect", "IndicacaoAcidenteID", "Indica&ccedil;&atilde;o de acidente", 12, IndicacaoAcidenteID, "select * from tissindicacaoacidente order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+                <td width="34%"><%= quickField("datepicker", "DataAtendimento", "Data do atendimento", 12, DataAtendimento, "", "", " empty='' required='required'") %></td>
                 <%
                 if SemprePrimeiraConsulta then
                     sqlPrimeiraConsulta = " where id=1"
                 end if
                 %>
-                <td width="33%"><%= quickField("simpleSelect", "TipoConsultaID", "* Tipo de Consulta", 12, TipoConsultaID, "select * from tisstipoconsulta "&sqlPrimeiraConsulta&" order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+                <td width="33%"><%= quickField("simpleSelect", "TipoConsultaID", "Tipo de Consulta", 12, TipoConsultaID, "select * from tisstipoconsulta "&sqlPrimeiraConsulta&" order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
             </tr>
         </table>
 	</td>
 	</tr></table></td></tr>
 	
 	<tr><td><table cellpadding="0" cellspacing="0"><tr>
-	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("* Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
-	<td width="25%"><%= quickField("simpleSelect", "TabelaID", "* Tabela", 12, TabelaID, "select id, concat(id, ' - ', descricao) descricao from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
+	<td nowrap="nowrap" width="30%"><div class="col-md-12"><%= selectInsert("Procedimento", "gProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""tissCompletaDados(4, this.value);""", "required", "") %></div></td>
+	<td width="25%"><%= quickField("simpleSelect", "TabelaID", "Tabela", 12, TabelaID, "select id, concat(id, ' - ', descricao) descricao from tisstabelas order by descricao", "descricao", " empty='' required='required' no-select2") %></td>
 	<td nowrap="nowrap" width="30%">
 <br>
-        <%=selectProc("* Código do Procedimento", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "", " required='required' ", "", "", "") %>
+        <%=selectProc("Código do Procedimento", "CodigoProcedimento", CodigoProcedimento, "codigo", "TabelaID", "CodigoProcedimento", "", " required='required' ", "", "", "") %>
         <%'= quickField("text", "CodigoProcedimento", "C&oacute;digo do procedimento", 12, CodigoProcedimento, "", "", " required='required'") %></td>
 	<td nowrap="nowrap" width="15%" class="<% if aut("valordoprocedimentoV")=0 then %>hidden<%end if%>"><%
 	if not isnull(reg("ValorProcedimento")) then
@@ -607,7 +646,7 @@ end if
 	end if
 
 	if aut("valorprocedimentoguiaA") then
-	    response.Write(quickField("currency", "ValorProcedimento", "* Valor", 12, ValorProcedimento, "", "", " required='required'"))
+	    response.Write(quickField("currency", "ValorProcedimento", "Valor", 12, ValorProcedimento, "", "", " required='required'"))
     elseif aut("valorprocedimentoguiaV") then
         %>
         <div class="col-md-12">
@@ -644,26 +683,26 @@ end if
     end if
 
     %>
-        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="fa fa-save"></i> Salvar</button>
+        <button class="btn btn-primary btn-md" id="salvar-guia"><i class="far fa-save"></i> Salvar</button>
         <%
         if aut("repassesV")=1 then
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.GuiaConsultaID="& req("I") &" AND NOT ISNULL(rr.ItemContaAPagar)")
             if not vcaRep.eof then
-                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='fa fa-puzzle-piece'></i>  </button>"
+                btnrepasse = "<button title='Repasses Gerados' onclick='repasses(`GuiaConsultaID`, "& req("I") &")' type='button' class='btn ml5 btn-dark pull-right'> <i class='far fa-puzzle-piece'></i>  </button>"
                 response.write( btnRepasse )
             end if
         end if
         %>
         <%if AutorizadorTiss then %>
-        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="fa fa-expand"></i> Solicitar</button>
-        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="fa fa-times"></i> Cancelar guia</button>
-        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="fa fa-search"></i> Verificar status</button>
+        <button type="button" onclick="AutorizarGuiaTisss()" class="btn btn-warning btn-md feegow-autorizador-tiss-method" data-method="autorizar"><i class="far fa-expand"></i> Solicitar</button>
+        <button type="button" onclick="Autorizador.cancelarGuia(2)" class="btn btn-danger btn-md feegow-autorizador-tiss-method" data-method="cancelar"><i class="far fa-times"></i> Cancelar guia</button>
+        <button type="button" onclick="tissVerificarStatusGuia()" class="btn btn-default btn-md feegow-autorizador-tiss-method" data-method="status"><i class="far fa-search"></i> Verificar status</button>
         <%end if %>
-        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="fa fa-history"></i></button>
+        <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="far fa-history"></i></button>
 
 
-        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="fa fa-file"></i> Imprimir Guia em Branco</button>
-        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="fa fa-file"></i> Imprimir Guia</button>
+        <button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaConsulta', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
+        <button type="button" class="btn btn-md btn-primary mr5 pull-right" id="imprimirGuia" onclick="imprimirGuiaConsulta()"><i class="far fa-file"></i> Imprimir Guia</button>
     </div>
     <input type="hidden" name="AtendimentoID" id="AtendimentoID" value="<%=AtendimentoID%>" />
     <input type="hidden" name="AgendamentoID" id="AgendamentoID" value="<%=AgendamentoID%>" />
@@ -694,17 +733,96 @@ function tissCompletaDados(T, I){
 		data:$("#GuiaConsulta").serialize(),
 		success:function(data){
 			eval(data);
-			var convenio = $("#gConvenioID").val();
-            $.get(
-                'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
-                function(data){
-                    eval(data)
-                }
-            );
+
+			//não processa campos obrigatórios se for convênio simplificado
+			if (!$('#check-guia-simplificada').prop('checked')) {
+                var convenio = $("#gConvenioID").val();
+
+                $.get(
+                    'CamposObrigatoriosConvenio.asp?ConvenioID=' + convenio,
+                    function(data){
+                        eval(data);
+                    }
+                );
+            }
+
 		},
 
 	});
 }
+
+function simplificaElemento(el)
+{
+    let oldRequired =  $(el).attr('data-oldrequired');
+    if (!oldRequired) {
+        oldRequired = typeof $(el).attr('required') !== 'undefined' ? 1 : 0;
+    }
+    $(el).hide().attr('data-oldrequired', oldRequired).removeAttr('required').find('input, select').each(function() {
+        simplificaElemento(this);
+    });
+}
+
+function restauraElemento(el)
+{
+    const oldRequired = $(el).attr('data-oldrequired');
+    if (oldRequired === 1 || oldRequired === '1') {
+        $(el).attr('required', 'required');
+    }
+    $(el).show().removeAttr('data-oldrequired').find('input, select').each(function() {
+        restauraElemento(this);
+    });
+}
+
+function guiaSimplificada(restore)
+{
+    const isSimplificada = $('#check-guia-simplificada').prop('checked');
+
+    const elRegistroAns       = $('#qfregistroans').parent();
+    const elNGuiaOperadora    = $('#qfnguiaoperadora').parent();
+    const elTrCarteira        = $('#tr-carteira');
+    const elCodigoNaOperadora = $('#qfcodigonaoperadora').parent();
+    const elCodigoCnes        = $('#qfcodigocnes').parent();
+    const elCodigoCBO         = $('#qfcodigocbo').parent();
+    const elIndicacaoAcidente = $('#qfindicacaoacidenteid').parent();
+    const elTipoConsulta      = $('#qftipoconsultaid').parent();
+    const elTabela            = $('#qftabelaid').parent();
+    const elCodProcedimento   = $('#td-codprocedimento');
+    const elConselho          = $('#qfconselho').parent();
+    const elNConselho         = $('#qfdocumentoconselho').parent();
+    const elUFConselho        = $('#qfufconselho').parent();
+
+    if (isSimplificada && !restore) {
+        simplificaElemento(elRegistroAns);
+        simplificaElemento(elNGuiaOperadora);
+        simplificaElemento(elTrCarteira);
+        simplificaElemento(elCodigoNaOperadora);
+        simplificaElemento(elCodigoCnes);
+        simplificaElemento(elCodigoCBO);
+        simplificaElemento(elIndicacaoAcidente);
+        simplificaElemento(elTipoConsulta);
+        simplificaElemento(elTabela);
+        simplificaElemento(elCodProcedimento);
+        simplificaElemento(elConselho);
+        simplificaElemento(elNConselho);
+        simplificaElemento(elUFConselho);
+    } else {
+        restauraElemento(elRegistroAns);
+        restauraElemento(elNGuiaOperadora);
+        restauraElemento(elTrCarteira);
+        restauraElemento(elCodigoNaOperadora);
+        restauraElemento(elCodigoCnes);
+        restauraElemento(elCodigoCBO);
+        restauraElemento(elIndicacaoAcidente);
+        restauraElemento(elTipoConsulta);
+        restauraElemento(elTabela);
+        restauraElemento(elCodProcedimento);
+        restauraElemento(elConselho);
+        restauraElemento(elNConselho);
+        restauraElemento(elUFConselho);
+    }
+
+}
+
 $(document).ready(function(){
     <%if AutorizadorTiss then %>
 	Autorizador.bloqueiaBotoes(2);
@@ -752,6 +870,11 @@ $(document).ready(function(){
 	$("#Contratado, #UnidadeID").change(function(){
 //	    alert(1);
 		tissCompletaDados("Contratado", $(this).val());
+	});
+
+
+	$('#check-guia-simplificada').on('change', function() {
+	    guiaSimplificada();
 	});
 });
 

@@ -4,7 +4,7 @@
 <script src="assets/js/date-time/moment.min.js"></script>
 <script type="text/javascript">
     $(".crumb-active").html("<a href='#'>Financeiro</a>");
-    $(".crumb-icon a span").attr("class", "fa fa-money");
+    $(".crumb-icon a span").attr("class", "far fa-money");
     $(".crumb-trail").removeClass("hidden");
     $(".crumb-trail").html("Fluxo de Caixa");
 </script>
@@ -129,7 +129,7 @@
             <div class="col-md-2">
                 <label>&nbsp;</label>
                 <button class="btn btn-success" onclick="loadDados()" style="width: 100%">
-                    <i class="fa fa-search"></i>
+                    <i class="far fa-search"></i>
                     Pesquisar
                 </button>
             </div>

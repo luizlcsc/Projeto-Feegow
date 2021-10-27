@@ -67,7 +67,7 @@ end if
         </div>
         <%if ExibeForm then%>
         <div class="col-md-2">
-            <button class="btn btn-block btn-md btn-success" type="button" onClick="salvarAtendimento('<%=FormID%>')"><i class="fa fa-save"></i> Salvar Atendimento</button>
+            <button class="btn btn-block btn-md btn-success" type="button" onClick="salvarAtendimento('<%=FormID%>')"><i class="far fa-save"></i> Salvar Atendimento</button>
         </div>
         <%end if%>
     </div>
@@ -107,7 +107,7 @@ while not campo.eof
         %>
             <div class="col-md-4" style="position: relative; z-index:1">
                 <span><b><%= campo("RotuloCampo") %></b></span>
-                <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", input_maxlength)%>
             </div>
         <%
@@ -115,7 +115,7 @@ while not campo.eof
         %>
             <div class="col-md-6">
                 <span><b><%= campo("RotuloCampo") %></b></span>
-                <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>
             </div>
         <%
@@ -124,7 +124,7 @@ while not campo.eof
             <div class="panel-body">
                 <div class="col-md-12">
                     <span><b><%= Rotulo %></b></span>
-                    <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                    <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
                 <div class="row">
                     <%
@@ -148,7 +148,7 @@ while not campo.eof
                 <% if instr(Estruturacao, "Tag")>0 then %>
                 <hr class="short alt hidden" />
                 <center class="hidden">
-                    <button type="button" class="btn btn-default" onclick="prompt('Texto')"><i class=" fa fa-plus"></i> Inserir</button>
+                    <button type="button" class="btn btn-default" onclick="prompt('Texto')"><i class=" far fa-plus"></i> Inserir</button>
                 </center>
                 <% end if %>
             </div>
@@ -158,7 +158,7 @@ while not campo.eof
             <div class="panel-body">
                 <div class="col-md-12">
                     <span><b><%= Rotulo %></b></span>
-                    <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                    <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
 
                 <div class="row">
@@ -180,7 +180,7 @@ while not campo.eof
                 <% if instr(Estruturacao, "Tag")>0 then %>
                 <hr class="short alt" />
                 <center>
-                    <button type="button" class="btn btn-default" onclick="prompt('Texto')"><i class=" fa fa-plus"></i> Inserir</button>
+                    <button type="button" class="btn btn-default" onclick="prompt('Texto')"><i class=" far fa-plus"></i> Inserir</button>
                 </center>
                 <% end if %>
             </div>
@@ -191,7 +191,7 @@ while not campo.eof
                 <span class="panel-title"><%= Rotulo %></span>
                 <p class="panel-title" style="font-size:0.8em"><%= Texto %></p>
                 <span class="panel-controls hidden">
-                    <button type="button" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-sm btn-default hidden-xs"><i class="fa fa-history"></i></button>
+                    <button type="button" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-sm btn-default hidden-xs"><i class="far fa-history"></i></button>
                 </span>
             </div>
             <%
@@ -207,7 +207,7 @@ while not campo.eof
                 <div class="panel-body">
                     <div class="col-md-12">
                         <span><b><%= Rotulo %></b></span>
-                        <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                        <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="col-md-<%= cols %>">
                         <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &"") %>
@@ -346,7 +346,7 @@ while not campo.eof
             <div class="panel-body">
                 <div class="col-md-12">
                     <span><b><%= Rotulo %></b></span>
-                    <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                    <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
                 <div class="col-md-10">
                     <%= quickfield("text", "Campo"& CampoID, "", 12, Valor, " prot ", "", " rows=4 onkeyup=""sug("& campo("id") &", 'Campo', 'Medicamento')"" placeholder='Adicionar medicamento' onfocus=""$(this).select()"" ") %>
@@ -358,25 +358,25 @@ while not campo.eof
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-block btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-list"></i>
+                        <i class="far fa-list"></i>
                         <span class="caret ml5"></span>
                     </button>
                     <ul class="dropdown-menu disabled" role="menu">
-                        <li><a href="javascript:"><i class="fa fa-plus"></i> Criar Modelos</a></li>
+                        <li><a href="javascript:"><i class="far fa-plus"></i> Criar Modelos</a></li>
                     </ul>
                 </div>
                 <div class="col-md-1">
                     <button type="button" class="btn btn-block btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-print"></i>
+                        <i class="far fa-print"></i>
                         <span class="caret ml5"></span>
                     </button>
                     <ul class="dropdown-menu disabled" role="menu">
-                        <li><a href="javascript:printCampo('prescricao', '<%= CampoID %>', '')"><i class="fa fa-angle-right"></i> Padrão</a></li>
-                        <li><a href="javascript:printCampo('prescricaoEspecial', '<%= CampoID %>', '')"><i class="fa fa-angle-right"></i> Controle especial</a></li>
+                        <li><a href="javascript:printCampo('prescricao', '<%= CampoID %>', '')"><i class="far fa-angle-right"></i> Padrão</a></li>
+                        <li><a href="javascript:printCampo('prescricaoEspecial', '<%= CampoID %>', '')"><i class="far fa-angle-right"></i> Controle especial</a></li>
                     </ul>
                 </div>
 
-                <div class="col-md-1 hidden"><button type="button" onClick="printCampo('prescricao', '<%= CampoID %>', '')" class="btn btn-primary btn-block"><i class="fa fa-print"></i></button></div>
+                <div class="col-md-1 hidden"><button type="button" onClick="printCampo('prescricao', '<%= CampoID %>', '')" class="btn btn-primary btn-block"><i class="far fa-print"></i></button></div>
                 <div class="col-md-12" id="prescList<%= CampoID %>"></div>
             </div>
             <%
@@ -385,7 +385,7 @@ while not campo.eof
                 <div class="panel-body">
                     <div class="col-md-12">
                         <span><b><%= Rotulo %></b></span>
-                        <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                        <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                         <%'= quickfield("simpleSelect", "GrupoID"&CampoID, "Grupo", 2, "", "SELECT trim(grupo) id, trim(grupo) grupo FROM cliniccentral.tusscorrelacao WHERE grupo NOT LIKE '' GROUP BY grupo ORDER BY trim(grupo)", "grupo", " onchange='opsub($(this).val(), "& CampoID &")' ") %>
 
@@ -405,7 +405,7 @@ while not campo.eof
                     </div>
                     <div class="col-md-1 pt25">
                         <button type="button" class="btn btn-block btn-dark dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-list"></i> 
+                            <i class="far fa-list"></i>
                             <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu disabled" role="menu">
@@ -433,7 +433,7 @@ while not campo.eof
                                 set itemPacotes = db.execute(sqlItensPacotes)
 
                             %>
-                            <li id="NomePedido"><a href="javascript:"><i class="fa fa-angle-right"></i> <%=pacotes("Nome")%></a></li>
+                            <li id="NomePedido"><a href="javascript:"><i class="far fa-angle-right"></i> <%=pacotes("Nome")%></a></li>
 
 
                             <%
@@ -444,10 +444,10 @@ while not campo.eof
 
                         end if
                         %>
-                            <li><a href="javascript: modalPastas('', 'Lista');"><i class="fa fa-plus"></i> Criar Modelo</a></li>
+                            <li><a href="javascript: modalPastas('', 'Lista');"><i class="far fa-plus"></i> Criar Modelo</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-1 pt25"><button type="button" onClick="printCampo('pedido', '<%= CampoID %>', '')" class="btn btn-primary btn-block"><i class="fa fa-print"></i></button></div>
+                    <div class="col-md-1 pt25"><button type="button" onClick="printCampo('pedido', '<%= CampoID %>', '')" class="btn btn-primary btn-block"><i class="far fa-print"></i></button></div>
                     <div class="col-md-12" id="pedList<%= CampoID %>"></div>
                 </div>
             <%
@@ -456,12 +456,12 @@ while not campo.eof
                 <div class="panel-body">
                     <div class="col-md-12">
                        <span><b><%= Rotulo %></b></span>
-                       <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                       <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="row">
                         <%= quickfield("simpleSelect", "Atestado"& CampoID, "Novo atestado", 10, "", "select id, NomeAtestado from pacientesatestadostextos where sysActive=1 order by NomeAtestado", "NomeAtestado", " onchange='protAdd(""atesAdd"", $(this).val(), "&FormID&", "&CampoID&")' ") %>
-                        <div class="col-xs-1" hidden><button type="button" class="btn btn-info mt25 btn-block"><i class="fa fa-eye"></i></button></div>
-                        <div class="col-xs-1" hidden><button type="button" onClick="printCampo('atestado', '<%= CampoID %>', '')" class="btn btn-primary mt25 btn-block"><i class="fa fa-print"></i></button></div>
+                        <div class="col-xs-1" hidden><button type="button" class="btn btn-info mt25 btn-block"><i class="far fa-eye"></i></button></div>
+                        <div class="col-xs-1" hidden><button type="button" onClick="printCampo('atestado', '<%= CampoID %>', '')" class="btn btn-primary mt25 btn-block"><i class="far fa-print"></i></button></div>
                     </div>
                     <div class="col-md-12" id="atesList<%= CampoID %>"></div>
                     <script type="text/javascript">
@@ -474,13 +474,13 @@ while not campo.eof
                 <div class="panel-body">
                     <div class="col-md-12">
                        <span><b><%= Rotulo %></b></span>
-                       <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                       <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-primary" onclick="protAdd('encAdd', <%= "'Especialista', "& FormID &", "& CampoID %>)"><i class="fa fa-plus"></i> ESPECIALISTA</button>
-                            <button type="button" class="btn btn-primary" onclick="protAdd('encAdd', <%= "'Equipe Multidisciplinar', "& FormID &", "& CampoID %>)"><i class="fa fa-plus"></i> EQUIPE MULTIDISCIPLINAR</button>
-                            <button type="button" class="btn btn-primary" onclick="protAdd('encAdd', <%= "'Pronto-Socorro', "& FormID &", "& CampoID %>)"><i class="fa fa-plus"></i> PRONTO-SOCORRO</button>
+                            <button type="button" class="btn btn-primary" onclick="protAdd('encAdd', <%= "'Especialista', "& FormID &", "& CampoID %>)"><i class="far fa-plus"></i> ESPECIALISTA</button>
+                            <button type="button" class="btn btn-primary" onclick="protAdd('encAdd', <%= "'Equipe Multidisciplinar', "& FormID &", "& CampoID %>)"><i class="far fa-plus"></i> EQUIPE MULTIDISCIPLINAR</button>
+                            <button type="button" class="btn btn-primary" onclick="protAdd('encAdd', <%= "'Pronto-Socorro', "& FormID &", "& CampoID %>)"><i class="far fa-plus"></i> PRONTO-SOCORRO</button>
                         </div>
                     </div>
                     <div class="col-md-12" id="encList<%= CampoID %>"></div>
@@ -494,7 +494,7 @@ while not campo.eof
                     <div class="panel">
                         <div class="panel-heading">
                             <span class="panel-title"> <%= Rotulo %></span>
-                            <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="fa fa-history"></i></button>
+                            <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                         </div>
                         <div class="panel-heading">
                             <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="vacinas<%= CampoID %>">
@@ -518,7 +518,7 @@ while not campo.eof
                                 for j=0 to ubound( splEst )
                                     cEst = cEst+1
                                     'if ct=1 then
-                                        expansor = "<button type='button' onclick=""$('.descricao').fadeToggle()"" class='btn btn-xs btn-info pull-right' title='mais informações'><i class='fa fa-chevron-right'></i></button>"
+                                        expansor = "<button type='button' onclick=""$('.descricao').fadeToggle()"" class='btn btn-xs btn-info pull-right' title='mais informações'><i class='far fa-chevron-right'></i></button>"
                                     'else
                                     '    expansor = ""
                                     'end if
@@ -660,7 +660,7 @@ end if
 </div>
     <%if ExibeForm then%>
     <div class="m15">
-        <button class="btn btn-md btn-success" type="button" onClick="salvarAtendimento('<%=FormID%>')"><i class="fa fa-save"></i> Salvar Atendimento</button>
+        <button class="btn btn-md btn-success" type="button" onClick="salvarAtendimento('<%=FormID%>')"><i class="far fa-save"></i> Salvar Atendimento</button>
     </div>
     <%end if%>
 </form>
@@ -704,7 +704,7 @@ end if
 
     function logCampo(CampoId, TipoCampoId){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.get("logCampoForm.asp?CampoId="+CampoId+"&TipoCampoId="+TipoCampoId+"&FormId=<%=ModeloID%>&PacienteId=<%=PacienteID%>", function (data) {
             $("#modal").html(data);
         });
@@ -813,7 +813,7 @@ end if
 
     function editPront(Tipo, ID, PacienteID){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         if (Tipo == "atestado"){
             $.get("iPront.asp?t=Atestado&p="+PacienteID+"&m=&i="+ID+"&a=&redirect=false", function (data) {
                 $("#modal").html(data);

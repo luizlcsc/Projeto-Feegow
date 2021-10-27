@@ -16,7 +16,7 @@
 %>
 
 <form id="frmFunil">
-    <div class="panel">
+    <div class="panel mt15">
         <div class="panel-body">
         <div class="col-md-3">
             <%=quickfield("multiple", "Etapa", "Etapa", 12, funilSelect, "select * from chamadasconstatus order by Ordem", "NomeStatus", "") %>
@@ -55,7 +55,7 @@
     $(".crumb-active a").html("Funil de Vendas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("");
-    $(".crumb-icon a span").attr("class", "fa fa-filter");
+    $(".crumb-icon a span").attr("class", "far fa-filter");
     <%
     if aut("lancamentosI")=1 then
     %>

@@ -73,7 +73,7 @@ ProcedimentoID = ref("filtroProcedimentoID")
 <script type="text/javascript">
     function crumbAgenda(){
         $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda</a>");
-        $(".crumb-icon a span").attr("class", "fa fa-calendar");
+        $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
         $(".crumb-trail").html("<%=(formatdatetime(Data,1))%>");
@@ -217,6 +217,7 @@ end if
 
 refLocais = ref("Locais")
 RefLocaisSQL = ""
+
 'response.write(session("Unidades"))
 
 if instr(refLocais, "UNIDADE_ID")>0 then
@@ -383,25 +384,14 @@ end if
 set comGrade = db.execute( sql )
 if comGrade.eof then
     %>
-    <div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
+    <div class="alert alert-warning text-center mt20"><i class="far fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>
     <%
 end if
 cProf = 0
 while not comGrade.eof
 
     MostraGrade=True
-    if comGrade("GradePadrao")=1 then
-        FrequenciaSemanas = comGrade("FrequenciaSemanas")
-        InicioVigencia = comGrade("InicioVigencia")
-        if FrequenciaSemanas>1 then
-            NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
-            RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
-            if RestoDivisaoNumeroSemana>0 then
-                MostraGrade=False
-            end if
-        end if
-    end if
-    
+
     if MostraGrade then
         set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")
         NomeEspecialidade = ""
@@ -450,6 +440,7 @@ while not comGrade.eof
         </script>
     <%
     end if
+
 comGrade.movenext
 wend
 comGrade.close

@@ -17,16 +17,16 @@ set atend = db.execute(sqlAtend)
 %>
 <div class="row" id="divFatAgendamento">
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-xs btn-default" id="btnFatAgendamento"><i class="fa fa-calendar"></i> Gerar a partir de agendamentos</button>
+        <button type="button" class="btn btn-xs btn-default" id="btnFatAgendamento"><i class="far fa-calendar"></i> Gerar a partir de agendamentos</button>
     </div>
 </div>
 
-<h4 class="lighter blue no-margin header"><i class="fa fa-star"></i> Procedimentos Realizados</h4>
+<h4 class="lighter blue no-margin header"><i class="far fa-star"></i> Procedimentos Realizados</h4>
 <table class="table table-condensed table-striped table-bordered table-hover">
 <thead>
     <tr class="alert">
         <th width="1%"></th>
-        <th width="1%"><i class="fa fa-medkit"></i></th>
+        <th width="1%"><i class="far fa-medkit"></i></th>
         <th>Data</th>
         <th>Profissional</th>
         <th>Procedimento</th>
@@ -71,7 +71,7 @@ while not atend.eof
                 $("tr[data-datafatura]").each(function(){
                     if( parseInt( <%=mydatejunto(atend("Data")) %> ) >= parseInt($(this).attr("data-datafatura")) )
                     {
-                        $(this).before("<tr class='ulinha'><td nowrap width='10%'><button type='button' onclick='infAten(<%=atend("AtendimentoID") %>);' class='btn btn-default btn-xs'> <i class='fa fa-stethoscope blue'></i>&nbsp; </button> <%=atend("Data") %></td><td width='30%'><%=atend("NomeProcedimento")%><br><small><%=replace(replace(replace(atend("Obs")&" ", """", "'"), chr(10), " "), chr(13), " ") %></td><td width='20%'> <%=atend("NomeProfissional") %></small> </td><td></td><td width='20%'> <%=FormaPagto%> </td><td class='text-right' width='10%'><%=ValorExibir%>  &nbsp;</td><td width='10%'></td></tr>");
+                        $(this).before("<tr class='ulinha'><td nowrap width='10%'><button type='button' onclick='infAten(<%=atend("AtendimentoID") %>);' class='btn btn-default btn-xs'> <i class='far fa-stethoscope blue'></i>&nbsp; </button> <%=atend("Data") %></td><td width='30%'><%=atend("NomeProcedimento")%><br><small><%=replace(replace(replace(atend("Obs")&" ", """", "'"), chr(10), " "), chr(13), " ") %></td><td width='20%'> <%=atend("NomeProfissional") %></small> </td><td></td><td width='20%'> <%=FormaPagto%> </td><td class='text-right' width='10%'><%=ValorExibir%>  &nbsp;</td><td width='10%'></td></tr>");
                         return false;
                     }
                 });
@@ -83,7 +83,7 @@ while not atend.eof
                 Oculta = 1
                 Obs = replace(replace(replace(Obs&" ", chr(10), ""), chr(13), ""), """", "'")
                 if len(Obs)>1 then
-                    Obs = "<br><small><em><i class='fa fa-user-md'></i> "&Obs&"</em></small>"
+                    Obs = "<br><small><em><i class='far fa-user-md'></i> "&Obs&"</em></small>"
                     identNF = ";" & atend("ProfissionalID") & "|" & atend("ProcedimentoID") &"|"& atend("Data") &";"
                     %>
                     <script type="text/javascript">
@@ -220,7 +220,7 @@ while not atend.eof
     if Oculta=1 then
         Obs = replace(replace(replace(trim(atend("Obs")&" "), chr(10), ""), chr(13), ""), """", "'")
         if len(Obs)>1 then
-            Obs = "<br><small><em><i class='fa fa-user-md'></i> "&Obs&"</em></small>"
+            Obs = "<br><small><em><i class='far fa-user-md'></i> "&Obs&"</em></small>"
         end if
         %>
         <script type="text/javascript">
@@ -232,7 +232,7 @@ while not atend.eof
         <tr>
             <td class="pn" <% If temObs=1 Then %> rowspan="2"<% End If %>><div style="margin-top:-20px!important" class="checkbox-custom checkbox-warning mn pn"><input class="mn pn" type="checkbox" name="Lancto" id="Lancto<%=atend("id")%>executado" value="<%=atend("id")%>|executado"<%=checked %> /><label for="Lancto<%=atend("id")%>executado"></label></div></td>
             <td>
-                <button title="Lançamentos de produtos, materiais e medicamentos neste procedimento" onclick="modalEstoqueAtend(<%= atend("id") %>)" type="button" class="btn btn-xs"><i class="fa fa-medkit"></i></button>
+                <button title="Lançamentos de produtos, materiais e medicamentos neste procedimento" onclick="modalEstoqueAtend(<%= atend("id") %>)" type="button" class="btn btn-xs"><i class="far fa-medkit"></i></button>
             </td>
             <td nowrap="nowrap"><%
         
@@ -249,7 +249,7 @@ while not atend.eof
             <td><%=atend("NomeProcedimento")%></td>
             <td class="text-right"><%=ValorPlano%></td>
             <%if aut("finalizaratendimentoX")=1 then%>
-            <td width="1"><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento?'))ajxContent('Conta', '<%=PacienteID %>&XAP=<%=atend("id") %>', '1', 'divHistorico')"><i class="fa fa-remove"></i></button></td>
+            <td width="1"><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento?'))ajxContent('Conta', '<%=PacienteID %>&XAP=<%=atend("id") %>', '1', 'divHistorico')"><i class="far fa-remove"></i></button></td>
             <%end if%>
         </tr>
         <%

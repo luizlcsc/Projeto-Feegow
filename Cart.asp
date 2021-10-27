@@ -130,7 +130,7 @@ if Acao <> "prop" then
                             parcelaSeis = 0
 
                             if AgendamentoSQL("rdValorPlano") = "V" then 
-                                valorProcedimento = AgendamentoSQL("ValorPlano")    
+                                valorProcedimento = 0&AgendamentoSQL("ValorPlano")    
 
                                 if not descontos.eof then
                                     if descontos("ParcelasDe") <= 3 then
@@ -158,6 +158,9 @@ if Acao <> "prop" then
                     totalAVista = totalAVista + valorProcedimento
                     totalParcelaTres = totalParcelaTres + parcelaTres
                     totalParcelaSeis = totalParcelaSeis + parcelaSeis
+
+                    valorProcedimento  = 0&valorProcedimento
+                    valorMinimoParcela = 0&valorMinimoParcela
     %>
                     <tr>
                         <input type="hidden" class="ProcedimentoSelecionadoID" value="<%=cart("ProcedimentoID")%>">
@@ -200,7 +203,12 @@ if Acao <> "prop" then
                     <td>R$ <%=fn(totalAVista)%></td>
                     <td>R$ <%=fn(totalParcelaTres)%></td>
                     <td class="seisvezes">
-                    <% if ccur(totalAVista) >= ccur(valorMinimoParcela) then %> 
+                    <%
+                    totalAVista        = 0&totalAVista
+                    valorMinimoParcela = 0&valorMinimoParcela
+
+
+                    if ccur(totalAVista) >= ccur(valorMinimoParcela) then %> 
                         R$ <%=fn(totalParcelaSeis)%>
                     <% else 
                         response.write(" - ")

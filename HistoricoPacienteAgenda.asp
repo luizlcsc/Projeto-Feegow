@@ -446,6 +446,7 @@ end if
         %>
 
         <!--#include file="contaNewContent.asp"-->
+<script>$(function(){ if('<%=c%>' == 0) { $(".badgecontas").hide() } $(".badgecontas").html(' - ') })</script>        
     </div>
     <script>
     function ajxContent(a,b){

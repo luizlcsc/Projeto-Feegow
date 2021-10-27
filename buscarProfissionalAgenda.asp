@@ -67,81 +67,90 @@ while not ocupacoes.eof
 
         'response.write("<table class='table table-condensed' style='background-color:"&cor&";'>")
         response.write("<tr >")
-        response.write("<td style='width: 8%'>")
-            response.write("<div class='col-md-12 qf' id='qfvalor'>")
-                response.write("<label for='Valor'>A vista</label><br>")
+        response.write("<td style='vertical-align: top;'>")
+            'INFORMAÇÕES SOBRE PAGAMENTO
+            response.write("<div class='row'>")
+                response.write("<div class='col-md-12 qf' id='qfvalor'>")
+                    response.write("<label for='Valor'>A vista</label><br>")
+                    response.write("<div class='input-group'>")
+                        response.write("<span class='input-group-addon'>R$</span>")
+                        response.write("<input type='text' name='Valor' disabled class='form-control input-mask-brl' value='" & fn(valorProcedimento) & "' >")
+                    response.write("</div>")
+                response.write("</div>")
+        
+                response.write("<div class='col-md-12 qf' id='qfvalor3x'>")
+                    response.write("<label for='Valor3x'>Valor 3x</label><br>")
+                    response.write("<div class='input-group'>")
+                        response.write("<span class='input-group-addon'>R$</span>")
+                        response.write("<input type='text' name='Valor3x' disabled class='form-control input-mask-brl' value='" & fn(parcelaTres) & "' >")
+                    response.write("</div>")
+                response.write("</div>")
+
+            if ccur(valorProcedimento) >= ccur(valorMinimoParcela) then 
+                response.write("<div class='col-md-12 qf' id='qfvalor6x'>")
+                response.write("<label for='Valor6x'>Valor 6x</label><br>")
                 response.write("<div class='input-group'>")
                 response.write("<span class='input-group-addon'>R$</span>")
-        response.write("<input type='text' name='Valor' disabled class='form-control input-mask-brl' value='" & fn(valorProcedimento) & "' >")
-        response.write("</div>")
-        response.write("</div>")
 
-        
-        response.write("<div class='col-md-12 qf' id='qfvalor3x'>")
-        response.write("<label for='Valor3x'>Valor 3x</label><br>")
-        response.write("<div class='input-group'>")
-        response.write("<span class='input-group-addon'>R$</span>")
-
-        response.write("<input type='text' name='Valor3x' disabled class='form-control input-mask-brl' value='" & fn(parcelaTres) & "' >")
-        response.write("</div>")
-        response.write("</div>")
-
-        if ccur(valorProcedimento) >= ccur(valorMinimoParcela) then 
-        response.write("<div class='col-md-12 qf' id='qfvalor6x'>")
-        response.write("<label for='Valor6x'>Valor 6x</label><br>")
-        response.write("<div class='input-group'>")
-        response.write("<span class='input-group-addon'>R$</span>")
-
-        response.write("<input type='text' name='Valor6x' disabled class='form-control input-mask-brl' value='" & fn(parcelaSeis) & "' >")
-        response.write("</div>")
-        response.write("</div>")
-        end if 
-
-
-        response.write("</td>")
-        NomeProfissional =  ocupacoes("NomeProfissional")
-        if  ocupacoes("NomeSocial")&"" <> "" then
-            NomeProfissional =  ocupacoes("NomeSocial")
-        end if
-        response.write("<td style='data-title='teste'>" & NomeProfissional & "")
-        if ObsAgenda&""<>"" then 
-            response.write("<br /><button onclick='obs(" & ProfissionalID & ");' type='button' class='btn btn-xs btn-dark'><i class='fa fa-comment'></i> OBSERVAÇÃO</button>")
-        end if
-
-        if EspecializacaoID&""<>"" then 
-            sqlEspecializacao = "select Subespecialidade, ExecutaForaClinica, Observacoes from subespecialidades s INNER JOIN profissionaissubespecialidades ps ON ps.SubespecialidadeID = s.id where ps.ProfissionalID = " & ProfissionalID& " AND s.id = " & EspecializacaoID
-            
-            set espV = db.execute(sqlEspecializacao)
-            if not espV.eof then
-                response.write("<br /><button type='button' title='"&espV("Observacoes")&"' class='btn btn-xs btn-danger mt20'>"&espV("Subespecialidade")&"</button>")
-                if espV("ExecutaForaClinica") = "S" then 
-                    response.write("<br /><small>Realizado fora da clínica</small>")
-                end if
+                response.write("<input type='text' name='Valor6x' disabled class='form-control input-mask-brl' value='" & fn(parcelaSeis) & "' >")
+                response.write("</div>")
+                response.write("</div>")
             end if
-        end if
-%>
-<br>
-<br>
-<%
-        if ccur(restricaoObj.possuiPreparo(ProcedimentoID)) > 0 then
-%>
-            <button class='btn btn-success btn-xs' type='button' onclick="abrirModalPreparo2('<%=ProcedimentoID%>',document.getElementById('bPacienteID').value,'<%=ProfissionalID%>')"><i class='fa fa-lock'></i></button>
-<%
-        end if
+            response.write("</div>")
+            'DADOS DO PROFISSIONAL
+            response.write("<div class='row' style='margin:10px 0'>")
+                
+                NomeProfissional =  ocupacoes("NomeProfissional")
+                if  ocupacoes("NomeSocial")&"" <> "" then
+                    NomeProfissional =  ocupacoes("NomeSocial")
+                end if
+                response.write("<div class='col-md-12 qf' style='padding:0'>")
+                    response.write("<strong>Profissional:</strong><br>"&NomeProfissional)
+                response.write("</div'>")
+                
+                response.write("<div class='input-group'>")
+                    if ObsAgenda&""<>"" then 
+                        response.write("<button onclick='obs(" & ProfissionalID & ");' type='button' class='btn btn-xs btn-dark'><i class='fa fa-comment'></i> OBSERVAÇÃO</button>")
+                    end if
+                    if ccur(restricaoObj.possuiRestricao(ProcedimentoID)) > 0 then
+                        response.write("<button class=""btn btn-warning btn-xs"" type=""button"" id=""restricaoModal""> <i class=""fa fa-caret-square-o-left""></i> </button>")
+                    end if
 
-        if ccur(restricaoObj.possuiRestricao(ProcedimentoID)) > 0 then
-%>
-            <button
-                class="btn btn-warning btn-xs"
-                type="button"
-                id="restricaoModal">
-                <i class="fa fa-caret-square-o-left"></i>
-            </button>
 
-<%
-        end if
+                response.write("</div>")
+                
+
+                if EspecializacaoID&""<>"" then 
+                    sqlEspecializacao = "select Subespecialidade, ExecutaForaClinica, Observacoes from subespecialidades s INNER JOIN profissionaissubespecialidades ps ON ps.SubespecialidadeID = s.id where ps.ProfissionalID = " & ProfissionalID& " AND s.id = " & EspecializacaoID
+                    
+                    set espV = db.execute(sqlEspecializacao)
+                    if not espV.eof then
+                        response.write("<div class='col-md-4 qf'>")
+                            response.write("<br /><button type='button' title='"&espV("Observacoes")&"' class='btn btn-xs btn-danger mt20'>"&espV("Subespecialidade")&"</button>")
+                            if espV("ExecutaForaClinica") = "S" then 
+                                response.write("<br /><small>Realizado fora da clínica</small>")
+                            end if
+                        response.write("</div'>")
+                    end if
+                end if
+
+                if ccur(restricaoObj.possuiPreparo(ProcedimentoID)) > 0 then
+                %>
+                <div class='col-md-4 qf'>
+                    <button class='btn btn-success btn-xs' type='button' onclick="abrirModalPreparo2('<%=ProcedimentoID%>',document.getElementById('bPacienteID').value,'<%=ProfissionalID%>')"><i class='fa fa-lock'></i></button>
+                </div>
+                <%
+                end if
+
+                
+
+            response.write("</div>")
+
+
+
 
         response.write("</td>")
+        
         
         for i=0 to ubound(datas)
 			

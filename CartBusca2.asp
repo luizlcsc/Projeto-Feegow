@@ -234,12 +234,12 @@ if not relatorio.eof then
 
 %>
     <tr class="preto" style="background: #555279">
-        <td style="width: 25%" colspan="2"><span data-toggle="tooltip" title="<%=Endereco%>"><%=NomeFantasia%></span></td>
+        <td><span data-toggle="tooltip" title="<%=Endereco%>"><%=NomeFantasia%></span></td>
         <%
         for i=0 to ubound(datas)
             diadasemana = arrayDS(weekday(datas(i))-1)
 
-            response.write("<td style='width: 12%'>" & datas(i) &" - " &diadasemana& "</td>")
+            response.write("<td style='width: 13.5%'>" & datas(i) &" - " &diadasemana& "</td>")
         next
         %>
     </tr>
@@ -281,7 +281,7 @@ if not relatorio.eof then
 %>
     <thead>
     <tr class="dark linha-item" style="cursor: pointer" data-value-propostaid="<%=PropostaID%>" data-index="<%=linhaIndex%>" data-value-zona="<%=Zona%>"  data-value-tabelaid="<%=TabelaID%>" data-value-procedimento="<%=ProcedimentoID%>" data-value-carrinho="<%=CarrinhoID%>" data-value-local="<%= relatorio("LocalID") %>" data-value-unidade="<%= relatorio("UnidadeID") %>" data-value-dias="<%=htmlData%>">
-        <td colspan="2"><%=titulo%></td>
+        <td><%=titulo%></td>
 <%
 
     for i=0 to ubound(datas)

@@ -66,7 +66,7 @@ if eventoID <> "" then
             <%= quickfield("multiple", "Procedimentos", "Procedimentos", 3, procedimentos, "select 'Todos' NomeProcedimento, 'ALL' id UNION ALL select NomeProcedimento, id FROM procedimentos WHERE Ativo='on' and sysActive=1", "NomeProcedimento", "") %>
 
 
-            <%= quickfield("simpleSelect", "EnviarPara", "Enviar para", 3, enviarPara, "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "") %>
+            <%= quickfield("multiple", "EnviarPara", "Enviar para", 3, enviarPara, "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "") %>
 
         </div>
 
@@ -129,7 +129,7 @@ if eventoID = "" then %>
             <%= quickfield("multiple", "Procedimentos", "Procedimentos", 3, "", "select 'Todos' NomeProcedimento, 'ALL' id UNION ALL select NomeProcedimento, id FROM procedimentos WHERE Ativo='on' and sysActive=1", "NomeProcedimento", "") %>
 
 
-            <%= quickfield("simpleSelect", "EnviarPara", "Enviar para", 3, "", "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "") %>
+            <%= quickfield("multiple", "EnviarPara", "Enviar para", 3, "", "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "") %>
 
         </div>
 

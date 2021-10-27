@@ -150,7 +150,7 @@
 
                                 eveID = modeloDeMensagem("EventoID")&""
                                 nomeEvento = modeloDeMensagem("NomeEvento")
-                                eventoPadrao = "Confirmação de agendamento"
+                                eventoPadrao = "Confirmação de agendamento (Padrão)"
 
                                 if sysID = "" then
                                     
@@ -220,7 +220,7 @@
                                 else
                                     if nomeModelo = "agendamento_confirma_01" then
                                         
-                                        AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `ModeloID`, `sysActive`) VALUES ('"&eventoPadrao&"', '"&sysID&"', 0)"
+                                        AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `ModeloID`, `Ativo`, `sysActive`) VALUES ('"&eventoPadrao&"', '"&sysID&"', 0, 0)"
                                         db.execute(AddModeloNoEveSQL) %>
                                         
                                         <script type="text/javascript">document.location.reload(true);</script> <%

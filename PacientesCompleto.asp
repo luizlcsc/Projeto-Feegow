@@ -212,11 +212,11 @@ end if
                 <label for="Estrangeiro">Estrangeiro</label>
                 <div style="
                             border: 1px solid #dddddd;
-                            border-radius: 2px;
+                            border-radius: 6px;
                             display: flex;
                             justify-content: space-between;
                             align-items: center;
-                            height: 39px;">
+                            height: 32px;">
                     <% IF reg("Estrangeiro") = "1" THEN %>
                         <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">SIM</span>
                     <% ELSE %>

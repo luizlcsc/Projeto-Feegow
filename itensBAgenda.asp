@@ -117,7 +117,7 @@ if not ab.eof then
             AgendamentoID = ab("AgendamentoID")
 
 
-            ValorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
+            ValorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID, 0)
             %>
         <div class="panel-body">
 
@@ -142,12 +142,12 @@ if not ab.eof then
                             <td class="text-right"><%= ValorTabela %></td>
                             <td>
                                 <% if isnull(AgendamentoID) then %>
-                                    <button onclick="AbrirPendencias('<%=UnidadeID%>', '<%=BuscaID%>')" type="button" style="display: none" class="btn-pendencia btn btn-xs btn-dark"><i class="fa fa-life-ring" title="Abrir Pendência"></i></button>
+                                    <button onclick="AbrirPendencias('<%=UnidadeID%>', '<%=BuscaID%>')" type="button" style="display: none" class="btn-pendencia btn btn-xs btn-dark"><i class="far fa-life-ring" title="Abrir Pendência"></i></button>
                                 <% else %>
-                                    <button type="button" class="btn btn-xs btn-success" onclick="abreAgenda('', <%= AgendamentoID %>, '', '', '')"><i class="fa fa-check" title="Agendado"></i></button>
+                                    <button type="button" class="btn btn-xs btn-success" onclick="abreAgenda('', <%= AgendamentoID %>, '', '', '')"><i class="far fa-check" title="Agendado"></i></button>
                                 <% end if %>
                             </td>
-                            <td><button onclick="ibAgenda('X', <%= ab("id") %>)" type="button" class="btn btn-xs btn-danger" title="Excluir"><i class="fa fa-remove"></i></button></td>
+                            <td><button onclick="ibAgenda('X', <%= ab("id") %>)" type="button" class="btn btn-xs btn-danger" title="Excluir"><i class="far fa-remove"></i></button></td>
                         </tr>
                 </tbody>
             </table>

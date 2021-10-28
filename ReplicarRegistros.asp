@@ -86,7 +86,7 @@ END IF %>
     <div>
         <h2>Aguarde.</h2><h3> Estamos replicando este registro.</h3>
         <div class="fa-4x text-center">
-          <i class="fa fa-spinner fa-spin"></i>
+          <i class="far fa-spinner fa-spin"></i>
         </div>
     </div>
 </div>
@@ -107,7 +107,7 @@ function replicarPost(){
             $("#myModal").modal("hide");
             $(".loading-full").css("display","none");
             new PNotify({
-                title: '<i class="fa fa-save"></i> Replicado',
+                title: '<i class="far fa-save"></i> Replicado',
                 text: 'Registro replicado com sucesso',
                 type: 'success'
             });
@@ -115,7 +115,7 @@ function replicarPost(){
         }
 
         new PNotify({
-            title: '<i class="fa fa-warning"></i> Cuidado.',
+            title: '<i class="far fa-warning"></i> Cuidado.',
             text: `${arg}`,
             type: 'danger'
         });

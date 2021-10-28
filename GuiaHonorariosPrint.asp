@@ -10,7 +10,7 @@
 <%
 'on error resume next
     response.charset="utf-8"
-set guia = db.execute("select g.* from tissguiahonorarios as g where g.id="&req("I"))
+set guia = db.execute("select g.*, le.nomelocal as LocalExterno from tissguiahonorarios as g left join locaisexternos le on le.id = g.LocalExternoID where g.id="&req("I"))
 if not guia.eof then
 	set conv = db.execute("select * from convenios where id="&guia("ConvenioID"))
 	if not conv.EOF then
@@ -52,6 +52,7 @@ if not guia.eof then
 	NumeroCarteira=guia("NumeroCarteira")
     ContratadoLocalCodigoNaOperadora = guia("ContratadoLocalCodigoNaOperadora")
     ContratadoLocalNome = guia("ContratadoLocalNome")
+	LocalExterno = guia("LocalExterno")
     ContratadoLocalCNES = guia("ContratadoLocalCNES")
     DataInicioFaturamento = guia("DataInicioFaturamento")
     DataFimFaturamento = guia("DataFimFaturamento")
@@ -237,7 +238,7 @@ end if
 		<td class="celula_guia">
 		<table cellpadding="0" cellspacing="0" height="100%" width="666">
 		<tr><td class="campo_titulo">10-Nome do Hospital/Local</td></tr>
-		<tr><td class="campo_texto"><%=ContratadoLocalNome %></td></tr>
+		<tr><td class="campo_texto"><%=LocalExterno %></td></tr>
 		</table>
 		</td>
 		<td width="2"></td>

@@ -20,7 +20,7 @@ function addToQueue(eventId, body, EndPoint)
                 data = "{""event_id"": "&eventId&", ""webhook_body"": "&body&" }"
             end if
             
-            CALL sendWebAPI(EndPoint, data, "POST", true, Token) 
+            CALL sendWebAPI(EndPoint, data, "POST", true, Token, Header) 
 
             '*** <MÉTODO ANTIGO> ***'
 

@@ -1,5 +1,5 @@
 <!--#include file="Classes/Connection.asp"--><%
-						set tryLogin = dbc.execute("select lu.*, l.Servidor from licencasusuariosmulti lu left join licencas l on l.id=LicencaAtual where lu.Email='"&ref("User")&"' and lu.Senha='"&ref("Password")&"' and lu.Cupom='"&req("Partner")&"'")
+						set tryLogin = dbc.execute("select lu.*, l.Servidor from licencasusuariosmulti lu left join licencas l on l.id=LicencaAtual where lu.Ativo='on' AND lu.Email='"&ref("User")&"' and lu.Senha='"&ref("Password")&"' and lu.Cupom='"&req("Partner")&"'")
                         if not tryLogin.EOF then
 
                             Servidor = tryLogin("Servidor")&""
@@ -55,8 +55,8 @@
                         else
                             %>
                             <div id="divError" class="step-pane active">
-                            	<div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="fa fa-remove"></i></button>
-                                	<i class="fa fa-remove"></i>
+                            	<div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
+                                	<i class="far fa-remove"></i>
                                     <strong>E-mail de acesso ou senha não confere.</strong>
                                 </div>
                             </div>

@@ -10,7 +10,7 @@
 							<h1>
 								Widgets
 								<small>
-									<i class="fa fa-double-angle-right"></i>
+									<i class="far fa-double-angle-right"></i>
 									Draggabble Widget Boxes &amp; Containers
 								</small>
 							</h1>

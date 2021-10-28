@@ -124,7 +124,7 @@ set lotesEnv=nothing
             </table>
         <% end if
     end if %>
-    <button style="margin: 10px 0px 0px 0px;" onclick="atualizarProcedimentos()" type="button" class="btn btn-primary btn-md"><i class="fa fa-save"></i> Salvar</button>
+    <button style="margin: 10px 0px 0px 0px;" onclick="atualizarProcedimentos()" type="button" class="btn btn-primary btn-md"><i class="far fa-save"></i> Salvar</button>
     <span style="float: right; margin-top: 10px; " id="calculo_total"><b>Valor total:0,00</b></span>
 </form> 
 

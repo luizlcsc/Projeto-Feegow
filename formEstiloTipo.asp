@@ -9,7 +9,7 @@ while not campos.eof
     <div class="row">
 		<%=quickfield("text", "campo-"&campos("id"), campos("Descricao"), 10, campos("Valor"), "", "", " onblur=""editStyle('Update', '"&Tipo&"', '"&Rotulo&"', "&campos("id")&", this.value);""")%>
         <div class="col-md-2"><label>&nbsp;</label><br>
-	        <button type="button" class="btn btn-danger btn-sm" onClick="if(confirm('Tem certeza de que deseja remover este estilo?'))editStyle('Remove', '<%=Tipo%>', '<%=Rotulo%>', <%=campos("id")%>, '');"><i class="fa fa-remove"></i></button>
+	        <button type="button" class="btn btn-danger btn-sm" onClick="if(confirm('Tem certeza de que deseja remover este estilo?'))editStyle('Remove', '<%=Tipo%>', '<%=Rotulo%>', <%=campos("id")%>, '');"><i class="far fa-remove"></i></button>
         </div>
     </div>
 	<%

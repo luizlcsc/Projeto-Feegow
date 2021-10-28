@@ -7,6 +7,14 @@ DT = req("DT")
 X = req("X")
 Atuacao = req("Atuar")
 
+
+
+pagNumber = 1
+
+IF req("pagNumber") <> "" THEN
+    pagNumber = req("pagNumber")
+END IF
+
 if DT<>"" then
     db.execute("insert into procedimentostabelas (Tipo, NomeTabela, Inicio, Fim, TabelasParticulares, Profissionais, Especialidades, Unidades, ConvenioID, sysUser, sysActive) select Tipo, concat(NomeTabela, ' (Cópia)'), Inicio, Fim, TabelasParticulares, Profissionais, Especialidades, Unidades, ConvenioID, "& session("User") &", 1 from procedimentostabelas where id="& DT)
     set pult = db.execute("select id from procedimentostabelas where sysUser="& session("User") &" order by id desc limit 1")
@@ -25,6 +33,28 @@ TipoTabela = req("Tipo")
 Especialidades = req("Especialidades")
 TabelasParticulares = req("TabelasParticulares")
 ProcedimentoID = req("ProcedimentoID")
+Unidades = req("Unidades")
+ConvenioID = req("ConvenioID")
+Tabela = req("Tabela")
+
+
+tiposAutorizados = ""
+
+if aut("|tabelasprecoscustoV|")=1 then
+    if tiposAutorizados<>"" then
+        tiposAutorizados = tiposAutorizados & ", 'C'"
+    else
+        tiposAutorizados = tiposAutorizados & "'C'"
+    end if
+end if
+
+if aut("|tabelasprecosV|")=1 then
+    if tiposAutorizados<>"" then
+        tiposAutorizados = tiposAutorizados & ", 'V'"
+    else
+        tiposAutorizados = tiposAutorizados & "'V'"
+    end if
+end if
 
 if TipoTabela&""="0" then
     TipoTabela=""
@@ -47,10 +77,22 @@ function iif(comparacao, verdadeiro, falso)
    end if
 end function
 
+if Unidades&""="|0|" then
+    Unidades=""
+end if
+if ConvenioID&""="0" then
+    ConvenioID=""
+end if
+
 %>
 <div class="panel mt20 mtn hidden-print">
     <div class="panel-heading">
-        <span class="panel-title"><i class="fa fa-filter"></i> Filtrar</span>
+        <span class="panel-title"><i class="fal fa-filter"></i> Filtrar</span>
+
+        <span class="panel-controls">
+            <button type="button" class="btn btn-default " onclick="LimparFiltros()"><i class="fal fa-eraser"> </i> Limpar </button>
+            <button class="btn btn-primary " ><i class="fal fa-search"> </i> Buscar </button>
+        </span>
     </div>
     <div class="panel-body">
         <form action="" id="form-filtro-tabela-de-preco" method="get">
@@ -76,11 +118,6 @@ end function
 				
             </select>
             </div>
-
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="LimparFiltros()"><i class="fa fa-eraser"> </i> Limpar </button>
-                    <button class="btn btn-primary mt25" ><i class="fa fa-search"> </i> Buscar </button>
-                </div>
             </div>
         </form>
     </div>
@@ -88,7 +125,7 @@ end function
 
 <div class="panel mt20">
     <div class="panel-body">
-        <table class="table table-condensed table-hover table-bordered table-striped">
+        <table class="table table-condensed table-hover  table-striped">
             <thead>
                 <tr class="info">
                     <th>Status</th>
@@ -96,11 +133,13 @@ end function
                     <th>Tabelas Particulares</th>
                     <th>Tipo</th>
                     <th>Vigência</th>
+                    <th>Unidades</th>
                     <th width="1%"></th>
-                    <% if aut("|tabelasprecosA|")=1 then %>
+                    <th width="1%"></th>
+                    <% if aut("|tabelasprecosA|")=1 or aut("|tabelasprecosV|")=1 then %>
                         <th width="1%"></th>
                     <% end if %>
-                    <% if aut("|tabelasprecosX|")=1 then %>
+                    <% if aut("|tabelasprecosX|")=1 or aut("|tabelasprecoscustoX|")=1 then %>
                         <th width="1%"></th>
                     <% end if %>
                 </tr>
@@ -115,7 +154,11 @@ end function
                     sqlFiltros = sqlFiltros & " AND pt.Especialidades LIKE '%|"&replace(Especialidades, "|", "")&"|%'"
                 end if
                 if TipoTabela<>"" then
-                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&replace(TipoTabela,",","")&"'"
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo= '"&TipoTabela&"'"
+                end if
+
+                if tiposAutorizados<>"" then
+                    sqlFiltros = sqlFiltros & " AND pt.Tipo IN ("&tiposAutorizados&")"
                 end if
                 if TabelasParticulares<>"" then
                     sqlFiltros = sqlFiltros & " OR pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
@@ -136,15 +179,27 @@ end function
                             TabelasComOProcedimento = TabelasComOProcedimento&","&Tabelas
                         end if
                     end if
-                    sqlFiltros = sqlFiltros & " OR pt.id IN ("&TabelasComOProcedimento&")"
+                    sqlFiltros = sqlFiltros & " AND pt.id IN ("&TabelasComOProcedimento&")"
+                end if
+                if Unidades <>"" then
+                    sqlFiltros = sqlFiltros & " AND cliniccentral.overlap('"&Unidades&"', pt.Unidades)"
+                end if
+                if ConvenioID <>"" then
+                    sqlFiltros = sqlFiltros & " AND cliniccentral.overlap(CONCAT('|','"&ConvenioID&"','|'), pt.Convenios)"
+                end if
+                if Tabela <>"" then
+                    sqlFiltros = sqlFiltros & " and NomeTabela like '%"&Tabela&"%'"
                 end if
 
-                'set t = db.execute("select pt.* from procedimentostabelas pt where pt.sysActive=1 group by pt.Inicio, pt.Fim, pt.TabelasParticulares")
-                        dbSql = "select pt.* from procedimentostabelas pt where pt.sysActive=1 "&sqlFiltros&" ORDER BY YEAR(pt.Fim) DESC, pt.NomeTabela"
-                        'response.write(dbSql)
-                        'response.write(TabelaBase)
-                set t = db.execute(dbSql)
+                set count = db_execute("select ceil(count(*)/10) as qtd from procedimentostabelas pt where "&franquiaUnidade(" COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" pt.sysActive=1 "&sqlFiltros&" ")
 
+                sql = "select pt.*, tp.id HasSolicitacao,coalesce(Fim,date(Now())) as Fim,coalesce(Inicio,date(Now())) as Inicio,(SELECT group_concat(' ',NomeFantasia) FROM vw_unidades WHERE Unidades like CONCAT('%|',id,'|%')) Unidades, Unidades like '%|0|%' as HasCentral "&_
+                "from procedimentostabelas pt "&_
+                " LEFT JOIN solicitacao_tabela_preco tp ON tp.TabelaPrecoID=pt.id AND Status='PENDENTE' "&_
+                "where "&franquiaUnidade(" ( Unidades LIKE '%|"&session("UnidadeID")&"|%' OR Unidades = '' OR Unidades IS NULL) AND ")&" pt.sysActive=1  "&sqlFiltros&" ORDER BY IF(Fim>curdate(),1,0) DESC,NomeTabela limit "&((pagNumber-1)*10)&",10"
+
+                set t = db.execute(sql)
+                'response.write (sql)
                 if t.eof then
                     %>
         <tr>
@@ -156,10 +211,22 @@ end function
                 countTabelas= 0
 
                 while not t.eof
+
+                    if t("Tipo")="V" then
+                        prefixoPermissao = "tabelasprecos"
+                    else
+                        prefixoPermissao = "tabelasprecoscusto"
+                    end if
+
                     TabelasParticulares = t("TabelasParticulares")&""
                     if TabelasParticulares<>"" then
                         set tp = db.execute("select group_concat(NomeTabela separator ', ') tps from tabelaparticular where id in("& replace(TabelasParticulares, "|", "") &")")
-                        TabelasParticulares = tp("tps")&""
+
+                        if len(tp("tps")&"")>100 then
+                            TabelasParticulares = left(tp("tps"),100)&"<a href='#' data-toggle='tooltip' data-placement='right' data-original-title='"&tp("tps")&"' > <strong>...</strong></a>"
+                        else
+                            TabelasParticulares = tp("tps")&""
+                        end if
                     end if
 
                     LabelTabela = ""
@@ -167,12 +234,14 @@ end function
                     if isNull (dataFimTabela) then 
                         dataFimTabela = date()
                     end if
-                    if cdate(t("Fim")) < date() then
-                        LabelTabela = "<span class='label label-danger'><i class='fa fa-exclamation-circle'></i> Expirada</span>"
-                    end if
+                    if not isnull(t("Fim")) then
+                        if cdate(t("Fim")) < date() then
+                            LabelTabela = "<span class='label label-danger'><i class='fal fa-exclamation-circle'></i> Expirada</span>"
+                        end if
 
-                    if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
-                        LabelTabela = "<span class='label label-success'><i class='fa fa-check-circle'></i> Vigente</span>"
+                        if cdate(t("Fim")) >= date() and cdate(t("Inicio")) <= date() then
+                            LabelTabela = "<span class='label label-success'><i class='fal fa-check-circle'></i> Vigente</span>"
+                        end if
                     end if
 
                     %>
@@ -182,14 +251,28 @@ end function
                         <td><%= TabelasParticulares %></td>
                         <td><%= t("Tipo") %></td>
                         <td><%= t("Inicio") &" a "& t("Fim") %></td>
-                        <td><button type="button" class="btn btn-xs btn-info">
-                        <i class="fa fa-copy" title="Duplicar tabela" onclick="location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i>
-                        </button></td>
-                        <% if aut("|tabelasprecosA|")=1 then %>
-                        <td><a href="./?P=ProcedimentosTabelas&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></a></td>
+                        <td style="width: 30%"><%= t("Unidades") %></td>
+                        <td>
+                            <%
+                            if t("HasSolicitacao") then
+                                %>
+                                <i title="Existem solicitações em aberto para esta tabela." class="text-warning far fa-exclamation-circle"></i>
+                                <%
+                            end if
+                            %>
+                        </td>
+                        <td>
+                            <% IF ModoFranquiaCentral or t("HasCentral") = "0" and aut("|"&prefixoPermissao&"I|")=1 THEN %>
+                                <button type="button" class="btn btn-xs btn-info"><i class="far fa-copy" title="Duplicar tabela" onclick="if(confirm('Tem certeza de que deseja duplicar esta tabela? \nIMPORTANTE: Cuidado para não gerar conflito entre tabelas similares.'))location.href='./?P=TabelasPreco&Pers=1&DT=<%= t("id") %>'"></i></button>
+                            <% END IF %>
+                        </td>
+                        <% if aut("|"&prefixoPermissao&"A|")=1  then %>
+                        <td><a href="./?P=ProcedimentosTabelas2&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-edit"></i></a></td>
+                        <% else %>
+                        <td><a href="./?P=ProcedimentosTabelas2&I=<%= t("id") %>&Pers=1" class="btn btn-xs btn-primary"><i class="far fa-eye"></i></a></td>
                         <% end if %>
                         <% if aut("|tabelasprecosX|")=1 then %>
-                            <td><a href="javascript:if(confirm('Tem certeza de que deseja excluir esta tabela?'))location.href='./?P=TabelasPreco&I=<%= t("id") %>&Pers=1&X=<%= t("id") %>'" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></a></td>
+                            <td><a href="javascript:if(confirm('Tem certeza de que deseja excluir esta tabela?'))location.href='./?P=TabelasPreco&I=<%= t("id") %>&Pers=1&X=<%= t("id") %>'" class="btn btn-xs btn-danger"><i class="fal fa-remove"></i></a></td>
                         <% end if %>
                     </tr>
                     <%
@@ -201,24 +284,65 @@ end function
                 %>
                 <tfoot>
                     <tr class="dark">
-                        <th colspan="8"><%=countTabelas%> tabela(s)</th>
+                        <th colspan="10"><%=countTabelas%> tabela(s)</th>
                     </tr>
                 </tfoot>
             </tbody>
         </table>
+         <div class="mypage" style="display: flex;">
+
+        </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    $(".crumb-active a").html("Tabelas de Preço");
+<%
+buscaFiltro = replace(replace(request.querystring()&"","'","''"),"&pagNumber="&req("pagNumber"),"")
+%>
+    function changePagination(numberPag){
+        location.href = `?<%=buscaFiltro%>&pagNumber=${numberPag}`
+    }
+
+    function paginationHtml(page_number,numberPages) {
+        let html = `<ul class="pagination justify-content-center" style="margin: 20px auto;">`;
+
+        for(let i = page_number-3;i < page_number;i++){
+            if(i<1){
+                continue;
+            }
+
+            html += `<li class="page-item" onclick="changePagination(${i});"><a class="page-link" href="#">${i}</a></li>`
+        }
+
+        html += `<li class="page-item active"  ><a class="page-link" href="#">${page_number}</a></li>`
+
+        for(let i = page_number+1;i < page_number+1+3;i++){
+            if(i>numberPages)
+            {
+               break;
+            }
+             html += `<li class="page-item" onclick="changePagination(${i});"><a class="page-link" href="#">${i}</a></li>`
+        }
+        html += `</ul>`;
+        return html;
+    }
+
+    $(".mypage").html(paginationHtml(<%=pagNumber %>,<%=count("qtd")&""%>));
+    $(".crumb-active a").html("Preços de Custo e Venda");
     $(".crumb-link").removeClass("hidden");
-    $(".crumb-link").html("cadastro de tabelas de preço por vigência");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-link").html("cadastro de preços de custo e venda por vigência");
+    $(".crumb-icon a span").attr("class", "fal fa-table");
     <%
-    if aut("procedimentosA")=1 then
-    %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas&Pers=1&I=N"><i class="fa fa-plus"></i><span class="menu-text"> INSERIR</span></a>');
-    <%
+        if aut("snapshottabelasprecosA")=1 and aut("snapshottabelasprecosE")=1 then
+        %>
+            $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas2&Pers=1&I=N"><i class="far fa-plus"></i><span class="menu-text"> INSERIR </span></a>&nbsp;&nbsp;<button type="button" class="btn btn-sm default mr5" data-toggle="modal" onclick="carregaSnapshots(\'geral\',\'0\')"><i class="far fa-history"></i> Histórico </button>');
+        <%
+    else
+        if aut("|tabelasprecosI|")=1 or aut("|tabelasprecoscustoI|")=1 then
+        %>
+            $("#rbtns").html('<a class="btn btn-sm btn-success pull-right" href="./?P=ProcedimentosTabelas2&Pers=1&I=N"><i class="far fa-plus"></i><span class="menu-text"> INSERIR </span></a>&nbsp;&nbsp;');
+        <%
+        end if
     end if
     %>
 

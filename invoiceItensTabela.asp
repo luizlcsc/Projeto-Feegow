@@ -42,7 +42,7 @@ function linhaItem(id, ValorUnitario, Executado, DataExecucao, HoraExecucao, Hor
 		call quickField("text", "ValorUnitario"&id, " ", 2, ValorUnitario, " input-mask-brl text-right valor", "", "") 
 		call quickField("text", "Desconto"&id, " ", 2, Desconto, " input-mask-brl text-right desconto", "", "") 
 		%>
-		<div class="col-md-3"><button type="button" class="btn btn-info btn-block" onclick="rateio(<%=id%>);"><i class="fa fa-chevron-down"></i> Detalhes <i class="fa fa-user-md"></i></button></div>
+		<div class="col-md-3"><button type="button" class="btn btn-info btn-block" onclick="rateio(<%=id%>);"><i class="far fa-chevron-down"></i> Detalhes <i class="far fa-user-md"></i></button></div>
     </div>
 	<div class="row expandRateio" id="divRateio<%=id%>">
         <div class="col-xs-2"></div>
@@ -54,7 +54,7 @@ function linhaItem(id, ValorUnitario, Executado, DataExecucao, HoraExecucao, Hor
 		<div class="col-xs-3"><label>&nbsp;</label><br />
 		
         <div class="btn-group pull-right">
-            <button class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> Adicionar <i class="fa fa-chevron-down"></i></button>
+            <button class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown"><i class="far fa-plus"></i> Adicionar <i class="far fa-chevron-down"></i></button>
             <ul class="dropdown-menu dropdown-primary">
                 <li><a href="javascript:AddRepasse('<%=id%>', 1, 'F');">Fun&ccedil;&atilde;o ou repasse</a></li>
                 <li><a href="javascript:AddRepasse('<%=id%>', 1, 'M');">Material ou medicamento</a></li>
@@ -67,7 +67,7 @@ function linhaItem(id, ValorUnitario, Executado, DataExecucao, HoraExecucao, Hor
 
 
 
-	<td><button type="button" class="btn btn-danger" onClick="Remove(<%=id%>);"><i class="fa fa-remove"></i></button></td></tr>
+	<td><button type="button" class="btn btn-danger" onClick="Remove(<%=id%>);"><i class="far fa-remove"></i></button></td></tr>
 
 <%
 end function
@@ -137,7 +137,7 @@ end if
     <tfoot>
       <tr>
     	<td colspan="6"><%=Numera%> itens</td>
-        <td colspan="2"><%if c>1 then%><button type="button" class="btn btn-danger btn-block btn-xs" onClick="removeItem('Grupo', <%=ItemID%>); $('#modal-table').modal('hide');"><i class="fa fa-remove"></i> Remover Todos</button><%end if%></td>
+        <td colspan="2"><%if c>1 then%><button type="button" class="btn btn-danger btn-block btn-xs" onClick="removeItem('Grupo', <%=ItemID%>); $('#modal-table').modal('hide');"><i class="far fa-remove"></i> Remover Todos</button><%end if%></td>
       </tr>
     </tfoot>
 </table>

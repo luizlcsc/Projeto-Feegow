@@ -68,19 +68,19 @@ if not Horarios.eof then
                 if aut("horarios")=1 then
                     %>
                     <a class="btn btn-xs btn-block mtn" title="Grade" target="_blank" href="./?P=Profissionais&I=<%= ProfissionalID %>&Pers=1&Aba=Horarios">
-                        <span class="fa fa-cog"></span>
+                        <span class="far fa-cog"></span>
                     </a>
                     <%
                 end if
                 if ref("ObsAgenda")="1" then
                     %>
-                    <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="fa fa-info-circle"></i></a>
+                    <a type="button" class="btn btn-xs btn-block mtn ObsAgenda" href="javascript:oa(<%= ProfissionalID %>)"><i class="far fa-info-circle"></i></a>
                     <%
                 end if
                 if aut("|agendaI|")=1 then
                 %>
                     <a class="btn btn-default btn-xs" id="AbrirEncaixe" href="javascript:abreAgenda('00:00', '', '<%= Data %>', '', '<%= ProfissionalID %>', '', '<%= Horarios("id") %>');">
-                            <span class="fa fa-external-link"></span>
+                            <span class="far fa-external-link"></span>
                         </a>
 		        <%
                 end if
@@ -323,7 +323,7 @@ $( ".ocu<%=ProfissionalID%>" ).each(function(){
     if( $(this).attr("data-id")>='<%=HoraDe%>' && $(this).attr("data-id")<'<%=HoraA%>' )
     {
         var $slot = $(this).find(".slot-cor");
-        $slot.removeClass("btn-warning").addClass("btn-danger").append("&nbsp; <i class='fa fa-lock'></i>");
+        $slot.removeClass("btn-warning").addClass("btn-danger").append("&nbsp; <i class='far fa-lock'></i>");
     }
 });
 $( ".p<%=ProfissionalID%> .btn-comp" ).each(function(){
@@ -331,7 +331,7 @@ $( ".p<%=ProfissionalID%> .btn-comp" ).each(function(){
     {
         $(this).removeClass("btn-default");
         $(this).addClass("btn-danger");
-        $(this).html( $(this).html() + ' <i class="fa fa-lock"></i>' );
+        $(this).html( $(this).html() + ' <i class="far fa-lock"></i>' );
     }
 });
 <%

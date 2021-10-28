@@ -27,7 +27,7 @@ Ate=date()
 
                 <div class="col-md-3 pull-right">
                     <label>&nbsp;</label><br>
-                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-search"></i> Buscar</button>
+                    <button type="submit" class="btn btn-success btn-block"><i class="far fa-search"></i> Buscar</button>
                 </div>
             </div>
         </form>
@@ -36,7 +36,7 @@ Ate=date()
 
 <script type="text/javascript">
     $("#frmLog").submit(function () {
-        $("#logsResult").html("<i class='fa fa-cog fa-spin'></i> Carregando...");
+        $("#logsResult").html("<i class='far fa-cog fa-spin'></i> Carregando...");
         $.post("DefaultLog.asp", $(this).serialize(), function (data) {
             $("#logsResult").html(data);
         });
@@ -44,5 +44,5 @@ Ate=date()
     });
 
     $(".crumb-active a").html("Logs de Acessos");
-    $(".crumb-icon a span").attr("class", "fa fa-history");
+    $(".crumb-icon a span").attr("class", "far fa-history");
 </script>

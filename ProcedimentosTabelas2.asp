@@ -1,9 +1,15 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="Classes/StringFormat.asp"-->
 <% hasPermissaoTela("tabelasprecos") %>
+
 <script src="modulos/filterProcedimentos.js"></script>
 <script src="modulos/utilitarios.js"></script>
 <style>
+    .tr-disabled{
+        color: #9b9b9b;
+        cursor: not-allowed;
+    }
+
     .painel-header-flex{
         display:flex;
         justify-content: space-between;
@@ -21,12 +27,17 @@
     }
 </style>
 
+<form id="formExcel" method="POST">
+    <input type="hidden" name="html" id="htmlTable">
+</form>
+
 <%
 
 call insertRedir("procedimentostabelas", req("I"))
 set reg = db_execute("select * from procedimentostabelas where id="&req("I"))
 
 TabelaID = req("I")
+TipoTabela = req("TipoTabela")
 TabelasParticulares = reg("TabelasParticulares")
 Profissionais = reg("Profissionais")
 Especialidades = reg("Especialidades")
@@ -35,10 +46,45 @@ NomeTabela = reg("NomeTabela")
 exibirpreco = req("exibirpreco")
 Convenios = reg("Convenios")
 
+if TipoTabela="V" then
+    prefixoPermissao = "tabelasprecos"
+else
+    prefixoPermissao = "tabelasprecoscusto"
+end if
+
+tiposAutorizados = ""
+
+tiposAutorizados = ""
+
+if aut("|tabelasprecoscustoV|")=1 then
+    if tiposAutorizados<>"" then
+        tiposAutorizados = tiposAutorizados & ", 'C'"
+    else
+        tiposAutorizados = tiposAutorizados & "'C'"
+    end if
+end if
+
+if aut("|tabelasprecosV|")=1 then
+    if tiposAutorizados<>"" then
+        tiposAutorizados = tiposAutorizados & ", 'V'"
+    else
+        tiposAutorizados = tiposAutorizados & "'V'"
+    end if
+end if
+
+PermissaoParaEditar = aut(prefixoPermissao&"A")=1
+PermissaoParaInserir = aut(prefixoPermissao&"I")=1
+
+
+PermiteSolicitarAlteracao = not PermissaoParaEditar and ModoFranquia
+
 IF reg("sysActive") = "0" THEN
     db.execute("UPDATE procedimentostabelas SET Unidades = null WHERE id = "&reg("id"))
     Unidades = ""
 END IF
+
+TipoTabela = reg("Tipo")
+
 
 Tipo = "V"
 label = "Valor Venda"
@@ -101,24 +147,34 @@ IF  NOT bloquearValor.EOF THEN
 END IF
 
 'FIM DE CONDIÇÃO DE BLOQUEIO VALOR TABELA PARA UNIDADE - Airton 17-08-2020
+
+
+set SolicitacaoTabelaSQL = db_execute("SELECT s.*, count(sp.id) procedimentos  " &_
+" FROM solicitacao_tabela_preco s " &_
+" INNER JOIN solicitacao_tabela_preco_procedimentos sp ON sp.SolicitacaoID=s.id " &_
+" WHERE TabelaPrecoID="&TabelaID & " AND Status='PENDENTE' HAVING procedimentos > 0")
+
+
 %>
-<form id="frmPT">
-    <div class="panel mt20 mtn hidden-print">
+<form id="frmPT" class="mt20">
+    <%
+    if PermissaoParaEditar then
+    %>
+    <div class="panel  mtn hidden-print">
         <div class="panel-heading">
-            <span class="panel-title"><i class="fa fa-info-circle"></i> Filtros</span>
+            <span class="panel-title"><i class="far fa-info-circle"></i> Filtros</span>
             <span class="panel-controls">
-                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="fa fa-history"></i> </button>
-                <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
+                <button type="button" onclick="HistoricoAlteracoes()" class="btn btn-default btn-sm" title="Histórico de alterações"><i class="far fa-history"></i> </button>
             </span>
         </div>
         <div class="panel-body">
             <div class="row">
                 <%= quickfield("text", "NomeTabela", "Descrição", 3, reg("NomeTabela"), "", "", " required ") %>
-                <%= quickfield("simpleSelect", "Tipo", "Tipo", 2, reg("Tipo"), "select 'C' id, 'Custo' Tipo UNION ALL select 'V', 'Venda'", "Tipo", " no-select2 semVazio required onchange='showTabela()' ") %>
+                <%= quickfield("simpleSelect", "Tipo", "Tipo", 2, reg("Tipo"), "select * from (select 'C' id, 'Custo' Tipo UNION ALL select 'V', 'Venda')t where id in ("&tiposAutorizados&")", "Tipo", " no-select2 semVazio required onchange='showTabela()' ") %>
                 <%= quickfield("datepicker", "Inicio", "Vigência de", 2, reg("Inicio"), "", "", " required ") %>
                 <%= quickfield("datepicker", "Fim", "até", 2, reg("Fim"), "", "", " required ") %>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-default mt25" onclick="openSlide()">Parâmetros adicionais <i class="fa fa-chevron-down"> </i></button>
+                    <button type="button" class="btn btn-default mt25" onclick="openSlide()">Parâmetros adicionais <i class="far fa-chevron-down"> </i></button>
                 </div>
             </div>
             <div class="row mt15" id="filtros" style="display:none;<%=franquia("display:block")%>">
@@ -137,31 +193,45 @@ END IF
             
         </div>
     </div>
+    <%
+    end if
+    %>
+
     <div class="panel">
         <div class="panel-heading">
             <div class='painel-header-flex'>
-                <span class="panel-title"><i class="fa fa-list"></i> Procedimentos</span>
-                <!--<button class='btn btn-success text-right'><i class="fa fa-plus"></i></button>-->
+                <span class="panel-title"><i class="far fa-list"></i> Procedimentos</span>
+                <!--<button class='btn btn-success text-right'><i class="far fa-plus"></i></button>-->
+                <span class="panel-controls">
+                    <button id="seach-tipo" class="btn btn-default btn-sm" type="button" onclick="toogleBtns('seach-tipo')">
+                        <i class="far fa-search" aria-hidden="true"></i>
+                    </button>
+                    <%
+                    if PermissaoParaInserir then
+                    %>
+                    <button id="add-procedimento" class="btn btn-success btn-sm" type="button" onclick="toogleBtns('add-procedimento')">
+                        <i class="far fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <%
+                    end if
+                    %>
+
+                    <button class="btn btn-info btn-sm" name="Filtrate" onclick="print()" title="Imprimir" type="button"><i class="far fa-print bigger-110"></i></button>
+
+                    <button type="button" class="btn btn-sm btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
+                </span>
             </div>
         </div>
         <div class="panel-body">
-                <div class="pull-right" style="position: absolute; right: 25px; margin-right: 15px;z-index: 2">
-                    <a id="seach-tipo" class="btn btn-success btn-xs" href="javascript:void(0)" onclick="toogleBtns('seach-tipo')">
-                        <i class="fa fa-search" aria-hidden="true"></i>
-                    </a>
-                </div>
-                <div class="pull-right" style="position: absolute; right: 0%; margin-right: 15px;z-index: 2">
-                    <a id="add-procedimento" class="btn btn-success btn-xs" href="javascript:void(0)" onclick="toogleBtns('add-procedimento')">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                    </a>
-                </div>
+
                 <div id='actions'>
                     <div class="seach-tipo" style="display: none;">
                         <div class="row">
-                            <div class="col-md-9"></div>
+                            <div class="col-md-6"></div>
+                            <%=quickField("simpleSelect", "GrupoID", "Grupo", 3, "", "select * from procedimentosgrupos where sysActive=1 order by NomeGrupo", "NomeGrupo", "")%>
                             <div class="col-md-3">
                                 <label>Procurar</label>
-                                <input type="text" class="form-control " name="procurar" id="procurar" value="" placeholder="Filtre pelo nome">
+                                <input type="text" class="form-control " name="procurar" id="procurar" value="" placeholder="Filtre pelo nome...">
                             </div>
                             <!--<div id='nqfProcedimentos' class='col-md-3 ajaxFilter'></div>-->
                         </div>
@@ -175,7 +245,27 @@ END IF
                         <hr style="margin: 15px 0px"/>
                     </div>
                 </div>
+
             <%
+
+
+            if not SolicitacaoTabelaSQL.eof then
+            %>
+            <div class="alert alert-warning"><i class="far fa-exclamation-circle"></i> Existem solicitações em aberto para esta tabela de preço.</div>
+            <%
+            end if
+
+            if PermiteSolicitarAlteracao then
+                %>
+            <div class="row">
+                <div class="col-md-10"></div>
+                <div class="col-md-2">
+                    <button onclick="solicitarMudancas()" style="display: none;" class="btn-submit-solicitar-mudancas btn btn-sm btn-success " type="button"><i class="far fa-check-circle"></i> Solicitar mudanças</button>
+                </div>
+            </div>
+                <%
+            end if
+
             procedimentosIds="0"
 
             set ProcedimentosIdsSQL = db_execute("SELECT group_concat(idOrigem)ids FROM registros_importados_franquia WHERE tabela = 'procedimentos' AND unidade = "&session("UnidadeID"))
@@ -184,8 +274,11 @@ END IF
                 procedimentosIds=ProcedimentosIdsSQL("ids")
             end if
 
+            if procedimentosIds&""="" then
+                procedimentosIds = "0"
+            end if
 
-            sql  = "SELECT p.id, p.NomeProcedimento, p.Valor, ptv.Valor ValorTabela,p.TipoProcedimentoID,TipoProcedimento, ptv.RecebimentoParcial "&_
+            sql  = "SELECT p.PermiteAlteracaoDePrecoPelasUnidades, p.id, p.NomeProcedimento, p.Valor, ptv.Valor ValorTabela,p.TipoProcedimentoID,TipoProcedimento, ptv.RecebimentoParcial "&_
                    "FROM procedimentos p "&_
                    "LEFT JOIN TiposProcedimentos ON TiposProcedimentos.id = p.TipoProcedimentoID "&_
                    "LEFT JOIN procedimentostabelasvalores ptv on (ptv.ProcedimentoID=p.id and ptv.TabelaID="& TabelaID &") "&_
@@ -195,7 +288,8 @@ END IF
             set t = db_execute(sql)
 
             %>
-            <table class="table table-condensed table-hover mt25">
+            <div id="table-precos">
+            <table class="table table-condensed table-hover mt25" >
                 <thead>
                     <tr class="primary">
                         <th width="1%" class="hidden hidden-print"><input type="checkbox" onclick="$('.chk').prop('checked', $(this).prop('checked'))" /></th>
@@ -204,30 +298,73 @@ END IF
                         <th class="text-right">Valor Base</th>
                         <th class="text-right hidden">Recebimento Parcial</th>
                         <th class="text-right">Valor Tabela</th>
+                        <%
+                        if PermiteSolicitarAlteracao then
+                            %>
+                            <th class="text-right">Solicitação</th>
+                            <%
+                        end if
+                        %>
                     </tr>
                 </thead>
                 <tbody id='resultProcedimento'>
+
                 <%
+                    ProcedimentoBloqueadoParaUnidade = false
                     while not t.eof
                         response.Flush()
                         c = c+1
+
+                        PermiteAlteracao = True
+
+                        ValorBase = fn(t("Valor"))
+                        TitleTr = ""
+
+                        if t("PermiteAlteracaoDePrecoPelasUnidades")&""="" AND TipoTabela="V" and session("UnidadeID")<>0 and ModoFranquia then
+                            PermiteAlteracao = False
+                            ValorBase = ""
+                            ProcedimentoBloqueadoParaUnidade = True
+                            TitleTr = "Alteração de valor não permitida pela unidade"
+                        end if
 
                         ValorTabela = t("ValorTabela")
                         ValorTabela2 = ""
                         id2 = ""
                         %>
-                        <tr data-id="<%= (t("id")) %>" data-name="<%= UCASE(t("NomeProcedimento")&"") %>">
+                        <tr title="<%=TitleTr%>" data-toggle="tooltip" class="<% if not PermiteAlteracao then %>tr-disabled<% end if%> linha-procedimento" data-id="<%= (t("id")) %>" data-name="<%= UCASE(t("NomeProcedimento")&"") %>">
                             <td class="hidden hidden-print"><input type="checkbox" class="chk" name="chk<%= t("id") %>" /></td>
-                            <td><%= t("NomeProcedimento") %></td>
+                            <td><span class="linha-nome-procedimento"><%= t("NomeProcedimento") %></span></td>
                             <td class="text-right"><%= t("TipoProcedimento") %></td>
-                            <td class="text-right"  width="100"><%= fn(t("Valor")) %></td>
+                            <td class="text-right"  width="100"><%= ValorBase %></td>
                             <td class="text-right hidden" width="150"><%= quickfield("currency", "RecebimentoParcial_"& t("id"), "", 12, t("RecebimentoParcial"), "", "", " onchange=changeValorTabela(this,'"&t("id")&"','"&TabelaID&"','RecebimentoParcial') ") %></td>
                             <% if idOutraTabela <> 0 then %>
-                            <td class="text-right" width="150"><%= quickfield("currency", "ValorTabela"&idOutraTabela&"_"& id2, "", 12, ValorTabela2, "", "",  " onchange=changeValorTabela(this,'"&t("id")&"','"&idOutraTabela&"','Valor') ") %></td>
+                            <td class="text-right" width="150">
+                            <%= quickfield("currency", "ValorTabela"&idOutraTabela&"_"& id2, "", 12, ValorTabela2, "", "",  " onchange=changeValorTabela(this,'"&t("id")&"','"&idOutraTabela&"','Valor') ") %></td>
                             <% end if %>
                             <td class="text-right" width="150">
+                                <% if not PermissaoParaEditar then %>
+<input type="hidden" class="linha-valor-tabela" name="<%= "ValorTabela"& t("id") %>" value="<%=ValorTabela%>" />
+<i>R$ <%=fn(ValorTabela)%></i>
+                                <%elseif not PermiteAlteracao then%>
+<input type="hidden" class="linha-valor-tabela" name="<%= "ValorTabela"& t("id") %>" value="<%=ValorTabela%>" />
+<i>Padrão</i>
+                                <%else%>
                                 <%= quickfield("currency", "ValorTabela"& t("id"), "", 12, ValorTabela, "", "", " onchange=changeValorTabela(this,'"&t("id")&"','"&TabelaID&"','Valor') ") %>
+                                <%end if%>
                             </td>
+                            <%
+                            if PermiteSolicitarAlteracao then
+                                %>
+                                <td class="text-right">
+                                    <input style="display: none;" class="solicitar-alteracao-ipt text-right form-control input-sm" placeholder="Digite..." value="<%=fn(ValorTabela)%>"/>
+
+                                    <button onclick="proporValorProcedimento('<%= t("id") %>')" class="solicitar-alteracao-btn btn btn-xs btn-default" type="button" title="Solicitar alteração de valor">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                </td>
+                                <%
+                            end if
+                            %>
                         </tr>
                         <%
                         t.movenext
@@ -237,6 +374,7 @@ END IF
                     %>
                 </tbody>
             </table>
+            </div>
         </div>
     </div>
 
@@ -261,11 +399,11 @@ END IF
     $(".crumb-active a").html("Preços de Custo e Venda");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("edição de tabela de preço");
-    $(".crumb-icon a span").attr("class", "fa fa-table");
+    $(".crumb-icon a span").attr("class", "far fa-table");
     <%
-    if aut("tabelasprecosA")=1 then
+    if PermissaoParaEditar then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="fa fa-list"></i></a> <button onclick="$(\'#Salvar\').click()" class="btn btn-sm btn-primary"><i class="fa fa-save"></i> SALVAR</button>');
+    $("#rbtns").html('<a class="btn btn-sm btn-default" href="./?P=TabelasPreco&Pers=1"><i class="far fa-list"></i></a> <button onclick="$(\'#Salvar\').click()" class="btn btn-sm btn-primary"><i class="far fa-save"></i> SALVAR</button>');
     <%
         end if
     %>
@@ -356,31 +494,53 @@ END IF
 
     var valueInterval = null
 
+    const renderLoading = () => {
+        const loadingHtml = `<tr>
+                                <td colspan="6">
+                                    <center><i class="far fa-circle-o-notch fa-spin"></i> <span>Buscando...</span></center>
+                                </td>
+                            </tr>`;
+        $('#resultProcedimento').html(loadingHtml);
+
+    }
+
+    const doSearch = () => {
+
+        let valor = $('#procurar').val();
+        let grupoId = $("#GrupoID").val();
+        clearResults();
+        renderLoading();
+
+        let parametros = `nome=${valor}&grupoId=${grupoId}&tabelaId=<%=TabelaID%>&tipo=<%=Tipo%>`
+        if(valor.length >= 3){
+            let rows = $('#resultProcedimento > tr')
+            utilitarios.request('consulta/getProcedimentos',parametros,(data)=>{
+                data = JSON.parse(data)
+                clearResults();
+                populateResult(data)
+            })
+        }else if(valor.length === 0){
+            utilitarios.request('consulta/getProcedimentos',parametros,(data)=>{
+                data = JSON.parse(data)
+                clearResults();
+                populateResult(data)
+            })
+        }
+    }
+
     $('#procurar').keyup((event)=>{
-
         clearInterval(valueInterval);
-
         valueInterval = setTimeout(() => {
-            let valor = $(event.target).val()
-                    let parametros = `nome=${valor}&tabelaId=<%response.write(TabelaID)%>`
-                    if(valor.length >= 3){
-                        let rows = $('#resultProcedimento > tr')
-                        utilitarios.request('consulta/getProcedimentos',parametros,(data)=>{
-                            data = JSON.parse(data)
-                            clearResults()
-                            populateResult(data)
-                        })
-                    }else if(valor.length === 0){
-                        utilitarios.request('consulta/getProcedimentos',parametros,(data)=>{
-                            data = JSON.parse(data)
-                            clearResults()
-                            populateResult(data)
-                        })
-                    }
-        },500)
+            doSearch();
+        },500);
+    });
 
-
-    })
+    $('#GrupoID').change((event)=>{
+        clearInterval(valueInterval);
+        valueInterval = setTimeout(() => {
+            doSearch();
+        },500);
+    });
 
     function showTabela()
     {
@@ -457,7 +617,80 @@ END IF
         name        : 'procedimentos',
         result      : 'resultProcedimento',
         place       :   'Busque procedimento pelo nome',
-        tabelaId    : <%response.write(TabelaID)%>,
-        filterOn    : 3
-    },utilitarios)
+        tabelaId    : '<%=TabelaID%>',
+        tipo        : '<%=TipoTabela%>',
+        filterOn    : 3,
+        allowChange : '<% if PermissaoParaEditar then response.write(1) else response.write(0) end if %>',
+        allowRequestChange: '<% if PermiteSolicitarAlteracao then response.write(1) else response.write(0) end if %>',
+    },utilitarios);
+
+    linhasPropostaAlteracao = [];
+
+    function proporValorProcedimento(linhaId){
+        if(linhasPropostaAlteracao.indexOf(linhaId) === -1){
+            linhasPropostaAlteracao.push(linhaId);
+        }
+
+        $linha = $(".linha-procedimento[data-id="+linhaId+"]")
+
+        $(".btn-submit-solicitar-mudancas").fadeIn();
+
+        $linha.find(".solicitar-alteracao-btn").fadeOut(function(){
+            $linha.find(".solicitar-alteracao-ipt").fadeIn().maskMoney({prefix:'', thousands:'.', decimal:',', affixesStay: true}).focus();
+        });
+    }
+
+    function submitSolicitarMudancas(data){
+        parametros = data
+        motivo = $("#MotivoSolicitacaoTabela").val()
+
+        $.post("modulos/tabela_preco/SalvarSolicitarMudancaTabelaPreco.asp",{
+            alteracoes: data.alteracoes,
+            linhas: data.linhas,
+            motivo: motivo,
+            tabela_preco_id: "<%=req("I")%>"
+        }, function(data){
+            closeComponentsModal();
+            showMessageDialog("Solicitação salva com sucesso.", "success");
+
+            setTimeout(function(){
+                location.reload();
+            }, 500);
+        });
+
+    }
+
+    function getMudancasObj(){
+        return linhasPropostaAlteracao.map((item) => {
+            let $linha = $(".linha-procedimento[data-id="+item+"]");
+            nome = $linha.find(".linha-nome-procedimento").text();
+            valorAnterior = $linha.find(".linha-valor-tabela").val();
+            valorProposto = $linha.find(".solicitar-alteracao-ipt").val();
+
+            return {
+                "procedimento_id": item,
+                "nome": nome,
+                "valor_anterior": valorAnterior,
+                "valor_proposto": valorProposto
+            }
+        });
+    }
+
+    function solicitarMudancas(){
+
+        openComponentsModalPost("modulos/tabela_preco/SolicitarMudancaTabelaPreco.asp", {
+            linhas: linhasPropostaAlteracao,
+            alteracoes: getMudancasObj()
+        }, "Solicitar mudanças na tabela de preço", true, submitSolicitarMudancas);
+    }
+
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function downloadExcel(){
+        $("#htmlTable").val($("#table-precos").html());
+        $("#formExcel").attr("action", domain+"reports/download-excel?title=<%=NomeTabela%>&tk=" + localStorage.getItem("tk")).submit();
+    }
+
 </script>

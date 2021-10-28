@@ -25,7 +25,7 @@ while not equ.eof
                  <thead>
                     <tr>
                         <th colspan="3" style="min-width:200px" class="text-center warning">
-                            <i title="Configurações do Local" alt="Configurações do Local" style="cursor:pointer" onclick="location.href='?P=Equipamentos&I=<%=equ("id") %>&Pers=1&Aba=Horarios';" class="fa fa-cog red"></i>
+                            <i title="Configurações do Local" alt="Configurações do Local" style="cursor:pointer" onclick="location.href='?P=Equipamentos&I=<%=equ("id") %>&Pers=1&Aba=Horarios';" class="far fa-cog red"></i>
 							<%=left(ucase(equ("NomeEquipamento")),20)%>
                         </th>
                     </tr>

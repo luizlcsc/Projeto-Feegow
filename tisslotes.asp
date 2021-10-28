@@ -1,7 +1,7 @@
 ﻿<script type="text/javascript">
     $(".crumb-active a").html("Administrar Lotes");
-    $(".crumb-icon a span").attr("class", "fa fa-folder-open");
-    $("#rbtns").html("<button class='btn btn-primary btn-sm btn-block' onclick='OpenValidator()'><i class='fa fa-search'></i> Validar XML (Beta)</button>");
+    $(".crumb-icon a span").attr("class", "far fa-folder-open");
+    $("#rbtns").html("<button class='btn btn-primary btn-sm btn-block' onclick='OpenValidator()'><i class='far fa-search'></i> Validar XML (Beta)</button>");
 
     function OpenValidator() {
         openComponentsModal("validadorxml.asp",false, false,true);
@@ -26,6 +26,14 @@
             </select>
         </div>
         <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
+        <%
+            set DiasRecebimentoSQL = db.execute("select NULLIF(10,DiasRecebimento) DiasRecebimento from Convenios where id="&treatvalzero(req("ConvenioID")))
+            DiasRecebimento = 10
+            if not DiasRecebimentoSQL.eof then
+                DiasRecebimento = DiasRecebimentoSQL("DiasRecebimento")
+            end if
+        %>
+        <input type="hidden" id="DiasRecebimento" value="<%=DiasRecebimento%>">
         <div class="col-md-2">
             <label>Refer&ecirc;ncia</label><br />
             <select class="form-control" name="Mes">
@@ -54,7 +62,7 @@
         </div>
         <div class="col-md-2">
         	<label>&nbsp;</label><br />
-            <button class="btn btn-primary btn-block"><i class="fa fa-search"></i> Buscar</button>
+            <button class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
         </div>
     </div>
     </div>
@@ -237,29 +245,29 @@ if req("ConvenioID")<>"" then
             </td>
 
 
-            <td><a href="?P=CapaLote&PrintPage=1&LoteID=<%=lotes("id")%>&Pers=1" class="btn btn-info btn-sm"><i class="fa fa-print"></i></a></td>
+            <td><a href="?P=CapaLote&PrintPage=1&LoteID=<%=lotes("id")%>&Pers=1" class="btn btn-info btn-sm"><i class="far fa-print"></i></a></td>
             <td>
 
                 <div class="btn-group" style="display: flex;">
                     <% IF NOT ISNULL(objConvenio("Versao")) OR objConvenio("Versao")<>"" THEN %>
-                        <a target="_blank" href="<%=link%><%=convenioVersao%><%=fileName%>.asp?I=<%=lotes("id")%>" class="btn btn-sm btn-warning"><i class="fa fa-download"></i> <%=objConvenio("Versao")%></a>
+                        <a target="_blank" href="<%=link%><%=convenioVersao%><%=fileName%>.asp?I=<%=lotes("id")%>" class="btn btn-sm btn-warning"><i class="far fa-download"></i> <%=objConvenio("Versao")%></a>
                     <% END IF %>
-                    <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-down icon-only"></i></button>
+                    <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown"><i class="far fa-angle-down icon-only"></i></button>
                     <ul class="dropdown-menu dropdown-warning">
                         <li>
-                            <a href="<%=link%>_030500.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.05.00</a>
-                            <a href="<%=link%>_030401.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.04.01</a>
-                            <a href="<%=link%>_030400.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.04.00</a>
-                            <a href="<%=link%>_030303.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.03</a>
-                            <a href="<%=link%>_0302.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.02</a>
-                            <a href="<%=link%>_0301.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.01</a>
+                            <a href="<%=link%>_030500.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.05.00</a>
+                            <a href="<%=link%>_030401.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.04.01</a>
+                            <a href="<%=link%>_030400.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.04.00</a>
+                            <a href="<%=link%>_030303.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.03.03</a>
+                            <a href="<%=link%>_0302.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.03.02</a>
+                            <a href="<%=link%>_0301.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.03.01</a>
                             <%if link <> "LOTE_HONORARIOS" then %>
-                                <a href="<%=link%>_0300.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.03.00</a>
-                                <a href="<%=link%>_02.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.02.02</a>
-                                <a href="<%=link%>_01.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.02.01</a>
+                                <a href="<%=link%>_0300.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.03.00</a>
+                                <a href="<%=link%>_02.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.02.02</a>
+                                <a href="<%=link%>_01.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.02.01</a>
                             <%end if %>
-                            <a href="<%=link%>.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 3.02.00</a>
-                            <a href="<%=link%>_020201.asp?I=<%=lotes("id")%>" target="_blank"><i class="fa fa-download"></i> 2.02.01</a>
+                            <a href="<%=link%>.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 3.02.00</a>
+                            <a href="<%=link%>_020201.asp?I=<%=lotes("id")%>" target="_blank"><i class="far fa-download"></i> 2.02.01</a>
                         </li>
                     </ul>
                 </div>
@@ -271,7 +279,7 @@ if req("ConvenioID")<>"" then
             %>
               <button onclick="location.href='./?P=tissbuscaguias&Pers=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>&LoteID=<%=lotes("id")%>&NumeroGuia=&PacienteID=&searchPacienteID=&DataDe=&DataAte=';"
                       type="button" class="btn btn-success btn-sm">
-                <i class="fa fa-edit"></i>
+                <i class="far fa-edit"></i>
               </button>
               <% IF tissguiasinvoices("hasinvoice") = "0" THEN %>
               <button type="button" class="btn btn-success btn-sm" style="display: none" onclick="gerarConta('<%=nguias("guias")&""%>','<%=lotes("id")%>','<%=nguias("total")%>')">
@@ -353,7 +361,7 @@ function gerarConta(arg,lote,Nguias){
         `<div>
               <input type="radio" value="${item.id}" id="lote${item.id}" name="lotes_contas" /> <label for="lote${item.id}"> ${item.Descricao}</label>
          </div>`
-      ), "<i class=\"fa fa-plus\"></i> Selecione a conta", true, () =>{gerarContaInvoice()}, "lg")
+      ), "<i class=\"far fa-plus\"></i> Selecione a conta", true, () =>{gerarContaInvoice()}, "lg")
     });
 }
 function formatNumber(num,fix){
@@ -405,7 +413,7 @@ function fechalote(){
 	var checados = $("input.guia:checked").length;
 	if(checados==0){
 		$.gritter.add({
-			title: '<i class="fa fa-thumbs-down"></i> ERRO:',
+			title: '<i class="far fa-thumbs-down"></i> ERRO:',
 			text: 'Selecione as lotes para fechar o lote.',
 			class_name: 'gritter-error gritter-light'
 		});
@@ -440,6 +448,7 @@ $(".data-enviada").on('change', (arg) => {
 
     let data = $(arg.target).val();
     let tr = $(arg.target).parents("tr");
+    let diasRecebimento = parseInt($("#DiasRecebimento").val());
 
     let dias = parseInt(tr.attr("dias-para-recebimento"));
 
@@ -447,7 +456,8 @@ $(".data-enviada").on('change', (arg) => {
         return ;
     }
 
-    dataCalculada = moment(data, "DD/MM/YYYY").add(10, 'days').format('DD/MM/YYYY');
+    dataCalculada = moment(data, "DD/MM/YYYY").add(diasRecebimento, 'days').format('DD/MM/YYYY');
+
     tr.find(".data-previsao").val(dataCalculada);
     tr.find(".data-previsao").focus();
 
@@ -467,9 +477,4 @@ $(".data-enviada").on('change', (arg) => {
 $(".guia, #marca").click(function(){
 	$("#selecionadas").html( $("input.guia:checked").length );
 });
-$(document).ready(function() {
-  setTimeout(function() {
-    $("#toggle_sidemenu_l").click()
-  }, 500);
-})
 </script>

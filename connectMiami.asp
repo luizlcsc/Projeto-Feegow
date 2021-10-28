@@ -498,7 +498,7 @@ function selectInsertCA(label, name, value, associations, othersToSelect, others
 	<input type="hidden" name="<%=name%>" id="<%=name%>" value="<%=value%>" />
     <span class="input-icon input-icon-right width-100">
 		<input type="text" class="form-control" id="search<%=name%>" name="search<%=name%>" value="<%=textValue%>" autocomplete="off" <%= othersToInput %>>
-		<i class="fa fa-search"></i>
+		<i class="far fa-search"></i>
 	</span>
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#f3f3f3; width:400px; z-index:1000;">
     	buscando...
@@ -617,7 +617,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			%>
             <div class="input-group">
                 <span class="input-group-addon">
-                    <i class="fa fa-<%= icone %> bigger-110"></i>
+                    <i class="far fa-<%= icone %> bigger-110"></i>
                 </span>
                 <input type="text" placeholder="" value="<%=fieldValue%>" class="form-control<%=mask%> <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" maxlength="150"<%=additionalTags%> />
             </div>
@@ -775,7 +775,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <div class="input-group">
             <input id="<%= fieldName %>" class="form-control date-picker <%=sqlOrClass%>" type="text" value="<%= fieldValue %>" name="<%= fieldName %>" data-date-format="dd/mm/yyyy"<%=additionalTags%>>
             <span class="input-group-addon<%if instr(sqlOrClass, "input-sm")>0 then%> input-sm<%end if%>">
-            <i class="fa fa-calendar bigger-110"></i>
+            <i class="far fa-calendar bigger-110"></i>
             </span>
             </div>
 			<%
@@ -785,7 +785,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <div class="input-group bootstrap-timepicker">
                 <input id="<%=fieldName%>" name="<%=fieldName%>" value="<%=fieldValue%>" type="text" class="form-control" />
                 <span class="input-group-addon">
-                    <i class="fa fa-clock-o bigger-110"></i>
+                    <i class="far fa-clock-o bigger-110"></i>
                 </span>
             </div>
             <script language="javascript">
@@ -1008,7 +1008,7 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
 	<input type="hidden" name="<%=name%>" id="<%=name%>" value="<%=value%>" />
     <span class="input-icon input-icon-right width-100">
 		<input type="text" class="form-control" id="search<%=name%>" name="search<%=name%>" value="<%=textValue%>" autocomplete="off" <%= othersToInput %>>
-		<i class="fa fa-search"></i>
+		<i class="far fa-search"></i>
 	</span>
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#f3f3f3; width:400px; z-index:1000;">
     	buscando...
@@ -1057,7 +1057,7 @@ function selectList(label, name, value, resource, showColumn, othersToSelect, ot
 	%><%if label<>"" then%><label><%=label%></label><br /><%end if%>
     <span class="input-icon input-icon-right width-100">
 		<input type="text" class="form-control" id="<%=name%>" name="<%=name%>" value="<%=value%>" autocomplete="off" <%= othersToInput %>>
-		<i class="fa fa-search"></i>
+		<i class="far fa-search"></i>
 	</span>
 	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#f3f3f3; width:400px; z-index:1000;">
     	buscando...
@@ -1145,7 +1145,7 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
 		$("#<%=btnSaveID%>").attr('disabled', 'disabled');
         $.post("save.asp", $("#<%=FormID%>").serialize())
         .done(function(data) {
-          $("#<%=btnSaveID%>").html('<i class="fa fa-save"></i> Salvar');
+          $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
 		  $("#<%=btnSaveID%>").removeAttr('disabled');
           eval(data);
           <%=AcaoSeguinte%>

@@ -24,7 +24,7 @@ end function
     $(".crumb-active a").html("Área do Cliente");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Estamos aqui para lhe ajudar");
-    $(".crumb-icon a span").attr("class", "fa fa-question-circle");
+    $(".crumb-icon a span").attr("class", "far fa-question-circle");
 </script>
 
 <div class="row mt30">
@@ -41,7 +41,7 @@ end function
     <div class="panel-body" id="avaliacao-sucesso" style="display: none">
         <br>
         <div class="alert alert-default">
-            <strong><i class="fa fa-check"></i> Avaliação registrada com sucesso!</strong> <br> Agradecemos sua avaliação. Sua opinião é muito importante para nós :)
+            <strong><i class="far fa-check"></i> Avaliação registrada com sucesso!</strong> <br> Agradecemos sua avaliação. Sua opinião é muito importante para nós :)
         </div>
     </div>
     <div class="panel-body " id="avaliacao-preencher">
@@ -97,7 +97,7 @@ end function
             <div class="col-md-3">
                 <div class="col-md-12">
                     <button type="button" onclick="SubmitAvaliacao()" class="btn btn-block btn-success">
-                        <i class="fa fa-save"></i> Salvar avaliação
+                        <i class="far fa-save"></i> Salvar avaliação
                     </button>
                 </div>
             </div>
@@ -125,14 +125,14 @@ end if
                   <h2 class="fw200 mb20 mt10">Precisa de suporte? Estamos aqui para lhe ajudar.</h2>
                   <div class="input-group input-hero mb30 hidden">
                     <span class="input-group-addon">
-                      <i class="fa fa-search"></i>
+                      <i class="far fa-search"></i>
                     </span>
                     <input type="text" id="icon-filter" class="form-control" placeholder="Procurar...">
                   </div>
                 </div>
                 <div class="table-layout bg-light">
                   <div class="col-xs-3 text-center va-m">
-                    <span class="fa fa-slideshare fs80 text-warning-light"></span>
+                    <span class="far fa-slideshare fs80 text-warning-light"></span>
                   </div>
                   <div class="col-xs-9 br-l">
                     <h5 class="text-muted pl5 mt20 mb20"> Videoaulas </h5>
@@ -147,7 +147,7 @@ end if
                     %>
                      <li>
                         <a target="_blank" class="link-unstyled" href="https://www.youtube.com/watch?v=<%=VideoAulaSQL("URL")%>" title="<%=VideoAulaSQL("Informacoes")%>">
-                          <i class="fa fa-film text-primary fa-lg pr10"></i> <%=VideoAulaSQL("Informacoes")%></a>
+                          <i class="far fa-film text-primary fa-lg pr10"></i> <%=VideoAulaSQL("Informacoes")%></a>
                       </li>
                     <%
                     VideoAulaSQL.movenext
@@ -172,7 +172,7 @@ end if
                       <div class="panel">
                         <div class="panel-heading">
                           <a class="accordion-toggle accordion-icon link-unstyled collapsed" data-toggle="collapse" data-parent="#accordion1" href="#<%=idTopico%>">
-                            <i class="fa fa-plus"></i> <%=RespostasSQL("DescricaoPergunta")%>
+                            <i class="far fa-plus"></i> <%=RespostasSQL("DescricaoPergunta")%>
                             <span class="label hidden label-muted label-sm ph15 mt15 mr5 pull-right">189</span>
                           </a>
                         </div>
@@ -208,7 +208,7 @@ end if
                     %>
                       <li>
                         <span class="link-unstyled" href="#" title="">
-                          <i class="fa fa-exclamation-circle text-info fa-lg pr10"></i>
+                          <i class="far fa-exclamation-circle text-info fa-lg pr10"></i>
                           <%=NovidadesSQL("Titulo")%></span>
                       </li>
                   <%
@@ -236,7 +236,7 @@ end if
                        %>
                          <li>
                            <span class="link-unstyled" href="#" title="">
-                             <i class="fa fa-bug text-info fa-lg pr10"></i>
+                             <i class="far fa-bug text-info fa-lg pr10"></i>
                              <%=NovidadesSQL("Titulo")%></span>
                          </li>
                      <%
@@ -259,14 +259,14 @@ end if
             if aut("chamadossistemaI")=1 and session("ExibeChatAtendimento")=True then
             %>
             <div class="mb15">
-              <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="fa fa-plus"></i> Abrir Chamado</button>
+              <button onclick="javascript:window.fcWidget.open();window.fcWidget.show();" type="button" class="btn btn-primary btn-block pv10 fw600 mb10"><i class="far fa-plus"></i> Abrir Chamado</button>
             </div>
             <%
             end if
 
             %>
             <div class="mb15">
-              <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="fa fa-headphones"></i> Entre em contato</button>
+              <button data-toggle="modal" data-target="#modal-horarios-atendimentos" type="button" class="btn btn-info btn-block pv10 fw600"><i class="far fa-headphones"></i> Entre em contato</button>
             </div>
 
 <%
@@ -276,7 +276,7 @@ end if
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">
-                  <i class="fa fa-barcode"></i>
+                  <i class="far fa-barcode"></i>
                 </span>
                 <span class="panel-title"> Minhas Faturas</span>
 
@@ -284,7 +284,7 @@ end if
                     <a class="panel-control-collapse hidden" href="#"></a>
 
                    <div >
-                       <a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-default btn-xs "><i class="fa fa-envelope"></i> Extrato de SMS</a>
+                       <a href="./?P=ClExtratoSMS&Pers=1" class="btn btn-default btn-xs "><i class="far fa-envelope"></i> Extrato de SMS</a>
                    </div>
 
                 </span>
@@ -343,9 +343,9 @@ end if
                     %>
                                 <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
                                   <div class="mb10 " style="float: right;">
-                                          <a target="_blank" <% if boletoURL="#" then %> disabled <%end if %> href="<%=boletoURL%>"  class="btn-block btn btn-default btn-xs <% if msg="QUITADA" then %> hidden <% end if %>"><i class="fa fa-barcode"></i> Imprimir boleto</a>
+                                          <a target="_blank" <% if boletoURL="#" then %> disabled <%end if %> href="<%=boletoURL%>"  class="btn-block btn btn-default btn-xs <% if msg="QUITADA" then %> hidden <% end if %>"><i class="far fa-barcode"></i> Imprimir boleto</a>
                                           <a class="btn-block btn btn-primary btn-xs mt5" href="<%=api.getApiEndpoint("billing/detailing/by-invoice","ClientID="&ClienteID&"&InvoiceID="&id&"&licenca="&licencaId)%>"
-                                          target="_blank" ><i class="fa fa-info-circle"></i> Ver detalhamento</a>
+                                          target="_blank" ><i class="far fa-info-circle"></i> Ver detalhamento</a>
                                     </div>
                                    <li>Valor:
                                      <strong class="text-dark"> R$ <%=fn(Valor)%></strong>
@@ -397,7 +397,7 @@ end if
             <div class="panel mb10 hidden">
               <div class="panel-heading">
                 <span class="panel-icon">
-                  <i class="fa fa-life-ring"></i>
+                  <i class="far fa-life-ring"></i>
                 </span>
                 <span class="panel-title"> Seus últimos chamados</span>
               </div>
@@ -433,7 +433,7 @@ end if
                                     <code>#<%=id%></code>
 
                                     <div style="float: right;">
-                                        <a href="?P=tarefas&I=<%=id%>&Pers=1&Helpdesk=1" class="btn btn-link btn-xs"><i class="fa fa-external-link"></i> Ver mais</a>
+                                        <a href="?P=tarefas&I=<%=id%>&Pers=1&Helpdesk=1" class="btn btn-link btn-xs"><i class="far fa-external-link"></i> Ver mais</a>
                                     </div>
                                  </ul>
                       <%
@@ -468,21 +468,21 @@ end if
             <div class="panel mb10">
               <div class="panel-heading">
                 <span class="panel-icon">
-                  <i class="fa fa-life-ring"></i>
+                  <i class="far fa-life-ring"></i>
                 </span>
                 <span class="panel-title"> Recursos</span>
               </div>
 
               <div class="list-group fs14 fw600">
                 <a class="list-group-item" href="mailto:sucesso@feegow.com.br">
-                  &nbsp;<i class="fa fa-envelope-o fa-fw text-primary"></i>&nbsp;&nbsp; Envie um e-mail</a>
+                  &nbsp;<i class="far fa-envelope fa-fw text-primary"></i>&nbsp;&nbsp; Envie um e-mail</a>
                 <a data-toggle="modal" data-target="#modal-horarios-atendimentos" class="list-group-item" href="#">
-                  &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Ligue para nós</a>
+                  &nbsp;<i class="far fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Ligue para nós</a>
 
                   <a  class="list-group-item" href="https://www.youtube.com/channel/UChS9aIWBsx3Nvpgws0D0Txg/videos">
-                  &nbsp;<i class="fa fa-film fa-fw text-primary"></i>&nbsp;&nbsp; Vídeos explicativos</a>
+                  &nbsp;<i class="far fa-film fa-fw text-primary"></i>&nbsp;&nbsp; Vídeos explicativos</a>
                 <a class="list-group-item hidden" href="#">
-                  &nbsp;<i class="fa fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Solicite uma ligação</a>
+                  &nbsp;<i class="far fa-phone fa-fw text-primary"></i>&nbsp;&nbsp; Solicite uma ligação</a>
               </div>
             </div>
 

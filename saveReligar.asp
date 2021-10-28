@@ -4,7 +4,7 @@
     db_execute("insert into chamadasrecontatar (Contato, Data, Hora, sysUser, ChamadaOrigemID) values ('"&req("ContatoID")&"', "&mydatenull(ref("DataReligar"))&", '"&ref("HoraReligar")&"', "&session("User")&", "&ref("CallID")&")")
 %>
 new PNotify({
-    title: '<i class="fa fa-save"></i> Recontato Salvo',
+    title: '<i class="far fa-save"></i> Recontato Salvo',
     text: 'Para dia <%=ref("DataReligar") %> às <%=ref("HoraReligar") %>',
     type: 'success'
 });

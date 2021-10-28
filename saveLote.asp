@@ -118,7 +118,7 @@ if Acao="Inserir" then
 	if erro<>"" then
 		%>
         $.gritter.add({
-            title: '<i class="fa fa-thumbs-down"></i> ERRO:',
+            title: '<i class="far fa-thumbs-down"></i> ERRO:',
             text: '<%=erro%>',
             class_name: 'gritter-error gritter-light'
         });
@@ -175,7 +175,7 @@ elseif Acao="Update" then
     db_execute("update tisslotes set Protocolo='"&Protocolo&"', NumeroNFSe='"&NumeroNFSe&"', Enviado="&Enviado&" , DataEnvio="&DataEnvio&", DataPrevisao="&DataPrevisao&", DataPrevisaoOriginal="&DataPrevisaoOriginal&" where id="&LoteID)
     %>
            $.gritter.add({
-            title: '<i class="fa fa-save"></i> Informações salvas com sucesso!',
+            title: '<i class="far fa-save"></i> Informações salvas com sucesso!',
             text: '',
             class_name: 'gritter-success gritter-light'
         });

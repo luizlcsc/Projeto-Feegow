@@ -64,7 +64,7 @@ sqlUsuarios = " SELECT                                                          
 <script src="assets/js/estrela.js" type="text/javascript"></script>
 <script>
 $(".crumb-active a").html("Sistema de Mensagem");
-$(".crumb-icon a span").attr("class", "fa fa-comments");
+$(".crumb-icon a span").attr("class", "far fa-comments");
 </script>
 <br/>
 <form id="frm" method="post">
@@ -77,7 +77,7 @@ $(".crumb-icon a span").attr("class", "fa fa-comments");
                         <label>Título</label><br>
                         <div class="input-group">
                             <span for="firstname" class="input-group-addon">
-                                <i class="fa fa-search"></i>
+                                <i class="far fa-search"></i>
                             </span>
                             <input type="hidden" name="ID" value="<%=ID%>" >
                             <input type="text" class="form-control" id="Titulo" name="Titulo" value="<%=Titulo%>" autocomplete="off" required="">
@@ -103,7 +103,7 @@ $(".crumb-icon a span").attr("class", "fa fa-comments");
         <div class="panel">
             <div class="panel-heading">
                 <span class="panel-controls">
-                    <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="fa fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
+                    <button class="btn btn-sm btn-primary" id="save">&nbsp;&nbsp;<i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button>
                 </span>
             </div>
             <div class="panel-body">

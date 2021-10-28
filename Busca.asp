@@ -7,7 +7,7 @@ q = req("q")
         $(".crumb-active a").html("Resultados da Busca");
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").html("termo buscado: <em><%=q%></em>");
-        $(".crumb-icon").html("<i class='fa fa-search'></i>");
+        $(".crumb-icon").html("<i class='far fa-search'></i>");
         $("#sidebar-search").val("<%=q%>");
 </script>
 <%
@@ -53,11 +53,56 @@ if trim(q)="" then
 elseif len(trim(q))<2 then
 	erro = "Sua busca deve conter no m&iacute;nimo dois caracteres."
 else
-	q = replace(replace(q, "'", ""), " ", "%")
-    if isdate(q) then
-        sqlNasc = " OR Nascimento="& mydatenull(q) &" "
-    end if
-	set contaPac = db.execute("select count(*) as Pacientes from pacientes where (NomePaciente) like '%"&q&"%' or (NomeSocial) like '"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0)" & sqlNasc)
+q = trim(q)
+q = replace(replace(q, "'", ""), " ", "%")
+
+isstr = True
+
+if isdate(q) then
+	sqlNasc = " OR Nascimento="& mydatenull(q) &" "
+	isstr = False
+end if
+
+if isnumeric(q) then
+	sqlBuscaCpf = " or CPF = '"&q&"'"
+	sqlBuscaCelular = " or (Cel1 = '"&q&"' or Tel1 = '"&q&"')"
+	sqlBuscaId = " or id = '"&q&"'"
+	isstr = False
+end if
+
+	if PorteClinica > 3 and len(q)<MinimoCaracteresBuscaPaciente and TypeName(q)="String" then
+		set contaPac = db_execute("select -1 as Pacientes")
+
+	else
+		IF PorteClinica > 3 THEN
+			q = trim(request.QueryString("q"))
+			q = replace(replace(q, "'", ""), " ", "%")
+
+			q = replace(UCASE(q),UCASE("José%"),"José ")
+			q = replace(UCASE(q),UCASE("Jose%"),"Jose ")
+			q = replace(UCASE(q),UCASE("João%"),"João ")
+			q = replace(UCASE(q),UCASE("Joao%"),"Joao ")
+			q = replace(UCASE(q),UCASE("Maria%"),"Maria ")
+			q = replace(UCASE(q),UCASE("María%"),"María ")
+			q = replace(UCASE(q),UCASE("Mari%"),"Mari ")
+			q = replace(UCASE(q),UCASE("Ana%"),"Ana ")
+			q = replace(UCASE(q),UCASE("%Das%"),"%Das ")
+			q = replace(UCASE(q),UCASE("%De%"),"%De ")
+			q = replace(UCASE(q),UCASE("Antonio%"),"Antonio ")
+			q = replace(UCASE(q),UCASE("Antônio%"),"Antônio ")
+			q = replace(UCASE(q),UCASE("Francisco%"),"Francisco ")
+			q = replace(UCASE(q),UCASE("Silva%"),"Silva ")
+
+			if isstr then
+				sqlBuscaNome = " OR NomePaciente like '%"&q&"%' or NomeSocial like '"&q&"%'"
+			end if
+
+			set contaPac = db_execute("select count(*) as Pacientes from pacientes where sysActive=1 AND (FALSE "&sqlBuscaNome&" "& sqlBuscaCelular &sqlBuscaCPF&sqlBuscaID & sqlNasc &")")
+		ELSE
+			set contaPac = db_execute("select count(*) as Pacientes from pacientes where TRIM(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0)" & sqlNasc)
+		END IF
+	end if
+
 	set contaPro = db.execute("select count(*) as Profissionais from profissionais where NomeProfissional like '%"&q&"%'"& sqlNasc)
 	set contaFun = db.execute("select count(*) as Funcionarios from funcionarios where NomeFuncionario like '%"&q&"%'"& sqlNasc)
 	set contaFor = db.execute("select count(*) as Fornecedores from fornecedores where sysActive=1 and NomeFornecedor like '%"&q&"%' or replace(replace(replace(CPF,'.',''),'-',''),'/','') like replace(replace(replace('"&q&"%','.',''),'-',''),'/','') ")
@@ -91,7 +136,7 @@ else
 					end if
 					%>
                 <script type="text/javascript">
-                    $(".sidebar-label").after("<li<%=classActive%>><a data-toggle='tab' class='tab' id='tabExtrato' href='#divHistorico' onclick=\"ajxContent('<%=spl2(2)%>', '', 'Follow', 'divContent')\"><span class='fa fa-<%=spl2(3)%>'></span><span class='sidebar-title'><%=spl2(0)%></span><span class='sidebar-title-tray'><span class='label label-xs bg-primary'><%= spl2(1) %></span></span></a></li>");
+                    $(".sidebar-label").after("<li<%=classActive%>><a data-toggle='tab' class='tab' id='tabExtrato' href='#divHistorico' onclick=\"ajxContent('<%=spl2(2)%>', '', 'Follow', 'divContent')\"><span class='far fa-<%=spl2(3)%>'></span><span class='sidebar-title'><%=spl2(0)%></span><span class='sidebar-title-tray'><span class='label label-xs bg-primary'><%= spl2(1) %></span></span></a></li>");
                     </script>
 					<%
 				end if
@@ -100,7 +145,11 @@ else
 	
 			<div class="tab-content">
 				<div id="divContent" class="tab-pane active">
-					Carregando...
+					<div class="panel mt40">
+					    <div class="panel-body">
+                            <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                         </div>
+                    </div>
 				</div>
 
 			</div>
@@ -125,7 +174,7 @@ end if
 if erro<>"" then
 %>
 <br>
-<div class="alert alert-warning"><strong><i class="fa fa-remove"></i> </strong> <strong><%=erro%></strong><br></div>
+<div class="alert alert-warning"><strong><i class="far fa-remove"></i> </strong> <strong><%=erro%></strong><br></div>
 <%
 else
 %>

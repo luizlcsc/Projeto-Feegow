@@ -3,11 +3,11 @@
     $(".crumb-active a").html("Propostas");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("gerenciar propostas e orçamentos");
-    $(".crumb-icon a span").attr("class", "fa fa-files-o");
+    $(".crumb-icon a span").attr("class", "far fa-files-o");
     <%
     if aut("propostasI")=1 then
     %>
-    $("#rbtns").html('<a class="btn btn-sm btn-success" href="?P=PacientesPropostas&PropostaID=N&Pers=1"><i class="fa fa-plus"></i> INSERIR</a>');
+    $("#rbtns").html('<a class="btn btn-sm btn-success" href="?P=PacientesPropostas&PropostaID=N&Pers=1"><i class="far fa-plus"></i> INSERIR</a>');
     <%
     end if
     %>
@@ -16,19 +16,20 @@
 <form id="frmProposta">
 <br />
     <div class="panel mn">
+        <div class="panel-heading">
+            <span class="panel-title">Buscar propostas</span>
+            <span class="panel-controls">
+                <button  class="btn btn-primary"><i class="far fa-search"></i> Buscar</button>
+            </span>
+        </div>
         <div class="panel-body">
         <div class="row">
-            <%=quickfield("datepicker", "De", "De", 2, dateadd("m", -1, date()), "", "", "") %>
+            <%=quickfield("datepicker", "De", "De", 2, dateadd("d", -7, date()), "", "", "") %>
             <%=quickfield("datepicker", "Ate", "Até", 2, date(), "", "", "") %>
-            <%=quickfield("multiple", "Procedimentos", "Filtrar Procedimentos", 3, "", "select p.id, p.NomeProcedimento from procedimentos p WHERE Ativo='ON' AND sysActive=1 ORDER BY p.NomeProcedimento LIMIT 1000", "NomeProcedimento", "") %>
-            <%=quickfield("multiple", "Unidades", "Filtrar Unidades", 3 , "|"&session("UnidadeID")&"|", "SELECT 0 as id,NomeEmpresa as NomeFantasia  FROM empresa UNION SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "") %>
+            <%'=quickfield("multiple", "Procedimentos", "Filtrar Procedimentos", 2, "", "select p.id, p.NomeProcedimento from procedimentos p WHERE Ativo='ON' AND sysActive=1 ORDER BY p.NomeProcedimento LIMIT 1000", "NomeProcedimento", "") %>
+            <%=quickfield("multiple", "Unidades", "Filtrar Unidades", 2 , "|"&session("UnidadeID")&"|", "SELECT 0 as id,NomeEmpresa as NomeFantasia  FROM empresa UNION SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive = 1", "NomeFantasia", "") %>
             <%=quickfield("users", "EmitidaPor", "Emitida por", 2, "", "", "", "") %>
-        </div>
-        <div class="row mt10">
-            <%=quickfield("multiple", "Status", "Status", 3, "|1|", "select id, NomeStatus from propostasstatus", "NomeStatus", " required ") %>
-            <div class="col-md-2 col-md-offset-7 mt20">
-                <button class="btn btn-block btn-primary"><i class="fa fa-search"></i> Buscar</button>
-            </div>
+            <%=quickfield("multiple", "Status", "Status", 2, "|1|", "select id, NomeStatus from propostasstatus", "NomeStatus", " required ") %>
         </div>
     </div>
         </div>
@@ -40,7 +41,7 @@
 <script type="text/javascript">
     $("#frmProposta").submit(function () {
         d = $("#resPropostas");
-        d.html('<center><i class="fa fa-circle-o-notch fa-spin"></i> Buscando...</center>')
+        d.html('<center><i class="far fa-circle-o-notch fa-spin"></i> Buscando...</center>')
        $.post("listaPropostas.asp", $(this).serialize(), function (data) {
             d.html(data);
         });
@@ -63,7 +64,7 @@
             "warning", "Instalar o WhatsApp", 60 * 1000);
         }
         var url = "whatsapp://send?phone="+Celular+"&text="+Texto;
-        $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+        $("#wpp-"+id).html("<i class='success far fa-check-circle'></i>");
         openTab(url);
     }
 </script>

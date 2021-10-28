@@ -30,6 +30,9 @@ table tbody tr td input {
     top: -4px;
     height: 27px;
     color: #fff;
+    border-radius: 6px;
+    color: #fff;
+    background-color: #8f8f8f;
 }
 .tbl {
     width:100%;
@@ -46,8 +49,16 @@ session("FP"&FTipo) = FormID
 
 buiFormID = FormID
 
-if getConfig("GerarNovoFormulario")=1 then
-    'config para DUPLICAR o form inves de editar
+FormInativo = false
+if FormID <> "N" then
+    set getFormPreenchido = db.execute("SELECT sysActive FROM buiformspreenchidos WHERE sysActive = -1 AND id = "&FormID)
+    if not getFormPreenchido.eof then
+		FormInativo = true
+    end if
+end if
+
+'Duplica o formulário se o atual for Inativo ou se a configuração para "Gerar novo formulário ao editar" estiver habilitada
+if getConfig("GerarNovoFormulario")=1 or FormInativo = true then
     buiFormID="N"
 end if
 %>
@@ -118,7 +129,7 @@ if FormID<>"N" then
 		end if
 		%>
         <script type="text/javascript">
-            $("#nomeProfissionalPreen").html("<i class='fa fa-user-md'></i> <%=NomeProfissional & DataHora%>")
+            $("#nomeProfissionalPreen").html("<i class='far fa-user-md'></i> <%=NomeProfissional & DataHora%>")
         </script>
 		<%
 	end if
@@ -258,12 +269,16 @@ var gridster0 = null;
 var gridster1 = null;
 
   $(function(){
+      <%
+      if device()="" then
+      %>
 	gridster0 = $("#demo-0 > ul").gridster({
 		namespace: '#demo-0',
 		widget_base_dimensions: [50, 25],
 		widget_margins: [4, 4]
 	}).data('gridster').disable();
 	<%
+	    end if
 	splGrupos = split(strGrupos, "|")
 	for ig=1 to ubound(splGrupos)
 	%>
@@ -284,9 +299,18 @@ var gridster1 = null;
 	next
 	%>
   });
-
+<%
+if device()="" then
+%>
 $("#demo-0 ul").css("left", "50%");
 $("#demo-0 ul").css("margin-left", "-406px");
+<%
+else
+%>
+$("#demo-0 ul").css("padding-left", "0");
+<%
+end if
+%>
 
 <%=ckrender%>
 if(typeof idsCk !== "undefined"){
@@ -316,24 +340,6 @@ function editCurva(CampoID){
 		$("#modal").html(data);
 	});
 }
-
-
-    /*
-    usados abaixo para quando formscompiladorcampopreenchidotextareaativadesativa
-
-$(document).ready(function () {
-	CKEDITOR.on('instanceReady', function (ev) {
-		document.getElementById(ev.editor.id + '_top').style.display = 'none';
-		ev.editor.on('focus', function (e) {
-			document.getElementById(ev.editor.id + '_top').style.display = 'block';
-		});
-		ev.editor.on('blur', function (e) {
-			document.getElementById(ev.editor.id + '_top').style.display = 'none';
-		});
-	});
-});
-*/
-
     <%
     on error resume next
 

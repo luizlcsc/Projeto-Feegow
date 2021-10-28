@@ -61,17 +61,17 @@ set exe=nothing
 if emExec=1 then
     %>
     <textarea class="form-control" id="TextoExecucao"  placeholder="Descrição da execução"><%= TextoTextarea %></textarea>
-    <button title="Parar execução" onclick="executarTarefa('STOP')" class="btn btn-danger btn-gradient btn-block" type="button"><i class="fa fa-stop"></i> Parar execução</button>
+    <button title="Parar execução" onclick="executarTarefa('STOP')" class="btn btn-danger btn-gradient btn-block" type="button"><i class="far fa-stop"></i> Parar execução</button>
     <%
 else
     if bloqueado = 0 then
     %>
-    <button title="Executar tarefa" onclick="executarTarefa('GO')" class="btn btn-system btn-gradient btn-block" type="button"><i class="fa fa-play"></i> Executar tarefa</button>
+    <button title="Executar tarefa" onclick="executarTarefa('GO')" class="btn btn-system btn-gradient btn-block" type="button"><i class="far fa-play"></i> Executar tarefa</button>
     <%
     else
     %>
     <a class="btn-link" target="_blank" href="./?P=Tarefas&I=<%=idExecutando%>&Pers=1"><p class="text-center text-info">Você já possui uma tarefa em execução. Clique aqui para ir até ela.</p></a>
-    <button title="Executar tarefa" disabled onclick="executarTarefa('GO')" class="btn btn-system btn-gradient btn-block" type="button"><i class="fa fa-play"></i> Executar tarefa</button>
+    <button title="Executar tarefa" disabled onclick="executarTarefa('GO')" class="btn btn-system btn-gradient btn-block" type="button"><i class="far fa-play"></i> Executar tarefa</button>
     <%
     end if
 end if

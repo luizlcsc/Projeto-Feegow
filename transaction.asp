@@ -54,7 +54,19 @@ if req("Save")="Save" then
 	splCreditAccount = split(creditAccount, "_")
 	splDebitAccount = split(debitAccount, "_")
 
-    if paymentMethodID&"" = "1" then 
+    ' ######################### BLOQUEIO FINANCEIRO ########################################
+    UnidadeID=session("UnidadeID")
+    contabloqueadacred = verificaBloqueioConta(1, 1, creditAccount, UnidadeID,myDate(ref("TransactionDate")))
+    contabloqueadadebt = verificaBloqueioConta(1, 1, debitAccount, UnidadeID,myDate(ref("TransactionDate")))
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        %>
+        showMessageDialog("Esta conta está BLOQUEADA e não pode ser alterada!");
+        <%
+        response.end
+    end if
+    ' #####################################################################################
+
+    if paymentMethodID&"" = "1" then
         'Se a transferencia for em dinheiro, validar se o valor transferido é permitido
         'SELECT Value FROM sys_financialmovement WHERE TYPE = 'Pay' AND CaixaID = 18 AND PaymentMethodID = 1
         sqlTotalEmCaixa = "SELECT " &_
@@ -338,12 +350,12 @@ end if
         </div>
       </div>
 	<div class="modal-footer no-margin-top">
-		<button class="btn btn-sm btn-success pull-right" data-dismiss="modal">
-			<i class="fa fa-remove"></i>
+		<button class="btn btn-sm btn-default pull-right" data-dismiss="modal">
+			<i class="far fa-remove"></i>
 			Fechar
 		</button>
-		<button  id="btnSaveTransaction" class="btn btn-sm btn-primary pull-right">
-        <i class="fa fa-check"></i>
+		<button  id="btnSaveTransaction" class="btn btn-sm btn-success pull-right mr10">
+        <i class="far fa-check"></i>
         Salvar</button>
 	</div>
 </form>

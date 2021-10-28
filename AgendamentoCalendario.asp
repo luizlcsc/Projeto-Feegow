@@ -63,9 +63,9 @@ set feriados=nothing
 <table width="100%" class="panel pn bs-component table table-condensed hidden-print" id="tblCalendario">
 <thead>
       <tr class="active">
-        <th colspan="2" class="hand" onClick="changeMonth('<%=dateadd("m", -1, Data)%>');"><i class="fa fa-chevron-left"></i></th>
+        <th colspan="2" class="hand" onClick="changeMonth('<%=dateadd("m", -1, Data)%>');"><i class="far fa-chevron-left"></i></th>
         <th colspan="3" class="text-center"><%= ucase(left(monthname(MesX),3)) & " - " & Year(Data) %></th>
-        <th colspan="2" class="hand text-right" onClick="changeMonth('<%=dateadd("m", 1, Data)%>');" class="text-right"><i class="fa fa-chevron-right"></i></th>
+        <th colspan="2" class="hand text-right" onClick="changeMonth('<%=dateadd("m", 1, Data)%>');" class="text-right"><i class="far fa-chevron-right"></i></th>
       </tr>
       <tr>
         <th width="14%">DO</th>
@@ -139,7 +139,7 @@ end if
 		
 		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN
 		%>
-			<div class="progress progress-small progress-striped active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
+			<div class="progress progress-small  active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
 		<%
 		END IF
 

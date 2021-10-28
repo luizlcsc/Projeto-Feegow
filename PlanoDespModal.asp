@@ -52,12 +52,12 @@
                             <td class="hidden"><%= fn(ii("Value")) %></td>
                             <td>
                             <% if ii("InvoiceRateio") then %> 
-                                    <span title="Despesa Rateada" class="label label-warning"><i class="fa fa-share-alt"></i></span> 
+                                    <span title="Despesa Rateada" class="label label-warning"><i class="far fa-share-alt"></i></span>
                             <% end if %> 
                             </td>
                             <td>
                                 <a href="./?P=Invoice&Pers=1&CD=D&I=<%= ii("InvoiceID") %>" target="_blank" class="btn btn-xs btn-primary">
-                                    <i class="fa fa-external-link"></i>
+                                    <i class="far fa-external-link"></i>
                                 </a>
                             </td>
                         </tr>

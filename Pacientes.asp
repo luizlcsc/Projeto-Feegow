@@ -139,11 +139,11 @@ end if
 
 
 <div class="alert alert-warning hidden">
-    <i class="fa fa-exclamation-triangle red"></i> ATENÇÃO: Usuário também está acessando os dados deste paciente. Tenha cuidado para que os dados não sejam sobrescritos.
+    <i class="far fa-exclamation-triangle red"></i> ATENÇÃO: Usuário também está acessando os dados deste paciente. Tenha cuidado para que os dados não sejam sobrescritos.
 </div>
 <%
 omitir = ""
-if session("Admin")=0 then
+if session("Admin")=1 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
 		tipo = omit("Tipo")
@@ -172,6 +172,12 @@ if session("MasterPwd")&""="S" then
     %>
 .sensitive-data{
     filter: blur(6px);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
     <%
 end if
@@ -196,7 +202,39 @@ video {
 #TabelaID{
   /* margin-top: 0px !important;*/
 }
-
+.infoPreco{
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: -100%;
+    background-color: white;
+    border: 1px solid #217dbb;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 7px;
+    width: auto;
+    min-width: calc( 150% + 100px);
+    z-index: 10;
+}
+.infoPreco:after {
+	content: "";
+	height: 5px;
+	width: 5px;
+	position: absolute;
+	bottom: -11px;
+	left: 17%;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid #217dbb;
+	border-bottom: 5px solid transparent;
+}
+.hoverPreco{
+	display:flex!important
+}
+i.infoBtnPreco {
+	float:left;
+	color: #217dbb;
+}
 </style>
 <%
 if req("Agenda")="" then
@@ -220,12 +258,15 @@ end if
 	var docMask = ['999.999.999-99', '99.999.999/9999-99'];
 	var doc = document.querySelector("#pPacientesRelativos input[name^='CPF']");
 
-	doc.addEventListener('input', inputHandler.bind(undefined, docMask, 14), false);
-	doc.addEventListener('change', function(arg){
-		if(!((arg.target.value+"").length == 14 || (arg.target.value+"").length == 18)){
-			arg.target.value = ""
-		}
-	});
+    if(doc){
+
+        doc.addEventListener('input', inputHandler.bind(undefined, docMask, 14), false);
+        doc.addEventListener('change', function(arg){
+            if(!((arg.target.value+"").length == 14 || (arg.target.value+"").length == 18)){
+                arg.target.value = ""
+            }
+        });
+    }
 
 </script>
 
@@ -387,6 +428,18 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
         });
     }
 
+	const $assinaturaAuto = $("#AssinaturaAuto");
+
+	if($assinaturaAuto){
+		if($assinaturaAuto.prop("checked")){
+			assinarAtendimento(function(){
+				atenderF();
+			});
+
+			return
+		}
+	}
+
     if(validar){
          $.ajax({
             type:"POST",
@@ -395,7 +448,7 @@ function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
             success:function(data){
                 if (data === 'false'){
                     new PNotify({
-                            title: '<i class="fa fa-warning"></i> Certificado Digital',
+                            title: '<i class="far fa-warning"></i> Certificado Digital',
                             text: `Para finalizar o atendimento,o usuário deverá certificar os documentos.`,
                             type: 'danger'
                         });
@@ -588,6 +641,7 @@ $(".mainTab").click(function(){
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");
+    $("#rbtns").fadeIn();
 	//$("#save").removeClass("hidden");
 });
 $(".tab").click(function(){
@@ -609,14 +663,30 @@ $("#tabExtrato").click(function() {
 });
 
 function pront(U){
+    $("#rbtns").fadeOut();
 	$("#pacientesDadosComplementares").hide();
+    <%
+    if device()<>"" then
+        %>
+        fechar();
+        fecharSubmenu();
+        <%
+    end if
+    %>
 	$.ajax({
 		type: "POST",
 		url: U,
 		success:function(data){
 			$("#pront").html(data);
 		}
-	});
+	}).fail(function(data) {
+
+      gtag('event', 'erro_500', {
+          'event_category': 'erro_timeline',
+          'event_label': "Erro ao acessar timeline (<%=LicenseID&":"&req("I")%>)"
+      });
+
+    });
 }
 
 
@@ -632,8 +702,8 @@ jQuery(function($) {
 	//editables on first profile page
 	$.fn.editable.defaults.mode = 'inline';
 	$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
-	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="fa fa-ok icon-white"></i></button>'+
-								'<button type="button" class="btn editable-cancel"><i class="fa fa-remove"></i></button>';
+	$.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="far fa-ok icon-white"></i></button>'+
+								'<button type="button" class="btn editable-cancel"><i class="far fa-remove"></i></button>';
 
 
 
@@ -656,8 +726,8 @@ jQuery(function($) {
 			</div>\
 			\
 			<div class="modal-footer center">\
-				<button type="submit" class="btn btn-small btn-success"><i class="fa fa-ok"></i> Submit</button>\
-				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="fa fa-remove"></i> Cancel</button>\
+				<button type="submit" class="btn btn-small btn-success"><i class="far fa-ok"></i> Submit</button>\
+				<button type="button" class="btn btn-small" data-dismiss="modal"><i class="far fa-remove"></i> Cancel</button>\
 			</div>\
 			</form>\
 		</div>';
@@ -1104,7 +1174,7 @@ $(".form-control").change(function(){
                 if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
                     $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
                 }
-					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(' *');
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(` <i class='fas fa-asterisk text-danger input-required-asterisk' ></i>`);
             }, 500);
 			<%
         next
@@ -1117,71 +1187,27 @@ $(".form-control").change(function(){
     <input id="photo-data" name="photo-data" type="hidden">
 </form>
 
-<%
-set memed = db.execute("select * from memed_tokens where sysActive='1' and sysUser ="&session("User"))
+<% if getConfig("MemedHabilitada")=1 and lcase(session("Table"))="profissionais" then %>
+<!--#include file="Classes/Memed.asp"-->
+<% end if %>
 
-if not memed.eof then
-%>
-
-<script
-    type="text/javascript"
-    src="https://memed.com.br/modulos/plataforma.sinapse-prescricao/build/sinapse-prescricao.min.js"
-    data-token="<%=memed("Token")%>"
-    data-color="#217dbb">
-</script>
 <script>
-    function openMemed () {
-        var endereco = $("#Endereco").val();
-        var numero = $("#Numero").val() ? " "+$("#Numero").val() : "";
+    function handleFormOpenError(t, p, m, i, a, FormID, CampoID){
+            showMessageDialog("Ocorreu um erro ao abrir este registro. Tente novamente mais tarde.");
 
-        var estado = $("#Estado").val() ? " "+$("#Estado").val() : "";
-
-        var fullEndereco = endereco+numero;
-
-
-        MdHub.command.send('plataforma.prescricao', 'setFeatureToggle', {
-          removePatient: false,
-          deletePatient: false
-        });
-
-
-       MdHub.command.send('plataforma.prescricao', 'setPaciente', {
-         nome: $("#NomePaciente").val(),
-         telefone: $("#Cel1").val().replace("-","").replace("(","").replace(")","").replace(" ",""),
-         endereco: fullEndereco,
-         cidade: $("#Cidade").val()+estado,
-         idExterno:'<%=session("Banco")%>' +  '-' + '<%=req("I")%>'
-       });
-
-       console.log('<%=session("Banco")%>' +  '-' + '<%=req("I")%>');
-       setTimeout(function() {
-         MdHub.module.show('plataforma.prescricao');
-         MdHub.event.add('prescricaoSalva', function prescricaoSalvaCallback(idPrescricao) {
-             postUrl('prescription/memed/save-prescription', {
-                 prescriptionId: idPrescricao,
-                 patientId: '<%=req("I")%>'
-             }, function (data) {
-				 console.log(data);
-    			pront('timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|');
-
-             })
-         });
-       } , 500);
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_prontuario',
+                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+            });
     }
 
-
- 	
-
-</script>
-<% end if %>
-<script>
 	<%
 	FormularioNaTimeline = getConfig("FormularioNaTimeline")
 
 	if FormularioNaTimeline then
 		InserirDinamico = "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|"
 	end if
-	
+
     IF FormularioNaTimeline THEN
     %>
     function iPront(t, p, m, i, a, FormID, CampoID) {
@@ -1200,17 +1226,19 @@ if not memed.eof then
             scr = "iPront";
         }
         var pl = $("#ProfissionalLaudadorID").val();
-        $(divAff).html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
+        }).fail(function (data){
+            handleFormOpenError(t, p, m, i, a, FormID, CampoID);
         });
     }
 
     <%
     ELSE
     %>
-        function iPront(t, p, m, i, a) {
-            $("#modal-form .panel").html("<center><i class='fa fa-2x fa-circle-o-notch fa-spin'></i></center>");
+        function iPront(t, p, m, i, a, FormID, CampoID) {
+            $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
                     $.magnificPopup.open({
@@ -1237,7 +1265,10 @@ if not memed.eof then
             var pl = $("#ProfissionalLaudadorID").val();
             $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
                 $("#modal-form .panel").html(data);
-            })
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID)
+                $("#modal-form").magnificPopup("close");
+            });
         }
     <%
     END IF

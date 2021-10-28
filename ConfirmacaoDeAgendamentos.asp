@@ -18,7 +18,7 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
 <script>
     $(".crumb-active a").html("Confirmação de agendamentos");
     $(".crumb-link").removeClass("hidden");
-    $(".crumb-icon a span").attr("class", "fa fa-check");
+    $(".crumb-icon a span").attr("class", "far fa-check");
 
     function confirmaAlteracao (statusId, agendamentoId, obs) {
          $.post("AlteraStatusAgendamento.asp", {
@@ -57,7 +57,7 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
 
 
     $("#frm-filtros").submit(function(){
-        $("#GradeAgenda").html("Carregando...");
+        $("#GradeAgenda").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("confirmacaoDeAgendamentosContent.asp", $(this).serialize(), function(data){
             $("#GradeAgenda").html(data);
 
@@ -75,7 +75,7 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
 
     function abreAgenda(horario, id, data, LocalID, ProfissionalID, EquipamentoID) {
 
-        $("#div-agendamento").html('<i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
         af('a');
         $.ajax({
             type: "POST",
@@ -106,7 +106,7 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
         localStorage.setItem("TipoLinkWhatsApp", TipoLinkWhatsApp);
 
         var url = TipoLinkWhatsApp+"?phone="+Celular+"&text="+Texto;
-        $("#wpp-"+id).html("<i class='success fa fa-check-circle'></i>");
+        $("#wpp-"+id).html("<i class='success far fa-check-circle'></i>");
 
         if(AdicionarObservacoesAoAlterarStatus == "1"){
             AlterarStatus(1, id, "Contato via WhatsApp", true, 1);

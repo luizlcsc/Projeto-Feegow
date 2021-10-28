@@ -13,7 +13,7 @@ subTitulo = "Produtos Utilizados"
     <div class="panel">
         <div class="panel-body">
             <div class="col-md-1 col-md-offset-11">
-                <button title="Lançamentos de estoque" onclick="modalEstoque(0, 0, 0)"  type="button" class="btn btn-alert btn-block btn-sm"><i class="fa fa-medkit"></i></button>
+                <button title="Lançamentos de estoque" onclick="modalEstoque(0, 0, 0)"  type="button" class="btn btn-alert btn-block btn-sm"><i class="far fa-medkit"></i></button>
             </div>
             <br>
             <%
@@ -32,7 +32,7 @@ subTitulo = "Produtos Utilizados"
             %>
 
             <h3>Produtos baixados
-            <button type="button" class="btn btn-xs btn-default fa fa-level-down baixados"> esconder</button></h3>
+            <button type="button" class="btn btn-xs btn-default far fa-level-down baixados"> esconder</button></h3>
 
             <table class="table table-hover table-bordered table-striped ">
                 <thead>
@@ -67,7 +67,7 @@ subTitulo = "Produtos Utilizados"
                         <!--</tr>-->
                         <tr>
                             <td>
-                                <a  href="./?P=Produtos&I=<%=produt("ProdutoID") %>&Pers=1" target="_blank"><button type="button" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></button></a>
+                                <a  href="./?P=Produtos&I=<%=produt("ProdutoID") %>&Pers=1" target="_blank"><button type="button" class="btn btn-xs btn-primary"><i class="far fa-external-link"></i></button></a>
                             </td>
                             <td class="text-right"><%=produt("Quantidade")%>x</td>
                             <td><%=produt("NomeProduto")%></td>
@@ -117,7 +117,7 @@ subTitulo = "Produtos Utilizados"
             <br>
             <br>
             <h3>Produtos não lançados
-            <button type="button" class="btn btn-xs btn-default fa fa-level-down naobaixados"> esconder</button></h3>
+            <button type="button" class="btn btn-xs btn-default far fa-level-down naobaixados"> esconder</button></h3>
 
             <table class="table table-hover table-bordered table-striped">
                 <thead>
@@ -150,6 +150,12 @@ subTitulo = "Produtos Utilizados"
                             link = "./?P=tissguiasadt&I="&anexos("id")&"&Pers=1"
                         end if
 
+                        ValorUnitario = anexos("ValorUnitario")
+
+                        if not isnumeric(ValorUnitario) then
+                            ValorUnitario=0
+                        end if
+
                         %>
                         <!--<tr>-->
                             <!--<th></th>-->
@@ -157,17 +163,17 @@ subTitulo = "Produtos Utilizados"
                         <!--</tr>-->
                         <tr>
                             <td>
-                                <a  href="<%=link%>" target="_blank"><button type="button" class="btn btn-xs btn-primary"><i class="fa fa-external-link"></i></button></a>
+                                <a  href="<%=link%>" target="_blank"><button type="button" class="btn btn-xs btn-primary"><i class="far fa-external-link"></i></button></a>
                             </td>
                             <td class="text-right"><%=anexos("Quantidade")%>x</td>
                             <td><%=anexos("NomeProduto")%></td>
                             <td><%=TipoUnidade%></td>
                             <td><%=anexos("Codigo")%></td>
                             <td><%=anexos("Forma")%></td>
-                            <td><%=formatnumber(anexos("ValorUnitario"),2)%></td>
+                            <td><%=formatnumber(ValorUnitario,2)%></td>
                             <td><%=anexos("Data")%></td>
                             <td>
-                                <button type="button" class="btn btn-xs btn-success" onclick="modalEstoque('', <%=anexos("ProdutoID")%>, <%=anexos("ProdutoID")%>)"><i class="fa fa-level-up"></i> Lançar</button>
+                                <button type="button" class="btn btn-xs btn-success" onclick="modalEstoque('', <%=anexos("ProdutoID")%>, <%=anexos("ProdutoID")%>)"><i class="far fa-level-up"></i> Lançar</button>
                             </td>
 
                         </tr>

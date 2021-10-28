@@ -59,7 +59,7 @@ end if
     </div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-save btn-success"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-save btn-success"><i class="far fa-save"></i> Salvar</button>
 </div>
 </form>
 

@@ -54,7 +54,7 @@ while not pItens.EOF
 	</td>
 	<td><input type="text" class="form-control" name="ValorOpcao<%=pItens("id")%>" id="ValorOpcao<%=pItens("id")%>" value="<%=pItens("Valor")%>" onBlur="updateOption('V', <%=I%>, <%=pItens("id")%>);"></td>
     <td><input type="text" class="form-control" name="NomeOpcao<%=pItens("id")%>" id="NomeOpcao<%=pItens("id")%>" value="<%=pItens("Nome")%>" onBlur="updateOption('N', <%=I%>, <%=pItens("id")%>);"></td>
-  <td><button type="button" class="btn btn-sm btn-danger" onClick="updateOption('X', <%=I%>, <%=pItens("id")%>);"><i class="fa fa-remove"></i></button></tr>
+  <td><button type="button" class="btn btn-sm btn-danger" onClick="updateOption('X', <%=I%>, <%=pItens("id")%>);"><i class="far fa-remove"></i></button></tr>
 <%
 pItens.moveNext
 wend

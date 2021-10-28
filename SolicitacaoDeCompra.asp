@@ -214,8 +214,8 @@ posModalPagar = "fixed"
                     %>
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i> Adicionar Item
-                        <span class="fa fa-caret-down icon-on-right"></span>
+                        <i class="far fa-plus"></i> Adicionar Item
+                        <span class="far fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right">
                       <% descOutra = "Despesa"%>

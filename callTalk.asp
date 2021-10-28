@@ -16,6 +16,11 @@ if instr(NomeChat, " ")>0 then
 end if
 
 set msgs = db.execute("select * from chatmensagens where ((De="&De&" and Para="&Para&") or (De="&Para&" and Para="&De&")) and date(DataHora)>date_add(date(now()) , interval -15 day) order by id")
+if msgs.eof then
+    %>
+    <p style="color: #909090" class="text-center mt50">Nenhuma conversa ainda.</p>
+    <%
+end if
 while not msgs.eof
 	if cdate(formatdatetime(msgs("DataHora"),2))=date() then
 		DataMSG = "Hoje"
@@ -27,11 +32,12 @@ while not msgs.eof
         ShowFoto = FotoChat
         %>
         <div style=" width: 300px; display:inline-block;">
-        <div class="media" style="float: right;padding-right: 10px ;">
-            <div class="media-body" style="background-color: #6ddaf8; color: #fff;border-radius: 7px; max-width: 220px;word-break: break-all;">
-            <h5 class="media-heading" style="color: #fff;"><%=ShowNome %>
-                <small style="color: #fff;"> - <%=DataMSG &" - "& formatdatetime(msgs("DataHora"), 4)%></small>
-            </h5> <%= msgs("Mensagem") %>
+        <div class="media media-own-message">
+            <div class="media-body">
+            <h5 class="media-heading" style="color: #fff;"><%'=ShowNome %>
+                <small class="chat-time-sent"> <%=DataMSG &" - "& formatdatetime(msgs("DataHora"), 4)%></small>
+            </h5>
+            <p style="width: 100%" class="mt10"><%= msgs("Mensagem") %></p>
             </div>
             <div class="media-right">
             <!--<a href="#">
@@ -53,9 +59,9 @@ while not msgs.eof
                 <img class="media-object" src="<%'if msgs("De")=session("User") then response.Write(MinhaFoto) else response.Write(FotoChat) end if%>" width="40" height="40">
             </a>-->
             </div>
-            <div class="media-body" style="border-radius: 5px; max-width: 220px;word-break: break-all;">
-            <h5 class="media-heading"><%=ShowNome %>
-                <small> - <%=DataMSG &" - "& formatdatetime(msgs("DataHora"), 4)%></small>
+            <div class="media-body">
+            <h5 class="media-heading"><%'=ShowNome %>
+                <small class="chat-time-sent"> <%=DataMSG &" - "& formatdatetime(msgs("DataHora"), 4)%></small>
             </h5> <%= msgs("Mensagem") %>
             </div>
         </div>

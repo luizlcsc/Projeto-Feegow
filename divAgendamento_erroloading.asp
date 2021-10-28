@@ -87,7 +87,7 @@ if req("Horario")="00:00" then
             if NumeroEncaixes>MaximoEncaixes then
                 %>
                 <div class="alert alert-danger text-center">
-                    <i class="fa fa-exclamation-triangle"></i> ATEN&Ccedil;&Atilde;O: O n&uacute;mero m&aacute;ximo de <%=MaximoEncaixes %> encaixes permitidos para este profissional j&aacute; foi atingido.
+                    <i class="far fa-exclamation-triangle"></i> ATEN&Ccedil;&Atilde;O: O n&uacute;mero m&aacute;ximo de <%=MaximoEncaixes %> encaixes permitidos para este profissional j&aacute; foi atingido.
                 </div>
 
                 <script >
@@ -192,18 +192,18 @@ end if
 <div class="panel">
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left" id="myTab4">
-        <li class="active abaAgendamento"><a data-toggle="tab" href="#dadosAgendamento"><i class="fa fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
-        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="fa fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
-        <li class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); crumbAgenda();" href="#divHistorico"><i class="fa fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
+        <li class="active abaAgendamento"><a data-toggle="tab" href="#dadosAgendamento"><i class="far fa-calendar"></i> <span class="hidden-xs">Agendamento</span></a></li>
+        <li id="abaFicha" class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('Pacientes&Agenda=1', $('#PacienteID').val(), '1', 'divDadosPaciente'); $('#alertaAguardando').removeClass('hidden');" href="#divDadosPaciente"><i class="far fa-user"></i> <span class="hidden-xs">Ficha</span></a></li>
+        <li class="abasAux abaAgendamento"><a data-toggle="tab" onclick="ajxContent('HistoricoPaciente&PacienteID='+$('#PacienteID').val(), '', '1', 'divHistorico'); crumbAgenda();" href="#divHistorico"><i class="far fa-list"></i> <span class="hidden-xs">Hist&oacute;rico</span></a></li>
         <%if Aut("contapac")=1 or aut("|areceberpaciente")=1 then%>
-	        <li class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); crumbAgenda();$('#alertaAguardando').removeClass('hidden');" href="#divHistorico"><i class="fa fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
+	        <li class="abasAux abaAgendamento hidden-xs"><a data-toggle="tab" onclick="$('#divHistorico').html('Carregando...'); ajxContent('Conta', $('#PacienteID').val(), '1', 'divHistorico'); crumbAgenda();$('#alertaAguardando').removeClass('hidden');" href="#divHistorico"><i class="far fa-money"></i> <span class="hidden-xs">Conta</span></a></li>
         <% End If %>
 	</ul>
 
 
 
 <span class="panel-controls" onclick="javascript:af('f'); crumbAgenda();">
-    <i class="fa fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
+    <i class="far fa-arrow-left"></i> <span class="hidden-xs">Voltar</span>
 </span>
 
 
@@ -237,7 +237,7 @@ end if
                 </div>
 
         <%
-		set msgs = db.execute("select * from agendamentosrespostas where AgendamentoID like '"&AgendamentoID&"'")
+		set msgs = db.execute("select * from agendamentosrespostas where AgendamentoID = '"&AgendamentoID&"'")
 		while not msgs.eof
 			%>
 			<span class="label label-alert">Paciente respondeu em <%=msgs("DataHora")%>: <em><%=msgs("Resposta")%></em></span>
@@ -371,7 +371,7 @@ end if
                                     <th width="15%">Valor / Convênio</th>
                                     <th width="15%">Local</th>
                                     <th width="15%">Equipamento</th>
-                                    <th width="1%"><button type="button" onclick="procs('I', 0)" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button></th>
+                                    <th width="1%"><button type="button" onclick="procs('I', 0)" class="btn btn-xs btn-success"><i class="far fa-plus"></i></button></th>
                                 </tr>
                             </thead>
                             <tbody id="bprocs">
@@ -645,7 +645,7 @@ end if
         <div class="modal-footer">
         <%if session("banco")="clinic1773" then%>
         <button class="btn btn-sm btn-primary" title="Enviar sms personalizado." type="button" style="float: left;" id="btnSendSms">
-                        <i class="fa fa-mobile"></i>
+                        <i class="far fa-mobile"></i>
                     </button>
         <%end if
 
@@ -657,7 +657,7 @@ end if
                 %>
                 <div class="col-xs-6 col-md-3 pt10">
                     <button class="btn btn-sm btn-primary btn-block" id="btnSalvarAgenda">
-                        <i class="fa fa-save"></i> Salvar
+                        <i class="far fa-save"></i> Salvar
                     </button>
                 </div>
                 <%
@@ -667,7 +667,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10">
                         <button class="btn btn-sm btn-success btn-block" type="button" onclick="repetir(<%=ConsultaID%>, 'Solicitar', '');">
-                            <i class="fa fa-copy"></i> Repetir
+                            <i class="far fa-copy"></i> Repetir
                         </button>
                     </div>
                     <%
@@ -676,7 +676,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10">
                         <button class="btn btn-sm btn-warning btn-block" type="button" onclick="remarcar(<%=ConsultaID%>, 'Solicitar', '');">
-                            <i class="fa fa-copy"></i> Remarcar
+                            <i class="far fa-copy"></i> Remarcar
                         </button>
                     </div>
                     <%
@@ -685,7 +685,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10">
                         <button class="btn btn-sm btn-danger btn-block" type="button" data-bb-handler="danger" onclick="excluiAgendamento(<%=ConsultaID%>, 0);">
-                            <i class="fa fa-trash"></i> Excluir
+                            <i class="far fa-trash"></i> Excluir
                         </button>
                     </div>
                     <%
@@ -695,7 +695,7 @@ end if
                     %>
                     <div class="col-xs-6 col-md-3 pt10">
                         <button class="btn btn-sm btn-info btn-block" type="button" data-bb-handler="danger" onclick="abreBloqueio(0, '<%=Data%>', '<%=Hora%>');">
-                            <i class="fa fa-lock"></i> Inserir Bloqueio
+                            <i class="far fa-lock"></i> Inserir Bloqueio
                         </button>
                     </div>
                     <%
@@ -803,7 +803,7 @@ $("#formAgenda").submit(function() {
 	$("#btnSalvarAgenda").attr('disabled', 'disabled');
 	$.post("saveAgenda.asp", $("#formAgenda").serialize())
 	.done(function(data) {
-	  $("#btnSalvarAgenda").html('<i class="fa fa-save"></i> Salvar');
+	  $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
 	  $("#btnSalvarAgenda").removeAttr('disabled');
 	  eval(data);
 	});

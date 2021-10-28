@@ -58,15 +58,15 @@ if not vcaCalls.EOF then
             nCalls = nCalls+1
 			strCalls = strCalls &"<tr><td>"
             if session("Banco")<>"clinic5459" then
-                strCalls = strCalls &"<button type='button' class='btn btn-xs btn-success' title='Atender' onClick='callSta("&vcaCalls("id")&", 1)'><i class='fa fa-phone-square'></i></button> &nbsp; <button type='button' class='btn btn-xs btn-danger pull-right' title='Rejeitar' onClick=\""callSta("&vcaCalls("id")&", '-1')\""><i class='fa fa-remove'></i></button> "
+                strCalls = strCalls &"<button type='button' class='btn btn-xs btn-success' title='Atender' onClick='callSta("&vcaCalls("id")&", 1)'><i class='far fa-phone-square'></i></button> &nbsp; <button type='button' class='btn btn-xs btn-danger pull-right' title='Rejeitar' onClick=\""callSta("&vcaCalls("id")&", '-1')\""><i class='far fa-remove'></i></button> "
             else
-                strCalls = strCalls &"<code><i class='fa fa-phone-square'></i></code>"
+                strCalls = strCalls &"<code><i class='far fa-phone-square'></i></code>"
             end if
             strCalls = strCalls &"<code>"&Telefone&"</code> &raquo; "&Nome
 			if PacienteID<>"" then
 				set age = db.execute("select a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID WHERE PacienteID="&PacienteID&" AND Data>=DATE(NOW())")
 				while not age.EOF
-					strCalls = strCalls & "<div class='pull-right'>"& age("NomeProfissional") &" <button type='button' class='btn btn-xs btn-success'><i class='fa fa-calendar'></i> "& age("Data") &" - "& formatdatetime(age("Hora"), 4) &"</button></div>"
+					strCalls = strCalls & "<div class='pull-right'>"& age("NomeProfissional") &" <button type='button' class='btn btn-xs btn-success'><i class='far fa-calendar'></i> "& age("Data") &" - "& formatdatetime(age("Hora"), 4) &"</button></div>"
 				age.movenext
 				wend
 				age.close
@@ -78,11 +78,11 @@ if not vcaCalls.EOF then
             'EM ATENDIMENTO
             if session("Banco")<>"clinic5459" then
                 abrepopUp=1
-			    strCalls = strCalls &"<tr id=\""linhaLigacao"&vcaCalls("id")&"\""><td><button type='button' class='btn btn-xs btn-warning' title='Finalizar' onClick=\""callSta("&vcaCalls("id")&", 2)\""><i class='fa fa-stop'></i> Finalizar</button> "&Telefone&" &raquo; "& Nome &" </td></tr>"
+			    strCalls = strCalls &"<tr id=\""linhaLigacao"&vcaCalls("id")&"\""><td><button type='button' class='btn btn-xs btn-warning' title='Finalizar' onClick=\""callSta("&vcaCalls("id")&", 2)\""><i class='far fa-stop'></i> Finalizar</button> "&Telefone&" &raquo; "& Nome &" </td></tr>"
                 nCalls = nCalls+1
             else
                 if session("User")=vcaCalls("sysUserAtend") then
-    			    strCalls = strCalls &"<tr id=\""linhaLigacao"&vcaCalls("id")&"\""><td><button type='button' class='btn btn-xs btn-alert' title='Em atendimento' onClick=\""callSta("&vcaCalls("id")&", 1)\""><i class='fa fa-phone-square'></i> Em atendimento</button> "&Telefone&" &raquo; "& Nome &" </td></tr>"
+    			    strCalls = strCalls &"<tr id=\""linhaLigacao"&vcaCalls("id")&"\""><td><button type='button' class='btn btn-xs btn-alert' title='Em atendimento' onClick=\""callSta("&vcaCalls("id")&", 1)\""><i class='far fa-phone-square'></i> Em atendimento</button> "&Telefone&" &raquo; "& Nome &" </td></tr>"
                     abrePopup = vcaCalls("popup")
                     nCalls = nCalls+1
                 end if
@@ -97,7 +97,8 @@ if not vcaCalls.EOF then
 
             <% if abrePopup then %>
 			if ($("#detalheLigacao<%=vcaCalls("id")%>").length==0){
-            	$("#calls").before("<div class='dragavel' id='detalheLigacao<%=vcaCalls("id")%>' style='background-color:#fff; box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2), 0px 6px 20px 0px rgba(0, 0, 0, 0.19); padding: 10px; border-radius: 10px; position:fixed; width:1050px; height:600px; top:100px; left:"+leftWin+"; z-index:10000000; overflow-x:hidden; overflow-y:scroll'>Carregando dados da ligação</div>");
+            	$("#calls").before(`<div class='dragavel modal-draggable' id='detalheLigacao<%=vcaCalls("id")%>' style='display: block;position:fixed; width:1050px; height:600px; top:100px; left:${leftWin}; overflow-x:hidden; overflow-y:scroll'><div class="p10"><center><i class='far fa-circle-o-notch fa-spin'></i> Carregando...</center></div></div>`);
+
                 $.get("detalheLigacao.asp?CallID=<%=vcaCalls("id")%>", function(data){ $("#detalheLigacao<%=vcaCalls("id")%>").html(data) });
             }
 			<%
@@ -137,7 +138,7 @@ if not vcaReligar.EOF then
 			Nome = "<em>Número não identificado</em>"
 			PacienteID = 0
 		end if
-		strCalls = strCalls &"<tr><td><button type='button' class='btn btn-xs btn-success' title='Recontatar' onClick='recontatar("&vcaReligar("id")&")'><i class='fa fa-phone-square'></i></button> &nbsp;  "&formatdatetime(vcaReligar("Hora"),4)&" &raquo; "&Nome
+		strCalls = strCalls &"<tr><td><button type='button' class='btn btn-xs btn-success' title='Recontatar' onClick='recontatar("&vcaReligar("id")&")'><i class='far fa-phone-square'></i></button> &nbsp;  "&formatdatetime(vcaReligar("Hora"),4)&" &raquo; "&Nome
 
 		strCalls = strCalls &" </td></tr>"
 	vcaReligar.movenext

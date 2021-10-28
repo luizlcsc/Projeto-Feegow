@@ -19,9 +19,9 @@ end if
 %>
 <div class="panel-heading">
     <ul class="nav panel-tabs-border panel-tabs panel-tabs-left">
-        <li class="active"><a data-toggle="tab" href="#prescricao" id="btnprescricao"><i class="fa fa-flask"></i> <span class="hidden-480">Prescrição</span></a></li>
-        <li><a data-toggle="tab" class="hidden" id="btnprescricoesmodelos" href="#prescricoesmodelos"><i class="fa fa-list"></i> <span class="hidden-480">Modelos</span></a></li>
-        <li><a data-toggle="tab"  href="#Bulas" onclick="ajxContent('Bulas', '', 1, 'Bulas')"><i class="fa fa-medkit"></i> <span class="hidden-480">Bulas</span></a></li>
+        <li class="active"><a data-toggle="tab" href="#prescricao" id="btnprescricao"><i class="far fa-flask"></i> <span class="hidden-480">Prescrição</span></a></li>
+        <li><a data-toggle="tab" class="hidden" id="btnprescricoesmodelos" href="#prescricoesmodelos"><i class="far fa-list"></i> <span class="hidden-480">Modelos</span></a></li>
+        <li><a data-toggle="tab"  href="#Bulas" onclick="ajxContent('Bulas', '', 1, 'Bulas')"><i class="far fa-medkit"></i> <span class="hidden-480">Bulas</span></a></li>
 	</ul>
 
 </div>
@@ -32,9 +32,9 @@ end if
           <div class="row">
             <div class="col-md-5">
                 <input type="hidden" id="PrescricaoId" value="<%=PrescricaoId%>">
-                <button type="button" onclick="novo();" class="btn btn-info"><i class="fa fa-plus icon-plus"></i> Nova</button>
-                <button type="button" class="btn btn-primary" id="savePrescription" style="<%=ArquivoAssinado%>"><i class="fa fa-save icon-save"></i> Salvar e Imprimir</button>
-                <button type="button" class="btn btn-info" style="<%=ExistePrescricao%>" id="printPrescription"><i class="fa fa-print icon-print"></i> Imprimir</button>
+                <button type="button" onclick="novo();" class="btn btn-info"><i class="far fa-plus icon-plus"></i> Nova</button>
+                <button type="button" class="btn btn-primary" id="savePrescription" style="<%=ArquivoAssinado%>"><i class="far fa-save icon-save"></i> Salvar e Imprimir</button>
+                <button type="button" class="btn btn-info" style="<%=ExistePrescricao%>" id="printPrescription"><i class="far fa-print icon-print"></i> Imprimir</button>
             </div>
             <div class="col-md-2">
 	            <div class="checkbox-custom checkbox-primary"><input type="checkbox" name="ControleEspecial" id="ControleEspecial" <%if ControleEspecial="checked" then response.write(" checked ") end if %> /><label for="ControleEspecial">Controle especial</label></div>
@@ -46,7 +46,7 @@ end if
                     <div class="btn-group text-left">
 			            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
 				            Grupos
-				            <span class="fa fa-caret-down icon-on-right"></span>
+				            <span class="far fa-caret-down icon-on-right"></span>
 			            </button>
 
 			            <ul class="dropdown-menu dropdown-default">
@@ -73,28 +73,28 @@ end if
         </div>
         <hr class="short alt" />
         <div class="row">
-	        <div class="col-xs-8 sensitive-data">
+	        <div class="col-xs-12 col-md-8 sensitive-data">
 		        <textarea id="receituario" name="receituario"><%=receituario %></textarea>
 		        <input id="ultimoUso" name="ultimoUso" type="hidden" />
             </div>
 
 
-            <div class="col-xs-4 pn">
+            <div class="col-xs-12 col-md-4 pn">
                 <div class="panel">
                     <div class="panel-heading">
                       <span class="panel-title">
-                            <i class="fa fa-flask"></i> Medicamentos / F&oacute;rmulas
+                            <i class="far fa-flask"></i> Medicamentos / F&oacute;rmulas
                       </span>
                       <div class="panel-controls">
                             <% if aut("|modelosprontuarioI|")=1 then%>
                                 <a class="tooltip-info hidden" href="#modal-table" role="button" data-toggle="modal" data-original-title="Cadastrar medicamento ou f&oacute;rmula para futuras prescri&ccedil;&otilde;es" data-rel="tooltip" data-placement="top" title="" onclick="modalMedicamento('', 0)">
-                                    <i class="fa fa-eyedropper icon-plus"></i>
+                                    <i class="far fa-eyedropper icon-plus"></i>
                                 </a>
                                 <a class="tooltip-info hidden" href="#modal-table" role="button" data-toggle="modal" data-original-title="Cadastrar medicamento ou f&oacute;rmula para futuras prescri&ccedil;&otilde;es" data-rel="tooltip" data-placement="top" title="" onclick="modalMedicamento('', 0)">
-                                    <i class="fa fa-medkit icon-plus"></i>
+                                    <i class="far fa-medkit icon-plus"></i>
                                 </a>
                                 <a href="#" onclick="modalMedicamento('', 0)" class="btn btn-xs btn-dark" data-original-title="Cadastrar medicamento ou f&oacute;rmula para futuras prescri&ccedil;&otilde;es" data-rel="tooltip" data-placement="top" title="">
-                                    <i class="fa fa-plus text-white"></i>
+                                    <i class="far fa-plus text-white"></i>
                                 </a>
                             <%end if%>
                       </div>
@@ -115,7 +115,7 @@ end if
                                 <input id="FiltroMF" class="form-control input-sm refina" autocomplete="off" placeholder="Filtrar medicamentos..." type="text" style="width: 65%;margin-left: 10px">
                                 <span class="input-group-btn">
                                 <button id="btnMF" class="btn btn-sm btn-default" onclick="ListaMedicamentosFormulas($('#FiltroMF').val(), '', '')" type="button">
-                                <i class="fa fa-filter icon-filter bigger-110"></i>
+                                <i class="far fa-filter icon-filter bigger-110"></i>
                                 Buscar
                                 </button>
                                 </span>
@@ -148,7 +148,7 @@ end if
     </div>
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 
@@ -159,7 +159,7 @@ end if
     recursoPermissaoUnimed = recursoAdicional(12)
     if session("User")="14128" or session("Banco")="clinic5351" or session("Banco")="clinic100000" or recursoPermissaoUnimed=4 or true then
     %>
-    if('<%=req("IFR")%>'!=="S"){
+    if('<%=req("IFR")%>'!=="S" && false){
         $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
             $("#conteudo-timeline").html(data)
         });
@@ -170,7 +170,10 @@ end if
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $("#conteudo-timeline").toggle(1000);
+            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+                $("#conteudo-timeline").html(data)
+                $("#conteudo-timeline").toggle(1000);
+            });
         })
     });
 

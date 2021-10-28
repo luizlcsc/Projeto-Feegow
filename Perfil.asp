@@ -72,8 +72,8 @@ next
 <form method="post" action="./?P=EmailMarketing&Pers=1">
 
 <div style="position:fixed; top:10px; right:10px">
-    <button type="button" onclick="print()" class="btn btn-info hidden-print"><i class="fa fa-print"></i></button>
-    <button class="btn btn-primary hidden-print"><i class="fa fa-envelope"></i></button>
+    <button type="button" onclick="print()" class="btn btn-info hidden-print"><i class="far fa-print"></i></button>
+    <button class="btn btn-primary hidden-print"><i class="far fa-envelope"></i></button>
 </div>
 <%
 response.Buffer
@@ -343,7 +343,7 @@ while not pac.eof
 				Valor = "<div class=""text-right"">R$ "&formatnumber(0&Valor, 2)&"</div>"
 			end if
 			%>
-			<td><%if splCampos(i)="NomePaciente" then%><a class="hidden-print" href="./?P=Pacientes&I=<%=pac("id")%>&Pers=1" target="_blank"><i class="fa fa-external-link"></i></a> <%end if%><%=Valor%></td>
+			<td><%if splCampos(i)="NomePaciente" then%><a class="hidden-print" href="./?P=Pacientes&I=<%=pac("id")%>&Pers=1" target="_blank"><i class="far fa-external-link"></i></a> <%end if%><%=Valor%></td>
 			<%
 		next
 		%>

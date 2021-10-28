@@ -29,7 +29,7 @@
     <div class='panel-heading'>
         <span>Cadastro de Medicamento por Convênio</span>
         <div class='actionArea'>
-            <button class="btn btn-primary" onclick="medicamentosConvenio.modalMedicamentos('Criar')"><i class="fa fa-plus"></i> Inserir</button>
+            <button class="btn btn-primary" onclick="medicamentosConvenio.modalMedicamentos('Criar')"><i class="far fa-plus"></i> Inserir</button>
         </div>
     </div>
     <div id='medicamentoConvenio' class="panel-body">
@@ -58,7 +58,7 @@
 
     $(document).ready(function(){
         $(".crumb-active a").html("Medicamento Por Convenio");
-        $(".crumb-icon a span").attr("class", "fa fa-");
+        $(".crumb-icon a span").attr("class", "far fa-");
     });
 
     function loadInfos(){
@@ -80,8 +80,8 @@
                 <td data-prescrito='${linha.produtoPrescrito}'>${linha.produtoPrescritoNome}</td>
                 <td data-referencia='${linha.produtoReferencia}'>${linha.produtoReferenciaNome}</td>
                 <td>
-                    <button class='btn btn-warning btn-xs' onClick='medicamentosConvenio.modalMedicamentos("Editar",${linha.id})'><i class="fa fa-pencil"></i> Editar</button>
-                    <button class='btn btn-danger btn-xs' onClick='medicamentosConvenio.removeDireto(${linha.id})'><i class="fa fa-trash"></i> Apagar</button>
+                    <button class='btn btn-warning btn-xs' onClick='medicamentosConvenio.modalMedicamentos("Editar",${linha.id})'><i class="far fa-pencil"></i> Editar</button>
+                    <button class='btn btn-danger btn-xs' onClick='medicamentosConvenio.removeDireto(${linha.id})'><i class="far fa-trash"></i> Apagar</button>
                 </td>
             </tr>
         `

@@ -11,7 +11,7 @@ while not cha.eof
     tempo = dateadd("s", tempo, "00:00")
     %>
     $("#chamada<%=cha("sysUserAtend") %>").fadeIn();
-    $("#chamada<%=cha("sysUserAtend") %>").html("<%=ucase( cha("NomeCanal") &" - "& cha("NomeStatus") ) %> <br /> <h3><%=cha("NomePaciente")%></h3> <h1 class='no-margin'><i class='fa fa-<%=cha("Icone") %>'></i> <%=tempo %></h1>");
+    $("#chamada<%=cha("sysUserAtend") %>").html("<%=ucase( cha("NomeCanal") &" - "& cha("NomeStatus") ) %> <br /> <h3><%=cha("NomePaciente")%></h3> <h1 class='no-margin'><i class='far fa-<%=cha("Icone") %>'></i> <%=tempo %></h1>");
     <%
 cha.movenext
 wend
@@ -39,7 +39,7 @@ while not ate.eof
     end if
     %>
     $("#atendimento<%=ate("sysUser") %>").fadeIn();
-    $("#atendimento<%=ate("sysUser") %>").html("<%=Titulo %> <h3><%=ate("NomePaciente")%></h3> <h1 class='no-margin'><i class='fa fa-play'></i> <%=tempo %></h1>");
+    $("#atendimento<%=ate("sysUser") %>").html("<%=Titulo %> <h3><%=ate("NomePaciente")%></h3> <h1 class='no-margin'><i class='far fa-play'></i> <%=tempo %></h1>");
     <%
 ate.movenext
 wend

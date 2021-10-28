@@ -27,6 +27,20 @@ if not NotificacaoSQL.eof then
     end if
 
     if AcaoID="1" then
+        sql  = "SELECT Descricao, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CaixaID, sysUser, UnidadeID, 'Transfer' FROM filatransferencia WHERE id='"&TransferenciaFilaID&"'"
+        set fila  = db.execute(sql)
+        if not fila.eof then
+            ' ######################### BLOQUEIO FINANCEIRO ########################################
+            UnidadeID = fila("UnidadeID")
+            contabloqueadadebt = verificaBloqueioConta(2, 1, fila("AccountIDDebit"), UnidadeID,fila("Date"))
+            contabloqueadacred = verificaBloqueioConta(2, 1, fila("AccountIDCredit"), UnidadeID,fila("Date"))
+            if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+                response.write("Esta conta está BLOQUEADA e não pode ser alterada!")
+                response.end
+            end if
+            ' #####################################################################################
+        end if
+
         db.execute("INSERT INTO sys_financialmovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CaixaID, sysUser, UnidadeID, Type) "&_
         " (SELECT Descricao, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CaixaID, sysUser, UnidadeID, 'Transfer' FROM filatransferencia WHERE id="&TransferenciaFilaID&")" )
 

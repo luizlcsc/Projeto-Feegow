@@ -47,10 +47,10 @@ Profissionais = regAte("Profissionais")
     </div>
     <div class="panel-footer row">
         <div class="col-md-2 col-md-offset-8">
-            <button type="button" class="btn btn-default pull-right btn-block" onclick="$('#btnpedido').click();"><i class="fa fa-arrow-left"></i> Voltar</button>
+            <button type="button" class="btn btn-default pull-right btn-block" onclick="$('#btnpedido').click();"><i class="far fa-arrow-left"></i> Voltar</button>
         </div>
         <div class="col-md-2">
-            <button class="btn btn-success btn-block" id="saveTextoPedido"><i class="fa fa-save"></i> Salvar</button>
+            <button class="btn btn-success btn-block" id="saveTextoPedido"><i class="far fa-save"></i> Salvar</button>
         </div>
     </div>
 </form>

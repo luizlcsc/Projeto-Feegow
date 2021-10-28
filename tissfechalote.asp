@@ -4,7 +4,7 @@
 <!--#include file="Classes\JSON.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Fechar Lote");
-    $(".crumb-icon a span").attr("class", "fa fa-archive");
+    $(".crumb-icon a span").attr("class", "far fa-archive");
 </script>
 <%
 Unidades = req("CompanyUnitID")
@@ -22,6 +22,7 @@ end if
     <input type="hidden" name="Pers" value="1" />
     <br>
     <div class="panel">
+
     <div class="clearfix form-actions panel-body">
     	<div class="row">
             <div class="col-md-2">
@@ -38,11 +39,7 @@ end if
             <%= quickField("datepicker", "DataAte", "&nbsp;", 2, req("DataAte"), "", "", " placeholder='At&eacute;'") %>
             <div class="col-md-1">
                 <label>&nbsp;</label><br />
-                <button class="btn btn-md btn-primary"><i class="fa fa-search"></i> Buscar</button>
-            </div>
-            <div class="col-md-2">
-                <label>&nbsp;</label><br />
-                <button type="button" class="btn btn-md btn-success" onClick="fechalote()"><i class="fa fa-archive"></i> Fechar Lote</button>
+                <button class="btn btn-md btn-primary"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
         <br>
@@ -98,6 +95,14 @@ end if
 </form>
 
 <div class="panel">
+<div class="panel-heading">
+    <span class="panel-title">
+        Guias encontradas
+    </span>
+    <span class="panel-controls">
+        <button type="button" class="btn btn-md btn-success" onClick="fechalote()"><i class="far fa-archive"></i> Fechar Lote</button>
+    </span>
+</div>
 <div class="panel-body">
 <form action="" method="post" id="guias" name="guias">
 <%
@@ -543,7 +548,7 @@ function fechalote(){
 	var checados = $("input.guia:checked").length;
 	if(checados==0){
 		$.gritter.add({
-			title: '<i class="fa fa-thumbs-down"></i> ERRO:',
+			title: '<i class="far fa-thumbs-down"></i> ERRO:',
 			text: 'Selecione as guias para fechar o lote.',
 			class_name: 'gritter-error gritter-light'
 		});
@@ -676,7 +681,8 @@ jQuery(function() {
       bLengthChange: false,
       bFilter: true,
       bInfo: false,
-      bAutoWidth: false
+      bAutoWidth: false,
+      searching: false
   });
 });
 </script>

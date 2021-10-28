@@ -8,10 +8,10 @@ else
     $(".crumb-active a").html("Configurações Integração Laboratorial");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Importar De/Para");
-    $(".crumb-icon a span").attr("class", "fa fa-th");
+    $(".crumb-icon a span").attr("class", "far fa-th");
 </script>
 <div class="app" style="padding-top: 11px;">
-<i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i>
+<i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i>
 </div>
 
 <script type="text/javascript">

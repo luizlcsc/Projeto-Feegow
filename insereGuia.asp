@@ -16,7 +16,7 @@ end if
         <%=quickfield("simpleSelect", "LoteID", "Selecione um lote", 4, "", "select id, concat('Lote ', Lote, ' - ', Mes, '/', Ano) NomeLote from tisslotes where ConvenioID="&ConvenioID&" AND Tipo='"&req("T")&"' AND isnull(Enviado) OR Enviado=0 order by DATE(CONCAT(Ano,'-', Mes,'-','01')) DESC", "NomeLote", " empty required ") %>
         <div class="col-md-3">
             <label>&nbsp;</label><br />
-            <button class="btn btn-sm btn-primary"><i class="fa fa-arrow-circle-o-right"></i> INSERIR NESTE LOTE</button>
+            <button class="btn btn-sm btn-primary"><i class="far fa-arrow-alt-circle-right"></i> INSERIR NESTE LOTE</button>
         </div>
     </div>
 </form>

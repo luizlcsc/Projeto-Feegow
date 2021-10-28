@@ -30,7 +30,7 @@
     <tr>
       <td><div align="left"></div></td>
       <td><div align="left">
-        <button class="btn btn-success btn-sm" type="submit" name="Gerar"><i class="fa fa-list"></i> Listar</button>
+        <button class="btn btn-success btn-sm" type="submit" name="Gerar"><i class="far fa-list"></i> Listar</button>
       </div></td>
     </tr>
   </table>

@@ -63,17 +63,20 @@ if not getMovement.EOF then
             end if
     end if
 
-	set ItemInvoiceRepasseSQL = db.execute("SELECT rr.id FROM itensinvoice ii INNER JOIN rateiorateios rr ON rr.ItemContaAPagar=ii.id WHERE ii.InvoiceID="&treatvalzero(mInvoiceId))
-
     AutRepasse= False
 
-	if not ItemInvoiceRepasseSQL.eof then
-	    EhRepasse=True
+    if CD="D" then
+        set ItemInvoiceRepasseSQL = db.execute("SELECT rr.id FROM itensinvoice ii INNER JOIN rateiorateios rr ON rr.ItemContaAPagar=ii.id WHERE ii.InvoiceID="&treatvalzero(mInvoiceId))
 
-	    if getMovement("CD")="C" and aut("|contaapagarrepasseX|")=1 then
-            AutRepasse=True
-	    end if
-	end if
+
+        if not ItemInvoiceRepasseSQL.eof then
+            EhRepasse=True
+
+            if getMovement("CD")="C" and aut("|contaapagarrepasseX|")=1 then
+                AutRepasse=True
+            end if
+        end if
+    end if
 
 	%>
 	
@@ -198,11 +201,11 @@ if not getMovement.EOF then
         end if
 
 
-        if not EhStone and podeExcluir(getMovement("CaixaID"), getMovement("Type"), getMovement("CD"), getMovement("AccountAssociationIDCredit")) or AutRepasse then
+        if not EhStone AND getMovement("Type")<>"Bill" AND getMovement("Obs")<>"{C}" and podeExcluir(getMovement("CaixaID"), getMovement("Type"), getMovement("CD"), getMovement("AccountAssociationIDCredit")) or AutRepasse then
 
             %>
             <span class="d-inline-block pull-right" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
-                <button type="button" class="btn btn-xs btn-danger pull-right <%=desabilitarExclusao%> " onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
+                <button type="button" class="btn btn-xs btn-danger pull-right <%=desabilitarExclusao%> " onclick="xMov(<%=getMovement("id") %>)"><i class="far fa-ban"></i> Cancelar</button>
             </span>
             <%
         elseif EhStone then
@@ -211,7 +214,7 @@ if not getMovement.EOF then
                 if microtefLogs.eof then
                 %>
                 <span class="d-inline-block pull-right" tabindex="0" data-toggle="tooltip" title="<%=titleNotaFiscal%>">
-                    <button type="button" class="btn btn-xs btn-danger pull-right <%=desabilitarExclusaoPagamento%>" onclick="xMov(<%=getMovement("id") %>)"><i class="fa fa-trash"></i></button>
+                    <button type="button" class="btn btn-xs btn-danger pull-right <%=desabilitarExclusaoPagamento%>" onclick="xMov(<%=getMovement("id") %>)"><i class="far fa-trash"></i></button>
                 </span>
                 <%
                 else
@@ -220,7 +223,6 @@ if not getMovement.EOF then
                 <%
                 end if
         end if
-
         %>
     </div>
     <%
@@ -261,10 +263,10 @@ if not getMovement.EOF then
 							response.Write("Descontados de "&pName&" ("&pCurrency&"&nbsp;"&formatnumber(pValue,2)&")")
 						case "Pay"
 							set getPaymentMethod = db.execute("select * from cliniccentral.sys_financialPaymentMethod where id="&pPaymentMethod)
-							response.Write("<a href=""javascript:mpd("&getPaymentMovement("id")&");""><i class='fa fa-search-plus'></i> </a> De pagamento via ")
+							response.Write("<a href=""javascript:mpd("&getPaymentMovement("id")&");""><i class='far fa-search-plus'></i> </a> De pagamento via ")
 							if ChequeID<>"" then
 								abreLinkPM = "<a href=""javascript:dadosCheque("&ChequeID&", '"&getPaymentMovement("CD")&"');"">"
-								fechaLinkPM = " <i class=""fa fa-external-link""></i></a>"
+								fechaLinkPM = " <i class=""far fa-external-link""></i></a>"
 							else
 								abreLinkPM = ""
 								fechaLinkPM = ""
@@ -279,7 +281,7 @@ if not getMovement.EOF then
                             end if
 							response.Write(" (R$&nbsp;"&formatnumber(pValue,2)&" - "&pDate&")")
 						case "Transfer"
-                            response.Write("<a href=""javascript:mpd("&getPaymentMovement("id")&");""><i class='fa fa-search-plus'></i> </a> De pagamento via ")
+                            response.Write("<a href=""javascript:mpd("&getPaymentMovement("id")&");""><i class='far fa-search-plus'></i> </a> De pagamento via ")
 							response.Write(getPaymentMovement("Name")&" (R$ "&fn(getPaymentMovement("Value"))&"{" & getPaymentMovement("id") & "})")
 							response.write("</a>")
 					end select
@@ -299,7 +301,7 @@ if not getMovement.EOF then
                                     if not microtefLogs.eof then
                                  %>
                                  <td>
-                                    <button onclick="tefSegundaVia(<%=microtefLogs("id")%>)" title="Comprovante TEF" class="btn btn-xs btn-success"><i class="fa fa-file-text"></i></button>
+                                    <button onclick="tefSegundaVia(<%=microtefLogs("id")%>)" title="Comprovante TEF" class="btn btn-xs btn-success"><i class="far fa-file-text"></i></button>
                                  </td>
                                  <%
                                     end if
@@ -327,7 +329,7 @@ if not getMovement.EOF then
                          <%
 '                         if not EhStone and (getPaymentMovement("CaixaID")=session("CaixaID") and aut("|aberturacaixinhaX|")) or (aut("|contasareceberX|") and getPaymentMovement("CD")="D") or (aut("|areceberpacienteX|") and getPaymentMovement("CD")="D") or (aut("|contasapagarA|") and getPaymentMovement("CD")="C") or (aut("|lancamentosX|") and getPaymentMovement("Type")="Transfer") then
                             %>
-                            ...<button type="button" class="btn btn-xs btn-danger hidden" onclick="modalPaymentDetails(<%=movementID%>, <%=getAlreadyDiscounted("id")%>)"><i class="fa fa-trash"></i></button></td>
+                            ...<button type="button" class="btn btn-xs btn-danger hidden" onclick="modalPaymentDetails(<%=movementID%>, <%=getAlreadyDiscounted("id")%>)"><i class="far fa-trash"></i></button></td>
                             <%
  '                        end if
                          %>
@@ -352,7 +354,7 @@ if not getMovement.EOF then
 						 %>
 						</td>
                         <td>
-                            <button class="btn btn-warning btn-xs" onclick="DesvinclarItemCredito('<%=getPaymentMovement2("id")%>', '<%=getPaymentMovement2("MovementID")%>', '<%=getPaymentMovement2("InstallmentID")%>')" type="button" title="Desvincular item"><i class="fa fa-unlink"></i></button>
+                            <button class="btn btn-warning btn-xs" onclick="DesvinclarItemCredito('<%=getPaymentMovement2("id")%>', '<%=getPaymentMovement2("MovementID")%>', '<%=getPaymentMovement2("InstallmentID")%>')" type="button" title="Desvincular item"><i class="far fa-unlink"></i></button>
                         </td>
 				</tr><%
 		getPaymentMovement2.movenext
@@ -439,6 +441,13 @@ end if
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <% end if %>
 <script>
+
+<%if session("Banco")="clinic7211" then%>
+	const feegowPay = new FeegowPay('zoop', false, 'https://api.feegow.com.br/');
+<%else%>
+	const cappta = new FeegowCappta();
+<%end if%>
+
 function mpd(I){
 	$.post('modalPaymentDetails.asp', {movementID:I}, function(data){ $("#pagar").html(data) });
 }
@@ -454,7 +463,10 @@ function DesvinclarItemCredito(DiscountID, MovementID, InstallmentID) {
 }
 
 function tefSegundaVia (transactionId) {
-    const cappta = new FeegowCappta();
-    cappta.printReceipt(transactionId, "customer");
+	<%if session("Banco")="clinic7211" then%>
+		feegowPay.printReceipt(transactionId, "customer");
+	<%else%>
+		cappta.printReceipt(transactionId, "customer");
+	<%end if%>
 }
 </script>

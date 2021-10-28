@@ -98,7 +98,7 @@ posModalPagar = "fixed"
         <br />
 
     <div class="alert alert-danger text-center no-margin no-padding hidden" id="alert-disable">
-        <small><i class="fa fa-exclamation-circle"></i> Você não pode alterar os dados desta conta, pois existem pagamentos realizados.</small>
+        <small><i class="far fa-exclamation-circle"></i> Você não pode alterar os dados desta conta, pois existem pagamentos realizados.</small>
     </div>
    
     <input type="hidden" id="sysActive" name="sysActive" value="<%=data("sysActive")%>" />
@@ -163,8 +163,8 @@ posModalPagar = "fixed"
 
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i> Adicionar Item
-                        <span class="fa fa-caret-down icon-on-right"></span>
+                        <i class="far fa-plus"></i> Adicionar Item
+                        <span class="far fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right">
                       <%
@@ -192,8 +192,8 @@ posModalPagar = "fixed"
     
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable<% If CD="D" Then %> hidden<% End If %>" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i> Adicionar Pacote
-                        <span class="fa fa-caret-down icon-on-right"></span>
+                        <i class="far fa-plus"></i> Adicionar Pacote
+                        <span class="far fa-caret-down icon-on-right"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right">
                           <%
@@ -249,7 +249,7 @@ posModalPagar = "fixed"
             </div>
             <div class="modal-body">
                 <div class="modal-loading">
-                <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+                <i class="far fa-circle-o-notch fa-spin fa-fw"></i>
                 <span class="sr-only">...</span>
                 Carregando...
                 </div>
@@ -461,7 +461,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#searchAccountID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("addContrato.asp?ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
             $("#modal").html(data);
         });
@@ -522,7 +522,7 @@ function modalNFE(y){
     });
     <% if req("Scan")="1" then %>
     $(document).ready(function(){
-        $(".modal-content").html("Carregando...");
+        $(".modal-content").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $("#modal-table").modal("show");
         $.post("ScanExecutado.asp?I=<%=InvoiceID%>", {}, function(data){
             $(".modal-content").html(data);
@@ -538,7 +538,7 @@ function modalEstoque(ItemInvoiceID, ProdutoID, ProdutoInvoiceID){
     });
 }
 function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID, ProdutoInvoiceID){
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.ajax({
         type:"POST",
         url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID +"&ItemInvoiceID=" + ItemInvoiceID + "&ProdutoInvoiceID=" + ProdutoInvoiceID,

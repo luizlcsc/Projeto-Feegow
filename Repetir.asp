@@ -111,12 +111,15 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
         ap.close
         set ap=nothing
 	end if
+
+	ConsultaID = pultCon("id")
+
 	strLog = "insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", '"&rfProcedimento&"', '"&now()&"', "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfStaID&"', '"&session("User")&"', '0', 'Agendamento gerado a partir de repetição. "&rfNotas&"', 'A', '"&pultCon("id")&"', "&treatvalzero(session("UnidadeID"))&")"
 	db_execute(strLog)
-	call centralSMS(pultCon("ConfSMS"), Data, Hora, session("RepSol"))
-	call centralEmail(pultCon("ConfEmail"), Data, Hora, session("RepSol"))
-	call googleCalendar("X", "", pultCon("id"), "", "", "", "", "", "", "")
-	call googleCalendar("I", "vca", pultCon("id"), ProfissionalID, "", "", "", "", "", "")
+	'call centralSMS(pultCon("ConfSMS"), Data, Hora, session("RepSol"))
+	'call centralEmail(pultCon("ConfEmail"), Data, Hora, session("RepSol"))
+	call googleCalendar("X", "", ConsultaID, "", "", "", "", "", "", "")
+	call googleCalendar("I", "vca", ConsultaID, ProfissionalID, "", "", "", "", "", "")
 
 	redirectID = ProfissionalID
 	if isAgendaEquipamento = "equipamento" then
@@ -125,6 +128,7 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
 
 	%>
 	loadAgenda('<%=Data%>', <%=redirectID%>);
+	getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>" })
 	<%
 end if
 %>

@@ -39,7 +39,7 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 %>
 <script type="text/javascript">
     $(".crumb-active a").html("Cadastro de Unidade / Filial");
-    $(".crumb-icon a span").attr("class", "fa fa-hospital-o");
+    $(".crumb-icon a span").attr("class", "far fa-hospital-o");
 </script>
 
 
@@ -63,7 +63,7 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
     <div>
         <h2>Aguarde.</h2><h3> Estamos gerando uma nova licença para esta unidade.</h3>
         <div class="fa-4x text-center">
-          <i class="fa fa-spinner fa-spin"></i>
+          <i class="far fa-spinner fa-spin"></i>
         </div>
     </div>
 </div>
@@ -81,14 +81,14 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
                     <div class="col-md-2">
         <% IF FALSE AND reg("sysActive")=1 and session("Franqueador") <> "" AND session("UserOld") = "" THEN %>
               <a href="sys_financialCompanyUnits.asp?to=<%=reg("id")%>" class="btn  btn-primary">
-                  Logar na Licenca <i class="fa fa-arrow-right"></i>
+                  Logar na Licenca <i class="far fa-arrow-right"></i>
               </a>
         <% END IF %>
         <%
 		if (reg("sysActive")=1 and aut(lcase(req("P"))&"A")=1) or (reg("sysActive")=0 and aut(lcase(req("P"))&"I")=1) then
 		%>
                         <button class="btn  btn-primary" id="save">
-                            <i class="fa fa-save"></i> Salvar
+                            <i class="far fa-save"></i> Salvar
                         </button>
 		<%
 		end if
@@ -116,7 +116,7 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
                                     </div>
                                     <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
                                         <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
-                                        <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
                                     </div>
                                 </div>
                             </div>

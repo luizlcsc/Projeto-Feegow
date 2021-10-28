@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Devolucao.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 
 'Não gerar devolução se tiver REPASSE GERADO E/OU NOTA FISCAL GERADA
@@ -12,10 +13,26 @@ DebitarCaixa = ref("DebitarCaixa")&""
 accountId = req("accountId")&""
 contaID = ref("ContaID")&""
 
+' ######################### BLOQUEIO FINANCEIRO ########################################
+accounts = Split(accountId, "_")
+contabloqueada = verificaBloqueioConta(2, 1, accounts(1), session("UnidadeID"),date() )
+if contabloqueada = "1" then
+    response.write("A conta não pode ser alterada pois está bloqueada!")
+    %>
+    <script>
+      alert('Esta conta está bloqueada e não pode ser alterada!');
+      $('#modal-components').modal('hide');
+    </script>
+    <%
+    Response.End
+end if
+' ######################################################################################
+
 
 set devolucaoObj = new Devolucao
 exeDevolucao = devolucaoObj.gerarDevolucao(InvoiceID, iteninvoice, accountId, TipoOperacao, MotivoDevolucao, DebitarCaixa, Observacao, contaID)
 if exeDevolucao then
+    call registraEventoAuditoria("cancela_item", InvoiceID, Observacao)
     response.write("Conta cancelada com sucesso")
 else
     response.write("Conta não cancelada")
@@ -23,11 +40,15 @@ end if
 %>
 <script>
 $(function(){
-$('#modal-components').on('hidden.bs.modal', function (e) {
-  location.reload();
-})
+    closeComponentsModal();
+    $("#btn-invoice-save").attr("disabled", false);
+    showMessageDialog("Itens cancelados com sucesso", "warning");
+    setTimeout(function (){
+        itens();
+    },500);
 
-})
+});
+
 </script>
 
 <%

@@ -79,7 +79,7 @@ else
         </div>
 
         <div class="modal-footer no-margin-top">
-	        <button class="btn btn-sm btn-warning pull-right" id="btnShare" type="button"><i class="fa fa-share-alt"></i> Compartilhar</button>
+	        <button class="btn btn-sm btn-warning pull-right" id="btnShare" type="button"><i class="far fa-share-alt"></i> Compartilhar</button>
     
         </div>
         <input type="hidden" name="Share" value="Share" />

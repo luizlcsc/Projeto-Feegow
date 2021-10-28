@@ -20,7 +20,7 @@ end if
 
 if Acao="I" then
 
-    call linhaAgenda(linhas, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+    call linhaAgenda(linhas, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios, true)
 end if
 %>
 <script type="text/javascript">
@@ -36,7 +36,7 @@ $(function(){
         dispEquipamento();
     })
     function dispEquipamento(){
-        $.post("agendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){
+        $.post("AgendaParametros.asp?tipo=Equipamento", $("#formAgenda").serialize(), function(data){
             eval(data);
         });
     }

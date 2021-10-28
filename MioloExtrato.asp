@@ -1,5 +1,9 @@
  <!--#include file="connect.asp"-->
 <%
+if req("Data")<>"" then
+    session("DateFrom") = req("Data")
+    session("DateTo") = req("Data")
+end if
 if session("DateFrom")="" then
 	session("DateFrom") = dateadd("m", -1, date())
 end if
@@ -99,19 +103,24 @@ end if
             </div>
             <div class="col-md-2">
                 <label>&nbsp;</label><br />
-                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="fa fa-search bigger-110"></i>Gerar</button>
+                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i>Gerar</button>
             </div>
-            <div class="col-md-2">
-                <label>&nbsp;</label><br />
-                <button disabled class="btn-export btn btn-sm btn-info btn-block" name="Filtrate" onclick="$('#headerExtrato h2').html( $('#searchAccountID').val() ); $('#headerExtrato h4').html( $('#DateFrom').val() + ' a ' + $('#DateTo').val() ); print()" type="button"><i class="fa fa-print bigger-110"></i> Imprimir</button>
-            </div>
-            <div class="col-md-2">
-                <label>&nbsp;</label><br />
-                <button disabled class="btn-export btn btn-sm btn-success btn-block" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i> Excel</button>
-            </div>
+
         </div>
     </div>
     <div class="panel">
+        <div class="panel-heading">
+            <div class='painel-header-flex'>
+                <span class="panel-title"><i class="far fa-list"></i> Resultado do extrato </span>
+                <!--<button class='btn btn-success text-right'><i class="far fa-plus"></i></button>-->
+                <span class="panel-controls">
+
+                    <button class="btn btn-info btn-sm" name="Filtrate" onclick="printExtrato()" type="button" title="Imprimir"><i class="far fa-print bigger-110"></i></button>
+
+                    <button type="button" class="btn btn-sm btn-success" title="Gerar Excel" onclick="downloadExcel()"><i class="far fa-table"></i></button>
+                </span>
+            </div>
+        </div>
         <div class="text-center visible-print" id="headerExtrato">
             <h2 mtn ptn>
                 <%
@@ -165,5 +174,12 @@ $("#frmExtrato").submit(function(){
     });
 	return false;
 });
+
+function printExtrato(){
+     $('#headerExtrato h2').html( $('#searchAccountID').val() );
+     $('#headerExtrato h4').html( $('#DateFrom').val() + ' a ' + $('#DateTo').val() );
+     print();
+}
+
 <!--#include file="financialCommomScripts.asp"-->
 </script>

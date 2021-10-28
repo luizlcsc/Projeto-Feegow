@@ -36,7 +36,7 @@ if ref("Para")<>"" then
     db_execute("insert into "&ref("B")&".propostasanexas (EmailID, Arquivo) values ((select id from "&ref("B")&".chamadas where sysUserAtend="&ref("User")&" order by id desc limit 1), '"&ref("F")&".pdf')")
     %>
         $.gritter.add({
-            title: '<i class="fa fa-envelope"></i> E-mail enviado...',
+            title: '<i class="far fa-envelope"></i> E-mail enviado...',
             text: "<%'=sql %>",
             class_name: 'gritter-success gritter-light'
         });

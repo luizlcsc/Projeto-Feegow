@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 Dinheiro = ref("Dinheiro")
 if isnumeric(Dinheiro) and Dinheiro<>"" then
@@ -13,9 +14,9 @@ else
     DinheiroInformado = 0
 end if
 
-Cheque = ccur(ref("Cheque"))
-Credito = ccur(ref("Credito"))
-Debito = ccur(ref("Debito"))
+Cheque = ccur(nullToZero(ref("Cheque")))
+Credito = ccur(nullToZero(ref("Credito")))
+Debito = ccur(nullToZero(ref("Debito")))
 
 Diferenca = Dinheiro-DinheiroInformado
 PermitirFechamentoDeCaixaValorAbaixo = getConfig("PermitirFechamentoDeCaixaValorAbaixo")
@@ -32,7 +33,7 @@ if Diferenca<>0 and req("Msg")<>"Ok" then
 
         erro = erro & "Deseja prosseguir com o fechamento?"
         %>
-        if(confirm('<%= erro %>')) $.post("fechaCaixa.asp?Msg=Ok", $("#frmCx").serialize(), function(data){ eval(data) });
+        if(confirm('<%= erro %>')) $.post("fechaCaixa.asp?Msg=Ok&DiferencaConfirmada=1", $("#frmCx").serialize(), function(data){ eval(data) });
         <%
     else
         erro = erro & "Fechamento não permitido!"
@@ -41,6 +42,10 @@ if Diferenca<>0 and req("Msg")<>"Ok" then
         <%
     end if
 else
+    if req("DiferencaConfirmada")="1" then
+        call registraEventoAuditoria("fecha_caixa_divergencia", session("CaixaID"), "Caixa fechado com divergência de "&fn(Diferenca))
+    end if
+
     set CaixaSQL = db.execute("SELECT id FROM caixa WHERE id="&session("CaixaID")&" AND Reaberto='S'")
     if CaixaSQL.eof then
 

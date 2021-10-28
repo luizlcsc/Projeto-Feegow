@@ -20,7 +20,7 @@
     $(".crumb-active a").html("Regras de Repasse");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("configuração das regras que serão aplicadas para repasses de recebimentos");
-    $(".crumb-icon a span").attr("class", "fa fa-puzzle-piece");
+    $(".crumb-icon a span").attr("class", "far fa-puzzle-piece");
 </script>
 
 <br />
@@ -56,7 +56,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <button type="button" onclick="repasseDesconto(0)" class="btn-xs btn btn-primary pull-right">
-                                        <i class="fa fa-plus"></i> Adicionar
+                                        <i class="far fa-plus"></i> Adicionar
                                     </button>
                                 </div>
                             </div>
@@ -89,7 +89,7 @@ function fRateio(T, I, A){
 	   type:"GET",
 	   url:"modalRateioFuncoes.asp?T="+T+"&I="+I+"&A="+A,
 	   success:function(data){
-		   $("#modal").html("Carregando...");
+		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	   }
@@ -97,7 +97,7 @@ function fRateio(T, I, A){
 }
 
 function repasseDesconto(I) {
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $("#modal-table").modal("show");
     $.get("repasseDesconto.asp?I=" + I, function (data) {
         $("#modal").html(data);

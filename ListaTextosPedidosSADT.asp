@@ -86,11 +86,11 @@ while not pp.eof
 	<tr id="">
         <td width="1%" nowrap>
             <a onclick="<%= aplicacoes %>" href="javascript:void(0);">
-                <i class="fa fa-hand-o-left"></i>
+                <i class="far fa-hand-o-left"></i>
             </a>
             <%if pp("TipoProcedimento")="PT" then%>
             <a href="javascript:aplicarPedidoSADT('', 22, '');">
-                <i class="fa fa-folder"></i>
+                <i class="far fa-folder"></i>
             </a>
             <%end if%>
 
@@ -105,9 +105,9 @@ while not pp.eof
         <td>
             <a href="#" class="btn btn-xs tooltip-info btnfavoritos" title="Favoritos" data-tipo="<%=pp("TipoProcedimento")%>" data-id="<%=pp("id")%>" data-placement="top" data-rel="tooltip" data-original-title="Favoritos">
             <% if pp("TipoID")<>"99999999" then %>
-                <i class="fa fa-star bigger-125" data-favorito="0"></i>
+                <i class="fas fa-star bigger-125" data-favorito="0"></i>
             <% else %>
-                <i class="fa fa-star-o bigger-125" data-favorito="1"></i>
+                <i class="far fa-star bigger-125" data-favorito="1"></i>
             <% end if %>
             </a>
         </td>
@@ -124,7 +124,7 @@ while not listaTextosPedidos.EOF
     %>
 	<tr id="<%=listaTextosPedidos("id")%>">
         <td width="1%"><a href="javascript:aplicarPedidoSADT('<%=listaTextosPedidos("codigo")%>', 22, '<%=listaDescricoes%>');">
-            <i class="fa fa-hand-o-left"></i>
+            <i class="far fa-hand-o-left"></i>
             </a>
         </td>
 
@@ -133,9 +133,9 @@ while not listaTextosPedidos.EOF
         <td>
             <a href="#" class="btn btn-xs tooltip-info btnfavoritos" title="Favoritos" data-tipo="<%=listaTextosPedidos("TipoProcedimento")%>" data-id="<%=listaTextosPedidos("id")%>" data-placement="top" data-rel="tooltip" data-original-title="Favoritos">
             <% if listaTextosPedidos("TipoID")<>"99999999" then %>
-                <i class="fa fa-star bigger-125" data-favorito="0"></i>
+                <i class="fas fa-star bigger-125" data-favorito="0"></i>
             <% else %>
-                <i class="fa fa-star-o bigger-125" data-favorito="1"></i>
+                <i class="far fa-star bigger-125" data-favorito="1"></i>
             <% end if %>
             </a>
         </td>

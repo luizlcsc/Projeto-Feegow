@@ -595,6 +595,7 @@ end if
             </td>
 			<td nowrap="nowrap">
 				<div class="action-buttons">
+                    <button id="btn_NFeBeta" title="Nota Fiscal" class="btn btn-xs btn-warning btn-sm" onclick='modalNFEBeta2("<%=mov("InvoiceID")%>")' type="button"><i class="far fa-file-text bigger-110"></i></button>
 					<a title="Editar" class="btn btn-xs btn-success" href="<%=linkBill%>"><i class="far fa-edit bigger-130"></i></a>
 					<a title="Detalhes" class="btn btn-xs btn-info" href="javascript:modalPaymentDetails('<%=mov("id")%>')">
                        <i class="far fa-search-plus bigger-130"></i></a>
@@ -811,4 +812,6 @@ end if
     $("#selecionar-todas-as-contas").change(function() {
         $(".conta-a-pagar-checkbox").prop("checked", $(this).prop("checked")).change();
     });
+
+    <!--#include file="financialCommomScripts.asp"-->
 </script>

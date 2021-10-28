@@ -28,7 +28,7 @@ if Unidades<>"" then
 else
     Unidades= session("Unidades")
 end if
-if Unidade="" then
+if Unidades="" then
     Unidades = "-1"
 end if
 if ModoFranquiaUnidade then

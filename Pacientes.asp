@@ -143,7 +143,7 @@ end if
 </div>
 <%
 omitir = ""
-if session("Admin")=1 then
+if session("Admin")=0 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
 		tipo = omit("Tipo")
@@ -1400,12 +1400,7 @@ end if
 
         $(`#Cidade`).hide();
         $(`#Cidade`).after(
-            `<select id="CidadeID" name="CidadeID" style="
-                    background-color: #fff;
-                    border: 1px solid rgba(0, 0, 0, 0.1);
-                    border-radius: 4px;
-                    height: 38px;
-                    width: -webkit-fill-available;">
+            `<select id="CidadeID" name="CidadeID" class="form-control">
                 <option disabled selected value="">Selecione um estado</option>
             </select>`);
 
@@ -1497,7 +1492,7 @@ end if
 
         window.searchingCep = true;
         cepButton.attr('disabled', true);
-        cepButtonIcon.addClass('fa-spinner fa-spin');
+        cepButtonIcon.addClass('fa-circle-notch fa-spin');
         cepButtonIcon.removeClass('fa-search');
 
         if (!cep)
@@ -1670,12 +1665,7 @@ end if
     }
 
     function createEstadosSelect() {
-        return `<select id="EstadoID" name="EstadoID" onchange="return setCitiesSelect();" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
+        return `<select id="EstadoID" name="EstadoID" onchange="return setCitiesSelect();" class="form-control">
                     <option disabled selected value=""></option>
                     <option value="1" >AC</option>
                     <option value="2" >AL</option>
@@ -1735,12 +1725,7 @@ end if
         getCitiesFromEstado(estadoSigla).then((cidades) => {
 
             const cidadesSelect = $(
-                `<select id="CidadeID" name="CidadeID" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
+                `<select id="CidadeID" name="CidadeID" class="form-control">
                     <option disabled selected value></option>
                 </select>`);
 
@@ -1768,12 +1753,7 @@ end if
             getCitiesFromEstado(estadoSigla).then((cidades) => {
 
                 const cidadesSelect = $(
-                    `<select id="CidadeID" name="CidadeID" style="
-                            background-color: #fff;
-                            border: 1px solid rgba(0, 0, 0, 0.1);
-                            border-radius: 4px;
-                            height: 38px;
-                            width: -webkit-fill-available;">
+                    `<select id="CidadeID" name="CidadeID" class="form-control">
                         <option disabled selected value=""></option>
                     </select>`);
     
@@ -1801,12 +1781,7 @@ end if
             getPaises().then((paises) => {
 
                 const paisesSelect = $(
-                    `<select id="PaisID" name="PaisID" onchange="$('#Pais option:eq(0)').val($(this).val()); cleanAddressFields();" style="
-                            background-color: #fff;
-                            border: 1px solid rgba(0, 0, 0, 0.1);
-                            border-radius: 4px;
-                            height: 38px;
-                            width: -webkit-fill-available;">
+                    `<select id="PaisID" name="PaisID" onchange="$('#Pais option:eq(0)').val($(this).val()); cleanAddressFields();" class="form-control">
                         <option disabled selected value=""></option>
                     </select>`);
     

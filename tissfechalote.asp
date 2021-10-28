@@ -91,12 +91,7 @@ end if
         <div class="row" style="display: flex; align-items: flex-end;">
             <div class="col-md-2">
                 <label>País</label><br />
-                <select id="PaisID" name="PaisID" onchange="$('#EstadoID').val(0).change();" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
+                <select id="PaisID" name="PaisID" onchange="$('#EstadoID').val(0).change();" class="form-control">
                     <option selected value="">Todos</option>
                     <option value="1">Brasil</option>
                     <option value="0">Outros</option>
@@ -110,12 +105,7 @@ end if
             </div>
             <div class="col-md-2">
                 <label>Estado</label><br/>
-                <select id="EstadoID" name="EstadoID" onchange="$('#CidadeID').val(0).change(); setCitiesSelect();" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
+                <select id="EstadoID" name="EstadoID" onchange="$('#CidadeID').val(0).change(); setCitiesSelect();" class="form-control">
                     <option selected value="">Todos</option>
                     <option value="1" >AC</option>
                     <option value="2" >AL</option>
@@ -154,12 +144,7 @@ end if
             </div>
             <div class="col-md-2">
                 <label>Cidade</label><br/>
-                <select id="CidadeID" name="CidadeID" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
+                <select id="CidadeID" name="CidadeID" class="form-control">
                     <option selected value="">Todas</option>
                 </select>
                 <script>
@@ -847,12 +832,7 @@ jQuery(function() {
         $('#Estado').val(estadoSigla);
         getCitiesFromEstado(estadoSigla).then((cidades) => {
             const cidadesSelect = $(
-                `<select id="CidadeID" name="CidadeID" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
+                `<select id="CidadeID" name="CidadeID" class="form-control">
                     <option selected value="">Todas</option>
                 </select>`);
             for (const cidade of cidades) {

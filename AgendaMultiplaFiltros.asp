@@ -28,6 +28,9 @@ if Unidades<>"" then
 else
     Unidades= session("Unidades")
 end if
+if Unidades="" then
+    Unidades = "-1"
+end if
 if ModoFranquiaUnidade then
     Unidades = "|"&session("UnidadeID")&"|"
     UnidadesSelecionadas="|UNIDADE_ID"&replace(Unidades, "|","")&"|"
@@ -153,22 +156,22 @@ end if
 
 <div class="row">
     <% if getConfig("multiplaExibirCampoProcedimento") then %>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <%= selectInsert("Procedimento", "filtroProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " ", "", "") %>
         </div>
     <% end if %>
 
-    <%=quickField("multiple", "Profissionais", "Profissionais", 3, req("Profissionais"), "SELECT id, NomeProfissional, Ordem FROM (SELECT 0 as 'id', 'Nenhum' as 'NomeProfissional', 0 'Ordem' UNION SELECT id, IF(NomeSocial != '' and NomeSocial IS NOT NULL, NomeSocial, NomeProfissional)NomeProfissional, 1 'Ordem' FROM profissionais p WHERE (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1 and Ativo='on' "&sqlLimitarProfissionais&" ORDER BY NomeProfissional)t ORDER BY Ordem, NomeProfissional", "NomeProfissional", " empty ") %>
-    <%=quickField("multiple", "Especialidade", "Especialidades", 3, req("Especialidades"), "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais p WHERE ativo='on' "&sqlLimitarProfissionais&"	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on' "&sqlLimitarProfissionais&") t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) AND e.sysActive=1 GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
+    <%=quickField("multiple", "Profissionais", "Profissionais", 2, req("Profissionais"), "SELECT id, NomeProfissional, Ordem FROM (SELECT 0 as 'id', 'Nenhum' as 'NomeProfissional', 0 'Ordem' UNION SELECT id, IF(NomeSocial != '' and NomeSocial IS NOT NULL, NomeSocial, NomeProfissional)NomeProfissional, 1 'Ordem' FROM profissionais p WHERE (NaoExibirAgenda != 'S' OR NaoExibirAgenda is null OR NaoExibirAgenda='') AND sysActive=1 and Ativo='on' "&sqlLimitarProfissionais&" ORDER BY NomeProfissional)t ORDER BY Ordem, NomeProfissional", "NomeProfissional", " empty ") %>
+    <%=quickField("multiple", "Especialidade", "Especialidades", 2, req("Especialidades"), "SELECT t.EspecialidadeID id, IFNULL(e.nomeEspecialidade, e.especialidade) especialidade FROM (	SELECT EspecialidadeID from profissionais p WHERE ativo='on' "&sqlLimitarProfissionais&"	UNION ALL	select pe.EspecialidadeID from profissionaisespecialidades pe LEFT JOIN profissionais p on p.id=pe.ProfissionalID WHERE p.Ativo='on' "&sqlLimitarProfissionais&") t LEFT JOIN especialidades e ON e.id=t.EspecialidadeID WHERE NOT ISNULL(especialidade) AND e.sysActive=1 GROUP BY t.EspecialidadeID ORDER BY especialidade", "especialidade", " empty ") %>
 
     <% if getConfig("multiplaExibirCampoConvenios") then %>
-        <%=quickField("multiple", "Convenio", "Convênios", 3, "", "select c.id, c.NomeConvenio from convenios c LEFT JOIN profissionais p ON p.SomenteConvenios LIKE CONCAT('%|',c.id,'|%') where c.sysActive=1 and c.Ativo='on' "&sqlLimitarProfissionais&franquia(" AND  COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" GROUP BY c.id order by c.NomeConvenio", "NomeConvenio", " empty ") %>
+        <%=quickField("multiple", "Convenio", "Convênios", 2, "", "select c.id, c.NomeConvenio from convenios c LEFT JOIN profissionais p ON p.SomenteConvenios LIKE CONCAT('%|',c.id,'|%') where c.sysActive=1 and c.Ativo='on' "&sqlLimitarProfissionais&franquia(" AND  COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")&" GROUP BY c.id order by c.NomeConvenio", "NomeConvenio", " empty ") %>
     <% end if %>
 
-    <%=quickField("multiple", "Locais", "Locais", 3, sUnidadeID, sqlAM, "NomeLocal", " empty ")%>
+    <%=quickField("multiple", "Locais", "Locais", 2, sUnidadeID, sqlAM, "NomeLocal", " empty ")%>
 
     <% if getConfig("multiplaExibirCampoEquipamentos") then %>
-        <%=quickField("multiple", "Equipamentos", "Equipamentos", 3, "", "SELECT e.id, e.NomeEquipamento FROM equipamentos e LEFT JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',e.UnidadeID,'|%') WHERE e.sysActive=1 and e.Ativo='on' "&sqlLimitarProfissionais&franquia("AND COALESCE(cliniccentral.overlap(CONCAT('|',UnidadeID,'|'), COALESCE(NULLIF('|0|', ''), '-999')),true)")&" GROUP BY e.id ORDER BY NomeEquipamento", "NomeEquipamento", "empty") %>
+        <%=quickField("multiple", "Equipamentos", "Equipamentos", 2, "", "SELECT e.id, e.NomeEquipamento FROM equipamentos e LEFT JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',e.UnidadeID,'|%') WHERE e.sysActive=1 and e.Ativo='on' "&sqlLimitarProfissionais&franquia("AND COALESCE(cliniccentral.overlap(CONCAT('|',UnidadeID,'|'), COALESCE(NULLIF('|0|', ''), '-999')),true)")&" GROUP BY e.id ORDER BY NomeEquipamento", "NomeEquipamento", "empty") %>
     <% end if %>
     <input type="hidden" id="hData" name="hData" value="<%= hData %>" />
 
@@ -179,13 +182,13 @@ end if
                             "LEFT JOIN profissionais p ON pp.ProfissionalID = p.id " &_
                             "WHERE prog.sysActive = 1 " & sqlLimitarProfissionais & " " &_
                             "GROUP BY prog.id ORDER BY prog.NomePrograma"
-        response.write quickField("multiple", "Programas", "Programas de Saúde", 3, req("Programas"), sqlProgramasSaude, "NomePrograma", " empty ")
+        response.write quickField("multiple", "Programas", "Programas de Saúde", 2, req("Programas"), sqlProgramasSaude, "NomePrograma", " empty ")
     end if
     %>
 </div>
 <div class="row">
     <div class="col-md-12 text-center">
-        <button id="buscar" class="btn btn-primary <% if not ExibeBotaoBusca then %>hidden<% end if%> mt10 btn-block" onclick="$(this).addClass('hidden')"><i class="fa fa-search"></i> BUSCAR</button>
+        <button id="buscar" class="btn btn-primary <% if not ExibeBotaoBusca then %>hidden<% end if%> mt10 btn-block" onclick="$(this).addClass('hidden')"><i class="far fa-search"></i> BUSCAR</button>
     </div>
 </div>
 

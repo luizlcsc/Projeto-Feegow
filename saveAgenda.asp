@@ -4,6 +4,10 @@
 <!--#include file="Classes/FuncoesRepeticaoMensalAgenda.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
+<!--#include file="webhookFuncoes.asp"-->
+
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
 	'on error resume next
@@ -92,11 +96,30 @@ rfHora=ref("Hora")
 rfProfissionalID=ref("ProfissionalID")
 rfEspecialidadeID=ref("EspecialidadeID")
 rdEquipamentoID=ref("EquipamentoID")
+GradeID = ref("GradeID")
 indicacaoID=ref("indicacaoId")
 rfData=ref("Data")
 if isdate(rfData) then
     rfData = cdate(rfData)
 end if
+
+if ref("LocalID")<>"" then
+    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(ref("LocalID")))
+
+    if not LocalSQL.eof then
+        AgendamentoUnidadeID=LocalSQL("UnidadeID")
+    end if
+end if
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+if AgendamentoUnidadeID <> "" then
+    contabloqueadacred = verificaBloqueioConta(2, 2, 0, AgendamentoUnidadeID,rfData)
+    if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+        erro ="Agenda bloqueada para edição retroativa (data fechada)."
+    end if
+end if
+' #####################################################################################
+
 
 rfProcedimento=ref("ProcedimentoID")
 rfrdValorPlano=ref("rdValorPlano")
@@ -228,6 +251,36 @@ if erro="" then
 	        valpac = "'"&valp&"'"
 	    end if
 
+	    IF "age"&splCamposPedir(z)&"" = "ageCel1" THEN
+            valpac = RemoveCaracters(valpac,"-./ ()")
+        end if
+        IF "age"&splCamposPedir(z)&"" = "ageTel1" THEN
+            valpac = RemoveCaracters(valpac,"-./ ()")
+        end if
+        
+	    IF "age"&splCamposPedir(z)&"" = "ageCPF" THEN
+            valpac = RemoveCaracters(valpac,"-./")
+            valp = RemoveCaracters(valp,"-./")
+            hasCpf = true
+
+            'desativado: Apresentando comportamento estranho. Precisa considerar se o paciente esta sendo adicionado ou nao
+            IF getConfig("NaoPermitirCPFduplicado") and False THEN
+                set PacienteDuplicadoSQL = db.execute("SELECT cpf,id, NomePaciente FROM pacientes WHERE ((cpf='"&valp&"' OR cpf='"&valp&"') and sysActive=1 and '"&valp&"'!='' and id!="&rfPaciente&") ")
+                IF not PacienteDuplicadoSQL.eof THEN
+                        %>
+                        new PNotify({
+                            title: 'N&Atilde;O AGENDADO!',
+                            text: 'CPF duplicado. Paciente <%= PacienteDuplicadoSQL("NomePaciente") %>',
+                            type: 'danger',
+                            delay: 3000
+                        });
+                        <%
+                    response.end
+                END IF
+            END IF
+
+        END IF
+
         existeTabela = db.execute("select count(id) = 1 as existeTabela from pacientes where Tabela is not null and id="&rfPaciente)
         if  splCamposPedir(z) = "Tabela" and existeTabela("existeTabela") = "1" then
             upPac = upPac&""
@@ -240,9 +293,9 @@ if erro="" then
 	next
 
     if ref("Checkin")="1" then
-        
-        'db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& ref("CPF") &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& ref("IndicadoPor") &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
-        db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& ref("CPF") &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& nomeindicado &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
+        CPF = RemoveCaracters(ref("CPF")&"",".-/ ")
+        'db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& CPF &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& ref("IndicadoPor") &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
+        db.execute("update pacientes set NomePaciente='"& ref("NomePaciente") &"', Nascimento="& mydatenull(ref("Nascimento")) &", CPF='"& CPF &"', Sexo="& treatvalzero(ref("Sexo")) &", Cep='"& ref("Cep") &"', Endereco='"& ref("Endereco") &"', Numero='"& ref("Numero") &"', Complemento='"& ref("Complemento") &"', Bairro='"& ref("Bairro") &"', Cidade='"& ref("Cidade") &"', Estado='"& ref("Estado") &"', Pais="& treatvalzero(ref("Pais")) &", Tel2='"& ref("Tel2") &"', Cel2='"& ref("Cel2") &"', Email2='"& ref("Email2") &"', Observacoes='"& ref("Observacoes") &"', Pendencias='"& ref("Pendencias") &"', Profissao='"& ref("Profissao") &"', GrauInstrucao="& treatvalzero(ref("GrauInstrucao")) &", Documento='"& ref("Documento") &"', Naturalidade='"& ref("Naturalidade") &"', EstadoCivil="& treatvalzero(ref("EstadoCivil")) &", Origem="& treatvalzero(ref("Origem")) &", IndicadoPor='"& nomeindicado &"', Religiao='"& ref("Religiao") &"', CNS='"& ref("CNS") &"', CorPele="& treatvalzero(ref("CorPele")) &", lembrarPendencias='"& ref("lembrarPendencias") &"' where id="& rfPaciente )
     end if
 
 	db.execute("update pacientes set "& upPac &" sysActive=1 where id="&rfPaciente)
@@ -358,6 +411,19 @@ if erro="" then
 	    db.execute("UPDATE agendamentos SET CanalID="&treatvalnull(ref("ageCanal"))&" WHERE id="&ConsultaID)
     end if
 
+    if cdate(ref("Data"))< date() then
+
+        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and pCon("StaID")&"" <> rfStaID then
+            'status de agendamento passado alterado para status em que o atendimento nao foi prestado.
+
+            call registraEventoAuditoria("altera_status_agendamento_passado", ConsultaID, "")
+        else
+            call registraEventoAuditoria("altera_agendamento_passado", ConsultaID, "")
+        end if
+
+    end if
+
+
     if session("Banco")="clinic5459" then
         n = 0
         while n<5
@@ -433,6 +499,52 @@ if erro="" then
         'call centralEmail(ref("ConfEmail"), rfData, rfHora, ConsultaID)
 
         if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
+
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
+            if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
+                
+                'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
+                validaEventosSQL =  "SELECT ev.id, ev.Status, ev.Descricao                                            "&chr(13)&_
+                                    "FROM eventos_emailsms ev "&chr(13)&_                                                              
+                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.Nome = ev.Descricao "&chr(13)&_
+                                    "WHERE ev.WhatsApp=1                                                              "&chr(13)&_                                                                                         
+                                    "AND ev.sysActive=1                                                               "&chr(13)&_
+                                    "AND eveWha.id IS NOT NULL                                                        "&chr(13)&_                                                                                          
+                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|1879|%')        "&chr(13)&_               
+                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|0|%')                     "&chr(13)&_                       
+                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|126|%')       "&chr(13)&_           
+                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|16|%')          "&chr(13)&_                
+                                    "AND (ev.Status LIKE '%|ALL|%' OR ev.Status LIKE '%|7|%')"
+                set validaEventos = db.execute(validaEventosSQL)
+                if not validaEventos.eof then
+                    while not validaEventos.eof
+                        
+                        EventoStatus = validaEventos("Status")
+                        EventoID = validaEventos("id")
+                        bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
+                        bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
+
+                        'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
+                        if (ref("StaID") = 7 and instr(EventoStatus,"|7|")>0 ) OR (ref("StaID") = 1 and instr(EventoStatus,"|1|")>0 ) then
+                            call webhook(119, true, bodyContentFrom, bodyContentTo)  
+                        end if
+                        '***********************************************************************************
+                        '*APÓS HOMOLOGAR SISTEMA DE MENSAGENS, APROVAR COM A BLIP NOVOS MODELOS DE MENSAGEM*
+                        '*E CRIAR EVENTOS EM NOSSO HOOK NO CLINICCENTRAL COM OS STATUS ABAIXO***************
+                        '***********************************************************************************
+                            'ATENDIDO = 3
+                            'DESMARCADO PELO PACIENTE = 11
+                            'NÃO COMPARECEU = 6
+                            'REMARCADO = 15
+
+                    validaEventos.movenext
+                    wend
+                end if
+                validaEventos.close
+                set validaEventos = nothing
+                
+            end if
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             %>
             getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
             <%
@@ -642,7 +754,7 @@ if erro="" then
 else
 	%>
     new PNotify({
-        title: 'N&Atilde;O AGENDADO!',
+        title: 'Não agendado!',
         text: '<%=erro%>',
         type: 'danger',
         delay: 3000

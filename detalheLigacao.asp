@@ -67,7 +67,7 @@ end if
         <ul class="nav nav-pills mb20" id="myTab<%=CallID %>">
             <li class="active">
                 <a data-toggle="tab" class="mainTab" href="#Chamada<%=CallID%>">
-                    <i class="blue fa fa-user bigger-110"></i>
+                    <i class="blue far fa-user bigger-110"></i>
                     <span class="hidden-480">Principal </span>
                 </a>
             </li>
@@ -84,7 +84,7 @@ end if
                 elseif len(aptel)=11 then
                     aptel = "("& left(aptel, 2) &") "& mid(aptel, 3, 4) &"-"& right(aptel,5)
                 end if
-                aplicatel = " &nbsp;&nbsp;<button type='button' class='btn btn-xs btn-default aplicaTel' style='position:absolute' onclick=""$('#"& campo &"').val('"& aptel &"'); $('.aplicaTel').fadeOut(); salvaDados();""><i class='fa fa-hand-o-down'></i></button>"
+                aplicatel = " &nbsp;&nbsp;<button type='button' class='btn btn-xs btn-default aplicaTel' style='position:absolute' onclick=""$('#"& campo &"').val('"& aptel &"'); $('.aplicaTel').fadeOut(); salvaDados();""><i class='far fa-hand-o-down'></i></button>"
         '       end if
         end function
         %>
@@ -97,7 +97,7 @@ end if
                                     <label>Contato</label><br />
                                     <%=selectInsertCA("", "ContatoID"&CallID, Contato, "3", " onchange=""contatoParametros( $(this).attr(`data-valor`) );""", " required", "")%>
                                 </div>
-                                <%= quickField("simpleSelect", "ConstatusID_"&CallID, "<i class='fa fa-exclamation-triangle orange'></i> Status", 4, ConstatusID, "select * from chamadasconstatus", "NomeStatus", " no-select2 ") %>
+                                <%= quickField("simpleSelect", "ConstatusID_"&CallID, "<i class='far fa-exclamation-triangle orange'></i> Status", 4, ConstatusID, "select * from chamadasconstatus", "NomeStatus", " no-select2 ") %>
                                 <div class="col-md-12">
                                     <%=fSysActive("sysActive_"&CallID, sysActive, "$('#ContatoID"&CallID&"').val()") %>
                                 </div>
@@ -171,19 +171,19 @@ end if
                                     <hr>
                                 <div class="row">
                                     <div class="col-xs-6">
-                                        <button type="button" onClick="location.href='./?P=Agenda-1&Pers=1';" class="btn btn-info btn-block" title="Agendar"><i class="fa fa-calendar"></i> Agendar</button>
+                                        <button type="button" onClick="location.href='./?P=Agenda-1&Pers=1';" class="btn btn-info btn-block" title="Agendar"><i class="far fa-calendar"></i> Agendar</button>
                                     </div>
                                     <div class="col-xs-6">
-                                        <button type="button" class="btn btn-primary btn-block" title="Finalizar" onClick="finaliza(<%=CallID%>)"><i class="fa fa-stop"></i> Finalizar</button>
+                                        <button type="button" class="btn btn-primary btn-block" title="Finalizar" onClick="finaliza(<%=CallID%>)"><i class="far fa-stop"></i> Finalizar</button>
                                     </div>
                                 </div>
                                 <br />
                                 <div class="row">
                                     <div class="col-xs-6">
-                                        <button type="button" class="btn btn-info btn-block" title="Abrir Tíquete" onclick="location.href='./?P=Tarefas&Pers=1&I=N&Solicitantes='+$('#ContatoID<%=CallID %>').val();"><i class="fa fa-ticket"></i> Tíquete</button>
+                                        <button type="button" class="btn btn-info btn-block" title="Abrir Tíquete" onclick="location.href='./?P=Tarefas&Pers=1&I=N&Solicitantes='+$('#ContatoID<%=CallID %>').val();"><i class="far fa-ticket"></i> Tíquete</button>
                                     </div>
                                     <div class="col-xs-6">
-                                        <button type="button" class="btn btn-info btn-block hidden" title="Transferir"><i class="fa fa-exchange"></i> Transferir</button>
+                                        <button type="button" class="btn btn-info btn-block hidden" title="Transferir"><i class="far fa-exchange"></i> Transferir</button>
                                     </div>
                                 </div>
                             </div>

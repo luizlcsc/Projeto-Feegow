@@ -13,8 +13,8 @@ function clear_ref_req (val)
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
         val = replace(val,"</script>", "")
-        val = replace(val,"&lt;", "")
-        val = replace(val,"&gt;", "")
+        ' val = replace(val,"&lt;", "")
+        ' val = replace(val,"&gt;", "")
         val = replace(val,"&quot;", "")
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
@@ -62,6 +62,18 @@ function reqf(P)
 
         reqf = ref(P)
     end if
+end function
+
+startTime = timer
+
+function getPageLoadtime()
+    endTime = timer
+    timeDiff = endTime-startTime
+    if startTime<=0 then
+        timeDiff = 0
+    end if
+
+    dd(timeDiff)
 end function
 
 function dd(variable)

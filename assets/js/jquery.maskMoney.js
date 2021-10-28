@@ -20,12 +20,8 @@
 
         mask : function (value) {
             return this.each(function () {
-                var $this = $(this),
-                    decimalSize;
+                var $this = $(this);
                 if (typeof value === "number") {
-                    $this.trigger("mask");
-                    decimalSize = $($this.val().split(/\D/)).last()[0].length;
-                    value = value.toFixed(decimalSize);
                     $this.val(value);
                 }
                 return $this.trigger("mask");
@@ -42,7 +38,7 @@
                     if(element) {
                         decimalPart = element;
                         return false;
-                   }
+                    }
                 });
                 value = value.replace(/\D/g, "");
                 value = value.replace(new RegExp(decimalPart + "$"), "." + decimalPart);
@@ -53,8 +49,8 @@
             });
         },
 
-        init : function (settings) {
-            settings = $.extend({
+        init : function (parameters) {
+            parameters = $.extend({
                 prefix: "",
                 suffix: "",
                 affixesStay: true,
@@ -63,13 +59,14 @@
                 precision: 2,
                 allowZero: false,
                 allowNegative: false
-            }, settings);
+            }, parameters);
 
             return this.each(function () {
-                var $input = $(this),
+                var $input = $(this), settings,
                     onFocusValue;
 
                 // data-* api
+                settings = $.extend({}, parameters);
                 settings = $.extend(settings, $input.data());
 
                 function getInputSelection() {
@@ -183,6 +180,7 @@
                     return setSymbol(newValue);
                 }
 
+
                 function maskAndPosition(startPos) {
                     var originalLen = $input.val().length,
                         newLen;
@@ -194,6 +192,9 @@
 
                 function mask() {
                     var value = $input.val();
+                    if (settings.precision > 0 && value.indexOf(settings.decimal) < 0) {
+                        value += settings.decimal + new Array(settings.precision+1).join(0);
+                    }
                     $input.val(maskValue(value));
                 }
 
@@ -225,9 +226,15 @@
                         selection,
                         startPos,
                         endPos,
-                        value;
+                        value,
+                        isReadOnly = $input.is('[readonly]');
                     //added to handle an IE "special" event
                     if (key === undefined) {
+                        return false;
+                    }
+
+                    //Fix bug that allows user-input despite input being readOnly
+                    if(isReadOnly) {
                         return false;
                     }
 
@@ -237,11 +244,11 @@
                         if (key === 45) {
                             $input.val(changeSign());
                             return false;
-                        // +(plus) key
+                            // +(plus) key
                         } else if (key === 43) {
                             $input.val($input.val().replace("-", ""));
                             return false;
-                        // enter key or tab key
+                            // enter key or tab key
                         } else if (key === 13 || key === 9) {
                             return true;
                         } else if ($.browser.mozilla && (key === 37 || key === 39) && e.charCode === 0) {
@@ -275,9 +282,15 @@
                         startPos,
                         endPos,
                         value,
-                        lastNumber;
+                        lastNumber,
+                        isReadOnly = $input.is('[readonly]');
                     //needed to handle an IE "special" event
                     if (key === undefined) {
+                        return false;
+                    }
+
+                    //Fix bug that allows user-input despite input being readOnly
+                    if(isReadOnly) {
                         return false;
                     }
 
@@ -301,7 +314,7 @@
                                     startPos = value.length - lastNumber - 1;
                                     endPos = startPos + 1;
                                 }
-                            //delete
+                                //delete
                             } else {
                                 endPos += 1;
                             }

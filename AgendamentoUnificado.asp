@@ -25,7 +25,7 @@ function agendaUnificada(tipoAgendamento, agendamentoId, profissionalId)
             licencasVinculadasSql = "SELECT * FROM cliniccentral.licencasprofissionaisvinculados "&_
                                     " WHERE sysActive = 1 AND profissionalIDMae IN "&_
                                     " (SELECT profissionalIDMae FROM cliniccentral.licencasprofissionaisvinculados "&_
-                                    " WHERE sysActive = 1 AND profissionalIDMae = "&profissionalAgendamento&" OR profissionalIDFilho = "&profissionalAgendamento&")"
+                                    " WHERE sysActive = 1 AND ((licencaIDMae = "&licencaOrigem&" AND profissionalIDMae = "&profissionalAgendamento&") OR (licencaIDFilho = "&licencaOrigem&" AND profissionalIDFilho = "&profissionalAgendamento&")))"
 
             set licencasVinculadas = db.execute(licencasVinculadasSql)
 
@@ -44,8 +44,8 @@ function agendaUnificada(tipoAgendamento, agendamentoId, profissionalId)
     profissionalIdSql = "SELECT * FROM cliniccentral.licencasprofissionaisvinculados "&_
                             " WHERE sysActive = 1 AND profissionalIDMae IN "&_
                             " (SELECT profissionalIDMae FROM cliniccentral.licencasprofissionaisvinculados "&_
-                            " WHERE sysActive = 1 AND profissionalIDMae = "&profissionalId&" OR profissionalIDFilho = "&profissionalId&")"
-
+                            " WHERE sysActive = 1 AND ((licencaIDMae = "&licencaOrigem&" AND profissionalIDMae = "&profissionalId&") OR (licencaIDFilho = "&licencaOrigem&" AND profissionalIDFilho = "&profissionalId&")))"
+    licencaVinculadaSql = profissionalIdSql
     set profissionalIdDiferente = db.execute(profissionalIdSql)
 
     if not profissionalIdDiferente.EOF then
@@ -61,12 +61,7 @@ function agendaUnificada(tipoAgendamento, agendamentoId, profissionalId)
         case "vincular" ' TRATAMENTO DE VINCULO DA LICENÇA
 
             ' PESQUISANDO LICENÇA QUE ESTÁ SENDO VINCULADA
-            licencaVinculadaSql = "SELECT * FROM cliniccentral.licencasprofissionaisvinculados "&_
-                                    " WHERE sysActive = 1 AND profissionalIDMae IN "&_
-                                    " (SELECT profissionalIDMae FROM cliniccentral.licencasprofissionaisvinculados "&_
-                                    " WHERE sysActive = 1 AND profissionalIDMae = "&profissionalId&" OR profissionalIDFilho = "&profissionalId&")"
-
-            set licencaVinculada = db.execute(licencaVinculadaSql)
+             set licencaVinculada = db.execute(licencaVinculadaSql)
 
             while not licencaVinculada.EOF
 
@@ -97,11 +92,6 @@ function agendaUnificada(tipoAgendamento, agendamentoId, profissionalId)
         case "desvincular" ' TRATAMENTO DE DESVINCULO DA LICENÇA
 
             ' PESQUISANDO LICENÇAS VINCULADAS DIFERENTE PROFISSIONAL DO AGENDAMENTO
-            licencaVinculadaSql = "SELECT * FROM cliniccentral.licencasprofissionaisvinculados "&_
-                                    " WHERE sysActive = 1 AND profissionalIDMae IN "&_
-                                    " (SELECT profissionalIDMae FROM cliniccentral.licencasprofissionaisvinculados "&_
-                                    " WHERE sysActive = 1 AND profissionalIDMae = "&profissionalId&" OR profissionalIDFilho = "&profissionalId&")"
-            
             set licencaVinculada = db.execute(licencaVinculadaSql)
             if not licencaVinculada.eof then
                 'DESVINCULA O PROFISSIONAL DA LICENÇA
@@ -143,6 +133,7 @@ function agendaUnificada(tipoAgendamento, agendamentoId, profissionalId)
             desvinculoSucesso = true
  
         case "insert" ' TRATAMENTO DE INSERT NOVO AGENDAMENTO, REPETIÇÃO, FILA DE ESPERA
+
             if not licencasVinculadas.EOF then
                 if vinculoProfissionalAgendamento = 1 and vinculoProfissionalEnviado = 1 then
 
@@ -210,7 +201,7 @@ function updateAgendaUnificada(licencaOrigem, queryLicencas, queryAgendamento)
             ' DADOS DE AGENDAMENTOS
             while not queryAgendamento.EOF
 
-                if queryAgendamento("Tempo") = "" then
+                if queryAgendamento("Tempo")&"" = "" then
                     calcTempo = 1
                     horaAte = DateAdd("n",calcTempo,queryAgendamento("HoraDe"))
                 else

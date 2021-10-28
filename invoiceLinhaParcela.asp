@@ -85,7 +85,7 @@ end if
         %>
             <div>
                 <button style="display: none" type="button" title="Pagamentos pendentes TEF" class="btn btn-warning btn-sm ml5 pendingTef" onclick="checkForPendingTEF(<%=ParcelaID%>)">
-                <i class="fa fa-refresh"></i>
+                <i class="far fa-refresh"></i>
                 <span class="badge badge-danger" style="">1</span>
                 </button>
             </div>
@@ -95,7 +95,7 @@ end if
             %>
             <div>
                 <button type="button" title="Gerar boleto" class="btn btn-primary btn-sm ml5 geraBoleto" onclick="geraBoleto(<%=ParcelaID%>)" >
-                <i class="fa fa-barcode"></i>
+                <i class="far fa-barcode"></i>
                 <% IF BoletosDaParcela("totalboletos") THEN %>
                 <span class="badge badge-danger" style=""><%=BoletosDaParcela("totalboletos")%></span>
                 <% END IF %>
@@ -125,15 +125,15 @@ function geraBoleto(ParcelaID) {
 
             if SistemaNovo=1 then
             %>
-            <a href="#" title="Atualizar fatura" class="btn btn-default btn-sm " onClick="geraDetalhamento(<%=ParcelaID%>)"><i class="fa fa-calculator"></i></a>
+            <a href="#" title="Atualizar fatura" class="btn btn-default btn-sm " onClick="geraDetalhamento(<%=ParcelaID%>)"><i class="far fa-calculator"></i></a>
             <%
             end if
             %>
-            <a href="#" title="Gerar boleto" class="btn btn-primary btn-sm ml5" onClick="geraBoletoFeegow(<%=ParcelaID%>)"><i class="fa fa-barcode"></i></a>
+            <a href="#" title="Gerar boleto" class="btn btn-primary btn-sm ml5" onClick="geraBoletoFeegow(<%=ParcelaID%>)"><i class="far fa-barcode"></i></a>
             <%
             if SistemaNovo=1 then
             %>
-            <a href="#" title="Enviar fatura via e-mail" class="btn btn-system btn-sm ml5" onClick="if(confirm('Deseja enviar a fatura?'))EnviaEmailFatura(<%=ParcelaID%>)" target="_blank"><i class="fa fa-envelope"></i></a>
+            <a href="#" title="Enviar fatura via e-mail" class="btn btn-system btn-sm ml5" onClick="if(confirm('Deseja enviar a fatura?'))EnviaEmailFatura(<%=ParcelaID%>)" target="_blank"><i class="far fa-envelope"></i></a>
             <%
             EnvioEmail = ""
             set EnvioEmailSQL = db.execute("SELECT DataHora, ValorBoleto, VenctoBoleto, Para FROM faturasemails WHERE ReceitaID="&req("I"))
@@ -172,7 +172,7 @@ function geraBoleto(ParcelaID) {
             <%
         elseif cint(NumeroParcelas) > 1 and StatusEmissaoBoleto<>4 then
         %>
-        <button type="button" id="propParc<%=ParcelaID %>" onclick="propParc(<%=ParcelaID%>)" class="btn btn-xs btn-warning hidden"><i class="fa fa-chevron-down"></i></button>
+        <button type="button" id="propParc<%=ParcelaID %>" onclick="propParc(<%=ParcelaID%>)" class="btn btn-xs btn-warning hidden"><i class="far fa-chevron-down"></i></button>
         <%end if %>
         <%
         end if
@@ -207,6 +207,6 @@ function geraBoleto(ParcelaID) {
 
 
 
-    <a class="btn btn-xs btn-info hidden" href="#modal-table" role="button" data-toggle="modal" onclick="modalPaymentDetails('<%=ParcelaID%>');"><i class="fa fa-search-plus"></i></a>
-    <td class="hidden"><button type="button" class="btn btn-xs btn-danger" onClick="parcelas('<%=ParcelaID%>', 'X', '<%=ParcelaID%>')"><i class="fa fa-remove"></i></button></td>
+    <a class="btn btn-xs btn-info hidden" href="#modal-table" role="button" data-toggle="modal" onclick="modalPaymentDetails('<%=ParcelaID%>');"><i class="far fa-search-plus"></i></a>
+    <td class="hidden"><button type="button" class="btn btn-xs btn-danger" onClick="parcelas('<%=ParcelaID%>', 'X', '<%=ParcelaID%>')"><i class="far fa-remove"></i></button></td>
 </tr>

@@ -78,15 +78,15 @@
 			animation: "fade",
 			// Speed at which the notice animates in and out. "slow", "def" or "normal",
 			// "fast" or number of milliseconds.
-			animate_speed: "slow",
+			animate_speed: "normal",
 			// Specify a specific duration of position animation
-			position_animate_speed: 500,
+			position_animate_speed: 200,
 			// Display a drop shadow.
 			shadow: false,
 			// After a delay, remove the notice.
 			hide: true,
 			// Delay in milliseconds before the notice is removed.
-			delay: 8000,
+			delay: 6000,
 			// Reset the hide timer if the mouse moves over the notice.
 			mouse_reset: true,
 			// Remove the notice's elements from the DOM after it is removed.
@@ -770,25 +770,25 @@
 			bootstrap3: {
 				container: "alert",
 				notice: "alert-default",
-				notice_icon: "glyphicon glyphicon-exclamation-sign",
 				error: "alert-danger",
-				error_icon: "glyphicon glyphicon-warning-sign",
 				primary: "alert-primary",
-				primary_icon: "glyphicon glyphicon-exclamation-sign",
 				info: "alert-info",
-				info_icon: "glyphicon glyphicon-info-sign",
 				success: "alert-success",
-				success_icon: "glyphicon glyphicon-ok-sign",
 				warning: "alert-warning",
-				warning_icon: "glyphicon glyphicon-ok-sign",
 				danger: "alert-danger",
-				danger_icon: "glyphicon glyphicon-warning-sign",
 				alert: "alert-alert",
-				alert_icon: "glyphicon glyphicon-warning-sign",
 				system: "alert-system",
-				system_icon: "glyphicon glyphicon-warning-sign",
 				dark: "alert-dark",
-				dark_icon: "glyphicon glyphicon-warning-sign",
+				notice_icon: "fad fa-exclamation-circle",
+				error_icon: "fad fa-exclamation-circle",
+				primary_icon: "fad fa-info-circle",
+				info_icon: "fad fa-info-circle",
+				success_icon: "fad fa-check-circle",
+				warning_icon: "fad fa-exclamation-circle",
+				danger_icon: "fad fa-exclamation-circle",
+				alert_icon: "fad fa-check",
+				system_icon: "fad fa-warning",
+				dark_icon: "fad fa-warning",
 			}
 		}
 	});
@@ -798,16 +798,16 @@
 	 */
 	PNotify.styling.fontawesome = $.extend({}, PNotify.styling.bootstrap3);
 	$.extend(PNotify.styling.fontawesome, {
-		notice_icon: "fa fa-exclamation-circle",
-		error_icon: "fa fa-warning",
-		primary_icon: "fa fa-info",
-		info_icon: "fa fa-info",
-		success_icon: "fa fa-check",
-		warning_icon: "fa fa-check",
-		danger_icon: "fa fa-info",
-		alert_icon: "fa fa-check",
-		system_icon: "fa fa-warning",
-		dark_icon: "fa fa-warning",
+		notice_icon: "fad fa-exclamation-circle",
+		error_icon: "fad fa-warning",
+		primary_icon: "fad fa-info",
+		info_icon: "fad fa-info",
+		success_icon: "fad fa-check",
+		warning_icon: "fad fa-check",
+		danger_icon: "fad fa-info",
+		alert_icon: "fad fa-check",
+		system_icon: "fad fa-warning",
+		dark_icon: "fad fa-warning",
 	});
 
 	if (document.body)
@@ -938,14 +938,14 @@
 		pin_down: "icon-play"
 	});
 	$.extend(PNotify.styling.bootstrap3, {
-		closer: "glyphicon glyphicon-remove",
-		pin_up: "glyphicon glyphicon-pause",
-		pin_down: "glyphicon glyphicon-play"
+		closer: "far fa-close",
+		pin_up: "far fa-pause",
+		pin_down: "far fa-play"
 	});
 	$.extend(PNotify.styling.fontawesome, {
-		closer: "fa fa-times",
-		pin_up: "fa fa-pause",
-		pin_down: "fa fa-play"
+		closer: "fad fa-times",
+		pin_up: "fad fa-pause",
+		pin_down: "fad fa-play"
 	});
 }));
 // Confirm

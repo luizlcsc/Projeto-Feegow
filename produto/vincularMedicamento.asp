@@ -21,8 +21,8 @@
     <div class='panel-heading'>
         <span>Vincular Medicamento</span>
         <div class='actionArea'>
-            <button class="btn btn-primary" onclick="medicamentosVinculados.newRow()"><i class="fa fa-plus"></i> Adicionar Exeção</button>
-            <button class="btn btn-success" onclick="medicamentosVinculados.salvarVinculacao()"><i class="fa fa-save"></i> Salvar</button>
+            <button class="btn btn-primary" onclick="medicamentosVinculados.newRow()"><i class="far fa-plus"></i> Adicionar Exeção</button>
+            <button class="btn btn-success" onclick="medicamentosVinculados.salvarVinculacao()"><i class="far fa-save"></i> Salvar</button>
         </div>
     </div>
     <div id='vinculos' class="panel-body">

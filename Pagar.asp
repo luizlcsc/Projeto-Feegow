@@ -2,7 +2,7 @@
 <div class="panel-heading">
 	<span class="panel-title">Pagamento</span>
 	<span class="panel-controls">
-		<button class="btn btn-sm btn-default" onClick="$('.parcela').prop('checked', false); $('#pagar').fadeOut();" type="button"><i class="fa fa-remove"></i> Cancelar</button>
+		<button class="btn btn-sm btn-default" onClick="$('.parcela').prop('checked', false); $('#pagar').fadeOut();" type="button"><i class="far fa-remove"></i> Cancelar</button>
 	</span>
 </div>
 
@@ -125,7 +125,7 @@ set mov = db.execute(sqlMovCred)
 					                        <td class="text-right"><%=formatnumber(valor,2)%></td>
 					                        <td class="text-right"><%=formatnumber(soma,2)%></td>
 					                        <td class="text-right"><%=formatnumber(credito,2)%></td>
-                                            <td><button type="button" class="btn btn-xs btn-danger" onclick="excluiMov(<%=mov("id")%>);"<% If soma>0 Then %> disabled="disabled"<% End If %>><i class="fa fa-remove"></i></button></td>
+                                            <td><button type="button" class="btn btn-xs btn-danger" onclick="excluiMov(<%=mov("id")%>);"<% If soma>0 Then %> disabled="disabled"<% End If %>><i class="far fa-remove"></i></button></td>
 				                        </tr>
 				<%
 			end if
@@ -204,7 +204,7 @@ end if
     <div class="row">
         <div id="content-utilizar-credito-outro-paciente" class="col-md-3  col-md-offset-9">
             <button class="btn btn-default btn-sm" type="button" onclick="CreditoOutroPacienteToggleSelect()">
-                <i class="fa fa-unlink"></i> Utilizar crédito de outro paciente
+                <i class="far fa-unlink"></i> Utilizar crédito de outro paciente
             </button>
         </div>
 
@@ -214,7 +214,7 @@ end if
                 <%=selectInsertCA("", "PacienteCreditoID", "", "3", "", "", "")%>
             </div>
             <div class="col-md-3">
-                <button class="btn m20 btn-success btn-block" onclick="BuscarCreditosPaciente($('#PacienteCreditoID').val())" type="button"><i class="fa fa-search"></i> Buscar</button>
+                <button class="btn m20 btn-success btn-block" onclick="BuscarCreditosPaciente($('#PacienteCreditoID').val())" type="button"><i class="far fa-search"></i> Buscar</button>
             </div>
         </div>
     </div>
@@ -567,7 +567,7 @@ end if
                                     if session("Banco")="clinic2901" or session("Banco")="clinic100000" then
                                         %>
                                         <div class="col-md-12 text-right" id="divJM">
-                                            <a class="red" href="javascript:calcJM()"><i class="fa fa-calculator"></i> Calcular juros e multa.</a>
+                                            <a class="red" href="javascript:calcJM()"><i class="far fa-calculator"></i> Calcular juros e multa.</a>
                                         </div>
                                         <%
                                     end if
@@ -575,11 +575,11 @@ end if
                                     <div class="col-md-12" id="ReceberTEF" style="display: none; margin-top: 20px">
                                         <div class="row">
                                             <div class="col-md-8">
-                                                <button onClick="captureTransaction()" style="display: inline-block;" class="btn btn-system" type="button" id="receberTefButton"><i class="fa fa-credit-card"></i> Receber da maquininha</button>
+                                                <button onClick="captureTransaction()" style="display: inline-block;" class="btn btn-system" type="button" id="receberTefButton"><i class="far fa-credit-card"></i> Receber da maquininha</button>
                                             </div>
                                             <%if aut("capptaA") then%>
                                             <div class="col-md-2">
-                                                <button onClick="openPdvConfig()" style="display: inline-block;" class="btn btn-warning" type="button" id="pdv-config"><i class="fa fa-cogs"></i></button>
+                                                <button onClick="openPdvConfig()" style="display: inline-block;" class="btn btn-warning" type="button" id="pdv-config"><i class="far fa-cogs"></i></button>
                                             </div>
                                             <%end if%>
                                         </div>
@@ -651,10 +651,10 @@ end if
         function loadingButton(loading) {
            if(loading) {
               $("#receberTefButton").prop("disabled", true);
-              $("#receberTefButton").html("<i class='fa fa-spin fa-circle-o-notch'></i>")
+              $("#receberTefButton").html("<i class='far fa-spin fa-circle-o-notch'></i>")
            } else {
               $("#receberTefButton").prop("disabled", false);
-              $("#receberTefButton").html("<i class=\"fa fa-credit-card\"></i> Receber da maquininha")
+              $("#receberTefButton").html("<i class=\"far fa-credit-card\"></i> Receber da maquininha")
            }
         }
 
@@ -841,7 +841,7 @@ end if
         <div class="col-md-6">
             <div class="alert alert-danger">
                 <p>Existe uma transação TEF pendente de sincronização</p>
-                <button style="margin-top: 10px" class="btn btn-warning" type="button" onClick="payPendingTransaction()">Sincronizar pagamentos <i class="fa fa-refresh"></i></button>
+                <button style="margin-top: 10px" class="btn btn-warning" type="button" onClick="payPendingTransaction()">Sincronizar pagamentos <i class="far fa-refresh"></i></button>
             </div>
         </div>
     </div>
@@ -883,12 +883,12 @@ end if
                         <div class="alert alert-danger">
                             <div class="row">
                                 <div class="col-md-9">
-                                        <i class="fa fa-info-circle"></i>
+                                        <i class="far fa-info-circle"></i>
                                         A data de abertura do seu caixa é diferente da data atual. Para receber, favor realize o fechamento do caixa.
                                 </div>
                                 <div class="col-md-3">
                                     <a href="?P=PreFechaCaixa&Pers=1" style="margin-top: 15px; color: rgba(0,0,0,0.5)" class="btn btn-default btn-sm" type="button" onClick="unlockButton()">
-                                        <i class="fa fa-inbox"></i> Fechar caixa
+                                        <i class="far fa-inbox"></i> Fechar caixa
                                     </a>
                                 </div>
                             </div>
@@ -922,12 +922,12 @@ end if
                             <div class="alert alert-danger">
                                 <div class="row">
                                     <div class="col-md-9">
-                                            <i class="fa fa-info-circle"></i>
+                                            <i class="far fa-info-circle"></i>
                                             A unidade em que o paciente foi atendido difere da unidade de abertura do caixa.
                                     </div>
                                     <div class="col-md-3">
                                         <button style="margin-top: 15px; color: rgba(0,0,0,0.5)" class="btn" type="button" onClick="unlockButton()">
-                                            <i class="fa fa-exclamation-triangle"></i> Continuar mesmo assim
+                                            <i class="far fa-exclamation-triangle"></i> Continuar mesmo assim
                                         </button>
                                     </div>
                                 </div>
@@ -952,7 +952,7 @@ end if
 
 </div>
 <div class="modal-footer">
-	<button class="btn btn-success pull-right" id="btnPagar" disabled="disabled"><i class="fa fa-check"></i> Pagar</button>
+	<button class="btn btn-success pull-right" id="btnPagar" disabled="disabled"><i class="far fa-check"></i> Pagar</button>
 </div>
 </form>
 
@@ -1239,12 +1239,12 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100000" or session("
 var invoiceId = parseInt("<%=InvoiceID%>");
 
 function disableTefButton(context) {
-    $('#receberTefButton').html("<i class='fa fa-spin fa-circle-o-notch'></i> " + context + "...");
+    $('#receberTefButton').html("<i class='far fa-spin fa-circle-o-notch'></i> " + context + "...");
     $('#receberTefButton').prop("disabled", true);
 }
 
 function enableTefButton () {
-    $('#receberTefButton').html("<i class='fa fa-credit-card'></i> Receber da maquininha");
+    $('#receberTefButton').html("<i class='far fa-credit-card'></i> Receber da maquininha");
     $('#receberTefButton').prop("disabled", false);
 }
 

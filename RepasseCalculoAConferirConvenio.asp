@@ -467,7 +467,7 @@ end if
             <tr class="panel<%= idPanel %>">
                 <td rowspan="2" valign="top" style="vertical-align:top">
                     <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=<%= Link %>&Pers=1&I=<%= GuiaID %>&ItemGuiaID=<%=ItemGuiaID%>">
-                        <i class="fa fa-chevron-right"></i>
+                        <i class="far fa-chevron-right"></i>
                     </a>
                 </td>
                 <td> <%= DataExecucao %></td>

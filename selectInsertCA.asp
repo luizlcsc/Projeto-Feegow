@@ -80,7 +80,7 @@ if list.eof then
         <%
         if strInserts<>"" then
         %>
-        Cadastrar &raquo; <select style="width: 70%;float:left" id="tabela<%=ref("selectID")%>" class="form-control input-sm select-sm"><%=strInserts%></select><button style="width: 25%;float: left;" type="button" class="btn btn-sm btn-primary ml10" id="button-insert-<%=ref("selectID")%>"><i class="fa fa-plus"></i> Inserir</button></small>
+        Cadastrar &raquo; <select style="width: 70%;float:left" id="tabela<%=ref("selectID")%>" class="form-control input-sm select-sm"><%=strInserts%></select><button style="width: 25%;float: left;" type="button" class="btn btn-sm btn-primary ml10" id="button-insert-<%=ref("selectID")%>"><i class="far fa-plus"></i> Inserir</button></small>
         </li>
     </ul>
 	<%
@@ -107,7 +107,7 @@ if session("Banco")="clinic5760" then
 end if
             if list("recurso")<>"Caixa" or (list("recurso")="Caixa" and instr(list("Coluna"), "Aberto")>0) then
 		    %>
-		    <div type="button" class="select-insert-item text-left" style="font-size:10px; padding-left:4px; text-align:left; width:300px" data-title="<%=list("coluna")%>" data-valor="<%=list("associacao")&"_"&list("id")%>" <%= replace(replace(ref("othersToSelect"), "onchange", "onclick"), "this.id", "'select-"&ref("selectID")&"'") %>>
+		    <div type="button" class="select-insert-item text-left" data-title="<%=list("coluna")%>" data-valor="<%=list("associacao")&"_"&list("id")%>" <%= replace(replace(ref("othersToSelect"), "onchange", "onclick"), "this.id", "'select-"&ref("selectID")&"'") %>>
                 <%=list("coluna")%></div>
 		    <%
             end if

@@ -1,7 +1,9 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 I = ref("I")
+AuditoriaRegistrada = False
 
 DeletarCheck = TRUE
 
@@ -24,6 +26,18 @@ set iinv=nothing
 
 RemoveMov = 1
 set MovementSQL = db.execute("SELECT * FROM sys_financialmovement WHERE id="&I)
+
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
+contabloqueadacred = verificaBloqueioConta(1, 1, MovementSQL("AccountIDCredit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
+contabloqueadadebt = verificaBloqueioConta(1, 1, MovementSQL("AccountIDDebit"), MovementSQL("UnidadeID"),MovementSQL("Date"))
+
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+    retorno  = " alert('Esta conta está BLOQUEADA e não pode ser alterada!'); "
+    response.write(retorno)
+    response.end
+end if
+' #####################################################################################
 
 IF MovementSQL.EOF THEN
    response.end
@@ -58,7 +72,6 @@ if InvoiceID<>"" then
     end if
 end if
 
-
 if MovementSQL("Name")="Fechamento Cx - Dinheiro" then
     'aqui reabre o caixa
     CaixaID=MovementSQL("CaixaID")
@@ -70,10 +83,14 @@ if MovementSQL("Name")="Fechamento Cx - Dinheiro" then
         <%
         Response.End
     end if
+
+    AuditoriaRegistrada = True
+    call registraEventoAuditoria("reabre_caixinha", CaixaID, ref("Jst"))
+
     db.execute("UPDATE caixa SET Reaberto='S',dtFechamento=null, Descricao=concat(Descricao, ' (Aberto)') WHERE id="&CaixaID)
 
     %>
-    showMessageDialog("Caixa reaberto com sucesso.", "success");
+    showMessageDialog("Caixinha reaberto.", "warning");
     <%
     'Response.End
 end if
@@ -111,6 +128,17 @@ if not MovementSQL.eof then
     end if
 end if
 
+if MovementSQL("Type")="Pay" and MovementSQL("CD")="D" and not AuditoriaRegistrada then
+    AuditoriaRegistrada = True
+    call registraEventoAuditoria("cancela_recebimento", I, ref("Jst"))
+end if
+
+
+if MovementSQL("Type")="Transfer" and not AuditoriaRegistrada then
+    call registraEventoAuditoria("exclui_transferencia", I, ref("Jst"))
+end if
+
+
 set cct = db.execute("select group_concat(id) parcelascartao from sys_financialcreditcardtransaction where MovementID="&I)
 if not cct.eof then
     if not isnull(cct("parcelascartao")) then
@@ -133,6 +161,8 @@ db_execute("update rateiorateios set CreditoID=NULL where CreditoID="& I)
 if RemoveMov=1  then
     sqlDel = "delete from sys_financialmovement where id="&I
 
+    db.execute("insert into sys_financialmovement_removidos (id, Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate, MovementAssociatedID, InvoiceID, InstallmentNumber, sysUser, ValorPago, CaixaID, ChequeID, UnidadeID, sysDate, ConciliacaoID, CodigoDeBarras) select id, Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate, MovementAssociatedID, InvoiceID, InstallmentNumber, sysUser, ValorPago, CaixaID, ChequeID, UnidadeID, sysDate, ConciliacaoID, CodigoDeBarras from sys_financialmovement where id="& I)
+    db.execute("insert into xmovement_log (MovimentacaoID, sysUser, AutorizadoPor, Descricao, MovementsBill, Invoices) values ("& I &", "& session("User") &", "& treatvalnull(ref("AutID")) &", '"& ref("jst") &"', '', ( select group_concat( concat('|', ii.InvoiceID, '|') ) from itensdescontados idesc left join itensinvoice ii on ii.id=idesc.ItemID where idesc.PagamentoID="& I &" ) )")
     call gravaLogs(sqlDel, "AUTO", "Pagamento excluído", "")
     db_execute(sqlDel)
 

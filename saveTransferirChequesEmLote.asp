@@ -2,6 +2,17 @@
 <%
 
 ids = split(ref("cheques"), ", ")
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
+contabloqueadadebt = verificaBloqueioConta(2, 1, ref("ContaCorrente"), UnidadeID,mydatenull(ref("DataMovimentacao")))
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+
+    retorno  = "alert('Esta conta está BLOQUEADA e não pode ser alterada!');" &_
+               "$('#modal-table').modal('hide');"
+    response.write(retorno)
+    response.end
+end if
+' #####################################################################################
 
 for ii=0 to ubound(ids)
     I = ids(ii)

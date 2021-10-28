@@ -1,4 +1,4 @@
-﻿<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%>>
+﻿<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> class="invoice-linha-item" >
     <td>
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
     	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
@@ -38,5 +38,5 @@
     <td><%=quickField("currency", "Desconto"&id, "", 4, fn(Desconto), " text-right disable", "", " onkeyup=""recalc($(this).attr('id'))"" onchange='recorrenteLista();' ")%></td>
     <td><%=quickField("currency", "Acrescimo"&id, "", 4, fn(Acrescimo), " text-right disable", "", " onkeyup=""recalc($(this).attr('id'))"" onchange='recorrenteLista();' ")%></td>
     <td class="text-right" id="sub<%=id%>" nowrap>R$ <%= fn( Subtotal) %></td>
-    <td><button type="button" class="btn btn-xs btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button></td>
+    <td><button type="button" class="btn btn-xs btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove"></i></button></td>
 </tr>

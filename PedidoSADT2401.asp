@@ -53,7 +53,7 @@ end if
                     <td><%= pprocs("CodigoProcedimento") %></td>
                     <td><%= pprocs("Descricao") %></td>
                     <td>
-                        <button onclick="xPedidoSADT(<%= pprocs("id") %>)" class="btn btn-xs btn-danger"><i class="fa fa-remove"></i></button>
+                        <button onclick="xPedidoSADT(<%= pprocs("id") %>)" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></button>
                     </td>
                 </tr>
                 <%

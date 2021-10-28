@@ -1,5 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
+IF not aut("PodeDescontoV")   = "1"  THEN
+  displayDesconto = "display:none"
+END IF
+IF not aut("PodeAcrescimoV") = "1"  THEN
+  displayAcrescimo = "display:none"
+END IF
+
 InvoiceID=req("I")
 Acao = ref("A")
 Tipo = ref("T")
@@ -26,24 +33,23 @@ end if
 
 TemRegrasDeDesconto=False
 
-set TemRegrasDeDescontoSQL = db.execute("SELECT rd.id FROM regrasdescontos rd INNER JOIN regraspermissoes rp ON rp.id=rd.RegraID LIMIT 1")
+set TemRegrasDeDescontoSQL = db_execute("SELECT rd.id FROM regrasdescontos rd INNER JOIN regraspermissoes rp ON rp.id=rd.RegraID LIMIT 1")
 if not TemRegrasDeDescontoSQL.eof then
     TemRegrasDeDesconto=True
 end if
 
-set ValorPagoSQL = db.execute("SELECT SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement WHERE InvoiceID="&InvoiceID)
+set ValorPagoSQL = db_execute("SELECT SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement WHERE InvoiceID="&InvoiceID)
 
 sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
 				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
 				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-set integracaofeita = db.execute(sqlintegracao)
+set integracaofeita = db_execute(sqlintegracao)
 
 if not ValorPagoSQL.eof then
     if ValorPagoSQL("ValorPago")>0 and session("Admin")=0 then
         NaoPermitirAlterarExecutante=getConfig("NaoPermitirAlterarExecutante")
     end if
 end if
-
 
 ExecutantesTiposAjax = "5, 8, 2"
 if session("Banco")="clinic6118" then
@@ -58,48 +64,80 @@ if Acao="" then
 				<th width="7%">Quant.</th>
 				<th>Item</th>
                 <th id="hPlanoContas"></th>
-                <th width="100px" id="hCentroCusto"></th>
+                <th width="100px" id="hCentroCusto">
+                        <span class="checkbox-custom checkbox-primary all-checkbox-executado hidden" style="display: none"><input type="checkbox" onchange="selectAllExecutados(this.checked)" class="all-checkbox-executado" name="TodosExecutado" id="TodosExecutado" /><label  for="TodosExecutado">&nbsp;</label></span>
+                </th>
 				<th width="15%">Valor Unit.</th>
-				<th width="11%">Desconto</th>
-				<th width="11%">Acr&eacute;scimo</th>
+				<th width="11%"><span style="<%=displayDesconto%>">Desconto</span></th>
+				<th width="11%"><span style="<%=displayAcrescimo%>">Acr&eacute;scimo</span></th>
 				<th width="9%">Total</th>
 				<th width="1%"></th>
 				<th width="1%"></th>
 				<th width="1%"></th>
 			</tr>
+			<script>
+			    function selectAllExecutados(arg){
+			        if(!arg){
+			            $(".checkbox-executado:checked").click()
+			        }
+			        if(arg){
+                        $(".checkbox-executado:not(:checked)").click()
+                    }
+			    }
+            </script>
 		</thead>
 		<tbody>
 		<%
+
 		conta = 0
 		Total = 0
 		Subtotal = 0
         response.Buffer
 
-		set itens = db.execute("select * from itensinvoice where InvoiceID="&InvoiceID&" order by id")
+		set itens = db_execute("select ii.*, left(md5(ii.id), 7) as senha, dp.Desconto DescontoPendente, dp.Status StatusDesconto, i.Voucher, i.DataCancelamento from itensinvoice ii LEFT JOIN descontos_pendentes dp ON dp.ItensInvoiceID=ii.id JOIN sys_financialinvoices i ON i.id=ii.InvoiceID where ii.InvoiceID="&InvoiceID&" order by ii.id")
+
+        ExistemDescontosPendentes = False
+        DataCancelamento=""
 
 		if not itens.eof then
-
-		    set FornecedorSQL = db.execute("SELECT f.limitarPlanoContas FROM fornecedores f INNER JOIN sys_financialinvoices i ON i.AccountID=f.id WHERE i.AssociationAccountID=2 AND f.limitarPlanoContas != '' and f.limitarPlanoContas is not null AND i.id="&InvoiceID)
+            Voucher = itens("Voucher")
+		    set FornecedorSQL = db_execute("SELECT f.limitarPlanoContas FROM fornecedores f INNER JOIN sys_financialinvoices i ON i.AccountID=f.id WHERE i.AssociationAccountID=2 AND f.limitarPlanoContas != '' and f.limitarPlanoContas is not null AND i.id="&InvoiceID)
 
 		    if not FornecedorSQL.eof then
 		        LimitarPlanoContas = FornecedorSQL("limitarPlanoContas")
 		    end if
 
+
+
             while not itens.eof
                 response.Flush()
                 conta = conta+itens("Quantidade")
+                StatusDesconto = itens("StatusDesconto")
+                DescontoPendente = itens("DescontoPendente")
+                if not isnull(StatusDesconto) then
+                    if StatusDesconto&""="0" then
+                        ExistemDescontosPendentes = True
+                    end if
+                end if
+                if itens("Executado")="C" then
+                    DataCancelamento = "1"
+                else
+                    DataCancelamento = ""
+                end if
+
+
                 Subtotal = itens("Quantidade")*(itens("ValorUnitario")-itens("Desconto")+itens("Acrescimo"))
                 Total = Total+Subtotal
                 NomeItem = ""
 				integracaopleres = "N"
                 if itens("Tipo")="S" then
-                    set pItem = db.execute("select NomeProcedimento NomeItem, integracaoPleres  from procedimentos where id="&itens("ItemID"))
+                    set pItem = db_execute("select NomeProcedimento NomeItem, integracaoPleres  from procedimentos where id="&itens("ItemID"))
                     if not pItem.eof then
                         NomeItem = pItem("NomeItem")
 						integracaopleres = pItem("integracaoPleres")
                     end if
                 elseif itens("Tipo")="M" then
-                    set pItem = db.execute("select NomeProduto NomeItem from produtos where id="&itens("ItemID"))
+                    set pItem = db_execute("select NomeProduto NomeItem from produtos where id="&itens("ItemID"))
                     if not pItem.eof then
                         NomeItem = pItem("NomeItem")
                     end if
@@ -119,6 +157,7 @@ if Acao="" then
                 end if
 
                 Desconto = itens("Desconto")
+                ValorCustoCalculado = itens("ValorCustoCalculado")
                 Acrescimo = itens("Acrescimo")
                 Tipo = itens("Tipo")
                 Descricao = itens("Descricao")
@@ -131,7 +170,9 @@ if Acao="" then
 				AgendamentoID = itens("AgendamentoID")
                 DataExecucao = itens("DataExecucao")
                 HoraExecucao = itens("HoraExecucao")
+                Senha = itens("senha")
                 PacoteID = itens("PacoteID")
+                ValorUnitarioOld = itens("ValorUnitarioOld")
                 if session("Odonto")=1 then
                     OdontogramaObj = itens("OdontogramaObj")
                 end if
@@ -142,7 +183,8 @@ if Acao="" then
                 if not isnull(HoraFim) and isdate(HoraFim) then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
-				if not integracaofeita.eof then
+
+				if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -215,11 +257,11 @@ if Acao="" then
 				end if
 				'response.write("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))			
 				
-				if not integracaofeita.eof then
+				if not integracaofeita.eof or DataCancelamento&"" <>"" and req("T")<>"D" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
-				else 
+				else
 				%>
 					<!--#include file="invoiceLinhaItem.asp"-->				
 				<%
@@ -241,17 +283,36 @@ if Acao="" then
 				<th></th>
 				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <%=formatnumber(Total,2)%></th>
-				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
+				<th colspan="3"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
 			</tr>
 			<%
 				else 
 			%>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
-				<th><button type="button" class="btn btn-default btn-sm disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> Aplicar Descontos</button></th>
+				<th>
+				    <%
+				    msgVoucherHidden=""
+				    if Voucher&"" = "" then
+                        msgVoucherHidden = "display:none"
+
+
+                        if ExistemDescontosPendentes then
+                            %>
+                            <span class="label label-warning"><i class="far fa-exclamation-circle"></i> Existem descontos pendentes</span>
+                            <%
+                        else
+                            %>
+                            <button id="btn-aplicar-desconto" type="button" class="btn btn-default btn-xs disable" data-toggle="modal" data-target="#modal-desconto" style="width: 100%;"> <i class="far fa-percentage"></i> Aplicar Descontos</button>
+                            <%
+                        end if
+				    end if
+				    %>
+				    <span style="<%=msgVoucherHidden%>" id="msg-voucher-aplicado" class="label label-alert"><i class="far fa-ticket-alt"></i> Voucher <i class="voucher-aplicado"><%=Voucher%></i> aplicado</span>
+                </th>
 				<th></th>
 				<th id="total" class="text-right" nowrap>R$ <div id="totalGeral"><%=formatnumber(Total,2)%></div></th>
-				<th colspan="2"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
+				<th colspan="3"><input type="hidden" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
 			</tr>
 			<% 
 				end if 
@@ -345,7 +406,7 @@ elseif Acao="I" then
 	if ref("T")<>"P"  and ref("T")<>"K" then
 		ItemID = 0'id do procedimento
 		ValorUnitario = 0
-		if not integracaofeita.eof then
+		if not integracaofeita.eof or DataCancelamento&"" <>"" and req("T")<>"D" then
 		%>
 			<!--#include file="invoiceLinhaItemRO.asp"-->
 		<%
@@ -363,7 +424,7 @@ elseif Acao="I" then
 			Subtotal = ValorUnitario * Quantidade
             PacoteID = II
             Executado="U"
-			if not integracaofeita.eof then
+			if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
@@ -384,7 +445,7 @@ elseif Acao="I" then
 			ValorUnitario = pct("ValorUnitario")
 			Subtotal = ValorUnitario
             PacoteID = II
-			if not integracaofeita.eof then
+			if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
@@ -631,12 +692,14 @@ const filtraExecutantes = async (procedimentoId, linhaId) => {
 
     const executantes = response.data;
 
-    executantes.unshift({
-        NomeProfissional: "Selecione",
-        AssociacaoID: null,
-        ID: null,
-    });
+
     if(executantes){
+        executantes.unshift({
+            NomeProfissional: "Selecione",
+            AssociacaoID: null,
+            ID: null,
+        });
+
         var valorSelecionado = $selectExecutantes.val();
         $selectExecutantes.html("");
         let htmlExecutantes = "";
@@ -667,6 +730,9 @@ $(document).ready(function(){
         $(input).val(descontoEmPercentual);
         $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
     });
+    <%
+    if req("T")="C" then
+    %>
 	let executados = $("input[id^='Executado']")
 	executados.each((key,input)=>{
 		let id = $(input).attr('id').replace('Executado','')
@@ -684,7 +750,10 @@ $(document).ready(function(){
 		let procedimentoId = $(element).find('select').val()
 		let linhaId = $(element).attr('id').replace('row','')
 		filtraExecutantes(procedimentoId, linhaId);
-	})
+	});
+    <%
+    end if
+    %>
 });
 
 </script>

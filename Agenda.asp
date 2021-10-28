@@ -59,11 +59,11 @@ end if
                     <%
 					if aut("horarios")=1 then
 						%>
-						<button class="btn btn-default btn-xs" type="button" onclick="location.href='?P=Profissionais&I='+$('#ProfissionalID').val()+'&Pers=1&Aba=Horarios';"><i class="fa fa-cog"></i> Grade</button>
+						<button class="btn btn-default btn-xs" type="button" onclick="location.href='?P=Profissionais&I='+$('#ProfissionalID').val()+'&Pers=1&Aba=Horarios';"><i class="far fa-cog"></i> Grade</button>
 						<%
 					end if
 					%>
-                    	<button onClick="imprimir()" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button"><i class="fa fa-print"></i> Imprimir </button>
+                    	<button onClick="imprimir()" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button"><i class="far fa-print"></i> Imprimir </button>
                     </td>
                     <td class="fc-header-center"><span class="fc-header-title">
                       <h2 id="data-escrita"></h2>
@@ -72,8 +72,8 @@ end if
                     <%
 					if aut("agendaI")=1 then
 					%>
-                    <button class="btn btn-default btn-xs" type="button" id="AbrirEncaixe"><i class="fa fa-external-link"></i> Abrir Encaixe</button>
-                    <button class="btn btn-default btn-xs" type="button" onclick="abreBloqueio(0, $('#Data').val(), '')"><i class="fa fa-lock"></i> Inserir Bloqueio</button>
+                    <button class="btn btn-default btn-xs" type="button" id="AbrirEncaixe"><i class="far fa-external-link"></i> Abrir Encaixe</button>
+                    <button class="btn btn-default btn-xs" type="button" onclick="abreBloqueio(0, $('#Data').val(), '')"><i class="far fa-lock"></i> Inserir Bloqueio</button>
                     <%
 					end if
 					%>
@@ -156,10 +156,10 @@ end if
     <div class="tabbable">
         <ul id="myTab" class="nav nav-tabs">
             <li class="active">
-                <a href="#notas" class="no-padding" data-toggle="tab">&nbsp;<i class="green fa fa-file-text bigger-110"></i> Notas&nbsp;</a>
+                <a href="#notas" class="no-padding" data-toggle="tab">&nbsp;<i class="green far fa-file-text bigger-110"></i> Notas&nbsp;</a>
 		    </li>
             <li>
-            	<a href="#fila" class="no-padding" data-toggle="tab" onclick="filaEspera('');">&nbsp;<i class="green fa fa-male bigger-110"></i> Fila de Espera&nbsp;</a>
+            	<a href="#fila" class="no-padding" data-toggle="tab" onclick="filaEspera('');">&nbsp;<i class="green far fa-male bigger-110"></i> Fila de Espera&nbsp;</a>
             </li>
 		</ul>
         <div class="tab-content">

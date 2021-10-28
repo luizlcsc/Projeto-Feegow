@@ -100,6 +100,18 @@ if not guia.eof then
 	Procedimentos=guia("Procedimentos")
 	if isnull(Procedimentos) then Procedimentos=0 end if
     NomeHospitalSol=guia("NomeHospitalSol")
+
+    if not isnull(guia("LocalExternoID")) then
+        set LocalExternoSQL = db.execute("select * from locaisexternos where id="&treatvalzero(guia("LocalExternoID")))
+        if not LocalExternoSQL.eof then
+            NomeHospitalSol = LocalExternoSQL("nomelocal")
+            if CodigoNaOperadora="" then
+                CodigoNaOperadora = LocalExternoSQL("cnpj")
+            end if
+
+        end if
+    end if
+
     DataSugInternacao=guia("DataSugInternacao")
     TipoInternacao=guia("TipoInternacao")
     RegimeInternacao=guia("RegimeInternacao")

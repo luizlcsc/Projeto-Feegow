@@ -1,5 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/TagsConverte.asp"-->
+<!--#include file="./Classes/Json.asp"-->
+<!--#include file="Classes/StringFormat.asp"-->
 <%
 PrintSpan = True
 
@@ -93,9 +95,10 @@ elseif req("Tipo")="A" then
 	end if
 elseif req("Tipo")="E" then
     if ref("Tipo")="Exame" then
-        set ProcedimentosNomeSQL = db.execute("SELECT NomeProcedimento, id FROM procedimentos WHERE ID = "&ref("id"))
+        set ProcedimentosNomeSQL = db.execute("SELECT NomeProcedimento, id, TextoPedido FROM procedimentos WHERE ID = "&ref("id"))
             PrintSpan=False
-            %><%=ProcedimentosNomeSQL("NomeProcedimento")%><%
+
+            call responseJson(recordToJSON(ProcedimentosNomeSQL))
      else
         set listaPedido = db.execute("select * from pacientespedidostextos where id="&ref("id"))
         if not listaPedido.eof then

@@ -47,7 +47,7 @@ response.Write(abreDivMaster)
             <%
             if MostarBotaoInserir=1 then
             %>
-            <a class="panel-control" onclick="itemSubform('<%=NomeTabela%>', 'Add', 0, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')" href="javascript:void(0)"><i class="fa fa-plus"></i></a>
+            <a class="panel-control" onclick="itemSubform('<%=NomeTabela%>', 'Add', 0, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')" href="javascript:void(0)"><i class="far fa-plus"></i></a>
             <%
             end if
             %>
@@ -61,7 +61,10 @@ response.Write(abreDivMaster)
 					set countfields = db.execute("select count(*) as total from cliniccentral.sys_resourcesFields where resourceID="&getResource("id")&" and not ColumnName='"&Coluna&"'")
 					percentual = cint( 100/ccur(countfields("total")) )
 					set getFields = db.execute("select rf.*, rft.typeName from cliniccentral.sys_resourcesFields rf LEFT JOIN cliniccentral.sys_resourcesFieldTypes rft on rf.fieldTypeID=rft.id where resourceID="&getResource("id")&" and not ColumnName='"&Coluna&"' order by id")
+
+					qtdCol = 0
 					while not getFields.EOF
+
 						strCampos = strCampos&getFields("columnName")&"|"
 						strTipos = strTipos&getFields("typeName")&"|"
 						strSelectSQL = strSelectSQL&getFields("selectSQL")&"|"
@@ -70,6 +73,7 @@ response.Write(abreDivMaster)
 						%>
                         <th width="<%=percentual%>%"><%=getFields("label")%></th>
 						<%
+						qtdCol = qtdCol + 1
                     getFields.movenext
                     wend
                     getFields.close
@@ -114,8 +118,16 @@ response.Write(abreDivMaster)
 				'response.Write(regsSql)
                 set regs = db.execute(regsSql)
 				if regs.EOF then
-					db_execute("insert into "&NomeTabela&" (sysActive, sysUser, "&Coluna&") values (1, "&session("User")&", "&idNaColuna&")")
-					set regs = db.execute(regsSql)
+				    'desabilita auto insert
+				    if False then
+					    db_execute("insert into "&NomeTabela&" (sysActive, sysUser, "&Coluna&") values (1, "&session("User")&", "&idNaColuna&")")
+					    set regs = db.execute(regsSql)
+                    end if
+					%>
+					<tr>
+					    <td colspan="<%=qtdCol%>" class="text-center">Clique no <i>"+"</i> para adicionar. </td>
+                    </tr>
+					<%
 				end if
                 while not regs.eof
                     counter = counter + 1
@@ -170,7 +182,7 @@ response.Write(abreDivMaster)
 								    <%
 								    if MostarBotaoApagar=1 then
                                         %>
-                                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemSubform('<%=NomeTabela%>', 'Del', <%=regs("id")%>, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')"><i class="fa fa-trash"></i></button>
+                                        <button type="button" class="btn btn-sm btn-danger remove-item-subform" onclick="itemSubform('<%=NomeTabela%>', 'Del', <%=regs("id")%>, '<%=Coluna%>', <%=idNaColuna%>, '<%=NomeForm%>')"><i class="far fa-trash"></i></button>
                                         <%
 								    end if
 								    %>
@@ -184,13 +196,13 @@ response.Write(abreDivMaster)
                                     if regs("NomeID")&""<>"" then
                                     %>
                                         <a  href="javascript:modalPaciente(<%=regs("NomeID")%>)">
-                                            <button type="button" class="btn btn-sm btn-info"><i class="fa fa-expand" title="<%=regs("Nome")%>"></i>  Paciente</button>
+                                            <button type="button" class="btn btn-sm btn-info"><i class="far fa-expand" title="<%=regs("Nome")%>"></i>  Paciente</button>
                                         </a>
                                     <%
                                     else
                                     %>
                                         <a  href="javascript:modalPacienteRelativo(<%=regs("id")%>, '<%=regs("Nome")%>')">
-                                            <button type="button" class="btn btn-sm btn-default" data-rel="tooltip" data-placement="bottom" data-original-title="Mais informações"><i class="fa fa-expand" title="<%=regs("Nome")%>"></i></button>
+                                            <button type="button" class="btn btn-sm btn-default" data-rel="tooltip" data-placement="bottom" data-original-title="Mais informações"><i class="far fa-expand" title="<%=regs("Nome")%>"></i></button>
                                         </a>
                                     <%
                                     end if

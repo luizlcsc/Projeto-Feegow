@@ -39,7 +39,11 @@ end if
 		list-style: none;
 	}
 </style>
-<div class="clearfix form-actions">
+
+<div class="clearfix form-actions" style="margin-top: 40px">
+	<div class="col-xs-12 text-right" style="position: absolute; margin-top: -60px;">
+		<button class="btn btn-primary btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button>
+	</div>
 	<div class="col-xs-6">
 		<label>Adicionar Categoria</label><br />
 		<input type="text" name="Adicionar" id="Adicionar" class="form-control input-sm" />
@@ -63,11 +67,11 @@ end if
         </select>
     </div>
     <div class="col-xs-4"><label>&nbsp;</label><br />
-    	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=req("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="fa fa-plus"></i> Inserir</button>
+    	<button type="button" class="btn btn-sm btn-success btn-block" onclick="arvore('<%=req("CD")%>', '', $('#Adicionar').val(), $('#CategoriaSuperior').val());location.reload()"><i class="far fa-plus"></i> Inserir</button>
     </div>
     <div class="col-xs-4"><label>&nbsp;</label><br />
-    	<!-- <button class="btn btn-primary btn-block btn-sm" onclick="savePlanoContas()" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar Ordem</button> -->
-    	<button class="btn btn-primary btn-block btn-sm" type="submit" name="serialize" id="serialize"><i class="fa fa-save"></i> Salvar</button>
+    	<!-- <button class="btn btn-primary btn-block btn-sm" onclick="savePlanoContas()" name="serialize" id="serialize"><i class="far fa-save"></i> Salvar Ordem</button> -->
+    	<button class="btn btn-primary btn-block btn-sm" type="submit" name="serialize" id="serialize"><i class="far fa-save"></i> Salvar</button>
 	</div>
 </div>
 <%
@@ -82,7 +86,7 @@ function li(id, Name, Rateio, Ordem, Posicao)
 			<span class='ordem'> <% if Posicao <> "" then response.write(Posicao) else response.write(Ordem) end if%> </span> -
 			<span class='nome'> <%=Name%> </span>
         <div class="pull-right action-buttons">
-        	<i class="fa fa-move" style="cursor:move"></i>
+        	<i class="far fa-move" style="cursor:move"></i>
 
             <%
             if req("CD")="D" then
@@ -96,8 +100,8 @@ function li(id, Name, Rateio, Ordem, Posicao)
                 <%
             end if
             %>
-			<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))arvore('<%=req("CD")%>', <%=id%>, '')"><i class="fa fa-trash"></i></a>
-            <a class="btn btn-xs btn-success" onclick="editaPlanoDeContas('<%=id %>', '<%= req("CD") %>', '<%=Name%>')" href="#"><i class="fa fa-edit"></i></a>
+			<a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir este registro?'))arvore('<%=req("CD")%>', <%=id%>, '')"><i class="far fa-trash"></i></a>
+            <a class="btn btn-xs btn-success" onclick="editaPlanoDeContas('<%=id %>', '<%= req("CD") %>', '<%=Name%>')" href="#"><i class="far fa-edit"></i></a>
 		</div></div>
     <%
 end function

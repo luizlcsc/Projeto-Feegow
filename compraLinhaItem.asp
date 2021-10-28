@@ -2,7 +2,7 @@
 percentual = CalculaMinAprovacao(id)
 %>
 
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" class="invoice-linha-item" >
     <td>
 		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " quantidade text-right disable", "", " required onkeyup=""recalcular(this)""")%><input type="hidden" name="inputs" value="<%= id %>">
         <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" />
@@ -65,7 +65,7 @@ percentual = CalculaMinAprovacao(id)
           <div class="progress-bar progress-bar-primary progress-bar-striped" style="width: <%=percentual%>%;;"></div>
           <div class="progress-bar progress-bar-default progress-bar" style="width: <%=100-percentual%>%;"></div>
         </div></td>
-    <td><button type="button" id="xili<%= ItemCompraID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="fa fa-remove"></i></button></td>
+    <td><button type="button" id="xili<%= ItemCompraID %>" class="btn btn-sm btn-danger disable" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove"></i></button></td>
 </tr>
 <script>
 function recalcular(arg){

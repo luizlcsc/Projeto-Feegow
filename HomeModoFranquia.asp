@@ -3,11 +3,13 @@
     $(".crumb-active a").html("Bem-vindo ao Feegow Clinic");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("resumo da semana");
-    $(".crumb-icon a span").attr("class", "fa fa-dashboard");
+    $(".crumb-icon a span").attr("class", "far fa-dashboard");
     $("#modal-descontos-pendentes").css("z-index", 9999999999999999999999999);
 </script>
 <div style="margin-top: 10px">
+<%server.Execute("modulos/marketing/RenderBanner.asp")%>
 <div class="panel panel-tile text-center br-a br-light" >
+
       <div class="panel-body bg-primary light" style="padding: 50px; height: 100vh">
         <img src="https://cdn.feegow.com/feegowclinic-v7/assets/img/logo_white.png" />
         <br/>

@@ -118,11 +118,12 @@ if  ccur(VDesconto) > ccur(MaximoDesconto * 1000000) or MaximoDescontoDaRegra > 
     else
    
         %>
-        
-        $.get("ModalMaximoDesconto.asp", {RegraID:'<%=RegraIdListString%>'}, function(data){
-            $DescontoMaximoUltrapassado.find("#ModalDescontoMaximoConteudo").html(data);
-            $DescontoMaximoUltrapassado.modal("show");
-        });
+        if(false){
+            $.get("ModalMaximoDesconto.asp", {RegraID:'<%=RegraIdListString%>'}, function(data){
+                $DescontoMaximoUltrapassado.find("#ModalDescontoMaximoConteudo").html(data);
+                $DescontoMaximoUltrapassado.modal("show");
+            });
+        }
         <%
     end if
 end if

@@ -158,7 +158,7 @@ end if
 
 
             if erroProcedimentos then
-                NomesProcedimentos = "<b class='text-danger'><i class='fa fa-exclamation-triangle'></i> VOCÊ NÃO DEFINIU SE ESTA REGRA VALE PARA TODOS OS PROCEDIMENTOS OU PARA ALGUNS. </b>"
+                NomesProcedimentos = "<b class='text-danger'><i class='far fa-exclamation-triangle'></i> VOCÊ NÃO DEFINIU SE ESTA REGRA VALE PARA TODOS OS PROCEDIMENTOS OU PARA ALGUNS. </b>"
             end if
 
             if profissionais<>"" then
@@ -224,19 +224,19 @@ end if
             %>
             <tr>
                 <td>
-                    <i class="fa fa-user-md text-primary"></i> <%= NomesProfissionais %><br />
-                    <i class="fa fa-user-md text-primary"></i> <%= NomeEspecialidades %><br />
-                    <i class="fa fa-money text-primary"></i> <%= TabelasParticulares %><br />
+                    <i class="far fa-user-md text-primary"></i> <%= NomesProfissionais %><br />
+                    <i class="far fa-user-md text-primary"></i> <%= NomeEspecialidades %><br />
+                    <i class="far fa-money text-primary"></i> <%= TabelasParticulares %><br />
                     <% if session("Unidades")<>"|0|" then %>
                         <b>UNIDADES:</b> <%= Unidades %><br />
                     <% end if %>
-                    <i class="fa fa-stethoscope text-primary"></i> <%= NomesProcedimentos %><br />
+                    <i class="far fa-stethoscope text-primary"></i> <%= NomesProcedimentos %><br />
                     <div class="label label-<%= classValor %>">
                         <%= DescricaoValor & preValor & Valor & sufValor %></div>
                 <td>
-                    <button type="button" onclick="editVP(<%= vp("id") %>)" class="btn btn-xs btn-success"><i class="fa fa-edit"></i></button>
+                    <button type="button" onclick="editVP(<%= vp("id") %>)" class="btn btn-xs btn-success"><i class="far fa-edit"></i></button>
                     <br /><br />
-                    <button type="button" onclick="if(confirm('Tem certeza de que deseja excluir esta regra?'))ajxContent('VariacoesPrecosConteudo&X=<%=vp("id") %>', '', 1, 'divVarPrecos');" class="btn btn-xs btn-danger btn-block"><i class="fa fa-trash"></i></button>
+                    <button type="button" onclick="if(confirm('Tem certeza de que deseja excluir esta regra?'))ajxContent('VariacoesPrecosConteudo&X=<%=vp("id") %>', '', 1, 'divVarPrecos');" class="btn btn-xs btn-danger btn-block"><i class="far fa-trash"></i></button>
                 </td>
             </tr>
             <%
@@ -346,7 +346,7 @@ end if
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-md-12">
-                        <button class="btn btn-success btn-sm pull-right"><i class="fa fa-save"></i> SALVAR</button>
+                        <button class="btn btn-success btn-sm pull-right"><i class="far fa-save"></i> SALVAR</button>
                     </div>
                 </div>
             </div>

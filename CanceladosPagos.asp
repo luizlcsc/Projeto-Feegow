@@ -20,7 +20,7 @@
         while not ii.eof
             %>
             <tr>
-                <td><a href="./?P=Invoice&Pers=1&CD=C&I=<%= ii("InvoiceID") %>" target="_blank" class="btn btn-primary btn-xs"><i class="fa fa-arrow-down"></i></a></td>
+                <td><a href="./?P=Invoice&Pers=1&CD=C&I=<%= ii("InvoiceID") %>" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-arrow-down"></i></a></td>
                 <td><%= ii("DataExecucao") %></td>
                 <td><%= accountName(NULL, "ContaCredito") %></td>
                 <td><%= ii("NomeProcedimento") %></td>
@@ -29,7 +29,7 @@
                 <td><%= fn(ii("ValorRepasse")) %></td>
                 <td>
                     <% if not isnull(ii("InvoiceAPagarID")) then %>
-                        <a class="btn btn-xs btn-warning" target="_blank" href="./?P=Invoice&Pers=1&CD=D&I=<%= ii("InvoiceAPagarID") %>"><i class="fa fa-arrow-up"></i></a>
+                        <a class="btn btn-xs btn-warning" target="_blank" href="./?P=Invoice&Pers=1&CD=D&I=<%= ii("InvoiceAPagarID") %>"><i class="far fa-arrow-up"></i></a>
                     <% end if %>
                 </td>
             </tr>

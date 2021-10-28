@@ -14,7 +14,12 @@
     <!-- Font CSS (Via CDN) -->
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'>
 
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.12.0">
     <!-- Theme CSS -->
+     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+
     <link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/theme.css">
     <link rel="stylesheet" type="text/css" href="vendor/plugins/ladda/ladda.min.css">
 
@@ -31,9 +36,13 @@
    <![endif]-->
    <style type="text/css">
        body.external-page #main{
-           background-image:url(css/funda_sis.jpg)!important;/*<%= request.ServerVariables("SERVER_NAME") %>*/
-           background-size:cover;
-           background-color:#256189!important;
+               background: linear-gradient(
+           52deg, #00b4fc, #17df93, #00b4fc, #17df93);
+               background-size: 800% 800%;
+               -webkit-animation: AnimationName 180s ease infinite;
+               -moz-animation: AnimationName 190s ease infinite;
+               animation: AnimationName 180s ease infinite;
+           }
        }
 
         @font-face {
@@ -104,7 +113,7 @@
 
                             <div style="margin: 30px 50px">
                                 <div>
-                                    <span style="color: #008bd0;font-size: 42px; font-family: rubidBold">Versão FREE</span>&nbsp;
+                                    <span style="color: #00b4fc;font-size: 42px; font-family: rubidBold">Versão FREE</span>&nbsp;
                                     <span style="color: #CCCCCC;font-size: 22px; font-family: rubidBold">Software Feegow clinic</span>
                                 </div>
                                 <div>
@@ -123,11 +132,11 @@
                                     <br/><br/>
                                     Entendemos que para um melhor aproveitamento da fase de teste, a apresentação é necessária.
                                     <br/><br/>
-                                    <span style="color:#008bd0;font-size: 18px; font-family: 'Arial Black'"><strong>Está pronto para ter a melhor experiência em software clínico?</strong></span>
+                                    <span style="color:#00b4fc;font-size: 18px; font-family: 'Arial Black'"><strong>Está pronto para ter a melhor experiência em software clínico?</strong></span>
                                 </div>
                             </div>
 
-<!--                            <span class="text-primary"><i class="fa fa-stethoscope"></i>-->
+<!--                            <span class="text-primary"><i class="far fa-stethoscope"></i>-->
 <!--                                                        Teste agora o Feegow Clinic!</span>-->
                         </div>
                         <form method="post" autocomplete="off" id="trial" action="">
@@ -149,7 +158,7 @@
                                                             <label for="NomeContato" class="field prepend-icon">
                                                               <input type="text" name="NomeContato" id="NomeContato" class="gui-input" placeholder="Nome completo..." required autofocus>
                                                               <label for="NomeContato" class="field-icon">
-                                                                <i class="fa fa-user"></i>
+                                                                <i class="far fa-user"></i>
                                                               </label>
                                                             </label>
                                                         </div>
@@ -159,7 +168,7 @@
                                                             <label for="Telefone" class="field prepend-icon">
                                                                 <input type="text" name="Telefone" id="Telefone" class="gui-input input-mask-phone" placeholder="Telefone...">
                                                                 <label for="Telefone" class="field-icon">
-                                                                <i class="fa fa-phone"></i>
+                                                                <i class="far fa-phone"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -167,7 +176,7 @@
                                                             <label for="Celular" class="field prepend-icon">
                                                                 <input type="text" name="Celular" id="Celular" class="gui-input input-mask-phone" placeholder="Celular..." required>
                                                                 <label for="Celular" class="field-icon">
-                                                                <i class="fa fa-mobile-phone"></i>
+                                                                <i class="far fa-mobile-phone"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -177,7 +186,7 @@
                                                                     <label for="Email" class="field prepend-icon">
                                                                       <input type="text" name="Email" id="Email" class="gui-input" placeholder="E-mail..." required>
                                                                       <label for="Email" class="field-icon">
-                                                                        <i class="fa fa-envelope"></i>
+                                                                        <i class="far fa-envelope"></i>
                                                                       </label>
                                                                     </label>
                                                         </div>
@@ -188,7 +197,7 @@
                                                             <label for="Cupom" class="field prepend-icon">
                                                                 <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=req("Cupom")%>">
                                                                 <label for="Cupom" class="field-icon">
-                                                                <i class="fa fa-ticket"></i>
+                                                                <i class="far fa-ticket"></i>
                                                                 </label>
                                                             </label>
 
@@ -210,7 +219,7 @@
                                                             <label for="NomeEmpresa" class="field prepend-icon">
                                                                 <input type="text" required name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
                                                                 <label for="NomeEmpresa" class="field-icon">
-                                                                <i class="fa fa fa-hospital-o"></i>
+                                                                <i class="far fa-hospital-o"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -218,7 +227,7 @@
                                                             <label for="UsuariosPretendidos" class="field prepend-icon">
                                                                 <input type="text" required name="UsuariosPretendidos" id="UsuariosPretendidos" class="gui-input" placeholder="Quantidade de Profissionais da Clínica" >
                                                                 <label for="UsuariosPretendidos" class="field-icon">
-                                                                <i class="fa fa-group"></i>
+                                                                <i class="far fa-group"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -228,7 +237,7 @@
                                                             <label for="Cargo" class="field prepend-icon">
                                                                 <input type="text" required name="Cargo" id="Cargo" class="gui-input" placeholder="Cargo" >
                                                                 <label for="Cargo" class="field-icon">
-                                                                <i class="fa fa-suitcase"></i>
+                                                                <i class="far fa-suitcase"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -236,7 +245,7 @@
                                                             <label for="CRMResponsavel" class="field prepend-icon">
                                                                 <input type="text" name="CRMResponsavel" id="CRMResponsavel" class="gui-input" placeholder="CRM do Responsavel" >
                                                                 <label for="CRMResponsavel" class="field-icon">
-                                                                <i class="fa fa-user-md"></i>
+                                                                <i class="far fa-user-md"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
@@ -246,7 +255,7 @@
                                                             <label for="senha1" class="field prepend-icon">
                                                                 <input type="password" name="senha1" id="senha1" class="gui-input" placeholder="Defina uma Senha..." required>
                                                                 <label for="senha1" class="field-icon">
-                                                                <i class="fa fa-lock"></i>
+                                                                <i class="far fa-lock"></i>
                                                                 </label>
                                                             </label>
 
@@ -256,10 +265,15 @@
                                                             <label for="senha2" class="field prepend-icon">
                                                                 <input type="password" name="senha2" id="senha2" class="gui-input" placeholder="Confirme sua senha..." required>
                                                                 <label for="senha2" class="field-icon">
-                                                                <i class="fa fa-lock"></i>
+                                                                <i class="far fa-lock"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
+                                                        <div class="col-md-12">
+                                                            <br>
+                                                            <div data-callback="recaptchaSuccess" class="g-recaptcha" data-sitekey="6LcYU94cAAAAAE-wjHMKmWdjz5-JlEukwcyVqzj4"></div>
+                                                        </div>
+
                                                     </div>
                                                 </div>
 
@@ -308,12 +322,12 @@
                                             </div>
                             </div>
                             <!-- end .form-body section -->
-                            <div class="panel-footer clearfix p10 ph15">
-                                    <button class="btn btn-primary" id="btnGenerate"><i class="fa fa-ok"></i>INICIAR TESTE</button>
+                            <div class="panel-footer clearfix p10 ph15" >
+                                    <button class="btn btn-primary" style="float: right" id="btnGenerate"><i class="far fa-ok"></i>INICIAR TESTE</button>
                             </div>
                             <!-- end .form-footer section -->
                         </form>
-						<form method="post" action="/v7/?P=Login" id="form_fake" style="display:none">
+						<form method="post" action="./?P=Login" id="form_fake" style="display:none">
 							<input type="password" name="password" id="fake_password" class="gui-input" placeholder="Senha" required="">
 							<input type="email" name="User" id="fake_User" class="gui-input" placeholder="Digite seu e-mail de acesso" autofocus="" required="">
 						</form>
@@ -415,14 +429,24 @@
     <!-- END: PAGE SCRIPTS -->
 
     <script type="text/javascript">
+        var captchaToken = null;
+
+        function recaptchaSuccess(token){
+            captchaToken = token;
+        }
+
         $("#trial").submit(function(){
+            if(!captchaToken){
+                alert("Preencha a verificação Captcha.");
+            }
+
             if($("#senha1").val()!=$("#senha2").val()){
                 alert('As senhas digitadas são diferentes');
             }else{
                 $("#btnGenerate").attr("disabled", "disabled");
                 $.ajax({
                     type:"POST",
-                    url:"https://api.feegow.com.br/trial/start",
+                    url:"https://api.feegow.com.br/trial/start?captcha="+captchaToken,
                     data:$("#trial").serialize(),
                     success:function(data){
 						document.getElementById("fake_password").value = $("#senha1").val();

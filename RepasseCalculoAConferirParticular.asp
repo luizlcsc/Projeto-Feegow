@@ -16,7 +16,7 @@ response.Buffer
 
 function buttonDetalharDominio(itemId)
     buttonDetalharDominio="<div class='pb5 ' style='float: right'>" &_
-                          "<button title='Detalhar regras de repasse' data-toggle='tooltip' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='fa fa-question-circle'></i></button>" &_
+                          "<button title='Detalhar regras de repasse' data-toggle='tooltip' onclick='detalhaDominio(""itensinvoice"","""&itemId&""")' type='button' class='btn btn-default btn-xs'><i class='far fa-question-circle'></i></button>" &_
                           "</div>"
 end function
 
@@ -425,7 +425,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         if fd("FM")="K" then
             'primeiro puxa só os produtos que não possuem variação (ver se quando nao muda ele grava)
             'depois sai listando as variações
-            set kit = db.execute("select pdk.id ProdutoDoKitID, pdk.Valor, pdk.ContaPadrao, pdk.Quantidade, pdk.ProdutoID, pdk.Variavel from procedimentoskits pk LEFT JOIN produtosdokit pdk ON pk.KitID=pdk.KitID WHERE pk.Casos LIKE '%|P|%' AND pk.ProcedimentoID="& ProcedimentoID)
+            set kit = db.execute("select pdk.id ProdutoDoKitID, pdk.Valor, if(pdk.ContaPadrao='' or pdk.ContaPadrao is null, 0 , pdk.ContaPadrao) ContaPadrao, pdk.Quantidade, pdk.ProdutoID, pdk.Variavel from procedimentoskits pk LEFT JOIN produtosdokit pdk ON pk.KitID=pdk.KitID WHERE pk.Casos LIKE '%|P|%' AND pk.ProcedimentoID="& ProcedimentoID)
             while not kit.eof
                 NomeProduto = ""
                 Quantidade = kit("Quantidade")
@@ -470,8 +470,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                             Quantidade = QuantidadeUnitariaUsada
 
-                            set prod = db.execute("select NomeProduto from produtos where id="& ProdutoID)
-                            if prod.eof then NomeProduto="" else NomeProduto=prod("NomeProduto") end if
                             if ProdutoID<>0 and not isnull(ProdutoID) and Creditado<>"" then
                                 somaDesteSobre = somaDesteSobre+ (Quantidade*ValorItem)
                                 'if Creditado<>"0" then
@@ -488,8 +486,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
 
                     else
-                        set prod = db.execute("select NomeProduto from produtos where id="& ProdutoID)
-                        if prod.eof then NomeProduto="" else NomeProduto=prod("NomeProduto") end if
                         if ProdutoID<>0 and not isnull(ProdutoID) and Creditado<>"" then
                             somaDesteSobre = somaDesteSobre+ (Quantidade*ValorItem)
                             'if Creditado<>"0" then
@@ -777,7 +773,7 @@ end if
                 <td rowspan="2" valign="top" style="vertical-align:top">
                     <input id="invoiceID" name="invoiceID" type="hidden" value="<%= InvoiceID %>">
                     <a target="_blank" class="btn btn-xs text-dark mn" href="./?P=Invoice&Pers=1&CD=C&I=<%= InvoiceID %>">
-                        <i class="fa fa-chevron-right"></i>
+                        <i class="far fa-chevron-right"></i>
                     </a>
                 </td>
                 <td> <%= DataExecucao %></td>
@@ -811,8 +807,14 @@ desfazBtnCons = ""
                     ParcelasCartaoConsolidadas = ParcelasCartaoConsolidadas & "|"& rr("ParcelaID") &"|"
                     ItensDescontadosConsolidados = ItensDescontadosConsolidados & "|"& rr("ItemDescontadoID") &"|"
 
+                    set NotasAutorizadasSQL = db_execute("SELECT Status FROM nfse_emitidas WHERE InvoiceID="&InvoiceID&" ORDER BY id DESC")
+                    StatusNotaID = ""
+                    if not NotasAutorizadasSQL.eof then
+                        StatusNotaID = NotasAutorizadasSQL("Status")
+                    end if
+
                     existeSplitRealizado = "  "
-                    if rr("split")&"" = "processed" then
+                    if rr("split")&"" = "processed" or StatusNotaID = "2" or StatusNotaID = "3" then
                         existeSplitRealizado = " disabled "
                     end if
 

@@ -21,7 +21,7 @@
 									<div class="row">
 										<div class="col-md-6">
 											<h4 class="header blue lighter bigger">
-												<i class="fa fa-stethoscope green"></i>
+												<i class="far fa-stethoscope green"></i>
 												Teste agora o Feegow Clinic!
 											</h4>
 											<div class="row">
@@ -29,7 +29,7 @@
 													<label>Nome completo</label><br>
 													<span class="block input-icon input-icon-right">
 														<input type="text" name="NomeContato" id="NomeContato" class="form-control" required autofocus>
-														<i class="fa fa-user"></i>
+														<i class="far fa-user"></i>
 													</span>
 												</div>
 												<div class="col-md-12">
@@ -38,14 +38,14 @@
 															<label>Telefones de contato</label><br>
 															<span class="block input-icon input-icon-right">
 																<input type="text" class="form-control input-mask-phone" name="Telefone" id="Telefone" placeholder="" />
-																<i class="fa fa-phone"></i>
+																<i class="far fa-phone"></i>
 															</span>
 														</div>
 														<div class="col-md-6">
 															<label>&nbsp;</label><br>
 															<span class="block input-icon input-icon-right">
 																<input type="text" class="form-control input-mask-phone" name="Celular" required id="Celular" placeholder="" />
-																<i class="fa fa-mobile-phone"></i>
+																<i class="far fa-mobile-phone"></i>
 															</span>
 														</div>
 													</div>
@@ -54,7 +54,7 @@
 													<label>E-mail</label><br>
 													<span class="block input-icon input-icon-right">
 														<input type="email" class="form-control" name="Email" placeholder="E-mail" required />
-														<i class="fa fa-envelope"></i>
+														<i class="far fa-envelope"></i>
 													</span>
 												</div>
 												<div class="col-md-12">
@@ -63,14 +63,14 @@
 															<label>Senha</label>
 															<span class="block input-icon input-icon-right">
 																<input type="password" class="form-control" name="senha1" id="senha1" placeholder="Defina uma senha" required />
-																<i class="fa fa-lock"></i>
+																<i class="far fa-lock"></i>
 															</span>
 														</div>
 														<div class="col-md-6">
 															<label>&nbsp;</label><br>
 															<span class="block input-icon input-icon-right">
 																<input type="password" class="form-control" name="senha2" id="senha2" placeholder="Confirme sua senha" required />
-																<i class="fa fa-lock"></i>
+																<i class="far fa-lock"></i>
 															</span>
 														</div>
 													</div>
@@ -79,7 +79,7 @@
 															<label>Cupom desconto</label><br>
 															<span class="block input-icon input-icon-right">
 																<input type="text" class="form-control" name="Cupom" id="Cupom" value="<%=req("Cupom")%>" placeholder="Digite o número do seu cupom" />
-																<i class="fa fa-ticket"></i>
+																<i class="far fa-ticket"></i>
 															</span>
 														</div>
 													</div>
@@ -97,12 +97,12 @@
 												</div-->
 											</div>
 											<div class="clearfix form-actions">
-												<button class="btn btn-primary btn-block" id="btnGenerate"><i class="fa fa-ok"></i> INICIAR TESTE</button>
+												<button class="btn btn-primary btn-block" id="btnGenerate"><i class="far fa-ok"></i> INICIAR TESTE</button>
 											</div>
 										</div>
 										<div class="col-md-6">
 											<h4 class="header blue lighter bigger">
-												<i class="fa fa-key green"></i>
+												<i class="far fa-key green"></i>
 												J&aacute; &eacute; cadastrado?
 											</h4>
 											<a href="?P=Login" class="btn btn-success btn-block">IR PARA TELA DE LOGIN</a>
@@ -135,7 +135,7 @@
 							<div class="toolbar clearfix">
 								<div>
 									<a href="http://www.feegowclinic.com.br" class="forgot-password-link">
-										<i class="fa fa-arrow-left"></i>
+										<i class="far fa-arrow-left"></i>
 										Voltar para o website
 									</a>
 								</div>
@@ -147,7 +147,7 @@
 						<div class="widget-body">
 							<div class="widget-main">
 								<h4 class="header red lighter bigger">
-									<i class="fa fa-key"></i>
+									<i class="far fa-key"></i>
 									Recuperar Senha
 								</h4>
 
@@ -161,13 +161,13 @@
 										<label class="block clearfix">
 											<span class="block input-icon input-icon-right">
 												<input type="email" class="form-control" placeholder="Email" />
-												<i class="fa fa-envelope"></i>
+												<i class="far fa-envelope"></i>
 											</span>
 										</label>
 
 										<div class="clearfix">
 											<button type="button" class="width-35 pull-right btn btn-sm btn-danger">
-												<i class="fa fa-lightbulb"></i>
+												<i class="far fa-lightbulb"></i>
 												Enviar!
 											</button>
 										</div>
@@ -178,7 +178,7 @@
 							<div class="toolbar center">
 								<a href="#" onClick="show_box('login-box'); return false;" class="back-to-login-link">
 									Voltar para o login
-									<i class="fa fa-arrow-right"></i>
+									<i class="far fa-arrow-right"></i>
 								</a>
 							</div>
 						</div><!-- /widget-body -->
@@ -188,7 +188,7 @@
 						<div class="widget-body">
 							<div class="widget-main">
 								<h4 class="header green lighter bigger">
-									<i class="fa fa-group blue"></i>
+									<i class="far fa-group blue"></i>
 									New User Registration
 								</h4>
 
@@ -200,28 +200,28 @@
 										<label class="block clearfix">
 											<span class="block input-icon input-icon-right">
 												<input type="email" class="form-control" placeholder="Email" />
-												<i class="fa fa-envelope"></i>
+												<i class="far fa-envelope"></i>
 											</span>
 										</label>
 
 										<label class="block clearfix">
 											<span class="block input-icon input-icon-right">
 												<input type="text" class="form-control" placeholder="Username" />
-												<i class="fa fa-user"></i>
+												<i class="far fa-user"></i>
 											</span>
 										</label>
 
 										<label class="block clearfix">
 											<span class="block input-icon input-icon-right">
 												<input type="password" class="form-control" placeholder="Password" />
-												<i class="fa fa-lock"></i>
+												<i class="far fa-lock"></i>
 											</span>
 										</label>
 
 										<label class="block clearfix">
 											<span class="block input-icon input-icon-right">
 												<input type="password" class="form-control" placeholder="Repeat password" />
-												<i class="fa fa-retweet"></i>
+												<i class="far fa-retweet"></i>
 											</span>
 										</label>
 
@@ -237,13 +237,13 @@
 
 										<div class="clearfix">
 											<button type="reset" class="width-30 pull-left btn btn-sm">
-												<i class="fa fa-refresh"></i>
+												<i class="far fa-refresh"></i>
 												Reset
 											</button>
 
 											<button type="button" class="width-65 pull-right btn btn-sm btn-success">
 												Register
-												<i class="fa fa-arrow-right icon-on-right"></i>
+												<i class="far fa-arrow-right icon-on-right"></i>
 											</button>
 										</div>
 									</fieldset>
@@ -252,7 +252,7 @@
 
 							<div class="toolbar center">
 								<a href="#" onClick="show_box('login-box'); return false;" class="back-to-login-link">
-									<i class="fa fa-arrow-left"></i>
+									<i class="far fa-arrow-left"></i>
 									Back to login
 								</a>
 							</div>

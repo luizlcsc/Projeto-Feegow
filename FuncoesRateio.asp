@@ -85,7 +85,7 @@ end if
 					</select>
 				</div>
                 </div></td>
-				<td width="50"><button type="button" class="btn btn-danger btn-sm" onClick="removeItem('Item', <%=itens("id")%>);"><i class="fa fa-remove"></i></button></td>
+				<td width="50"><button type="button" class="btn btn-danger btn-sm" onClick="removeItem('Item', <%=itens("id")%>);"><i class="far fa-remove"></i></button></td>
 			</tr>
 			<%
 		itens.movenext
@@ -97,7 +97,7 @@ end if
         <tfoot>
           <tr>
             <td colspan="2"><%=c%> fun&ccedil;&otilde;es
-            <%if c>1 then%><button type="button" class="btn btn-danger btn-xs pull-right" onClick="removeItem('Grupo', <%=DominioID%>);"><i class="fa fa-remove"></i> Remover Todas</button><%end if%></td>
+            <%if c>1 then%><button type="button" class="btn btn-danger btn-xs pull-right" onClick="removeItem('Grupo', <%=DominioID%>);"><i class="far fa-remove"></i> Remover Todas</button><%end if%></td>
           </tr>
         </tfoot>
     </table>
@@ -153,7 +153,7 @@ end if
 					</select>
 				</div>
                 </div></td>
-				<td width="50"><button type="button" class="btn btn-danger btn-sm" onClick="removeItem('Item', <%=itens("id")%>);"><i class="fa fa-remove"></i></button></td>
+				<td width="50"><button type="button" class="btn btn-danger btn-sm" onClick="removeItem('Item', <%=itens("id")%>);"><i class="far fa-remove"></i></button></td>
 			</tr>
 			<%
 		itens.movenext
@@ -165,7 +165,7 @@ end if
         <tfoot>
           <tr>
             <td colspan="2"><%=c%> materiais/medicamentos
-            <%if c>1 then%><button type="button" class="btn btn-danger btn-xs pull-right" onClick="removeItem('Grupo', <%=DominioID%>);"><i class="fa fa-remove"></i> Remover Todas</button><%end if%></td>
+            <%if c>1 then%><button type="button" class="btn btn-danger btn-xs pull-right" onClick="removeItem('Grupo', <%=DominioID%>);"><i class="far fa-remove"></i> Remover Todas</button><%end if%></td>
           </tr>
         </tfoot>
     </table>
@@ -198,17 +198,17 @@ function tot(I){
 			c = c+1
 
             if itens("FM")="K" then
-                txt = "<i class='fa fa-medkit'></i> Descontar produtos vinculados ao procedimento executado, caso haja, sobre:"
+                txt = "<i class='far fa-medkit'></i> Descontar produtos vinculados ao procedimento executado, caso haja, sobre:"
                 %>
                 <script>$("#divMedkit").addClass("hidden");</script>
                 <%
             elseif itens("FM")="Q" then
-                txt = "<i class='fa fa-medkit'></i> Descontar produtos baixados no estoque"
+                txt = "<i class='far fa-medkit'></i> Descontar produtos baixados no estoque"
                 %>
                 <script>$("#divEstoque").addClass("hidden");</script>
                 <%
             elseif itens("FM")="E" then
-                txt = "<i class='fa fa-users'></i> Gerar repasse para equipe vinculada ao procedimento executado, caso haja, sobre:"
+                txt = "<i class='far fa-users'></i> Gerar repasse para equipe vinculada ao procedimento executado, caso haja, sobre:"
                 %>
                 <script>$("#divUsers").addClass("hidden");</script>
                 <%
@@ -228,7 +228,7 @@ function tot(I){
 					</select>
 				</div>
                 </div></td>
-				<td width="50"><button type="button" class="btn btn-danger btn-sm" onClick="removeItem('Item', <%=itens("id")%>);"><i class="fa fa-remove"></i></button></td>
+				<td width="50"><button type="button" class="btn btn-danger btn-sm" onClick="removeItem('Item', <%=itens("id")%>);"><i class="far fa-remove"></i></button></td>
 			</tr>
 			<%
 		itens.movenext

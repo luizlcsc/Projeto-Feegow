@@ -16,7 +16,7 @@ end if
 <div class="row">
     <%= quickfield("simpleSelect", "AddPreparo", "Preparo", 9, "", "select id, Descricao from sys_preparos where sysActive=1 order by Descricao", "Descricao", "") %>
     <div class="col-md-3">
-        <button type="button" class="btn btn-success btn-block mt25" onclick="ajxContent('procedimentospreparoexcecao&ProcedimentoID=<%= ProcedimentoID %>&Add='+ $('#AddPreparo').val(), <%= PreparoExcecaoID %>, 1, 'preparoexcecoes');"><i class="fa fa-plus"></i> Adicionar</button>
+        <button type="button" class="btn btn-success btn-block mt25" onclick="ajxContent('procedimentospreparoexcecao&ProcedimentoID=<%= ProcedimentoID %>&Add='+ $('#AddPreparo').val(), <%= PreparoExcecaoID %>, 1, 'preparoexcecoes');"><i class="far fa-plus"></i> Adicionar</button>
     </div>
 </div>
 <hr class="short alt" />
@@ -62,7 +62,7 @@ end if
                         <td><%= quickfield("text", "Inicio_"&ex("id"), "", 12, ex("Inicio"), " prePar ", "", disInicio ) %></td>
                         <td><%= quickfield("text", "Fim_"&ex("id"), "", 12, ex("Fim"), " prePar ", "", disFim ) %></td>
                         <% end if %>
-                        <td><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja apagar esta frase?')) ajxContent('procedimentospreparoexcecao&ProcedimentoID=<%= ProcedimentoID %>&X=<%= ex("id") %>', <%= PreparoExcecaoID %>, 1, 'preparoexcecoes')"><i class="fa fa-remove"></i></button></td>
+                        <td><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja apagar esta frase?')) ajxContent('procedimentospreparoexcecao&ProcedimentoID=<%= ProcedimentoID %>&X=<%= ex("id") %>', <%= PreparoExcecaoID %>, 1, 'preparoexcecoes')"><i class="far fa-remove"></i></button></td>
                     </tr>
                     <%
                 ex.movenext

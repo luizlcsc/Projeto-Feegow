@@ -218,17 +218,17 @@ end if
                             <td class="text-right"><%=resItens("QtdGuias")%></td>
                             <td class="text-center">
                                 <% if resItens("NaoCobre") = "1" then%>
-                                    <i class="fa fa-ban text-danger"></i>
+                                    <i class="far fa-ban text-danger"></i>
                                 <% end if %>
                             </td>
                             <td>
                                 <button type="button" class="btn btn-xs btn-info btn-edit" title="Editar" data-toggle="tooltip"
                                     onclick="conveniosValoresDespesas.openModal(<%=index%>)">
-                                    <i class="fa fa-edit"></i>
+                                    <i class="far fa-edit"></i>
                                 </button>
                                 <button type="button" class="btn btn-xs btn-danger btn-naocobre" title="Não cobre"
                                     data-toggle="tooltip" onclick="conveniosValoresDespesas.updateNaoCobre(<%=index%>)">
-                                    <i class="fa fa-remove"></i>
+                                    <i class="far fa-remove"></i>
                                 </button>
                             </td>
                         </tr>

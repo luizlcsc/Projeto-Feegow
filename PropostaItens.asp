@@ -66,9 +66,9 @@ if Acao="" then
 				    <th width="1%"></th>
 				<% END IF %>
 				<th width="1%">Quant.</th>
-				<th width="20%" colspan="2">Item</th>
+				<th width="35%" colspan="2">Item</th>
 				<th width="20%">Valor Unit.</th>
-				<th width="25%">Desconto</th>
+				<th width="20%">Desconto</th>
 				<th width="10%">Acr&eacute;scimo</th>
 				<th width="10%">Total</th>
 				<th width="1%"></th>
@@ -207,7 +207,7 @@ if Acao="" then
 		</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="5">
+				<th colspan="4">
 				    <td class="<%=hiddenValor%>">
 				    	<label for="DescontoTotal">Desconto total (%)</label>
 				    	<input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>" <%=desabilitarProposta%>>
@@ -274,7 +274,7 @@ showMessageDialog("Procedimento já adicionado.");
 			end if
 			if TabelaID&""<>"" AND TabelaID&""<>"0" AND PacienteID<>"" then
 
-			    valorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, session("UnidadeID"), "", "", GrupoID)
+			    valorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, session("UnidadeID"), "", "", GrupoID, 0)
 			    if valorTabela < ValorUnitario then
 			        Desconto = ValorUnitario - valorTabela
 			        TipoDesconto="V"

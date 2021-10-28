@@ -614,7 +614,7 @@ end if
                         <%
 						if linkBill<>"" then
 							%>
-							<i class="fa fa-edit green bigger-130"></i>
+							<i class="far fa-edit green bigger-130"></i>
                             <%
 						end if
 						%>
@@ -623,18 +623,18 @@ end if
 						<%
 						if linkBill="" then
 						%>
-						<a style="float: right;" href="javascript:modalPaymentAttachments('<%=getMovement("id")%>');" title="Anexar um arquivo"> <i class="fa fa-paperclip bigger-140 white"></i></a>
+						<a style="float: right;" href="javascript:modalPaymentAttachments('<%=getMovement("id")%>');" title="Anexar um arquivo"> <i class="far fa-paperclip bigger-140 white"></i></a>
 						<%
 						end if
 						%>
 						<a href="javascript:modalPaymentDetails('<%=getMovement("id")%>')">
-							<i class="fa fa-search-plus bigger-130"></i>
+							<i class="far fa-search-plus bigger-130"></i>
 						</a>
                         <%
 						if (aut("|movementX") or (not isnull(getMovement("CaixaID")) and aut("|caixasusuX|"))) and (getMovement("Type")="Pay" or getMovement("Type")="Fee" or getMovement("Type")="Transfer" or getMovement("Type")="CCCred" or getMovement("Type")="CCDeb") then
 						%>
-						<a class="red" onclick="xMov(<%=getMovement("id") %>);" role="button" href="#">
-							<i class="fa fa-trash bigger-130"></i>
+						<a class="red" onclick="xMov(<%=getMovement("id") %>, 'extrato');" role="button" href="#">
+							<i class="far fa-trash bigger-130"></i>
 						</a>
                         <%
 						end if
@@ -715,7 +715,7 @@ end if
 			<td>Boleto <img width="18" src="assets/img/4D.png"> R$ <%=formatnumber(entradasBoleto,2)%></td>
 		</tr>
 		<tr>
-			<td>Pix <img width="18" src="assets/img/6C.png"> R$ <%=formatnumber(entradasPix,2)%></td>
+			<td>Pix <img width="18" src="assets/img/pix.png"> R$ <%=formatnumber(entradasPix,2)%></td>
 		</tr>
 		<tr>
 		<%

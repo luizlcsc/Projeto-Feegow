@@ -62,7 +62,7 @@ while Dia < 7
 			algumErro = "S"
 			%>
             $.gritter.add({
-                title: '<i class="fa fa-thumbs-down"></i> Erro no horário de <%=weekdayname(Dia)%>!',
+                title: '<i class="far fa-thumbs-down"></i> Erro no horário de <%=weekdayname(Dia)%>!',
                 text: '<%=erro1%><br><%=erro2%><br><%=erro3%>',
                 class_name: 'gritter-error gritter-light'
             });
@@ -82,7 +82,7 @@ if algumErro="" then
 		});
 		
         $.gritter.add({
-            title: '<i class="fa fa-save"></i> Horários gravados com sucesso!',
+            title: '<i class="far fa-save"></i> Horários gravados com sucesso!',
             text: '',
             class_name: 'gritter-success gritter-light'
         });

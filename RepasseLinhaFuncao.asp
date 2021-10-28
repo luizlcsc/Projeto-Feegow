@@ -22,7 +22,7 @@ function linhaFuncao(FuncaoID, Funcao, Valor, TipoValor, Sobre, Conta, NumeraRep
 		call quickField("text", "Funcao"&ItemInvoiceID&"-"&FuncaoID, "", 12, Funcao, " input-sm", "", "")
 		response.Write("</td>")
 		response.Write("	<td><div class=""row""><div class=""col-md-12"">")
-		call simpleSelectCurrentAccounts("ContaCredito"&ItemInvoiceID&"-"&FuncaoID, "00, 5, 4, 2, 1", Conta, "","","")
+		call simpleSelectCurrentAccounts("ContaCredito"&ItemInvoiceID&"-"&FuncaoID, "00, 5, 4, 2, 1", Conta, "","")
 		response.Write("</div></div></td>") 
 		response.Write("	<td>")
 		call quickField("text", "Valor"&ItemInvoiceID&"-"&FuncaoID, "", 12, formatnumber(Valor,2), " input-sm input-mask-brl text-right", "", "")
@@ -46,6 +46,6 @@ function linhaFuncao(FuncaoID, Funcao, Valor, TipoValor, Sobre, Conta, NumeraRep
 		</td>
 		<%
 	end if
-	%><td><input type="hidden" name="FM<%=ItemInvoiceID%>-<%=FuncaoID%>" value="<%=FM%>" /><button type="button" class="btn btn-danger btn-sm" onClick="RemoveRepasse(<%=ItemInvoiceID%>, <%=FuncaoID%>);"><i class="fa fa-remove"></i></button></td></tr><%
+	%><td><input type="hidden" name="FM<%=ItemInvoiceID%>-<%=FuncaoID%>" value="<%=FM%>" /><button type="button" class="btn btn-danger btn-sm" onClick="RemoveRepasse(<%=ItemInvoiceID%>, <%=FuncaoID%>);"><i class="far fa-remove"></i></button></td></tr><%
 end function
 %>

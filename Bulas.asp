@@ -8,7 +8,7 @@ response.Charset="UTF-8"
         <span class="input-group-btn">
             <button class="btn btn-info">
                 Buscar
-                <i class="fa fa-search icon-on-right bigger-110"></i>
+                <i class="far fa-search icon-on-right bigger-110"></i>
             </button>
         </span>
     </div>
@@ -42,7 +42,7 @@ if req("I")="" then
 					<tr>
 						<td><%=b("Nome")%></td>
 						<td><%=b("Laboratorio")%></td>
-						<td><button type="button" onclick="bula('<%=Med%>', <%=b("id")%>)" class="btn btn-sm btn-info"><i class="fa fa-search-plus"></i></button></td>
+						<td><button type="button" onclick="bula('<%=Med%>', <%=b("id")%>)" class="btn btn-sm btn-info"><i class="far fa-search-plus"></i></button></td>
 					</tr>
 					<%
 				b.movenext
@@ -59,7 +59,7 @@ else
 	set b=db.execute("select * from cliniccentral.bulas where id="&req("I"))
 	%>
 	<br>
-    <button class="btn btn-warning btn-md form-control" type="button" onclick="bula('<%=Med%>', '')"><i class="fa fa-search"></i> Voltar para o resultado da busca</button>
+    <button class="btn btn-warning btn-md form-control" type="button" onclick="bula('<%=Med%>', '')"><i class="far fa-search"></i> Voltar para o resultado da busca</button>
 	<%=b("Bula")%>
 	<%
 end if

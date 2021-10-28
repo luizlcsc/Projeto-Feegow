@@ -1,7 +1,7 @@
 ﻿<%
 if session("User")="" then
     %>
-    $("#disc").html('<i class="fa fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login&qs=<%=ref("qs")%>">VOLTAR AO LOGIN</a>');
+    $("#disc").html('<i class="far fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login&qs=<%=ref("qs")%>">VOLTAR AO LOGIN</a>');
     $("#disc").removeClass('hidden');
     <%
 else
@@ -74,7 +74,7 @@ else
                 msgEspera = ""'pacientes da unidade esperando
             end if
         end if
-        'msgEspera = "<i class='fa fa-users "& corEspera &"'></i> " & msgEspera
+        'msgEspera = "<i class='far fa-users "& corEspera &"'></i> " & msgEspera
         %>
         $('#espera').html("<%=msgEspera %>");
         <%
@@ -224,11 +224,11 @@ else
 
 	    if tarefasTotais>0 then
 		    %>
-		    $("#notifTarefas").html("<i class='fa fa-tasks'></i><span class='badge badge-danger'><%=tarefasTotais%></span>");
+		    $("#notifTarefas").html("<i class='far fa-tasks'></i><span class='badge badge-danger'><%=tarefasTotais%></span>");
 		    <%
         else
             %>
-            $("#notifTarefas").html("<i class='fa fa-tasks'></i>")
+            $("#notifTarefas").html("<i class='far fa-tasks'></i>")
             <%
 	    end if
         Notificacoes = ""
@@ -264,7 +264,7 @@ else
         if not NotificacoesSQL.eof then 
             if ccur(NotificacoesSQL("total")) > 0 then 
                 %>
-                    openModal("Existem descontos pendentes de aprovação. <br><a href='?P=DescontoPendente&Pers=1'>Ver descontos</a>", "Descontos Pendentes", true, false, "lg")
+                    openModal("<div class='row'><div class='col-md-12'> Existem descontos pendentes de aprovação. <br><br> <a style='float:right' class='btn btn-success btn-sm' href='?P=DescontoPendente&Pers=1'><i class='far fa-percentage'></i> Ver descontos</a> </div></div>", "Descontos Pendentes", true, false, "sm")
                      $("#audioNotificacao").trigger("play");
                 <%
                 sqlAtualizar = "update notificacoes set StatusID = 2 where StatusID IN (1) AND TipoNotificacaoID = 4 AND UsuarioID="&Session("User")
@@ -294,10 +294,10 @@ else
 
 
 
-                            Notificacoes = Notificacoes & "<div class='media'><a class='media-left' href='#'> <img src='"& FotoNotif &"' class='mw40' alt='avatar'> </a> <div class='media-body'> <h5 class='media-heading'>"&atend("NomePaciente")&" <small class='text-muted'></small> </h5> Por "&nameInTable(atend("sysUser"))&" </div> <div class='media-right'> <div class='media-response'> ATENDIMENTO</div> <div class='btn-group'> <button onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='fa fa-check text-success'></i> FECHAR CONTA</button> <button type='button' class='btn btn-default btn-xs light hidden'> <i class='fa fa-remove'></i> </button> </div> </div> </div>"
+                            Notificacoes = Notificacoes & "<div class='media'><a class='media-left' href='#'> <img src='"& FotoNotif &"' class='mw40' alt='avatar'> </a> <div class='media-body'> <h5 class='media-heading'>"&atend("NomePaciente")&" <small class='text-muted'></small> </h5> Por "&nameInTable(atend("sysUser"))&" </div> <div class='media-right'> <div class='media-response'> ATENDIMENTO</div> <div class='btn-group'> <button onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1'\"" type='button' class='btn btn-default btn-xs light'> <i class='far fa-check text-success'></i> FECHAR CONTA</button> <button type='button' class='btn btn-default btn-xs light hidden'> <i class='far fa-remove'></i> </button> </div> </div> </div>"
 
 						    'Notificacoes = Notificacoes&"<li class=\""dropdown-header\""><img src=\"""
-						    'Notificacoes = Notificacoes&"\"" width=\""44\"" class=\""img-circle\"">Paciente: <strong id=\""lancto"&atend("id")&"\"">"&atend("NomePaciente")&"</strong> <br /><small>Por "&nameInTable(atend("sysUser"))&"</small><br /><button type=\""button\"" class=\""btn btn-xs btn-success btn-block\"" onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1';\""><i class=\""fa fa-money\""></i> FECHAR CONTA</button></li>"
+						    'Notificacoes = Notificacoes&"\"" width=\""44\"" class=\""img-circle\"">Paciente: <strong id=\""lancto"&atend("id")&"\"">"&atend("NomePaciente")&"</strong> <br /><small>Por "&nameInTable(atend("sysUser"))&"</small><br /><button type=\""button\"" class=\""btn btn-xs btn-success btn-block\"" onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1';\""><i class=\""far fa-money\""></i> FECHAR CONTA</button></li>"
 					    end if
 				    end if
 			    next
@@ -324,7 +324,7 @@ else
 						    if($("#lancto<%=atend("id")%>").html()==null){
 							    $.gritter.add({
 								    title: 'ATENDIMENTO INFORMADO',
-								    text: 'Paciente: <strong id="lancto<%=atend("id")%>"><%=atend("NomePaciente")%></strong> <br /><small>Por <%=nameInTable(atend("sysUser"))%></small><br /><button type="button" class="btn btn-xs btn-success btn-block" onclick="location.href=\'?P=Conta&Pers=1&I=<%=atend("PacienteID")%>&A=<%=atend("id")%>\';"><i class="fa fa-money"></i> FECHAR CONTA</button>',
+								    text: 'Paciente: <strong id="lancto<%=atend("id")%>"><%=atend("NomePaciente")%></strong> <br /><small>Por <%=nameInTable(atend("sysUser"))%></small><br /><button type="button" class="btn btn-xs btn-success btn-block" onclick="location.href=\'?P=Conta&Pers=1&I=<%=atend("PacienteID")%>&A=<%=atend("id")%>\';"><i class="far fa-money"></i> FECHAR CONTA</button>',
 								    class_name: 'gritter-error gritter-light',
 								    image: '<%if atend("Foto")<>"" and not isnull(atend("Foto")) then%>/uploads/<%=atend("Foto")%><%else%>assets/img/atFim.png<%end if%>',
 								    sticky: true

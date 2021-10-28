@@ -5,7 +5,7 @@
     <div class="input-group">
       <input type="text" class="form-control" id="buscaPT">
       <div class="input-group-btn">
-        <button type="button" class="btn btn-success dropdown-toggle"><i class="fa fa-plus"></i> Adicionar</button>
+        <button type="button" class="btn btn-success dropdown-toggle"><i class="far fa-plus"></i> Adicionar</button>
       </div><!-- /btn-group -->
     </div><!-- /input-group -->
         <div id="resultPT" class="hidden p10" style="position:absolute; background:#fff; border:1px solid #ccc; width:800px; height: 200px; overflow:hidden; overflow-y:scroll;"></div>

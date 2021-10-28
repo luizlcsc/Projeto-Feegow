@@ -56,7 +56,7 @@ ConvenioID = req("ConvenioID")
                   </div>
 
                  <div class="col-md-1 mt25 text-right">
-                    <button type="button" class="btn btn-success w100" onclick="addNotificados(null,null)"> <i class="fa fa-plus"></i></button>
+                    <button type="button" class="btn btn-success w100" onclick="addNotificados(null,null)"> <i class="far fa-plus"></i></button>
                  </div>
             </div>
         </div>
@@ -170,7 +170,7 @@ function addNotificados(values){
                              ${valorCH}
                         </div>
                         <div class="col-md-1 mt25 text-right">
-                            <button type="submit" class="btn btn-danger w100" onclick="removerRow(this)"> <i class="fa fa-times"></i></button>
+                            <button type="submit" class="btn btn-danger w100" onclick="removerRow(this)"> <i class="far fa-times"></i></button>
                         </div>
                      </div>
                   </div>`;

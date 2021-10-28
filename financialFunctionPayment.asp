@@ -102,7 +102,7 @@ next
 						<td>
 						  <div class="action-buttons">
 								<a class="blue" onclick="modalPaymentDetails(<%=getMovement("id")%>);" data-toggle="modal" role="button" href="#modal-table">
-									<i class="fa fa-zoom-in bigger-130"></i>
+									<i class="far fa-zoom-in bigger-130"></i>
 								</a>
 							</div>
 						</td>
@@ -152,7 +152,7 @@ next
 <hr />
     </div>
     
-    <div class="well well-sm"><button class="btn btn-sm btn-success" type="button" onclick="makePayment();"><i class="fa fa-check align-top bigger-125"></i>Pagar</button></div>
+    <div class="well well-sm"><button class="btn btn-sm btn-success" type="button" onclick="makePayment();"><i class="far fa-check align-top bigger-125"></i>Pagar</button></div>
 </div>
 
 
@@ -168,7 +168,7 @@ next
     </div>
 
 	<div class="col-md-12"><br />
-		<div class="well well-sm"><button class="btn btn-sm btn-success" type="button" onclick="discountOverbalance();"><i class="fa fa-check align-top bigger-125"></i>Pagar</button></div>
+		<div class="well well-sm"><button class="btn btn-sm btn-success" type="button" onclick="discountOverbalance();"><i class="far fa-check align-top bigger-125"></i>Pagar</button></div>
     </div>
 </div>
 
@@ -254,7 +254,7 @@ jQuery(function($) {
 		var no_icon
 		if(this.checked) {
 			btn_choose = "Anexar imagem";
-			no_icon = "fa fa-picture";
+			no_icon = "far fa-picture";
 			before_change = function(files, dropped) {
 				var allowed_files = [];
 				for(var i = 0 ; i < files.length; i++) {
@@ -279,7 +279,7 @@ jQuery(function($) {
 		}
 		else {
 			btn_choose = "Drop files here or click to choose";
-			no_icon = "fa fa-cloud-upload";
+			no_icon = "far fa-cloud-upload";
 			before_change = function(files, dropped) {
 				return files;
 			}

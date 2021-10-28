@@ -12,9 +12,9 @@ $(function(){
 
         }, function(result) {
             if(favorito == 1){
-                tag.removeClass('fa-star-o').addClass('fa-star').attr('data-favorito', 0);
+                tag.removeClass('far').addClass('fas').attr('data-favorito', 0);
             }else{
-                tag.removeClass('fa-star').addClass('fa-star-o').attr('data-favorito', 1);
+                tag.removeClass('fas').addClass('far').attr('data-favorito', 1);
             }
         })
     })

@@ -52,10 +52,10 @@ if AtendimentoID<>"N" then
 			end if
 	
 			if procs("rdValorPlano")="P" then
-				icone = "fa fa-credit-card"
+				icone = "far fa-credit-card"
 				IDConvenio = procs("ValorPlano")
 			else
-				icone = "fa fa-money"
+				icone = "far fa-money"
 				ValorParticular = procs("ValorPlano")
 			end if
 			%>
@@ -63,8 +63,8 @@ if AtendimentoID<>"N" then
 				<td>
 				<form name="proc<%=procs("id")%>" id="proc<%=procs("id")%>" action="" method="post">
 				<i class="<%=icone%>"></i> <%=procs("NomeProcedimento")%>
-				<button type="button" onclick="expand(<%=procs("id")%>);" class="btn btn-info btn-xs pull-right">Detalhar <i id="chevron<%=procs("id")%>" class="fa fa-chevron-down"></i></button>
-				<button type="button" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))addProc('DelProc', <%=procs("id")%>)" class="btn btn-danger btn-xs pull-right"><i class="fa fa-remove"></i></button>
+				<button type="button" onclick="expand(<%=procs("id")%>);" class="btn btn-info btn-xs pull-right">Detalhar <i id="chevron<%=procs("id")%>" class="far fa-chevron-down"></i></button>
+				<button type="button" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))addProc('DelProc', <%=procs("id")%>)" class="btn btn-danger btn-xs pull-right"><i class="far fa-remove"></i></button>
 				<div id="div<%=procs("id")%>" style="display:none">
 	
 					<div class="row">

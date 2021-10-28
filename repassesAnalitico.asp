@@ -61,7 +61,7 @@ if ref("De")="" then
             <%= quickfield("multiple", "Profissional", "Profissionais", 3, "", "select distinct replace(rr.contacredito, '5_', '') id, p.NomeProfissional from rateiorateios rr left join profissionais p on p.id=replace(rr.ContaCredito, '5_', '') where left(rr.ContaCredito, 2)='5_' and p.Ativo='on' order by p.NomeProfissional", "NomeProfissional", " required ") %>
             <div class="col-md-1">
                 <label>&nbsp;</label><br />
-                <button type="submit" class="btn btn-primary" name="Gerar" value="Gerar"><i class="fa fa-search"></i>Gerar</button>
+                <button type="submit" class="btn btn-primary" name="Gerar" value="Gerar"><i class="far fa-search"></i>Gerar</button>
             </div>
         </div>
         <div class="row mt20">
@@ -284,7 +284,7 @@ if ref("E")="E" and ref("Profissional")<>"" then
                         if not ii.eof then
                             TotalPagtos = 0
                             ValorReceita = ccur(ii("Quantidade")*(ii("ValorUnitario")+ii("Acrescimo")-ii("Desconto")))
-                            Link = "<a class='btn btn-xs' href='./?P=Invoice&I="& ii("InvoiceID") &"&Pers=1' target='_blank'><i class='fa fa-external-link m5'></i> Detalhes</a>"
+                            Link = "<a class='btn btn-xs' href='./?P=Invoice&I="& ii("InvoiceID") &"&Pers=1' target='_blank'><i class='far fa-external-link m5'></i> Detalhes</a>"
                             Descricao = " Receita de R$ "& fn(ValorReceita) &", sendo "
                             set idesc = db.execute("select idesc.*, ii.InvoiceID, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date DataPagto from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID where idesc.ItemID="& idLiq)
                             while not idesc.eof
@@ -313,7 +313,7 @@ if ref("E")="E" and ref("Profissional")<>"" then
                         idLiq = replace(Liquidacao, "C", "")
                         set m = db.execute("select m.* from sys_financialmovement m WHERE m.id="& idLiq)
                         if not m.eof then
-                            Link = "<a class='btn btn-xs' href='javascript:repassesCredito("& idLiq &")'><i class='fa fa-search m5'></i> Detalhes</a>"
+                            Link = "<a class='btn btn-xs' href='javascript:repassesCredito("& idLiq &")'><i class='far fa-search m5'></i> Detalhes</a>"
                             cl = cl+1
                             Valor = m("Value")
                             Conta = accountName(m("AccountAssociationIDDebit"), m("AccountIDDebit"))
@@ -367,7 +367,7 @@ if ref("E")="E" and ref("Profissional")<>"" then
                     if not ii.eof then
                         TotalPagtos = 0
                         ValorDespesa = ccur(ii("Quantidade")*(ii("ValorUnitario")+ii("Acrescimo")-ii("Desconto")))
-                        Link = "<a class='btn btn-xs' href='./?P=Invoice&I="& ii("InvoiceID") &"&Pers=1' target='_blank'><i class='fa fa-external-link m5'></i> Detalhes</a>"
+                        Link = "<a class='btn btn-xs' href='./?P=Invoice&I="& ii("InvoiceID") &"&Pers=1' target='_blank'><i class='far fa-external-link m5'></i> Detalhes</a>"
                         Descricao = " Fatura de R$ "& fn(ValorDespesa) &", sendo "
                         set idesc = db.execute("select idesc.*, ii.InvoiceID, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date DataPagto from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID where idesc.ItemID="& idLiq)
                         while not idesc.eof

@@ -37,7 +37,7 @@ set frm = db.execute("select * from buiforms where id="&FormID)
   </div>
 </div>
 <div class="modal-footer">
-	<button class="btn btn-success btn-sm"><i class="fa fa-save"></i> Salvar</button>
+	<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Salvar</button>
 </div>
 </form>
 <script>

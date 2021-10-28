@@ -6,19 +6,19 @@ if request.form()<>"" then
     spl = split(req("C"), "_")
     FormID = replace(spl(0), "cd", "")
     CampoID = spl(1)
-    Val = ref("V")
+    Val2 = ref("V")
 
     PacienteID = ref("I")
 
     sql = "select id, ModeloID from buiformspreenchidos where ModeloID="& FormID &" AND PacienteID="& PacienteID &" order by id desc limit 1"
-    response.write( sql )
+    ' response.write( sql )
     set vcaFP = db.execute( sql )
     if vcaFP.eof then
         db.execute("insert into buiformspreenchidos set ModeloID="& FormID &", PacienteID="& PacienteID &", sysUser="& session("User") &", sysActive=1")
         set vcaFP = db.execute( sql )
-        db.execute("insert into `_"& vcaFP("ModeloID") &"` set PacienteID="& PacienteID &", sysUser="& session("User") &", `"& CampoID &"`='"& Val &"', id="& vcaFP("id"))
+        db.execute("insert into `_"& vcaFP("ModeloID") &"` set PacienteID="& PacienteID &", sysUser="& session("User") &", `"& CampoID &"`='"& Val2 &"', id="& vcaFP("id"))
     else
-        db.execute("update `_"& vcaFP("ModeloID") &"` set `"& CampoID &"`='"& Val &"' where id="& vcaFP("id"))
+        db.execute("update `_"& vcaFP("ModeloID") &"` set `"& CampoID &"`='"& Val2 &"' where id="& vcaFP("id"))
     end if
 
     response.end
@@ -58,14 +58,14 @@ while not formCD.eof
                 end if
 
                 if not reg.eof then
-                    val = reg(""& camposCD("id") &"")
+                    val2 = reg(""& camposCD("id") &"")
                 else
-                    val = ""
+                    val2 = ""
                 end if
                 
                 'response.write("{"& sql &"}<br>")
                 if Tipo<>"n" then
-                    call quickfield(Tipo, "cd"& formCD("id")&"_"& camposCD("id"), camposCD("RotuloCampo"), 4, val, sql, "Nome", "")
+                    call quickfield(Tipo, "cd"& formCD("id")&"_"& camposCD("id"), camposCD("RotuloCampo"), 4, val2, sql, "Nome", "")
                 end if
 
                 if cCD=3 then

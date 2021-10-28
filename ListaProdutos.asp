@@ -3,7 +3,7 @@
     $(".crumb-active a").html("Estoque");
     $(".crumb-link").removeClass("hidden");
     $(".crumb-link").html("Lista");
-    $(".crumb-icon a span").attr("class", "fa fa-medkit");
+    $(".crumb-icon a span").attr("class", "far fa-medkit");
 </script>
     <%
     praVencer = req("praVencer")
@@ -35,7 +35,7 @@
     if aut("|produtosI|")=1 then
     %>
     <script type="text/javascript">
-        $("#rbtns").html('<a id="InserirProduto" class="btn btn-sm btn-success" href="?P=Produtos&Pers=1&I=N&TipoProduto=<%=TipoProduto%>"><i class="fa fa-plus"></i> INSERIR</a>');
+        $("#rbtns").html('<a id="InserirProduto" class="btn btn-sm btn-success" href="?P=Produtos&Pers=1&I=N&TipoProduto=<%=TipoProduto%>"><i class="far fa-plus"></i> INSERIR</a>');
     </script>
     <%
     end if
@@ -72,9 +72,9 @@
             <%'= quickfield("datepicker", "Ate", "Válido Até", 2, Ate, "", "", "") %>
             <%=quickfield("simpleSelect", "Ordem", "Ordernar Por", 2, Ordem, "select 'Nome' id, 'Nome' Ordem union all select 'Validade' id, 'Validade' Ordem ", "Ordem", " semVazio no-select2") %>
                 <div class="col-md-2">
-                    <button class="btn btn-sm btn-primary  mt20"><i class="fa fa-search bigger-110"></i> Buscar</button>
-                    <button class="btn btn-sm btn-info mt20" name="Filtrate" onclick="print()" type="button"><i class="fa fa-print bigger-110"></i></button>
-                    <button class="btn btn-sm btn-success mt20" name="Filtrate" onclick="downloadExcel()" type="button"><i class="fa fa-table bigger-110"></i></button>
+                    <button class="btn btn-sm btn-primary  mt20"><i class="far fa-search bigger-110"></i> Buscar</button>
+                    <button class="btn btn-sm btn-info mt20" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i></button>
+                    <button class="btn btn-sm btn-success mt20" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i></button>
                 </div>
 
             </div>

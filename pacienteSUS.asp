@@ -12,13 +12,13 @@
 
                     <div class="btn-group btn-block">
                         <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-plus"></i> Inserir
+                            <i class="far fa-plus"></i> Inserir
                             <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
 
-                            <li><a href="javascript:InserirSUS('PA');"><i class="fa fa-plus"></i> Procedimento ambulatorial</a></li>
-                            <li><a href="javascript:InserirSUS('APAC');"><i class="fa fa-plus"></i> Procedimento de alta complexidade</a></li>
+                            <li><a href="javascript:InserirSUS('PA');"><i class="far fa-plus"></i> Procedimento ambulatorial</a></li>
+                            <li><a href="javascript:InserirSUS('APAC');"><i class="far fa-plus"></i> Procedimento de alta complexidade</a></li>
                         </ul>
                     </div>
                 </div>

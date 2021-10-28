@@ -11,29 +11,6 @@ if reg.eof then
     set reg = db.execute(sql)
 end if
 
-if recursoAdicional(31) = 4 then
-    configWhatsApp = 1
-
-    qWhatsAppCheck = "select WhatsApp from eventos_emailsms where id = '"&req("I")&"'"
-    set WhatsAppCheckSQL = db.execute(qWhatsAppCheck)
-    if not WhatsAppCheckSQL.eof then
-        if WhatsAppCheckSQL("WhatsApp") = 1 or WhatsAppCheckSQL("WhatsApp") = True then
-            AtivoWhatsApp = 1
-            txtZap = ", WhatsApp"
-        else
-            AtivoWhatsApp = 0
-        end if
-    end if
-else
-    configWhatsApp = 0
-end if
-
-canalEnvio = "SMS"
-
-if configWhatsApp = 1 then
-    canalEnvio = "WhatsApp"
-end if
-
 %>
 <%=header(req("P"), "Configuração de E-mail"&txtZap&" e SMS", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
 <%
@@ -71,7 +48,7 @@ else
                 <span class="panel-controls">
                     <div title="Ativar / Desativar" class='mn'>
                         <div class='switch switch-info switch-inline'>
-                            <input<% If reg("AtivoEmail")="on" Then %> checked="checked" <%end if%> name="AtivoEmail" id="AtivoEmail" type="checkbox" value="on"/>
+                            <input <% If reg("AtivoEmail")="on" Then %> checked="checked" <%end if%> name="AtivoEmail" id="AtivoEmail" type="checkbox" value="on"/>
                             <label class="mn" for="AtivoEmail"></label>
                         </div>
                     </div>
@@ -99,10 +76,17 @@ else
         <div class="panel">
 
             <div class="panel-heading">
-                Custo por mensagem enviada <span class="badge badge-pink">R$ 0,12</span>
-                <label class="mn" for="AtivoSMS">
+                <span class="panel-title">Enviar sms
+                </span>
+                <span class="panel-controls">
+                    <div title="Ativar / Desativar" class='mn'>
+                        <div class='switch switch-info switch-inline'>
                         <input <% If reg("AtivoSMS")="on" Then %> checked="checked" <%end if%> name="AtivoSMS" id="AtivoSMS" type="checkbox" />
-                        <%=canalEnvio%>
+                            <label class="mn" for="AtivoSMS">
+                        </div>
+                    </div>
+                </span>
+                        
                     </label>
             </div>
             <div class="panel-body">

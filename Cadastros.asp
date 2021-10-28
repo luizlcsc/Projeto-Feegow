@@ -7,18 +7,25 @@ response.charset="utf-8"
     .nav li a {
         color:#000!important;
         padding-left:20px;
-        border-bottom:1px solid #808080;
+    }
+    #menu-cadastros.nav li i {
+        color: #45AAF2;
+        margin-right: 15px;
+    }
+    #menu-cadastros{
+        background-color: #fff;
+        border-radius: 8px;
     }
 </style>
 <br />
-<div class="nav">
+<div class="nav" id="menu-cadastros">
     <ul class="nav sidebar-menu">
         <!--#include file="top.asp"-->
     </ul>
 </div>
 
 <script type="text/javascript">
-    $(".crumb-icon a").html("<i class='fa fa-database'></i> CADASTROS");
+    $(".crumb-icon a").html("<i class='far fa-database'></i> CADASTROS");
     $(".crumb-icon a").css("max-width", "unset");
     $(".crumb-icon a").removeClass("btn");
 </script>

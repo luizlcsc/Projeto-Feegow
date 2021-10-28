@@ -20,7 +20,7 @@ end if
 
 <div class="widget-box transparent">
     <div class="widget-header widget-header-flat">
-        <h4><i class="fa fa- blue"></i> <%= titulo %></h4>
+        <h4><i class="far fa- blue"></i> <%= titulo %></h4>
     </div>
 </div>
 

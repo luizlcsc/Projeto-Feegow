@@ -8,7 +8,7 @@ if not pac.eof then
 end if
 %>
 <div class="page-header">
-	<h1 class="lighter blue"><i class="fa fa-calendar"></i> Agendamentos <small>&raquo; <a href="./?P=Pacientes&I=<%=req("PacienteID")%>&Pers=1"><i class="fa fa-external-link"></i> <%=NomePaciente%> </a></small></h1>
+	<h1 class="lighter blue"><i class="far fa-calendar"></i> Agendamentos <small>&raquo; <a href="./?P=Pacientes&I=<%=req("PacienteID")%>&Pers=1"><i class="far fa-external-link"></i> <%=NomePaciente%> </a></small></h1>
 </div>
 
 										<h3 class="row header smaller lighter blue"><span class="col-xs-6"> Accordion </span><!-- /span --></h3>
@@ -22,7 +22,7 @@ while not hist.EOF
 												<div class="panel-heading">
 													<h4 class="panel-title">
 														<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-															<i class="fa fa-angle-down bigger-110" data-icon-hide="fa fa-angle-down" data-icon-show="fa fa-angle-right"></i>
+															<i class="far fa-angle-down bigger-110" data-icon-hide="far fa-angle-down" data-icon-show="far fa-angle-right"></i>
 															&nbsp;Group Item #1
 														</a>
 													</h4>

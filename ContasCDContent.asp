@@ -364,6 +364,9 @@ end if
 		SaldoAnterior = Balance
 		Conta = accountName(mov("Assoc"), mov("ContaID"))
 
+        accountID = mov("ContaID")
+        Assoc = mov("ContaID")
+
         if mov("Assoc")=3 and aut("pacientesV")=1 then
             Conta = "<a href='./?P=Pacientes&Pers=1&I="& mov("ContaID") &"' target='_blank'>"& Conta &"</a>"
         end if
@@ -538,7 +541,37 @@ end if
             end if
 		    %>
 			<td width="8%" class="text-right"><%= mov("Date") %></td>
-			<td><%= Conta &" &nbsp; "& IconeAnexos %></td>
+			<td>
+                <%= Conta &" &nbsp; "& IconeAnexos %> 
+                <br>
+                <%
+                 if session("Banco")="clinic5459" then
+                        set ClienteStatus = db.execute("SELECT Status, TipoCobranca FROM cliniccentral.licencas WHERE Cliente="&accountID&" ORDER BY id LIMIT 1")
+                        if not ClienteStatus.eof then
+                            Status = ClienteStatus("Status")
+                            TipoCobranca = ClienteStatus("TipoCobranca")
+                            if Status="C" then
+                                %><span class="label bg-success">Efetivado</span><%
+                            end if
+                            if Status="T" then
+                                %><span class="label bg-warning">Testando</span><%
+                            end if
+                            if Status="B" then
+                                %><span class="label bg-danger">Bloqueado</span><%
+                            end if
+                            if Status="I" then
+                                %><span class="label bg-primary">Implementação</span><%
+                            end if
+                            if TipoCobranca="1" then
+                                %><span class="label bg-info">Usuário</span><%
+                            end if
+                            if TipoCobranca="0" then
+                                %><span class="label bg-dark">Profissional</span><%
+                            end if
+                    end if
+                end if
+                %>
+            </td>
 			<td><%=CategoriaDescricao %></td>
 			<td>	   <a href="<%= linkBill %>"><%=Descricao%>
 					<%if len(mov("Name"))>0 and Descricao<>"" then%> - <%end if%><%=left(mov("Name"),20)%>

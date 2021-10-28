@@ -34,7 +34,9 @@ tableName = req("P")
 			"`DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"&_
 			"`sysUser` INT(11) NULL,"&_
             "`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "&_
-			"PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=MyISAM ROW_FORMAT=COMPACT;")
+			"PRIMARY KEY (`id`)), "&_
+			"INDEX `PacienteID` (`PacienteID`) USING BTREE, "&_
+			"INDEX `sysUser` (`sysUser`) USING BTREE;")
 		else
 			if vie("Versao")=1 then
 				db_execute("update buiforms set Versao=2 where id="&vie("id"))

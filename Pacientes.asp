@@ -929,7 +929,7 @@ $("#btnLancamentoRetroativo").click(function(){
 </script>
 
 <%if request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" then %>
-<script src="../feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <%end if %>
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">

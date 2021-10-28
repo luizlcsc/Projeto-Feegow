@@ -75,7 +75,7 @@
 }
 </style>
 <% IF req("PacienteID")="" THEN %>
-<script src="../feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <% END IF %>
 <%
 tableName = "propostas"
@@ -825,7 +825,8 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
             $("#modal").html('');
             $("#modal-table").modal('show');
 
-            $.get(feegow_components_path+'odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
+            //$.get(feegow_components_path+'odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
+            $.get(feegow_components_path+'index.php/odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
             function (data) {
                 setTimeout(function () {
                     var content = "<div class='modal-header'>Odontograma</div><div class='modal-body'>" + data + "</div><div class='modal-footer'><div class='col-xs-12 col-md-offset-10 col-md-2'><button class='btn btn-primary btn-block' id='feegow-odontograma-finalizar'>Salvar Odontograma</button></div></div>";

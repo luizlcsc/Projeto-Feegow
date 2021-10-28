@@ -544,7 +544,6 @@ if erro="" then
                 set validaEventos = nothing
                 
             end if
-
             '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             %>
             getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })

@@ -584,8 +584,30 @@ $("#Nascimento").change(function(){
 });
 
 
-// 23/08/2021
-// CAL-517 Normalização de municípios no cadastro de pacientes
+$("#Cep").keyup(function(){
+	getEndereco();
+});
+var resultadoCEP
+function getEndereco() {
+
+		var temUnder = /_/i.test($("#Cep").val())
+		if(temUnder == false){
+			$.getScript("webservice-cep/cep.php?cep="+$("#Cep").val(), function(){
+				if(resultadoCEP["logradouro"]!=""){
+					$("#Endereco").val(unescape(resultadoCEP["logradouro"]));
+					$("#Bairro").val(unescape(resultadoCEP["bairro"]));
+					$("#Cidade").val(unescape(resultadoCEP["cidade"]));
+					$("#Estado").val(unescape(resultadoCEP["uf"]));
+					if(resultadoCEP["pais"]==1){
+					    $("#Pais").html("<option value='1'>Brasil</option>").val(1).change();
+					}
+					$("#Numero").focus();
+				}else{
+					$("#Endereco").focus();
+				}
+			});
+		}
+}
 
 $("#Altura").keyup(function(){
 	imc();
@@ -1062,33 +1084,35 @@ $(".form-control").change(function(){
        //change to feegow-api
       var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 
-		$('#clicar').on('click', function(event) {
-	        //var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
+		$('#clicar').on('click', function(evt) {
+	      //  var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 			sayCheese.on('start', function() {
-			  $('#take-photo').on('click', function(event) {
+			  $('#take-photo').on('click', function(evt) {
                 sayCheese.takeSnapshot();
-                let obj = {};
-                obj.userType = 'pacientes';
-                obj.userId = "<%=req("I")%>";
-                obj.licenca = "<%= replace(session("Banco"), "clinic", "") %>";
-                obj.upload_file = $("input[name='photo-data']").val();
-                obj.folder_name = "Perfil";
-                endpointupload(obj);
-			});
+                let objct = {};
+                objct.userType = 'pacientes';
+                objct.userId = "<%=req("I")%>";
+                objct.licenca = "<%= replace(session("Banco"), "clinic", "") %>";
+                objct.upload_file = $("input[name='photo-data']").val();
+                objct.folder_name = "Perfil";
+                endpointupload(objct);
 
-            $('video').insertBefore($('#divAvatar .row'))
-            $('video').css('border-radius', '4px');
-            $('video').css('border', '1px solid #dddddd');
+			});
         });
 
-		function cancelar() {
+
+
+		function cancelar(){
 			sayCheese.on('stop', function(evt) {
-			    $( "video" ).remove();
+			$( "video" ).remove();
 			});
             sayCheese.stop();
             //alert("toaqui");return false;
             //$('#photo').html('');
 		}
+
+
+
 
         sayCheese.on('error', function(error) {
           var alert = $('<div>');
@@ -1275,556 +1299,3 @@ $(".form-control").change(function(){
     <%
 end if
 %>
-
-<!-- 23/08/2021 -->
-<!-- CAL-517 Normalização de municípios no cadastro de pacientes -->
-
-<style>
-    .mb-2 {
-        margin-bottom: .5rem !important   
-    }
-    .mb-3 {
-        margin-bottom: 1rem !important
-    }
-    .mb-4 {
-        margin-bottom: 1.5rem !important
-    }
-    div.switch label:after {
-        height: 23px !important
-    }
-</style>
-
-<script>
-    $(document).ready(() => {
-
-        const cepDiv            = $('#qfcep');
-        let cepInput            = $('#Cep');
-        const cepInputHtml      = document.getElementById('Cep').outerHTML;
-
-        const enderecoDiv       = $('#qfendereco');
-        const numeroDiv         = $('#qfnumero');
-        const complementoDiv    = $('#qfcomplemento');
-        const bairroDiv         = $('#qfbairro');
-        const cidadeDiv         = $('#qfcidade');
-        const estadoDiv         = $('#qfestado');
-
-        const tel1Div           = $('#qftel1');
-        const tel2Div           = $('#qftel2');
-        const email1Div         = $('#qfemail1');
-        const email2Div         = $('#qfemail2');
-        const cel1Div           = $('#qfcel1');
-        const cel2Div           = $('#qfcel2');
-
-        const profissaoDiv      = $('#qfprofissao');
-        const escolaridadeDiv   = $('#qfgrauinstrucao');
-        const rgDiv             = $('#qfdocumento');
-        const naturalidadeDiv   = $('#qfnaturalidade');
-        const estadoCivilDiv    = $('#qfestadocivil');
-        const origemDiv         = $('#qforigem');
-        const indicadoPorDiv    = $('#qfindicadopor');
-        const religiaoDiv       = $('#qfreligiao');
-        const cnsDiv            = $('#qfcns');
-        const corPeleDiv        = $('#qfcorpele');
-
-        const observacoesDiv    = $('#qfobservacoes');
-        const endereco2Div      = $('#qfendereco2');
-        const numero2Div        = $('#qfnumero2');
-        const complemento2Div   = $('#qfcomplemento2');
-        const bairro2Div        = $('#qfbairro2');
-
-        const cepButtonHtml = '<button class="btn btn-sm btn-default" style="margin-left: .5rem" type="button" onclick="setAddressFields();" data-rel="tooltip" data-placement="bottom" title="" data-original-title="Buscar"><i class="fa fa-search"></i></button>';
-
-        const cepInputWithButton = $(
-            `<div style="display: flex;">
-                ${cepInputHtml}
-                ${cepButtonHtml}
-            </div>`
-        )
-
-        cepInput.remove();
-        cepDiv.append(cepInputWithButton);
-
-        cepInput = $('#Cep');
-
-        // add margin-bottom
-        cepDiv.addClass('mb-4');
-        enderecoDiv.addClass('mb-4');
-        numeroDiv.addClass('mb-4');
-        complementoDiv.addClass('mb-4');
-        bairroDiv.addClass('mb-4');
-        cidadeDiv.addClass('mb-4');
-        profissaoDiv.addClass('mb-4');
-        escolaridadeDiv.addClass('mb-4');
-        rgDiv.addClass('mb-4');
-        naturalidadeDiv.addClass('mb-4');
-        estadoCivilDiv.addClass('mb-4');
-        origemDiv.addClass('mb-4');
-        indicadoPorDiv.addClass('mb-4');
-        religiaoDiv.addClass('mb-4');
-        cnsDiv.addClass('mb-4');
-        corPeleDiv.addClass('mb-4');
-        observacoesDiv.addClass('mb-4');
-
-        const enderecoInput = $('#Endereco');
-        const bairroInput   = $('#Bairro');
-        const cidadeInput   = $('#Cidade');
-        const estadoInput   = $('#Estado');
-        let paisSelect      = $('#Pais');
-
-        enderecoInput.css('transition', 'color 0.2s linear');
-        bairroInput.css('transition', 'color 0.2s linear');
-        cidadeInput.css('transition', 'color 0.2s linear');
-        estadoInput.css('transition', 'color 0.2s linear');
-        paisSelect.css('transition', 'color 0.2s linear');
-
-        createPaisesSelect().then((html) => {
-
-            $('#Pais').attr('style', 'display: none !important'); // esconde o input de país antigo
-            $('#Pais').parent().find('.select2').hide(); // esconde o input de país antigo
-            $('#Pais').after(html); // cria select de país novo
-
-            const paisNome = $('#select2-Pais-container').text();
-
-            if (paisNome) {
-                paisNome = paisNome.toLowerCase();
-                $('#PaisID option').each((index, htmlElem) => {
-                    if ($(htmlElem).text().toLowerCase() == paisNome) {
-                        $(htmlElem).attr('selected', true); // seleciona o país
-                    }
-                });
-            } else {
-                $('#PaisID option[value="1"]').attr('selected', true); // seleciona o Brasil
-                $('#Pais option:eq(0)').attr('value', '1'); // seleciona o Brasil
-            }
-        });
-
-        $(`#Cidade`).hide();
-        $(`#Cidade`).after(
-            `<select id="CidadeID" name="CidadeID" style="
-                    background-color: #fff;
-                    border: 1px solid rgba(0, 0, 0, 0.1);
-                    border-radius: 4px;
-                    height: 38px;
-                    width: -webkit-fill-available;">
-                <option disabled selected value="">Selecione um estado</option>
-            </select>`);
-
-        $(`#Estado`).hide(); // esconde o input de estado antigo
-        $(`#Estado`).after(createEstadosSelect()); // cria select de estado novo
-        $(`#EstadoID option:eq(0)`).attr('selected', true); // seleciona a primeira opção (vazio)
-
-        const estadoNome = $('#Estado').text();
-
-        if (estadoNome) { // busca o estado e se achar seleciona
-            $(`#EstadoID option`).each((index, htmlElem) => {
-                if ($(htmlElem).text().toUpperCase() == estadoNome) {
-                    $(`#EstadoID`).val(index).change(); // seleciona o estado
-                }
-            });
-        }
-
-        // search cep on type
-        cepInput.on('keyup', (event) => {
-
-            if (isNaN(event.key) && event.key != 'Enter')
-                return;
-
-            const cep = $('#Cep').val();
-            const cepDefinido = !cep.includes('_') && cep != '';
-            if (cepDefinido) {
-                setAddressFields(cep);
-            }
-        })
-
-        // search cep after document is ready to normalize address fields on forms
-        const cep = $('#Cep').val();
-        const cepDefinido = cep && !cep.includes('_') && cep != '';
-
-        if (cepDefinido) {
-            searchCep(cep).then((result) => {
-                const json = JSON.parse(result);
-                if (!json['erro']) {
-
-                    enderecoInput.val(json['logradouro'] || '');
-                    bairroInput.val(json['bairro'] || '');
-                    cidadeInput.val(json['localidade'] || '');
-                    $('#Pais').val('1'); // Brasil
-                    $('#PaisID').val('1'); // Brasil
-
-                    const estadoSigla = json['uf'];
-                    $(`#EstadoID option`).each((index, elem) => {
-                        if (elem.innerHTML == estadoSigla) {
-                            $(elem).attr('selected', true);
-                        }
-                    });
-
-                    const cidadeIbgeId = json['ibge'];                    
-                    createCidadesSelect(estadoSigla, cidadeIbgeId).then((html) => {
-                        if ($(`#CidadeID`).length > 0) {
-                            $(`#CidadeID`).replaceWith(html);
-                        } else {
-                            $(`#Cidade`).after(html);
-                        }
-                    });
-                }
-            });
-        }
-
-        // add tooltip to cns label
-        const cnsLabel = cnsDiv.find('label');
-        cnsLabel.attr('data-rel', 'tooltip');
-        cnsLabel.attr('data-placement', 'right');
-        cnsLabel.attr('data-original-title', 'Cartão Nacional de Saúde');
-    });
-        
-    function setAddressFields(cep) {
-
-        if (window.searchingCep)
-            return;
-
-        const cepInput          = $('#Cep');
-        const enderecoInput     = $('#Endereco');
-        const numeroInput       = $('#Numero');
-        const complementoInput  = $('#Complemento');
-        const bairroInput       = $('#Bairro');
-        const cidadeInput       = $('#Cidade');
-        const estadoInput       = $('#Estado');
-
-        const cepButton         = $('#qfcep button');
-        const cepButtonIcon     = $('#qfcep button i');
-
-        let paisSelect          = $('#Pais');
-
-        window.searchingCep = true;
-        cepButton.attr('disabled', true);
-        cepButtonIcon.addClass('fa-spinner fa-spin');
-        cepButtonIcon.removeClass('fa-search');
-
-        if (!cep)
-            cep = cepInput.val();
-
-        cleanAddressFields()
-            .then(() => {
-                searchCep(cep)
-                    .then((result) => {
-                        try {
-                            const json = JSON.parse(result);
-                            if (json['erro']) {
-                                cleanAddressFields();
-                                new PNotify({
-                                    text: 'CEP não encontrado.',
-                                    type: 'warning',
-                                    delay: 2000
-                                });
-                            } else {
-
-                                createPaisesSelect().then((html) => {
-
-                                    $('#Pais').hide(); // esconde o select antigo
-                                    $('#Pais').parent().find('.select2').hide(); // esconde o select antigo
-
-                                    if ($('#PaisID').length > 0) {
-                                        $('#PaisID').replaceWith(html);
-                                    } else {
-                                        $('#Pais').after(html); // adiciona select novo
-                                    }
-
-                                    $('#PaisID option[value="1"]').attr('selected', true); // seleciona o brasil (pois o cep está definido)
-                                    $('#Pais option:eq(0)').attr('value', '1'); // seleciona o Brasil // seleciona o brasil (pois o cep está definido)
-                                });
-
-                                enderecoInput.val(json['logradouro'] || '');
-                                bairroInput.val(json['bairro'] || '');
-                                cidadeInput.val(json['localidade'] || '');
-
-                                const estadoSigla = json['uf'];
-                    
-                                estadoInput.hide();
-
-                                if ($(`#EstadoID`).length > 0) {
-                                    $(`#EstadoID`).replaceWith(createEstadosSelect());
-                                } else {
-                                    estadoInput.after(createEstadosSelect());
-                                }
-
-                                $(`#EstadoID option`).each((index, elem) => {
-                                    if (elem.innerHTML == estadoSigla) {
-                                        $(elem).attr('selected', true);
-                                    }
-                                });
-
-                                const cidadeIbgeId = json['ibge'];                    
-                                createCidadesSelect(estadoSigla, cidadeIbgeId).then((html) => {
-
-                                    cidadeInput.hide();
-
-                                    if ($(`#CidadeID`).length > 0) {
-                                        $(`#CidadeID`).replaceWith(html);
-                                    } else {
-                                        cidadeInput.after(html);
-                                    }
-                                });
-
-                                enderecoInput.css('color', 'green');
-                                bairroInput.css('color', 'green');
-                                $(`#CidadeID`).css('color', 'green');
-                                $('#EstadoID').css('color', 'green');
-                            }
-
-                        } catch (err) {
-                            cleanAddressFields();
-                            new PNotify({
-                                text: 'CEP não encontrado.',
-                                type: 'warning',
-                                delay: 2000
-                            });
-                        }
-                    })
-                    .catch((err) => {
-                        cleanAddressFields();
-                        new PNotify({
-                            text: typeof err === 'string' 
-                                ? err
-                                : 'Formato de CEP inválido',
-                            type: 'warning',
-                            delay: 2000
-                        });
-                    })
-                    .finally(() => {
-                        setTimeout(() => {
-                            enderecoInput.css('color', '');
-                            bairroInput.css('color', '');
-                            $(`#CidadeID`).css('color', '');
-                            $('#EstadoID').css('color', '');
-                            cepButton.attr('disabled', false);
-                        }, 500);
-                        cepButtonIcon.removeClass('fa-spinner fa-spin');
-                        cepButtonIcon.addClass('fa-search');
-                        window.searchingCep = false
-                    });
-            });
-
-    };
-
-    function cleanAddressFields() { // Limpa valores do formulário de cep.
-
-        return new Promise((resolve) => {
-            const enderecoInput     = $('#Endereco');
-            const bairroInput       = $('#Bairro');
-            const cidadeSelect      = $('#CidadeID');
-            const estadoSelect      = $('#EstadoID');
-
-            enderecoInput.css('color', 'red');
-            bairroInput.css('color', 'red');
-            cidadeSelect.css('color', 'red');
-            estadoSelect.css('color', 'red');
-
-            setTimeout(() => {
-                enderecoInput.val('');
-                bairroInput.val('');
-                cidadeSelect.val(null);
-                estadoSelect.val(null);
-                enderecoInput.css('color', '');
-                bairroInput.css('color', '');
-                cidadeSelect.css('color', '');
-                estadoSelect.css('color', '');
-                resolve();
-            }, 1000);
-        });
-
-    }
-
-    function searchCep(cep) {
-
-        return new Promise((resolve, reject) => {
-
-            // Variável "cep" somente com dígitos.
-            cep = cep.replace(/\D/g, '');
-
-            // Verifica se campo cep possui valor informado.
-            if (cep != "") {
-
-                // Expressão regular para validar o CEP.
-                const validateCep = /^[0-9]{8}$/;
-
-                // Valida o formato do CEP.
-                if (validateCep.test(cep)) {
-
-                    const requestOptions = {
-                        method: 'GET'
-                    };
-
-                    fetch(`https://viacep.com.br/ws/${cep}/json/`, requestOptions)
-                        .then(response => response.text())
-                        .then(conteudo => resolve(conteudo))
-                        .catch(err => reject(err));
-
-                } else { // cep é inválido.
-                    reject('Formato de CEP inválido');
-                }
-
-            } else { // cep sem valor, limpa formulário.
-                reject('Nenhum CEP informado');
-            }
-        }); 
-    }
-
-    function createEstadosSelect() {
-        return `<select id="EstadoID" name="EstadoID" onchange="return setCitiesSelect();" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
-                    <option disabled selected value=""></option>
-                    <option value="1" >AC</option>
-                    <option value="2" >AL</option>
-                    <option value="3" >AM</option>
-                    <option value="4" >AP</option>
-                    <option value="5" >BA</option>
-                    <option value="6" >CE</option>
-                    <option value="7" >DF</option>
-                    <option value="8" >ES</option>
-                    <option value="9" >GO</option>
-                    <option value="10" >MA</option>
-                    <option value="11" >MG</option>
-                    <option value="12" >MS</option>
-                    <option value="13" >MT</option>
-                    <option value="14" >PA</option>
-                    <option value="15" >PB</option>
-                    <option value="16" >PE</option>
-                    <option value="17" >PI</option>
-                    <option value="18" >PR</option>
-                    <option value="19" >RJ</option>
-                    <option value="20" >RN</option>
-                    <option value="21" >RO</option>
-                    <option value="22" >RR</option>
-                    <option value="23" >RS</option>
-                    <option value="24" >SC</option>
-                    <option value="25" >SE</option>
-                    <option value="26" >SP</option>
-                    <option value="27" >TO</option>
-                </select>`;
-    }
-
-    function getPaises() {
-        return new Promise((resolve, _reject) => {
-            getUrl(`ibge/get-paises`, {}, (paises) => resolve(paises));
-        });
-    }
-
-    function getCitiesFromEstado(estadoSigla) {
-        return new Promise((resolve, _reject) => {
-            getUrl(`ibge/get-cities-from-estado-by-sigla/${estadoSigla}`, {}, (cidades) => resolve(cidades));
-        });
-    }
-
-    function setCitiesSelect(estadoSigla) {
-
-
-        if (!estadoSigla)
-            estadoSigla = $('#EstadoID option:selected').html();
-
-        if (!estadoSigla || estadoSigla == '')
-            return;
-
-        estadoSigla = estadoSigla.toUpperCase();
-        
-        $('#Estado').val(estadoSigla);
-
-        getCitiesFromEstado(estadoSigla).then((cidades) => {
-
-            const cidadesSelect = $(
-                `<select id="CidadeID" name="CidadeID" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
-                    <option disabled selected value></option>
-                </select>`);
-
-            for (const cidade of cidades) {
-                const nome = cidade['Cidade'];
-                const feegowId = cidade['id'];
-                cidadesSelect.append(`<option value="${feegowId}">${nome}</option>`);
-            }
-
-            $('#CidadeID').replaceWith(cidadesSelect[0].outerHTML)
-        });
-    }
-
-    function createCidadesSelect(estadoSigla, cidadeIbgeId) {
-
-        if (!estadoSigla)
-            estadoSigla = $('#EstadoID option:selected').html();
-
-        if (!estadoSigla || estadoSigla == '')
-            return;
-
-        estadoSigla = estadoSigla.toUpperCase();
-
-        return new Promise((resolve, _reject) => {
-            getCitiesFromEstado(estadoSigla).then((cidades) => {
-
-                const cidadesSelect = $(
-                    `<select id="CidadeID" name="CidadeID" style="
-                            background-color: #fff;
-                            border: 1px solid rgba(0, 0, 0, 0.1);
-                            border-radius: 4px;
-                            height: 38px;
-                            width: -webkit-fill-available;">
-                        <option disabled selected value=""></option>
-                    </select>`);
-    
-                for (const cidade of cidades) {
-                    const nome = cidade['Cidade'];
-                    const feegowId = cidade['id'];
-                    const ibgeId = cidade['CidadeIBGE'];
-                    if (ibgeId == cidadeIbgeId) {
-                        cidadesSelect.append(`<option value="${feegowId}" selected>${nome}</option>`);
-                    } else {
-                        cidadesSelect.append(`<option value="${feegowId}">${nome}</option>`);
-                    }
-                }
-
-                resolve(cidadesSelect[0].outerHTML);
-            });
-        });
-    }
-
-    function createPaisesSelect() {
-
-        const antigoPaisNome = $('#PaisID option:selected').text();
-
-        return new Promise((resolve, _reject) => {
-            getPaises().then((paises) => {
-
-                const paisesSelect = $(
-                    `<select id="PaisID" name="PaisID" onchange="$('#Pais option:eq(0)').val($(this).val()); cleanAddressFields();" style="
-                            background-color: #fff;
-                            border: 1px solid rgba(0, 0, 0, 0.1);
-                            border-radius: 4px;
-                            height: 38px;
-                            width: -webkit-fill-available;">
-                        <option disabled selected value=""></option>
-                    </select>`);
-    
-                for (const pais of paises) {
-                    const nome = pais['Pais'];
-                    const feegowId = pais['id'];
-
-                    if (nome == antigoPaisNome) {
-                        paisesSelect.append(`<option value="${feegowId}" selected>${nome}</option>`);
-                    } else {
-                        paisesSelect.append(`<option value="${feegowId}">${nome}</option>`);
-                    }
-                }
-
-                resolve(paisesSelect[0].outerHTML);
-            });
-        });
-    }
-</script>
-
-<!-- FIM CAL-517 Normalização de municípios no cadastro de pacientes -->

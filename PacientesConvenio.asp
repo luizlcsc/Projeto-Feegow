@@ -108,6 +108,7 @@
                                         	<td>
                                                 <button id="btnElegibilidade<%=Numero %>" title="Verificar elegibilidade" class="btn btn-xs btn-warning" onclick="verificaElegibilidade(<%=Numero %>)" type="button">
                                                     <i id="icoElegibilidade<%=Numero %>" class="far fa-compress"></i>
+
                                                 </button>
                                             <script type="text/javascript"> getConvenioDetails("<%=Numero%>"); </script>
 

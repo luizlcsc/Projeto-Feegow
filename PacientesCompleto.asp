@@ -65,7 +65,6 @@ end if
 	<input type="hidden" name="cmd" value="<%=req("cmd")%>" />
 	<input type="hidden" name="P" value="<%=req("P")%>" />
 
-
 <%=header(req("P"), "Paciente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
     <script type="text/javascript">
         <%
@@ -128,13 +127,11 @@ else
 end if
 %>
 
-
-
-
 <div class="panel" id="DadosComplementares">
   <div class="panel-body">
-	<div class="col-md-2" id="divAvatar">
-            <div id="camera" class="camera"></div>
+	    <div class="col-md-2" id="divAvatar">
+
+        <div id="camera" class="camera"></div>
             <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
                 <input type="file" name="Foto" id="Foto" />
                 <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
@@ -143,13 +140,27 @@ end if
 	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
                 <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
-            <div class="row"><div class="col-xs-6">
-	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
-            </div><div class="col-xs-6">
+            <div class="row">
+              <div class="col-xs-6">
+	              <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
+              </div>
+            <div class="col-xs-6">
 	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
-            </div></div>
+            </div>
+          </div>
     </div>
-      <script type="text/javascript">
+
+    <script>
+        function cancelPhotoTaking(){
+            sayCheese.on('stop', () => $( "video" ).remove());
+            sayCheese.stop();
+            $('#divDisplayUploadFoto').show();
+            $('#take-photo').hide();
+            $('#cancelar').hide();
+        }
+    </script>
+    
+    <script type="text/javascript">
 
           function sipac(Ipac){
             if(Ipac>1000000000){
@@ -163,17 +174,19 @@ end if
                let val = $(that).is(':checked');
 
                var data = $('#Pais').select2('data');
-               var nomePais = data[0].full_name;
+               var nomePais = $('#PaisID option:selected').text() || data[0].full_name;
                let outroPais = nomePais && nomePais != "" && nomePais != "Brasil";
 
               if(val || outroPais){
+                  $('#EstrangeiroText').text('SIM');
                   $("#CPF").removeAttr("required").attr("readonly", true).val("");
+                  $('#SemCPF-CPF').prop('checked', true);
               }
               if(!(val || outroPais))
               {
+                  $('#EstrangeiroText').text('NÃO');
                   $("#CPF").attr("required", "required").attr("readonly", false);
                   var a = $("#CPF");
-
               }
           }
       </script>
@@ -181,7 +194,7 @@ end if
     <div class="col-md-10">
         <div class="row">
 
-            <div class="col-md-4">
+            <div class="col-md-3 col-lg-3 col-xl-4">
                 <%=selectList("Nome &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small class=""label label-xs label-light hidden"" id=""resumoConvenios""></small>", "NomePaciente", reg("NomePaciente"), "pacientes", "NomePaciente", "sipac($(this).val());", " required", "")%>
             </div>
             <%
@@ -195,16 +208,29 @@ end if
             end if
             %>
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
-            <div class="col-md-1">
+            <div class="col-md-2 col-lg-2 col-xl-1">
                 <label for="Estrangeiro">Estrangeiro</label>
-                   <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
-                                             <% IF reg("Estrangeiro") = "1" THEN %>
-                                               checked
-                                             <% END IF %>
-                                             name="Estrangeiro" id="Estrangeiro" value="1" />
-                                            <label class="checkbox" for="Estrangeiro"> </label>
-                                        </div>
+                <div style="
+                            border: 1px solid #dddddd;
+                            border-radius: 2px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            height: 39px;">
+                    <% IF reg("Estrangeiro") = "1" THEN %>
+                        <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">SIM</span>
+                    <% ELSE %>
+                        <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">NÃO</span>
+                    <% END IF %>
+                    <div class="checkbox-custom checkbox-primary">
+                        <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
+                            <% IF reg("Estrangeiro") = "1" THEN %>
+                            checked
+                            <% END IF %>
+                            name="Estrangeiro" id="Estrangeiro" value="1"/>
+                        <label class="checkbox" for="Estrangeiro" style="margin-top: 0.3rem; margin-right: 0;"> </label>
+                    </div>
+                </div>
             </div>
             <%
                 mask = " input-mask-cpf "
@@ -224,15 +250,21 @@ end if
 
             <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, CorIdentificacao, "select * from Cores", "Cor", "")%>
 
+            <script>
+                $(document).ready(() => {
+                    $('#qfcoridentificacao label').css('white-space', 'nowrap');
+                });
+            </script>
+
         </div><br />
         <div class="row">
             <%= quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", " empty")%>
             <%= quickField("text", "NomeSocial", "Nome Social", 2, reg("NomeSocial"), "", "", " autocomplete='nome-social' ") %>
-			<%= quickField("text", "Altura", "Altura", 2, reg("Altura"), " input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "Peso", "Peso", 2, reg("Peso"), "input-mask-brl text-right", "", "") %>
+			<%= quickField("text", "Altura", "Altura (m)", 2, reg("Altura"), " input-mask-brl text-right", "", "") %>
+            <%= quickField("text", "Peso", "Peso (kg)", 2, reg("Peso"), "input-mask-brl text-right", "", "") %>
             <%= quickField("text", "IMC", "IMC", 2, reg("IMC"), "text-right", "", " readonly") %>
             <div class="col-md-2">
-            	<label>Prontu&aacute;rio
+            	<label>Nº do Prontu&aacute;rio
 
                 <%
                 AlterarNumeroProntuario= getConfig("AlterarNumeroProntuario")
@@ -410,18 +442,18 @@ end if
             	<div class="col-md-8">
                     <div class="row">
                         <span style="font-size: 9px; width: 8px; position: absolute; left: 50px; min-width: 80px; z-index: 5;top: 5px" ><a href="http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm" target="_blank">Não sei o CEP</a></span>
-                        <%= quickField("text", "Cep", "Cep", 3, reg("cep"), "input-mask-cep", "", " autocomplete='cep' ") %>
+                        <%= quickField("text", "Cep", "CEP", 3, reg("cep"), "input-mask-cep", "", " autocomplete='cep' ") %>
                         <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "", "", " autocomplete='endereco' ") %>
                         <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "", "", "") %>
                         <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "", "", " autocomplete='complemento' ") %>
                     </div>
                     <div class="row">
-                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "", "", " autocomplete='bairro' ") %>
-                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "", "", " autocomplete='cidade' ") %>
-                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", " autocomplete='estado-uf' ") %>
                         <div class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
 	                        <%= selectInsert("Pa&iacute;s", "Pais", reg("Pais"), "paises", "NomePais", "", "", "") %>
                         </div>
+                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", " autocomplete='estado-uf' ") %>
+                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "", "", " autocomplete='cidade' ") %>
+                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "", "", " autocomplete='bairro' ") %>
                     </div>
                     <div class="row">
 						<%= quickField("phone", "Tel1", "Telefone", 4, reg("tel1"), "", "", " autocomplete='tel1' ") %>

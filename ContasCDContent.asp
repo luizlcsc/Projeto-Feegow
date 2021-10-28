@@ -243,6 +243,10 @@ end if
 			%>
 			<th>Data</th>
 			<th>Conta</th>
+            <%if session("Banco")="clinic5459" then%>
+			<th>Documento</th>
+			<th>Naturalidade</th>
+            <%end if%>
 			<th>Plano de Contas</th>
 			<th>Descri&ccedil;&atilde;o</th>
 			<th>Nota Fiscal</th>
@@ -345,14 +349,14 @@ end if
         sqlAccountAssociation = " AND i.AssociationAccountID IN ("& replace(ref("AccountAssociation"), "|", "") &") "
         sqlAccountAssociationFixa = " AND f.AssociationAccountID IN ("& replace(ref("AccountAssociation"), "|", "") &") "
     end if
-    sqlMov = "select i.AccountID ContaID, i.AssociationAccountID Assoc, i.DataCancelamento, i.CompanyUnitID UnidadeID, IFNULL(nfe.numeronfse, i.nroNFe) nroNFe, ifnull(m.Value, 0) Value, m.InvoiceID, m.id, m.Name, m.Date, ifnull(m.ValorPago, 0) ValorPago, m.Obs, i.sysDate, (select count(id) from arquivos where MovementID=m.id) anexos, "&_
+    sqlMov = "select p2.Naturalidade naturalidade, p2.Documento documento,i.AccountID ContaID, i.AssociationAccountID Assoc, i.DataCancelamento, i.CompanyUnitID UnidadeID, IFNULL(nfe.numeronfse, i.nroNFe) nroNFe, ifnull(m.Value, 0) Value, m.InvoiceID, m.id, m.Name, m.Date, ifnull(m.ValorPago, 0) ValorPago, m.Obs, i.sysDate, (select count(id) from arquivos where MovementID=m.id) anexos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and boletos_emitidos.DueDate > now() and StatusID = 1) as boletos_abertos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and now() > boletos_emitidos.DueDate and StatusID <> 3) as boletos_vencidos, "&_
              "(SELECT COUNT(*) FROM boletos_emitidos WHERE boletos_emitidos.InvoiceID = m.InvoiceID and StatusID  = 3) as boletos_pagos "&_
-             " ,i.Rateado FROM sys_financialMovement m left join sys_financialinvoices i on i.id=m.InvoiceID "& lfCat & leftFiltroNFeStatus &" WHERE m.Type='Bill' AND m.Date BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" AND m.CD='"&CD&"' AND i.sysActive=1 "& sqlUN & sqlNFe & sqlAccount & sqlPagto & sqlCat & sqlApenasRepasse & sqlFiltroNFeStatus & sqlTabela & sqlAccountAssociation & gpCat &" order by m.Date,m.id"
+             " ,i.Rateado FROM sys_financialMovement m left join sys_financialinvoices i on i.id=m.InvoiceID "& lfCat & leftFiltroNFeStatus &" left join pacientes p2 on p2.id = i.AccountID WHERE m.Type='Bill' AND m.Date BETWEEN "&mydatenull(ref("De"))&" AND "&mydatenull(ref("Ate"))&" AND m.CD='"&CD&"' AND i.sysActive=1 "& sqlUN & sqlNFe & sqlAccount & sqlPagto & sqlCat & sqlApenasRepasse & sqlFiltroNFeStatus & sqlTabela & sqlAccountAssociation & gpCat &" order by m.Date,m.id"
 
     sqlMov = "SELECT * FROM ("&sqlMov&") AS T"&franquiaUnidade(" WHERE COALESCE(cliniccentral.overlap(CONCAT('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
-    'response.write("<pre>"&sqlMov&"</pre>")
+    ' dd(sqlMov)
 	set mov = db_execute( sqlMov )
 	while not mov.eof
 
@@ -548,6 +552,8 @@ end if
                  if session("Banco")="clinic5459" then
                         set ClienteStatus = db.execute("SELECT Status, TipoCobranca FROM cliniccentral.licencas WHERE Cliente="&accountID&" ORDER BY id LIMIT 1")
                         if not ClienteStatus.eof then
+                        %>
+                <%
                             Status = ClienteStatus("Status")
                             TipoCobranca = ClienteStatus("TipoCobranca")
                             if Status="C" then
@@ -572,6 +578,16 @@ end if
                 end if
                 %>
             </td>
+            <%
+            colspan = 7
+            if session("Banco")="clinic5459" then
+            %>
+            <td><%=mov("documento")%></td>
+            <td><%=mov("naturalidade")%></td>
+            <%
+            colspan = 9
+            end if
+            %>
 			<td><%=CategoriaDescricao %></td>
 			<td>	   <a href="<%= linkBill %>"><%=Descricao%>
 					<%if len(mov("Name"))>0 and Descricao<>"" then%> - <%end if%><%=left(mov("Name"),20)%>
@@ -640,7 +656,8 @@ if (aut("|contasapagarV|") and CD ="D") or (aut("|contasareceberV|") and CD ="C"
                             " WHERE i.InvoiceID="&fixa("id")
             end if
 
-            'response.write("<pre>"&qItensSQL&"</pre>")
+            ' response.write("<pre>"&qItensSQL&"</pre>")
+
             set itens = db_execute(qItensSQL)
             ItensFixa = ""
             while not itens.eof
@@ -716,8 +733,10 @@ end if
                 <td></td>
                 <%
                 end if
+
+
                 %>
-                <th colspan="4"><%=c%> registro<%if c>1 then response.Write("s") end if %></th>
+                <th colspan="<%=colspan%>"><%=c%> registro<%if c>1 then response.Write("s") end if %></th>
 		        <th class="text-right"><%=fn(Total)%></th>
 		        <th class="text-right"><%=fn(GranTotalPago)%></th>
                 <th></th>

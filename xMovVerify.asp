@@ -51,12 +51,8 @@
                 Act = "POST"
                 %>
                 <div class="col-md-6">
-                    <div class="alert alert-warning"><i class="far fa-exclamation-triangle"></i> Usuário sem acesso a cancelamento de pagamento.</div>
-                    <%= quickfield("text", "EmailAutorizador", "E-mail de acesso do autorizador", "12", "", "", "", " autocomplete='false' required ") %>
-                    <%= quickfield("password", "SenhaAutorizador", "Senha", "12", "", "", "", " autocomplete='false' required ") %>
-                    <div class="col-md-12 pt10">
-                        <button type="submit" class="btn btn-primary">CONFIRMAR CANCELAMENTO</button>
-                    </div>
+                    <div class="alert alert-warning"><i class="far fa-exclamation-triangle"></i> Usuário sem acesso a cancelamento da movimentação.</div>
+                   
                 </div>
 
                 

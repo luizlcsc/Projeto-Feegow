@@ -425,7 +425,7 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
         if fd("FM")="K" then
             'primeiro puxa só os produtos que não possuem variação (ver se quando nao muda ele grava)
             'depois sai listando as variações
-            set kit = db.execute("select pdk.id ProdutoDoKitID, pdk.Valor, pdk.ContaPadrao, pdk.Quantidade, pdk.ProdutoID, pdk.Variavel from procedimentoskits pk LEFT JOIN produtosdokit pdk ON pk.KitID=pdk.KitID WHERE pk.Casos LIKE '%|P|%' AND pk.ProcedimentoID="& ProcedimentoID)
+            set kit = db.execute("select pdk.id ProdutoDoKitID, pdk.Valor, if(pdk.ContaPadrao='' or pdk.ContaPadrao is null, 0 , pdk.ContaPadrao) ContaPadrao, pdk.Quantidade, pdk.ProdutoID, pdk.Variavel from procedimentoskits pk LEFT JOIN produtosdokit pdk ON pk.KitID=pdk.KitID WHERE pk.Casos LIKE '%|P|%' AND pk.ProcedimentoID="& ProcedimentoID)
             while not kit.eof
                 NomeProduto = ""
                 Quantidade = kit("Quantidade")
@@ -470,8 +470,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
                             Quantidade = QuantidadeUnitariaUsada
 
-                            set prod = db.execute("select NomeProduto from produtos where id="& ProdutoID)
-                            if prod.eof then NomeProduto="" else NomeProduto=prod("NomeProduto") end if
                             if ProdutoID<>0 and not isnull(ProdutoID) and Creditado<>"" then
                                 somaDesteSobre = somaDesteSobre+ (Quantidade*ValorItem)
                                 'if Creditado<>"0" then
@@ -488,8 +486,6 @@ private function repasse( rDataExecucao, rInvoiceID, rNomeProcedimento, rNomePac
 
 
                     else
-                        set prod = db.execute("select NomeProduto from produtos where id="& ProdutoID)
-                        if prod.eof then NomeProduto="" else NomeProduto=prod("NomeProduto") end if
                         if ProdutoID<>0 and not isnull(ProdutoID) and Creditado<>"" then
                             somaDesteSobre = somaDesteSobre+ (Quantidade*ValorItem)
                             'if Creditado<>"0" then

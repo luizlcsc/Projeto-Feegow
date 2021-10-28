@@ -899,99 +899,91 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 										<%=msgDisabled%>
 									</a>
 								</li>
-                                <%if session("banco")="clinic100000" or session("banco")="clinic5459" then %>
-								<li class="list-group-item menu-click-meu-perfil-ponto-eletronico">
-									<a class="animated animated-short fadeInUp" href="?P=Ponto&Pers=1">
-										<i class="far fa-hand-o-up"></i>
-										Ponto Eletrônico
-									</a>
-								</li>
-                                 <%
-                                 end if
-                                if session("Admin")=1 then'(session("banco")="clinic2803" or session("banco")="clinic100000" or session("banco")="clinic332") and session("Admin")=1 then %>
-								<li class="list-group-item menu-click-meu-perfil-logs-de-acoes">
-									<a class="animated animated-short fadeInUp" href="?P=Logs&Pers=1">
-										<i class="far fa-history"></i>
-										Logs de Ações
-									</a>
-								</li>
+                <%if session("banco")="clinic100000" or session("banco")="clinic5459" then %>
+                  <li class="list-group-item menu-click-meu-perfil-ponto-eletronico">
+                    <a class="animated animated-short fadeInUp" href="?P=Ponto&Pers=1">
+                      <i class="far fa-hand-o-up"></i>
+                      Ponto Eletrônico
+                    </a>
+                  </li>
+                  <%
+                end if
+                if session("Admin")=1 then %>
+                  <li class="list-group-item menu-click-meu-perfil-logs-de-acoes">
+                    <a class="animated animated-short fadeInUp" href="?P=Logs&Pers=1">
+                      <i class="far fa-history"></i>
+                      Logs de Ações
+                    </a>
+                  </li>
+                  <%
+                end if
+                if aut("aberturacaixinha")=1 then
+								  %>
+                  <li class="list-group-item menu-click-meu-perfil-abrir-fechar-baixa">
+                    <a class="animated animated-short fadeInUp" href="javascript:Caixa()">
+                      <i class="far fa-inbox"></i>
+                      Abrir/Fechar Caixa
+                    </a>
+                  </li>
+                  <%
+                end if
 
-                                 <%
-                                 end if
-								 'teste
-								 if aut("aberturacaixinha")=1 then
-								 %>
-								   <li class="list-group-item menu-click-meu-perfil-abrir-fechar-baixa">
-									<a class="animated animated-short fadeInUp" href="javascript:Caixa()">
-										<i class="far fa-inbox"></i>
-										Abrir/Fechar Caixa
-									</a>
-								   </li>
-								 <%
-                                 end if
-                                 if session("ExibeFaturas") then
-
-                                 IF session("QuantidadeFaturasAbertas") = "" THEN
-                                    if AppEnv="production" then
-
-								 %>
-                                    <!--#include file="connectCentral.asp"-->
-                                    <%session("QuantidadeFaturasAbertas") = "0"
-                                    set quantidadeFatura =  dbc.execute(" SELECT COUNT(*) as quant FROM clinic5459.sys_financialinvoices                                                                                      "&chr(13)&_
-                                               " LEFT JOIN clinic5459.sys_financialmovement         ON sys_financialmovement.InvoiceID = sys_financialinvoices.id                                        "&chr(13)&_
-                                               "                                        AND sys_financialmovement.Type = 'Bill'                                                               "&chr(13)&_
-                                               " LEFT JOIN clinic5459.sys_financialdiscountpayments ON sys_financialdiscountpayments.InstallmentID = sys_financialmovement.ID                            "&chr(13)&_
-                                               " WHERE sys_financialinvoices.CD ='C' AND AccountID = (SELECT Cliente FROM cliniccentral.licencas WHERE ID = "&replace(session("Banco"), "clinic", "")&") AND AssociationAccountID=3"&chr(13)&_
-                                               " and sys_financialinvoices.sysDate > '2019-01-01'                                                                                             "&chr(13)&_
-                                               " AND sys_financialinvoices.Value > coalesce(clinic5459.sys_financialdiscountpayments.DiscountedValue,0);                                                ")
-                                     IF NOT quantidadeFatura.EOF THEN
-                                        session("QuantidadeFaturasAbertas") = quantidadeFatura("quant")
-                                     END IF
-                                     END IF
-                                 END IF
-
-
-                                 %>
-                                    <li class="list-group-item menu-click-meu-perfil-minhas-faturas">
-                                        <a class="animated animated-short fadeInUp" href="?P=AreaDoCliente&Pers=1">
-                                            <i class="far fa-barcode"></i>
-                                            Minhas Faturas
-                                            <% IF session("QuantidadeFaturasAbertas") > "0" THEN %>
-                                                <span class="badge badge-danger" id="badge-bell"><%=session("QuantidadeFaturasAbertas")%></span>
-                                            <% END IF %>
-                                        </a>
-                                    </li>
-                                  <%
-                                  end if
-                                 ' if ( session("Banco")="clinic811" or session("Banco")="clinic105" ) AND lcase(session("table"))="profissionais" then
-                                 if aut("gerenciamentodearquivos")= 1 then
-                                  %>
-                                    <li class="list-group-item menu-click-meu-perfil-arquivos">
-                                        <a class="animated animated-short fadeInUp" href="?P=Files&Pers=1">
-                                            <i class="far fa-file"></i>
-                                            Arquivos
-                                        </a>
-                                    </li>
-							      <%
-                                  end if
-                                 ' end if
-							else
-								if session("Admin")=1 then
-								%>
-								<li class="list-group-item">
-									<a class="red animated animated-short fadeInUp" href="?P=Licencas&Pers=1">
-										<i class="far fa-hospital-o"></i>
-										Licenças
-									</a>
-								</li>
-								<li class="list-group-item">
-									<a class="red animated animated-short fadeInUp" href="?P=Operadores&Pers=1">
-										<i class="far fa-user"></i>
-										Operadores
-									</a>
-								</li>
-                                 <%
-								end if
+                    IF session("QuantidadeFaturasAbertas") = "" THEN
+                      if AppEnv="production" then
+                        %>
+                          <!--#include file="connectCentral.asp"-->
+                          <%session("QuantidadeFaturasAbertas") = "0"
+                          set quantidadeFatura =  dbc.execute(" SELECT COUNT(*) as quant FROM clinic5459.sys_financialinvoices                                                                                      "&chr(13)&_
+                                  " LEFT JOIN clinic5459.sys_financialmovement         ON sys_financialmovement.InvoiceID = sys_financialinvoices.id                                        "&chr(13)&_
+                                  "                                        AND sys_financialmovement.Type = 'Bill'                                                               "&chr(13)&_
+                                  " LEFT JOIN clinic5459.sys_financialdiscountpayments ON sys_financialdiscountpayments.InstallmentID = sys_financialmovement.ID                            "&chr(13)&_
+                                  " WHERE sys_financialinvoices.CD ='C' AND AccountID = (SELECT Cliente FROM cliniccentral.licencas WHERE ID = "&replace(session("Banco"), "clinic", "")&") AND AssociationAccountID=3"&chr(13)&_
+                                  " and sys_financialinvoices.sysDate > '2019-01-01'                                                                                             "&chr(13)&_
+                                  " AND sys_financialinvoices.Value > coalesce(clinic5459.sys_financialdiscountpayments.DiscountedValue,0);                                                ")
+                          IF NOT quantidadeFatura.EOF THEN
+                            session("QuantidadeFaturasAbertas") = quantidadeFatura("quant")
+                          END IF
+                      END IF
+                    END IF
+                    if aut("EmissaoFaturaFeegow")=1 then
+                      %>
+                      <li class="list-group-item menu-click-meu-perfil-minhas-faturas">
+                          <a class="animated animated-short fadeInUp" href="?P=AreaDoCliente&Pers=1">
+                              <i class="far fa-barcode"></i>
+                              Minhas Faturas
+                              <% IF session("QuantidadeFaturasAbertas") > "0" THEN %>
+                                  <span class="badge badge-danger" id="badge-bell"><%=session("QuantidadeFaturasAbertas")%></span>
+                              <% END IF %>
+                          </a>
+                      </li>
+                      <%
+                    end if
+      end if
+                  if aut("gerenciamentodearquivos")= 1 then
+                  %>
+                    <li class="list-group-item menu-click-meu-perfil-arquivos">
+                        <a class="animated animated-short fadeInUp" href="?P=Files&Pers=1">
+                            <i class="far fa-file"></i>
+                            Arquivos
+                        </a>
+                    </li>
+                  <%
+                  end if
+                  if session("Admin")=1 then
+                  %>
+                  <li class="list-group-item">
+                    <a class="red animated animated-short fadeInUp" href="?P=Licencas&Pers=1">
+                      <i class="far fa-hospital-o"></i>
+                      Licenças
+                    </a>
+                  </li>
+                  <li class="list-group-item">
+                    <a class="red animated animated-short fadeInUp" href="?P=Operadores&Pers=1">
+                      <i class="far fa-user"></i>
+                      Operadores
+                    </a>
+                  </li>
+                  <%
 								%>
 
 								<li class="list-group-item">

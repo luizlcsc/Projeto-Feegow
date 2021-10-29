@@ -329,9 +329,17 @@ if req("T")="C" then
             idGuia = vcaGuia("id")
             set g = db.execute("select g.*, pac.NomePaciente from tiss"&TipoGuia&" g LEFT JOIN pacientes pac ON pac.id=g.PacienteID where g.id="&vcaGuia("GuiaID"))
 
+            
+            TotalGeral = 0
+            if TipoGuia<>"guiaconsulta" then
+                TotalGeral = g("TotalGeral")
+            else
+                TotalGeral = g("ValorProcedimento")
+            end if
+
             if fn(g("ValorPago")) = 0 then
                 estilo = " text-danger "
-            elseif fn(g("TotalGeral")) <> fn(g("ValorPago")) then
+            elseif fn(TotalGeral) <> fn(g("ValorPago")) then
                 estilo = " text-warning "
             else
                 estilo = " text-success "
@@ -342,7 +350,7 @@ if req("T")="C" then
             <tr class="js-del-linha" id="<%= idGuia %>">
                 <td colspan="2">Guia <%=g("NGuiaPrestador") %></td>
                 <td colspan="4">Paciente: <%=g("NomePaciente") %></td>
-                <td class="text-right">R$ <%=fn(g("TotalGeral")) %></td>
+                <td class="text-right">R$ <%=fn(TotalGeral) %></td>
                 <td class="text-right '<%=estilo%>'" colspan="2">R$ <%=fn(g("ValorPago")) %></td>
                 <td class="text-right" colspan="2">
                     <button type="button" class="btn btn-sm btn-danger deletaGuia" data-id="<%= idGuia %>">
@@ -351,7 +359,7 @@ if req("T")="C" then
                 </td>
             </tr>
             <%
-            TotalGuias = (TotalGuias + g("TotalGeral"))
+            TotalGuias = (TotalGuias + TotalGeral)
             TotalPago = (TotalPago + g("ValorPago"))
             end if
         vcaGuia.movenext

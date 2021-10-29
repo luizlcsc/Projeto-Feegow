@@ -2,8 +2,12 @@
 
 <%
     eventoID       = ref("eventoID")&""
+    sysUser        = session("User")
 %>
 <div class="panel mt20">
+
+<input name="SysUser" id="SysUser" type="hidden" value="<%=sysUser%>"/>
+
 <%  
 if eventoID <> "" then 
 
@@ -24,29 +28,28 @@ if eventoID <> "" then
     if ativoCheckbox = 1 then
         checked = "checked"
     end if
-
 %>
     <div class="panel-body">
 
         <div class="row" id="row1">
         
-            <%= quickfield("multiple", "Status", "Status do agendamento", 2, statusAgenda, "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "") %>
+            <%= quickfield("multiple", "Status", "Status do agendamento", 2, statusAgenda, "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "required") %>
 
             <div class="col-md-2">
                 <label for="IntervaloHoras">
                     Intervalo (em horas)
                 </label>
-                <input type="text" value="<%=intervalo%>" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" >
+                <input type="text" value="<%=intervalo%>" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" required />
             </div>
 
-            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, antesDepois, "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "") %>
+            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, antesDepois, "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "required") %>
 
 
-            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "") %>
+            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
             <div class="col-md-1 switch switch-info switch-inline">
                 <b>Ativo</b>
-                <input name="ativoCheckbox" id="ativoCheckbox" type="checkbox" value="<%=ativoCheckbox%>" <%=checked%>/>
+                <input name="ativoCheckbox" id="ativoCheckbox" type="checkbox" value="<%=ativoCheckbox%>" <%=checked%> />
                 <label class="mn" for="ativoCheckbox"></label>
             </div>
 
@@ -54,31 +57,31 @@ if eventoID <> "" then
 
         <div class="row" id="row2">
 
-            <%= quickfield("multiple", "Profissionais", "Profissionais", 2, profissionais, "select NomeProfissional, id from profissionais where sysActive = 1 and Ativo = 'on' order by NomeProfissional asc;", "NomeProfissional", "") %>
+            <%= quickfield("multiple", "Profissionais", "Profissionais", 2, profissionais, "SELECT 'Todos' NomeProfissional, 'ALL' id UNION ALL select NomeProfissional, id from profissionais where sysActive = 1 and Ativo = 'on' ORDER BY NomeProfissional asc", "NomeProfissional", "required") %>
 
 
-            <%= quickfield("multiple", "Unidades", "Unidades", 2, unidades, "SELECT NomeFantasia as Unidades, id FROM (SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t ORDER BY t.NomeFantasia asc;", "Unidades", "") %>
+            <%= quickfield("multiple", "Unidades", "Unidades", 2, unidades, "SELECT NomeFantasia as Unidades, id FROM (SELECT 'ALL' id, 'Todos' NomeFantasia UNION ALL SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t ORDER BY NomeFantasia asc", "Unidades", "required") %>
 
 
-            <%= quickfield("multiple", "Especialidades", "Especialidades", 2, especialidades, "SELECT especialidade, id from especialidades where sysActive=1 order by especialidade", "especialidade", "") %>
+            <%= quickfield("multiple", "Especialidades", "Especialidades", 2, especialidades, "select 'Todos' especialidade, 'ALL' id UNION ALL SELECT especialidade, id from especialidades where sysActive=1 ORDER BY especialidade asc", "especialidade", "required") %>
 
 
-            <%= quickfield("multiple", "Procedimentos", "Procedimentos", 3, procedimentos, "select 'Todos' NomeProcedimento, 'ALL' id UNION ALL select NomeProcedimento, id FROM procedimentos WHERE Ativo='on' and sysActive=1", "NomeProcedimento", "") %>
+            <%= quickfield("multiple", "Procedimentos", "Procedimentos", 3, procedimentos, "select 'Todos' NomeProcedimento, 'ALL' id UNION ALL select NomeProcedimento, id FROM procedimentos WHERE Ativo='on' and sysActive=1 ORDER BY NomeProcedimento ASC", "NomeProcedimento", "required") %>
 
 
-            <%= quickfield("multiple", "EnviarPara", "Enviar para", 3, enviarPara, "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "") %>
+            <%= quickfield("multiple", "EnviarPara", "Enviar para", 3, enviarPara, "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "required") %>
 
         </div>
 
         <div class="row" id="row3">
 
-            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, modeloID, "SELECT Nome, sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome", "Nome", "") %>
+            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, modeloID, "SELECT Nome, sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome", "Nome", "required") %>
 
             <div class="col-md-6">
                 <label for="Tipo">
                     Nome do Evento (Tipo)
                 </label>
-                <input type="text" value="<%=nomeEvento%>" id="NomeEvento" name="NomeEvento" placeholder="" class="form-control search-query" >
+                <input type="text" value="<%=nomeEvento%>" id="NomeEvento" name="NomeEvento" placeholder="" class="form-control search-query" required />
             </div>
 
         </div>
@@ -93,23 +96,23 @@ if eventoID = "" then %>
 
         <div class="row" id="row1">
         
-            <%= quickfield("multiple", "Status", "Status do agendamento", 2, "", "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "") %>
+            <%= quickfield("multiple", "Status", "Status do agendamento", 2, "", "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "required") %>
 
             <div class="col-md-2">
                 <label for="IntervaloHoras">
                     Intervalo (em horas)
                 </label>
-                <input type="text" value="" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" >
+                <input type="text" value="" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" required />
             </div>
 
-            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, "", "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "") %>
+            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, "", "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "required") %>
 
 
-            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "") %>
+            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
             <div class="col-md-1 switch switch-info switch-inline">
                 <b>Ativo</b>
-                <input name="ativoCheckbox" id="ativoCheckbox" type="checkbox" value="1"/>
+                <input name="ativoCheckbox" id="ativoCheckbox" type="checkbox" value="1" required />
                 <label class="mn" for="ativoCheckbox"></label>
             </div>
 
@@ -117,31 +120,31 @@ if eventoID = "" then %>
 
         <div class="row" id="row2">
 
-            <%= quickfield("multiple", "Profissionais", "Profissionais", 2, "", "select NomeProfissional, id from profissionais where sysActive = 1 and Ativo = 'on' order by NomeProfissional asc;", "NomeProfissional", "") %>
+            <%= quickfield("multiple", "Profissionais", "Profissionais", 2, "", "SELECT 'Todos' NomeProfissional, 'ALL' id UNION ALL select NomeProfissional, id from profissionais where sysActive = 1 and Ativo = 'on' ORDER BY NomeProfissional asc", "NomeProfissional", "required") %>
 
 
-            <%= quickfield("multiple", "Unidades", "Unidades", 2, "", "SELECT NomeFantasia as Unidades, id FROM (SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t ORDER BY t.NomeFantasia asc;", "Unidades", "") %>
+            <%= quickfield("multiple", "Unidades", "Unidades", 2, "", "SELECT NomeFantasia as Unidades, id FROM (SELECT 'ALL' id, 'Todos' NomeFantasia UNION ALL SELECT 0 id, NomeFantasia FROM empresa UNION ALL SELECT id, NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t ORDER BY NomeFantasia asc", "Unidades", "required") %>
 
 
-            <%= quickfield("multiple", "Especialidades", "Especialidades", 2, "", "SELECT especialidade, id from especialidades where sysActive=1 order by especialidade", "especialidade", "") %>
+            <%= quickfield("multiple", "Especialidades", "Especialidades", 2, "", "select 'Todos' especialidade, 'ALL' id UNION ALL SELECT especialidade, id from especialidades where sysActive=1 ORDER BY especialidade asc", "especialidade", "required") %>
 
 
-            <%= quickfield("multiple", "Procedimentos", "Procedimentos", 3, "", "select 'Todos' NomeProcedimento, 'ALL' id UNION ALL select NomeProcedimento, id FROM procedimentos WHERE Ativo='on' and sysActive=1", "NomeProcedimento", "") %>
+            <%= quickfield("multiple", "Procedimentos", "Procedimentos", 3, "", "select 'Todos' NomeProcedimento, 'ALL' id UNION ALL select NomeProcedimento, id FROM procedimentos WHERE Ativo='on' and sysActive=1 ORDER BY NomeProcedimento ASC", "NomeProcedimento", "required") %>
 
 
-            <%= quickfield("multiple", "EnviarPara", "Enviar para", 3, "", "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "") %>
+            <%= quickfield("multiple", "EnviarPara", "Enviar para", 3, "", "SELECT 'paciente' id, 'Pacientes' EnviarPara UNION ALL SELECT 'profissional' id , 'Profissionais' EnviarPara", "EnviarPara", "required") %>
 
         </div>
 
         <div class="row" id="row3">
 
-            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, "", "SELECT Nome, sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome", "Nome", "") %>
+            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, "", "SELECT Nome, sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome", "Nome", "required") %>
 
             <div class="col-md-6">
                 <label for="Tipo">
                     Nome do Evento (Tipo)
                 </label>
-                <input type="text" value="" id="NomeEvento" name="NomeEvento" placeholder="" class="form-control search-query" >
+                <input type="text" value="" id="NomeEvento" name="NomeEvento" placeholder="" class="form-control search-query" required />
             </div>
 
         </div>
@@ -155,13 +158,14 @@ end if
 <script type="text/javascript">
 <!--#include file="JQueryFunctions.asp"-->
 
-    function salvarConfig(elem, eventoWhatsappID) {
+    function salvarConfig(eventoWhatsappID) {
 
+        const sysUser        = $("#SysUser").val()
         const statusAgenda   = $("#Status").val()
         const intervalo      = $("#IntervaloHoras").val()
         const antesDepois    = $("#AntesDepois").val()
         const paraApenas     = $("#ApenasAgendamentoOnline").val()
-        const ativoCheckbox  = $("#ativoCheckbox").val()
+        const ativoCheckbox  = $("#ativoCheckbox").is(':checked') === true ? 1 : 0
         const profissionais  = $("#Profissionais").val()
         const unidades       = $("#Unidades").val()
         const especialidades = $("#Especialidades").val()
@@ -170,30 +174,36 @@ end if
         const modeloID       = $("#ModeloID").val()
         const nomeEvento     = $("#NomeEvento").val()
 
-        $.post("updateWhatsappEvent.asp", 
-            {
-                statusAgenda:statusAgenda !== null ? statusAgenda.join() : null,
-                intervalo:intervalo,
-                antesDepois:antesDepois,
-                paraApenas:paraApenas,
-                ativoCheckbox:ativoCheckbox,
-                profissionais:profissionais !== null ? profissionais.join() : null,
-                unidades:unidades !== null ? unidades.join() : null,
-                especialidades:especialidades !== null ? especialidades.join() : null,
-                procedimentos:procedimentos !== null ? procedimentos.join() : null,
-                enviarPara:enviarPara,
-                modeloID:modeloID,
-                nomeEvento:nomeEvento,
-                eventoID: eventoWhatsappID
-            }, 
-            function(data){
-            console.log(data);
-        });
+        if( $("#Status, #IntervaloHoras, #AntesDepois, #ApenasAgendamentoOnline, #Profissionais, #Unidades, #Especialidades, #Procedimentos, #EnviarPara, #ModeloID, #NomeEvento").val() === null ){
+            showMessageDialog("Campos obrigatórios devem ser preenchidos", "danger");
+        } else {
 
-        showMessageDialog("Configurações salvas", "success");
+            $.post("updateWhatsappEvent.asp", 
+                {
+                    statusAgenda:statusAgenda !== null ? statusAgenda.join() : null,
+                    intervalo:intervalo,
+                    antesDepois:antesDepois,
+                    paraApenas:paraApenas,
+                    ativoCheckbox:ativoCheckbox,
+                    profissionais:profissionais !== null ? profissionais.join() : null,
+                    unidades:unidades !== null ? unidades.join() : null,
+                    especialidades:especialidades !== null ? especialidades.join() : null,
+                    procedimentos:procedimentos !== null ? procedimentos.join() : null,
+                    enviarPara:enviarPara !== null ? enviarPara.join() : null,
+                    modeloID:modeloID,
+                    nomeEvento:nomeEvento,
+                    sysUser:sysUser,
+                    eventoID: eventoWhatsappID
+                }, 
+                function(data){
+                console.log(data);
+            });
 
-        setTimeout(()=>{document.location.reload(true);},3000);
+            showMessageDialog("Configurações salvas", "success");
 
+            setTimeout(()=>{document.location.reload(true);},3000);
+
+        }
     }
 
     $(".crumb-active a").html("Configurar Eventos");
@@ -220,7 +230,7 @@ end if
                     <i class="far fa-history"></i>
                 </a> 
                     
-                <button class="btn btn-sm btn-primary" type="button" id="Salvar" onclick="salvarConfig(this, <%=eventoID%>)"
+                <button class="btn btn-sm btn-primary" type="button" id="Salvar" onclick="salvarConfig(<%=eventoID%>)">
                     <i class="far fa-save"></i> <strong>SALVAR</strong>&nbsp;&nbsp;
                 </button> 
             </div>

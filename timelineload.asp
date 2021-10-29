@@ -501,11 +501,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
-
-                                                    IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN
-                                                        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
-                                                                " FROM cliniccentral.cid10_bmj bmj" &_
-                                                                " WHERE bmj.cid10ID = cliniccentral.cid10.id)"
+                                                    IF pcampos("enviardadoscid") = 1 THEN
+                                                        sqlBmj = montaSubqueryBMJ("bmj.cid10ID = cliniccentral.cid10.id")
                                                     ELSE
                                                         sqlBmj = "''"
                                                     END IF

@@ -13100,7 +13100,7 @@ tbody.collapse.in {
     list-style: none;
     font-size: 13px;
     text-align: left;
-    background-color: #ffffffdb;
+    background-color: #ffffffeb;
     /*border: 1px solid #cccccc;*/
     /*border: 1px solid rgba(0, 0, 0, 0.15);*/
     border-radius: 4px;
@@ -13119,7 +13119,7 @@ tbody.collapse.in {
     height: 1px;
     margin: 8.5px 0;
     overflow: hidden;
-    background-color: #e5e5e5;
+    background-color: #e5e5e5db;
 }
 
 .dropdown-menu > li > a {
@@ -25056,12 +25056,13 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 44px;
-    padding: 12px 15px;
-    background-color: #f8f8f8;
-    border-top: 1px solid #DDD;
+    height: 36px;
+    padding: 8px 8px;
+    background-color: #f8f8f8d6;
+    border-top: 1px solid #dddddd54;
     -webkit-transition: margin 0.2s ease;
     transition: margin 0.2s ease;
+    backdrop-filter: blur(5px);
 }
 
 #content-footer b {
@@ -30461,8 +30462,8 @@ select[tabindex="-1"], .multisel {
 .ResultSelectContent .select-insert-item{
     cursor: pointer;
     padding: 5px;
-    background-color: #fff;
     margin-top: 5px;
+    border-radius: 6px;
 }
 .ResultSelectContent .select-insert-item:hover, .ResultSelectContent .li:hover{
     background-color: #45AAF2 !important;
@@ -30496,15 +30497,17 @@ select[tabindex="-1"], .multisel {
     position:absolute;
     display:none;
     overflow:hidden;
-    background-color:#fff;
+    background-color: rgba(255, 255, 255, 0.90);
     z-index:1000;
     min-height: 30px;
     margin-top: 5px;
     padding: 6px;
     border-radius: 6px;
+    min-width: 200px;
     /*border: 1px solid #eeeeee;*/
 
     box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
 }
 
 .ResultSelectContent .table tbody > tr:first-child > td{
@@ -30757,4 +30760,9 @@ select[tabindex="-1"], .multisel {
 
 .calendario-resumo-agenda-content{
     border: none;
+}
+
+.select2-dropdown {
+    background-color: #ffffffd6!important;
+    backdrop-filter: blur(3px);
 }

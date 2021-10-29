@@ -769,7 +769,7 @@ function selectInsertCA(label, name, value, associations, othersToSelect, others
     <input type="text" placeholder="Digite..." class="form-control" id="search<%=name%>" name="search<%=name%>" value="<%=textValue%>" autocomplete="off" <%= othersToInput %>>
 </div>
 	</span>
-	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#fff; z-index:1000;" class="ResultSelectContent">
+	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; z-index:1000;" class="ResultSelectContent">
     	<i class="far fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
     </div>
 <script language="javascript">

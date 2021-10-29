@@ -958,7 +958,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                       </li>
                       <%
                     end if
-      end if
                   if aut("gerenciamentodearquivos")= 1 then
                   %>
                     <li class="list-group-item menu-click-meu-perfil-arquivos">
@@ -969,6 +968,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </li>
                   <%
                   end if
+      else
+
                   if session("Admin")=1 then
                   %>
                   <li class="list-group-item">
@@ -994,6 +995,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								</li>
 								<%
 							end if
+          end if 
 
 
 							licencas = session("Licencas")

@@ -13100,13 +13100,14 @@ tbody.collapse.in {
     list-style: none;
     font-size: 13px;
     text-align: left;
-    background-color: #ffffff;
+    background-color: #ffffffdb;
     /*border: 1px solid #cccccc;*/
     /*border: 1px solid rgba(0, 0, 0, 0.15);*/
     border-radius: 4px;
     -webkit-box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
     box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
     background-clip: padding-box;
+    backdrop-filter: blur(5px);
 }
 
 .dropdown-menu.pull-right {
@@ -13137,7 +13138,7 @@ tbody.collapse.in {
 .dropdown-menu > li > a:focus {
     text-decoration: none;
     color: #595959;
-    background-color: #f5f5f5;
+    background-color: #f5f5f596;
     border-radius: 6px;
 }
 
@@ -15320,7 +15321,7 @@ a.thumbnail.active {
     display: block;
     padding: 10px 15px;
     margin-bottom: -1px;
-    background-color: #ffffff;
+    background-color: #ffffff85;
 }
 
 .list-group-item:first-child {
@@ -18027,6 +18028,7 @@ ol.timeline-list li.timeline-item .timeline-date {
     left: 0;
     z-index: 1040;
     background-color: rgba(128, 128, 128, 0.85);
+    backdrop-filter: blur(2px);
 }
 
 .modal-backdrop.fade {
@@ -30581,7 +30583,7 @@ select[tabindex="-1"], .multisel {
 
 .btn-logoff{
     color: #ff7272 !important;
-    background-color: #fff6f6 !important;;
+    background-color: #fff6f6cf !important;;
 }
 
 .mfp-zoomIn.mfp-ready.mfp-bg {
@@ -30591,6 +30593,7 @@ select[tabindex="-1"], .multisel {
 
 .mfp-bg{
     background: rgba(128, 128, 128, 0.85) !important;
+    backdrop-filter: blur(2px);
 }
 
 .btn-group-movement .btn{

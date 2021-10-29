@@ -8226,7 +8226,7 @@ form.hide-list-label .bootstrap-duallistbox-container label {
 }
 
 .dockmodal-body {
-    background: #FFF;
+    background: #ffffffe6;
     position: absolute;
     top: 36px;
     bottom: 40px;
@@ -8234,6 +8234,7 @@ form.hide-list-label .bootstrap-duallistbox-container label {
     right: 0;
     overflow: auto;
     padding: 10px 15px;
+    backdrop-filter: blur(5px);
 }
 
 .dockmodal-footer {
@@ -17804,7 +17805,8 @@ ol.timeline-list li.timeline-item .timeline-date {
     bottom: 0;
     margin-bottom: 0;
     padding-bottom: 10px;
-    background: #fffffff2;
+    background: transparent;
+    box-shadow: none;
 }
 
 .dockmodal .chat-message-content .panel-body{
@@ -24861,9 +24863,10 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
 #topbar.alt {
     /*  min-height: 70px;
   padding: 20px 22px;*/
-    background: #F0F2F5;
-    border-bottom: 1px solid #ddd;
-    border-top: 1px solid #ddd;
+    background: #f0f2f5f7;
+    border-bottom: 1px solid #dddddda6;
+    border-top: 1px solid #dddddda6;
+    backdrop-filter: blur(5px);
 }
 
 #topbar.alt .breadcrumb {

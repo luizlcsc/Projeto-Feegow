@@ -328,12 +328,17 @@ end if
         <li class="row sidebar-stat">
             <div class="fs11 col-sm-12">
                 <div class="input-group">
+                    <%
+
+                    if aut("|agendaV|")=1 or aut("|agendapropriaV|") then
+                    %>
                     <span
                         class="input-group-addon img-thumbnail"
                         id="FotoProfissional"
                         style="background-image: url(assets/img/user.png); background-size: 100%; background-repeat: no-repeat; background-position-y: center;">
                     </span>
                     <%
+                    end if
             if aut("|agendaV|")=1 then
                     %>
                     <select name="ProfissionalID" id="ProfissionalID" class="form-control select2-single">
@@ -414,11 +419,17 @@ end if
                     </span>
                     <%
             else
+                if aut("agendapropriaV") then
                     %>
                     <br>
                     <%=nameInTable(session("User"))%>
                     <input type="hidden" name="ProfissionalID" id="ProfissionalID" value="<%=session("idInTable")%>" />
                     <%
+                else
+                    %>
+                    -
+                    <%
+                end if
             end if
             if req("Data")="" then
                 iniData = date()

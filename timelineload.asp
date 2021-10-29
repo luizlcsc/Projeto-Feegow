@@ -2,6 +2,10 @@
 <%
 'variaveis estão no arquivo timeline.asp
 CareTeam = getConfig("ExibirCareTeam")
+sysActiveRecords = "1"
+if showInactive="1" then
+    sysActiveRecords = "1,-1"
+end if
 
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
@@ -21,16 +25,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN(1,-1) OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN(1,-1) OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
-            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&") "
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
         end if
     end if
 
@@ -48,12 +52,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
                          "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
-                         "   WHERE PacienteID="&PacienteID&" and d.sysActive in (1,-1)) "
+                         "   WHERE PacienteID="&PacienteID&" and d.sysActive in ("&sysActiveRecords&")) "
 
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
     end if
 
      if instr(Tipo, "|Tarefas|")>0 then
@@ -63,12 +67,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in (1,-1) and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then
-        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in (1,-1) AND po.PacienteID="&PacienteID&") "
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in ("&sysActiveRecords&") AND po.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then

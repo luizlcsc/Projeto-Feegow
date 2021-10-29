@@ -635,9 +635,7 @@ $(".mainTab").click(function(){
 	$("#DadosComplementares").slideDown();
 	$("#divAvatar").removeClass("col-md-1");
 	$("#divAvatar").addClass("col-md-2");
-	if($("#avatarFoto").attr("src")=="uploads/"){
-		$("#divDisplayUploadFoto").css("display", "block");
-	}
+	$("#divDisplayUploadFoto").css("display", "block");
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");

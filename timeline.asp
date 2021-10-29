@@ -62,6 +62,9 @@ end if
 .timeline-item-inativo *{
     color: #fff!important;
 }
+.timeline-item-inativo .dropdown-menu *{
+    color: #666666!important;
+}
 .timeline-item-inativo code{
     color: #c7254e!important;
 }
@@ -75,9 +78,11 @@ end if
     font-size: 55px;
     font-weight: 700;
     text-align: center;
+    backdrop-filter: blur(1px);
 }
 .timeline-item-inativo .panel-body{
     background-color:#c5c5c5 ;
+    border-radius: 0;
 }
 .timeline-item-inativo .panel-heading{
     background-color:#9a9a9a
@@ -212,7 +217,14 @@ PacienteID = req("PacienteID")
 loadMore = 0
 MaximoLimit = 20
 Tipo = req("Tipo")
+showInactive = req("showInactive")
 ComEstilo = req("ComEstilo")
+
+if Request("showInactive").Count > 0 then
+    Response.Cookies("showInactiveMedicalRecords")=showInactive
+else
+    showInactive = Request.Cookies("showInactiveMedicalRecords")
+end if
 
 set PacienteSQL = db.execute("SELECT NomePaciente, Nascimento, Sexo FROM pacientes WHERE id = "&PacienteID)
 NomePaciente = PacienteSQL("NomePaciente")
@@ -1033,6 +1045,13 @@ end select
             <div class="col-md-4 col-md-offset-4"></div>
             <div class="col-md-4">
                 <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
+                <div class="pull-right">
+                    <div title="Inativar" class="switch switch-xs switch-default switch-inline" style="position:relative;top: 6px;">
+                        <input <% if showInactive="1" then response.write("checked") end if %>  name="RegistrosInativos" class="InativarRegistroTimeline" onchange="toggleRegistrosInativos(this)" id="RegistrosInativos" type="checkbox">
+                        <label  class="mn" for="RegistrosInativos"></label>
+                    </div>
+                    <span style="color:#959595">Registros inativos</span>
+                </div>
             </div>
         </div>
     </div>  
@@ -1182,6 +1201,12 @@ var ativo;
 var $item;
 var RecursoID;
 var Recurso;
+
+function toggleRegistrosInativos(el){
+    var showInactive = $(el).prop("checked") ? 1 : 0;
+
+    pront(`timeline.asp?L=<%=LicenseID%>&PacienteID=<%=PacienteID%>&Tipo=<%=Tipo%>&showInactive=${showInactive}`, this);
+}
 
 function toogleInativarRegistroTimeline(el) {
     console.log('aqui', el);

@@ -65,7 +65,7 @@ end if
     .galery-item .galery-img{
         height: var(--height-main);
         text-align: center;
-        padding-bottom: 5px;
+        padding-bottom: 8px;
         display: flex;
         align-items: center;
     }
@@ -86,8 +86,8 @@ end if
         /*background: #f8f8f8;*/
         background: rgba(85,85,85,0.5);
         
-        border-top-right-radius: 8px;
-        border-top-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
     }
 
     .galery-item:hover .config{

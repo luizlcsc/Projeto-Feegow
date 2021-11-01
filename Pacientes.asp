@@ -168,7 +168,7 @@ end if
 %>
 <style>
 <%
-if session("MasterPwd")&""="S" or true then
+if session("MasterPwd")&""="S" then
     %>
 .sensitive-data{
     filter: blur(6px);

@@ -79,7 +79,7 @@ if isnumeric(EventID) then
             case "AgendamentoID"
               ModuleName = "Agendamento"
               ModuleSQL  = "SELECT "&chr(13)&_
-                           "DATE_FORMAT(a.Data, '%Y') Ano, DATE_FORMAT(a.Data, '%m') Mes, DATE_FORMAT(a.Data, '%d') Dia, TIME_FORMAT(a.Hora, '%H')*1 AS Hora, TIME_FORMAT(a.Hora, '%m')*1 AS Minuto, "&chr(13)&_
+                           "DATE_FORMAT(a.Data, '%Y')*1 Ano, DATE_FORMAT(a.Data, '%m')*1 Mes, DATE_FORMAT(a.Data, '%d')*1 Dia, TIME_FORMAT(a.Hora, '%H')*1 AS Hora, TIME_FORMAT(a.Hora, '%m')*1 AS Minuto, "&chr(13)&_
                            "a.id, a.Data, a.TipoCompromissoID,  a.StaID,  a.ValorPlano,  a.rdValorPlano,  a.Notas,  a.Falado,  a.FormaPagto,  a.LocalID,  a.Tempo,  a.HoraFinal,  a.SubtipoProcedimentoID,  a.HoraSta,  a.ConfEmail,  a.ConfSMS,  a.Encaixe,  a.EquipamentoID,  a.NomePaciente,  a.Tel1,  a.Cel1,  a.Email1, a.Procedimentos,  a.EspecialidadeID,  a.IndicadoPor,  a.TabelaParticularID,  a.CanalID,  a.Retorno,  a.RetornoID,  a.Primeira,  a.PlanoID, a.PermiteRetorno, esp.Especialidade "&chr(13)&_
                            "FROM agendamentos a "&chr(13)&_
                            "LEFT JOIN especialidades esp ON esp.id = a.EspecialidadeID "&chr(13)&_
@@ -191,7 +191,6 @@ End Function
 'ENVIO API REST VIA ASP
 '
 Function sendWebAPI(EndPoint, Content, Method, Async, Token, EndPointHeader) 
-
   if Async= false then
     Set xmlhttp = CreateObject("MSXML2.serverXMLHTTP") 'NÃO FUNCIONANDO ASYNC
   else

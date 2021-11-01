@@ -63,6 +63,7 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
 	rfProcedimento=DadosConsulta("TipoCompromissoID")
 	rfrdValorPlano=DadosConsulta("rdValorPlano")
 	rfValorPlano=DadosConsulta("ValorPlano")
+	rfPlanoID = DadosConsulta("PlanoID")
 	rfPaciente=DadosConsulta("PacienteID")
 	rfStaID=1
 	rfLocal=DadosConsulta("LocalID")
@@ -93,7 +94,7 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
 	HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 	ConsultaID="0"
-	db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
+	db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, PlanoID, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfPlanoID&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
 	set pultCon=db.execute("select id, ProfissionalID, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
 	'procedimentos
 	
@@ -103,7 +104,7 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
 
 	if not ap.eof then
 	    while not ap.eof
-	        sqlP = "INSERT INTO agendamentosprocedimentos (AgendamentoID,TipoCompromissoID,Tempo,rdValorPlano,ValorPlano,LocalID,EquipamentoID) VALUES ('"&pultCon("id")&"','"&ap("TipoCompromissoID")&"',"&ap("Tempo")&",'"&ap("rdValorPlano")&"',"&ap("ValorPlano")&","&treatvalzero(ap("LocalID"))&","&treatvalzero(ap("EquipamentoID"))&")"
+	        sqlP = "INSERT INTO agendamentosprocedimentos (AgendamentoID,TipoCompromissoID,Tempo,rdValorPlano,ValorPlano,PlanoID,LocalID,EquipamentoID) VALUES ('"&pultCon("id")&"','"&ap("TipoCompromissoID")&"','"&ap("Tempo")&"','"&ap("rdValorPlano")&"',"&ap("ValorPlano")&","&ap("PlanoID")&","&treatvalzero(ap("LocalID"))&","&treatvalzero(ap("EquipamentoID"))&")"
 	        'response.write(sqlP)
             db.execute(sqlP)
         ap.movenext

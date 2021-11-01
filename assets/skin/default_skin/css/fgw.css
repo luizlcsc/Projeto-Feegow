@@ -13149,6 +13149,7 @@ tbody.collapse.in {
     color: #ffffff;
     text-decoration: none;
     outline: 0;
+    border-radius: 6px;
     background-color: #45AAF2;
 }
 

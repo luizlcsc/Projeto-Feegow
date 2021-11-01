@@ -168,7 +168,7 @@ end if
 %>
 <style>
 <%
-if session("MasterPwd")&""="S" then
+if session("MasterPwd")&""="S" or true then
     %>
 .sensitive-data{
     filter: blur(6px);
@@ -178,6 +178,15 @@ if session("MasterPwd")&""="S" then
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+.btn-sensitive-action, .btn-sensitive-action *{
+	opacity: 0.4;
+    user-select: none;
+	pointer-events: none;
+	cursor: not-allowed;
 }
     <%
 end if
@@ -635,7 +644,9 @@ $(".mainTab").click(function(){
 	$("#DadosComplementares").slideDown();
 	$("#divAvatar").removeClass("col-md-1");
 	$("#divAvatar").addClass("col-md-2");
-	$("#divDisplayUploadFoto").css("display", "block");
+	if($("#avatarFoto").attr("src").indexOf("load-image")===-1){
+		$("#divDisplayUploadFoto").css("display", "block");
+	}	
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");

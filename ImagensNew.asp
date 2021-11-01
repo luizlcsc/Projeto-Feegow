@@ -348,28 +348,28 @@ end if
                                        </div>
                                     </small>
 
-                                    <button class="btn btn-xs btn-alert" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
+                                    <button class="btn btn-xs btn-alert btn-sensitive-action" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
                                         <i class="far fa-copy"></i>
                                     </button>
-                                    <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
                                                               <i class="far fa-cog"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="far fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}&dimension=full&rotate=${item.imgRotate}" target="_blank" title="Abrir Imagem em outra aba">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="${item.ArquivoLink}&dimension=full&rotate=${item.imgRotate}" target="_blank" title="Abrir Imagem em outra aba">
                                                               <i class="far fa-external-link icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}', ${item.imgRotate})" title="Girar 90°">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}', ${item.imgRotate})" title="Girar 90°">
                                             <i class="far fa-rotate-right"></i>
                                     </a>
-                                    <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
+                                    <!--<a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:MaisInfo('')" title="Mais informações">
                                                         <i class="far fa-info-circle"></i>
                                     </a>-->
-                                    <a class="hidden btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
+                                    <a class="hidden btn btn-xs btn-alert btn-sensitive-action" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
                                                         <i class="far fa-pencil icon-pencil"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">
+                                    <a class="btn btn-xs btn-danger btn-sensitive-action" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">
                                         <i class="far fa-trash icon-trash"></i>
                                     </a>
                                 </div>

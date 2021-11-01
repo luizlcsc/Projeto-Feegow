@@ -104,7 +104,7 @@ set DadosConsulta=db.execute("select * from agendamentos where id="&session("Rep
 
 	if not ap.eof then
 	    while not ap.eof
-	        sqlP = "INSERT INTO agendamentosprocedimentos (AgendamentoID,TipoCompromissoID,Tempo,rdValorPlano,ValorPlano,PlanoID,LocalID,EquipamentoID) VALUES ('"&pultCon("id")&"','"&ap("TipoCompromissoID")&"','"&ap("Tempo")&"','"&ap("rdValorPlano")&"',"&ap("ValorPlano")&","&ap("PlanoID")&","&treatvalzero(ap("LocalID"))&","&treatvalzero(ap("EquipamentoID"))&")"
+	        sqlP = "INSERT INTO agendamentosprocedimentos (AgendamentoID,TipoCompromissoID,Tempo,rdValorPlano,ValorPlano,PlanoID,LocalID,EquipamentoID) VALUES ('"&pultCon("id")&"','"&ap("TipoCompromissoID")&"','"&ap("Tempo")&"','"&ap("rdValorPlano")&"',"&ap("ValorPlano")&",'"&ap("PlanoID")&"',"&treatvalzero(ap("LocalID"))&","&treatvalzero(ap("EquipamentoID"))&")"
 	        'response.write(sqlP)
             db.execute(sqlP)
         ap.movenext

@@ -287,16 +287,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 if not rsMemed.eof then
                                     if rsMemed("link_pdf_completo") <> "" then
                                 %>
-                                    <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
+                                    <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank" class="btn-sensitive-action">
                                         <i class="far fa-print"></i>
                                     </a>
                                     <%
-                                    end if
-                                    if getConfig("MemedHabilitada")=1 and cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
-                                        <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>, '<%=rsMemed("tipo")%>')">
-                                            <i class="far fa-remove"></i>
-                                        </a>
-                                <%
                                     end if
                                 end if
                                 rsMemed.close
@@ -338,7 +332,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         ArquivosSQL.close
                                         set ArquivosSQL = nothing
                                         %>
-                                            <a title="Imprimir" href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
+                                            <a title="Imprimir" class="btn-sensitive-action" href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
                                                 <i class="far fa-print"></i>
                                             </a>
                                     <%

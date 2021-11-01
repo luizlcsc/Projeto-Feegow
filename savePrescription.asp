@@ -44,11 +44,11 @@ recursoPermissaoUnimed = recursoAdicional(12)
         'if   session("Banco")="clinic100000" or session("Banco")="clinic6867" or session("Banco")="clinic5567" or session("Banco")="clinic6173" or session("Banco")="clinic6865" or session("Banco")="clinic6321" or session("Banco")="clinic1526" or session("Banco")="clinic6006"  or session("Banco")="clinic6273" or session("Banco")="clinic6256" or recursoPermissaoUnimed=4  then
         %>
 
-        <object style="width:100%; height: 600px;" id="ImpressaoPrescricao" width="800" data="" type="text/html"></object>
+        <object class="sensitive-data" style="width:100%; height: 600px;" id="ImpressaoPrescricao" width="800" data="" type="text/html"></object>
         <%
         else
         %>
-        <iframe width="100%" height="600px" src="<%=src%>" id="ImpressaoPrescricao" name="ImpressaoPrescricao" frameborder="0"></iframe>
+        <iframe class="sensitive-data" width="100%" height="600px" src="<%=src%>" id="ImpressaoPrescricao" name="ImpressaoPrescricao" frameborder="0"></iframe>
         <%
         end if
         %>

@@ -49,7 +49,7 @@ end if
         border-radius: 5px;
         max-width: var(--width-main);
         min-width: var(--width-main);
-        box-shadow: 1px 1px 5px #888888;
+        box-shadow: 0 3px 18px rgba(0,0,0,0.1);
     }
     .galery-item-max{
         max-width: 100%;
@@ -84,7 +84,10 @@ end if
         padding: 2px 10px;
         color: #efe3ea !important;
         /*background: #f8f8f8;*/
-        background: rgba(55,55,55,0.5);
+        background: rgba(85,85,85,0.5);
+        
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
     }
 
     .galery-item:hover .config{
@@ -116,10 +119,12 @@ end if
     }
 
     .data-envio{
-        background: rgba(13,13,13,0.5);
+        background: rgba(85,85,85,0.5);
         display: block;
         width: 100%;
         padding: 5px;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
     }
     .checkbox-custom input[type=checkbox]:checked + label:after, .checkbox-custom input[type=radio]:checked + label:after{
         color: #1c2730 !important;

@@ -140,7 +140,7 @@ end if
                 <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
             </div>
             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
+	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
                 <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
             <div class="row"><div class="col-xs-6">

@@ -497,7 +497,7 @@ end if
 
         %>
         <div class="row">
-			<%= quickField("datepicker", "Data", "Data", 2, Data, "", "", " required no-datepicker readonly") %>
+			<%= quickField("datepicker", "Data", "Data", 2, cdate(Data), "", "", " required no-datepicker readonly") %>
             <%= quickField("timepicker", "Hora", "Hora", 2, Hora, "", "", " data-time="""&Hora&""" required"&HoraReadonly) %>
 
             <div class="col-md-1"><br>

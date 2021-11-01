@@ -72,9 +72,11 @@ if isnumeric(EventID) then
               
             case "EventoID"
               ModuleName = "Evento"
-              ModuleSQL = "SELECT eve.id, IF(eve.AntesDepois='A','subtract','add') AS AntesDepois, eve.IntervaloHoras, eve.Descricao "&chr(13)&_
-                          "FROM eventos_emailsms eve                                         "&chr(13)&_
-                          "where id="&treatvalzero(itemID)
+              ModuleSQL = "SELECT eve.id, IF(eve.AntesDepois='A','subtract','add') AS AntesDepois, eve.IntervaloHoras, "&chr(13)&_
+                          "sysSmsEma.Descricao AS WhatsAppModelo                                                       "&chr(13)&_
+                          "FROM eventos_emailsms eve                                                                   "&chr(13)&_
+                          "LEFT JOIN sys_smsemail sysSmsEma ON sysSmsEma.id = eve.ModeloID                             "&chr(13)&_
+                          "where eve.id="&treatvalzero(itemID)
 
             case "AgendamentoID"
               ModuleName = "Agendamento"
@@ -191,6 +193,7 @@ End Function
 'ENVIO API REST VIA ASP
 '
 Function sendWebAPI(EndPoint, Content, Method, Async, Token, EndPointHeader) 
+
   if Async= false then
     Set xmlhttp = CreateObject("MSXML2.serverXMLHTTP") 'NÃO FUNCIONANDO ASYNC
   else

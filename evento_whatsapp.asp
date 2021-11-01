@@ -119,13 +119,13 @@
                 <table id="table-" class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr class="info">
-                            <th class=" hidden-xs ">Tipo</th>
+                            <th class=" hidden-xs ">Nome</th>
 
                             <th class=" hidden-xs">Descrição</th>
                             
                             <th class=" hidden-xs ">Visualizar</th>
 
-                            <th width="1%" class="hidden-print"></th>
+                            <th width="1%" class="hidden-print">Ações</th>
                         </tr>
                     </thead>
         
@@ -154,7 +154,7 @@
 
                                 if sysID = "" then
                                     
-                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `AtivoWhatsapp`, `sysActive`) VALUES ('"&nomeModelo&"', 'on', 0)"
+                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `AtivoWhatsapp`, `sysUser`, `sysActive`) VALUES ('"&nomeModelo&"', 'on', '"&session("User")&"', 0)"
                                     db.execute(AddModeloNoSysSQL) %>
 
                                     <script type="text/javascript">document.location.reload(true);</script> <%
@@ -163,24 +163,31 @@
                                 
                                 if sysID <> "" AND eveID <> "" then
 
-                                    descricao = modeloDeMensagem("Descricao")
-                                    modelo = modeloDeMensagem("Conteudo")
-                                    modeloID = modeloDeMensagem("ModeloID")
-                                    resposta = modeloDeMensagem("ExemploResposta")
-                                    ativoWhatsApp = modeloDeMensagem("Ativo")
-                                    sysActive = modeloDeMensagem("sysActive")
-                                    statusAgenda = modeloDeMensagem("Status")
+                                    descricao      = modeloDeMensagem("Descricao")
+                                    modelo         = modeloDeMensagem("Conteudo")
+                                    modeloID       = modeloDeMensagem("ModeloID")
+                                    resposta       = modeloDeMensagem("ExemploResposta")
+                                    ativoWhatsApp  = modeloDeMensagem("Ativo")
+                                    sysActive      = modeloDeMensagem("sysActive")
+                                    statusAgenda   = modeloDeMensagem("Status")
                                     intervaloHoras = modeloDeMensagem("IntervaloHoras")
-                                    antesDepois = modeloDeMensagem("AntesDepois")
-                                    paraApenas = modeloDeMensagem("ApenasAgendamentoOnline")
-                                    profissionais = modeloDeMensagem("Profissionais")
+                                    antesDepois    = modeloDeMensagem("AntesDepois")
+                                    paraApenas     = modeloDeMensagem("ApenasAgendamentoOnline")
+                                    profissionais  = modeloDeMensagem("Profissionais")
+                                    unidades       = modeloDeMensagem("Unidades")
                                     especialidades = modeloDeMensagem("Especialidades")
-                                    procedimentos = modeloDeMensagem("Procedimentos")
-                                    enviarPara = modeloDeMensagem("EnviarPara")
+                                    procedimentos  = modeloDeMensagem("Procedimentos")
+                                    enviarPara     = modeloDeMensagem("EnviarPara")
                             %>
                                     <tr>
-
                                         <td class="hidden-xs">
+                                        <%
+                                            if ativoWhatsApp = 1 then
+                                            %>  <i class="fal fa-check" style="color:green"></i> <%
+                                            else 
+                                            %>  <i class="fal fa-clock"></i> <%
+                                            end if
+                                        %>
                                             <a id="nomeEvento-<%=i%>" href="#"><%=nomeEvento%></a>
                                         </td>
 
@@ -218,9 +225,9 @@
                                     </tr>
                             <%
                                 else
-                                    if nomeModelo = "agendamento_confirma_01" then
+                                    if nomeModelo = "agendamento_confirmacao_link01" then
                                         
-                                        AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `ModeloID`, `Ativo`, `sysActive`) VALUES ('"&eventoPadrao&"', '"&sysID&"', 0, 0)"
+                                        AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `ModeloID`, `Whatsapp`, `Ativo`, `sysUser`, `sysActive`) VALUES ('"&eventoPadrao&"', '"&sysID&"', 1, 0, '"&session("User")&"', 1)"
                                         db.execute(AddModeloNoEveSQL) %>
                                         
                                         <script type="text/javascript">document.location.reload(true);</script> <%

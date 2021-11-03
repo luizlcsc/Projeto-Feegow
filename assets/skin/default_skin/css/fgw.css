@@ -30710,14 +30710,16 @@ select[tabindex="-1"], .multisel {
     width:100%;
     bottom:0;
     height:50px;
-    background:#fff;
+    background:#ffffffed;
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
     box-shadow: 0 3px 18px rgb(0 0 0 / 10%);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 #bottomApp .sidebar-widget.search-widget {
-    background-color: #F0F2F5;
+    background-color: #f0f2f5cf;
     border: none;
     padding: 3px !important;
     height: 32px !important;

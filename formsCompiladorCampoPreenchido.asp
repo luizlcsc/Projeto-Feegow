@@ -14,9 +14,9 @@ else
 end if
 %>
 <style>
-    .tableFixHead          { overflow-y: auto; height: 100px; }
-    .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
-    table  { border-collapse: collapse; width: 100%; }
+    #iProntCont .tableFixHead          { overflow-y: auto; height: 100px; }
+    #iProntCont .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
+    #iProntCont table  { border-collapse: collapse; width: 100%; }
 </style>
 
 <%

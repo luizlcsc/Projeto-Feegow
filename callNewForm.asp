@@ -1,40 +1,37 @@
 <!--#include file="./Classes/TagsConverte.asp"-->
 <style type="text/css">
-.imagem {
+#iProntCont .imagem {
 	background-image:url(assets/img/imagem.png);
 	background-repeat:no-repeat;
 	background-position:center;
 	height:85%;
 }
-.btn-20 {
+#iProntCont .btn-20 {
 	width:20px;
 }
-.tabTit {
+#iProntCont .tabTit {
 	background:none;
 	border:none;
 	font-weight:bold;
 	width:100%;
 }
-.memorando{
+#iProntCont .memorando{
 	border:1px solid #CCC;
 }
 
-table thead tr th, table tbody tr td {
+#iProntCont table thead tr th, #iProntCont table tbody tr td {
 	padding:1px!important;
 }
-table tbody tr td input {
+#iProntCont table tbody tr td input {
 	border:none!important;
 }
 
-.lembrar {
+#iProntCont .lembrar {
     top: -4px;
     height: 27px;
     color: #fff;
-    border-radius: 6px;
-    color: #fff;
-    background-color: #8f8f8f;
 }
-.tbl {
+#iProntCont .tbl {
     width:100%;
 }
 </style>

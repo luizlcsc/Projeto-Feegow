@@ -4,9 +4,7 @@ I = req("I")
 TipoCampoID = cint(req("TipoCampoID"))
 GrupoID = req("GrupoID")
 
-'gambi
-sqlRemoveNull = "DELETE FROM buiforms WHERE nome is null"
-db.execute(sqlRemoveNull)
+
 
 
 conferir = confereTabela("_"&I)

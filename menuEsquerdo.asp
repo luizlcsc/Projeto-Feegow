@@ -1318,7 +1318,7 @@ end if
             </li>
             <%
     		    end if
-		        if aut("memed") then
+		        if aut("memed") and getConfig("MemedHabilitada")=1 then
             %>
             <li>
                 <a  class="menu-aba-meu-perfil-integracao-memed" data-toggle="tab" href="#divAcesso" onclick="ajxContent('IntegracaoMemed', '<%=req("I")%>', 1, 'divAcesso');">

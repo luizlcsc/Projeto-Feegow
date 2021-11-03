@@ -6421,5 +6421,27 @@ function montaSubqueryBMJ(where)
     end if
 end function
 
+function confereTabela (tabela)
+    sqlConfereTabela = "SELECT count(*) nTabela FROM information_schema.TABLES WHERE (TABLE_SCHEMA = '"&session("banco")&"') AND (TABLE_NAME = '"&tabela&"');"
+    set conferir = db.execute(sqlConfereTabela)
+    if cint(conferir("nTabela")) = 0 then   
+        confereTabela = 0
+    else
+        confereTabela = 1
+    end if
+end function
 
+function createTable_(I)
+    sqlCreate = " CREATE TABLE `_"&I&"` (                                                          			"&chr(13)&_
+					" 	`id` INT(11) NOT NULL AUTO_INCREMENT,                                       			"&chr(13)&_
+					" 	`PacienteID` INT(11) NULL DEFAULT NULL,                                     			"&chr(13)&_
+					" 	`DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,                    			"&chr(13)&_
+					" 	`sysUser` INT(11) NULL DEFAULT NULL,                                        			"&chr(13)&_
+					" 	`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			"&chr(13)&_
+					" 	PRIMARY KEY (`id`) USING BTREE,                                             			"&chr(13)&_
+					" 	index `PacienteID` (`PacienteID`),                                          			"&chr(13)&_
+					" 	index `sysUser` (`sysUser`)                                                 			"&chr(13)&_
+					" )                                                                            				"
+		db.execute(sqlCreate)
+end function
 %>

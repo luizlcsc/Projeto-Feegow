@@ -534,8 +534,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       end if
 
       if device()<>"" then %>
-        <div onclick="fechar(); fecharSubmenu()" id="cortina" style="width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
-        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class="bg-primary darker pt10">
+        <div onclick="fechar(); fecharSubmenu()" id="cortina" class="fade in" style="backdrop-filter:blur(5px);width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
+        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class=" bg-primary darker pt10">
             <div id="menu" style="position:absolute; width:260px; height:1000px; top:0; left:-260px; z-index:10000000001; background:#fff">
                 <div class="row">
                     <div class="col-md-12">

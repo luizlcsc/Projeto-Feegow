@@ -8235,6 +8235,7 @@ form.hide-list-label .bootstrap-duallistbox-container label {
     overflow: auto;
     padding: 10px 15px;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .dockmodal-footer {
@@ -13109,6 +13110,7 @@ tbody.collapse.in {
     box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
     background-clip: padding-box;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .dropdown-menu.pull-right {
@@ -18032,6 +18034,7 @@ ol.timeline-list li.timeline-item .timeline-date {
     z-index: 1040;
     background-color: rgba(128, 128, 128, 0.85);
     backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
 
 .modal-backdrop.fade {
@@ -24868,6 +24871,7 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
     border-bottom: 1px solid #dddddda6;
     border-top: 1px solid #dddddda6;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 #topbar.alt .breadcrumb {
@@ -25067,6 +25071,7 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
     -webkit-transition: margin 0.2s ease;
     transition: margin 0.2s ease;
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 #content-footer b {
@@ -30512,6 +30517,7 @@ select[tabindex="-1"], .multisel {
 
     box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .ResultSelectContent .table tbody > tr:first-child > td{
@@ -30601,6 +30607,7 @@ select[tabindex="-1"], .multisel {
 .mfp-bg{
     background: rgba(128, 128, 128, 0.85) !important;
     backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
 
 .btn-group-movement .btn{
@@ -30768,5 +30775,6 @@ select[tabindex="-1"], .multisel {
 
 .select2-dropdown {
     background-color: #ffffffd6!important;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }

@@ -282,7 +282,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
             
         elseif ref("t")="locaisexternos" then
             Typed= ref("q")
-	        sql = "select * from "&ref("t")&" where "&ref("c")&" like '%"&Typed&"%'"
+	        sql = "select * from "&ref("t")&" where "&ref("c")&" like '%"&Typed&"%' AND sysactive=1 "
             initialOrder = ref("c")
             ResourceID = 1
             initialOrder = "NomePaciente"

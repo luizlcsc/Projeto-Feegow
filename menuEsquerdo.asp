@@ -876,6 +876,19 @@ end if
             </li>
 		    <%
 		    end if
+		    if recursoAdicional(27)=4 and aut("examesimagem")=1 then
+            %>
+            <li class="checkStatus">
+                <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaExamesImagem" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ExamesImagem|`);'>
+                    <span class="far fa-x-ray bigger-110"></span>
+                    <span class="sidebar-title">Exames de Imagem</span>
+                    <span class="sidebar-title-tray">
+                      <span class="label label-xs bg-primary" id="totalexamesimagem"></span>
+                    </span>
+                </a>
+            </li>
+            <%
+            end if
 		    if aut("vacinapacienteV")=1 then
 		    %>
             <li class="checkStatus">
@@ -1318,7 +1331,7 @@ end if
             </li>
             <%
     		    end if
-		        if aut("memed") then
+		        if aut("memed") and getConfig("MemedHabilitada")=1 then
             %>
             <li>
                 <a  class="menu-aba-meu-perfil-integracao-memed" data-toggle="tab" href="#divAcesso" onclick="ajxContent('IntegracaoMemed', '<%=req("I")%>', 1, 'divAcesso');">

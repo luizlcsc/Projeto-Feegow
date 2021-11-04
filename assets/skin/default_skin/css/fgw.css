@@ -12763,7 +12763,7 @@ select[multiple].input-lg {
     cursor: pointer;
     background-image: none;
     border: 1px solid transparent;
-    border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.18);
+    border-color: rgba(0, 0, 0, 0.02) rgba(0, 0, 0, 0.05) rgba(0, 0, 0, 0.18);
     white-space: nowrap;
     padding: 6px;
     font-size: 13px;
@@ -13109,8 +13109,13 @@ tbody.collapse.in {
     -webkit-box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
     box-shadow: 0 3px 18px rgb(0 0 0 / 0.1);
     background-clip: padding-box;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.dropdown-menu.datepicker-dropdown {
+    border-radius: 6px;
+    padding: 10px;
 }
 
 .dropdown-menu.pull-right {
@@ -21591,7 +21596,7 @@ body.sidebar-collapsed #sidebar:before {
 
 
 .navbar .navbar-btn.btn-group > .btn.btn-menu-left:hover {
-    border-color: #ebebeb;
+    background-color: #e9eaeb;
 }
 
 .navbar .navbar-btn.btn-group.open > .btn,
@@ -21724,7 +21729,7 @@ modal-content    color: #3A5764;
 }
 
 .navbar .nav .list-group > li.list-group-item > a {
-    padding: 12px;
+    padding: 12px 18px;
 }
 
 .navbar .nav .list-group > li.list-group-item > a .label {
@@ -21790,7 +21795,7 @@ modal-content    color: #3A5764;
     height: 57px;
     margin-right: 10px;
     background-color: transparent;
-    border-bottom: solid 1px #ddd;
+    /* border-bottom: solid 1px #ddd; */
     /* Logo */
 }
 
@@ -24294,7 +24299,7 @@ body.sb-l-m .sidebar-menu > li.active > a > span:nth-child(1) {
 #sidebar_left.sidebar-light {
     color: #666;
     background-color: #fafafa;
-    border-right: 1px solid #DDD;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
 }
 
 #sidebar_left.sidebar-light .sidebar-menu .sidebar-label {
@@ -24867,11 +24872,12 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
 #topbar.alt {
     /*  min-height: 70px;
   padding: 20px 22px;*/
-    background: #f0f2f5f7;
-    border-bottom: 1px solid #dddddda6;
-    border-top: 1px solid #dddddda6;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+  background: #f8f9fb;
+  border-bottom: 1px solid #f5f5f5;
+  border-top: 1px solid #f5f5f5;
+  border-left: 1px solid #f5f5f5;
+  backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #topbar.alt .breadcrumb {
@@ -25070,8 +25076,8 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
     border-top: 1px solid #dddddd54;
     -webkit-transition: margin 0.2s ease;
     transition: margin 0.2s ease;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #content-footer b {
@@ -26783,7 +26789,6 @@ a.bg-white:hover {
 .btn-default {
     color: #666666;
     background-color: #F5F5F5;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.12) rgba(0, 0, 0, 0.15);
 }
 
 .btn-default:hover,
@@ -30407,6 +30412,7 @@ select[tabindex="-1"], .multisel {
     overflow: hidden;
     position: relative;
     display: inline-block;
+    border: 1px solid #dddddd;
 }
 
 /*search ipt*/
@@ -30516,8 +30522,8 @@ select[tabindex="-1"], .multisel {
     /*border: 1px solid #eeeeee;*/
 
     box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .ResultSelectContent .table tbody > tr:first-child > td{
@@ -30597,6 +30603,11 @@ select[tabindex="-1"], .multisel {
 .btn-logoff{
     color: #ff7272 !important;
     background-color: #fff6f6cf !important;;
+}
+
+.btn-logoff:hover{
+    color: #ff5c5c !important;
+    background-color: #ffeaeacf !important;;
 }
 
 .mfp-zoomIn.mfp-ready.mfp-bg {
@@ -30714,8 +30725,8 @@ select[tabindex="-1"], .multisel {
     border-top-left-radius: 18px;
     border-top-right-radius: 18px;
     box-shadow: 0 3px 18px rgb(0 0 0 / 10%);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 #bottomApp .sidebar-widget.search-widget {
@@ -30777,6 +30788,6 @@ select[tabindex="-1"], .multisel {
 
 .select2-dropdown {
     background-color: #ffffffd6!important;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }

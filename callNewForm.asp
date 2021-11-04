@@ -30,6 +30,15 @@
     top: -4px;
     height: 27px;
     color: #fff;
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    background-color: #aeaeae73;
+    
+    padding: 5px;
+    font-weight: 500;
+}
+#iProntCont .lembrar.checkbox-custom input[type=checkbox]:checked + label:after {
+    color: #666;
 }
 #iProntCont .tbl {
     width:100%;

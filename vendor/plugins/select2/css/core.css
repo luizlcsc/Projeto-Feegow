@@ -160,7 +160,7 @@
 /* line 1, ../scss/theme/default/_single.scss */
 .select2-container--default .select2-selection--single {
   background-color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
   border-radius: 2px;
 }
 /* line 6, ../scss/theme/default/_single.scss */

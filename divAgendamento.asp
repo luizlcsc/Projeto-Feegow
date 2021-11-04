@@ -1558,7 +1558,7 @@ var saveAgenda = function(){
         }
     }
 
-function submitAgendamento(check) {
+async function submitAgendamento(check) {
 
     let valorPlano = null;
     let checkin = $("#Checkin").length;
@@ -1583,6 +1583,14 @@ function submitAgendamento(check) {
             return false;
         }
     }
+
+    <% IF isAmorSaude() or getConfig("ValidarCartaoClubFlex") = 1 THEN %>
+        let bool = await checkParticularTableFields();
+
+        if(!bool){
+            return false;
+        }
+    <% END IF %>
 
     var repetir = $("#rpt").prop("checked");
     if(checkin === 1 && checkmultiplos === "1"){
@@ -1922,6 +1930,20 @@ function CopyToClipboard (text) {
 	}
 }
 
+<% IF isAmorSaude() or getConfig("ValidarCartaoClubFlex") = 1 THEN %>
+    if(!($("#openConsulta").length > 0)){
+        $("#qfagematricula1").prepend(`<div class='pull-right'><a id='openConsulta' href='javascript:openConsultaCartao()'><i class="fa fa-search" aria-hidden="true"></i></a></div>`)
+    }
+    function openConsultaCartao(){
+        openComponentsModal("pesquisa-paciente-parceiro.asp",{}, "Consulta de Paciente | Cartão de Desconto", true);
+    }
+    function callRow(row){
+        $("#ageMatricula1").val(row.matricula);
+        $('#ageMatricula1').trigger('change');
+        $("#modal-components").modal("hide");
+    }
+
+<% END IF%>
 
 function ObsConvenio(ConvenioID) {
     $("#modal-table").modal("show");

@@ -798,7 +798,7 @@ end if
 		    %>
             <li class="checkStatus">
                 <a data-toggle="tab" class="tab menu-aba-pacientes-encaminhamentos" id="tabEncaminhamentos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Encaminhamentos|`);'>
-                    <span class="fa fa-file-archive-o bigger-110"></span>
+                    <span class="far fa-file-archive-o bigger-110"></span>
                     <span class="sidebar-title">Encaminhamentos</span>
                     <span class="sidebar-title-tray">
                       <span class="label label-xs bg-primary" id="totalencaminhamentos"></span>

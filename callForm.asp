@@ -481,14 +481,14 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 <style>
 
-.logTimeLine {
+#iProntCont .logTimeLine {
   width: 700px;
   margin: 25px auto;
   padding: 10px 20px 10px 20px;
   border-left: 2px solid #3498db;
 }
 
-.logTimeLine-item {
+#iProntCont .logTimeLine-item {
   background-color: #fff;
   padding: 10px;
   margin: 10px;
@@ -501,7 +501,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 }
 
-.logTimeLine-item:before {
+#iProntCont .logTimeLine-item:before {
   content: "";
   display: block;
   width: 10px;
@@ -512,7 +512,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
   left: -29px
 }
 
-.logTimeLine-item:after {
+#iProntCont .logTimeLine-item:after {
   content: "";
   width: 0;
   height: 0;

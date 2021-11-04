@@ -579,7 +579,7 @@ end if
                 %>
             </td>
             <%
-            colspan = 7
+            colspan = 5
             if session("Banco")="clinic5459" then
             %>
             <td><%=mov("documento")%></td>

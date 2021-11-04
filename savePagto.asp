@@ -400,7 +400,14 @@ if T="C" and InvoiceID&"" <>"" then
         CD = iInvoices("Value")
         if iInvoices("Value") = iPagoInvoices("ValorTotal")  then
         %>
-        $.get("relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=InvoiceID%>",  function(data){  });
+        $.get("relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=InvoiceID%>",  function(data){  
+            printWindow = window.open('');
+            printWindow.document.write(data);
+            
+            setTimeout(function(){
+                printWindow.top.close();
+            }, 500);
+        });
             <% if exibeListagem = 1 then %>
             setTimeout(function(){
                 listaRecibos("<%=InvoiceID%>");

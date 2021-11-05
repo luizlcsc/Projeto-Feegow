@@ -2062,8 +2062,8 @@ function callSta(callID, StaID){
 	    <%
     else
 	    %>
-	    setTimeout(function(){constante()}, 16000);
-	    setInterval(function(){constante()}, 90000);
+	    setTimeout(function(){constante()}, 4000);
+	    setInterval(function(){constante()}, 25000);
 	    <%
     End If
 

@@ -29,14 +29,20 @@ set reg = db.execute("select * from "& req("P") &" where id="&req("I"))
                     <input type="checkbox" class="ace 1" name="ExibirAgendamentoOnline" id="ExibirAgendamentoOnline" value="1" <% if reg("ExibirAgendamentoOnline")="1" then %>checked<%end if%>>
                     <label class="checkbox" for="ExibirAgendamentoOnline"> Exibir no agendamento online</label>
                 </div>  
+                 <div class="SolicitarAutorizacao">
+                     <div class="checkbox-custom checkbox-primary">
+                        <input type="checkbox" class="ace 1" name="SolicitarAutorizaçãoParaUso" id="SolicitarAutorizaçãoParaUso" value="S" <% if reg("SolicitarAutorizacaoUso")="S" then %>checked<%end if%>>
+                        <label class="checkbox" for="SolicitarAutorizaçãoParaUso"> Solicitar Autorização para uso</label>
+                    </div>
+                </div>
+                <% if isAmorSaude() or getConfig("ValidarCartaoClubFlex") = 1 then %>
+                <div class="checkbox-custom checkbox-primary">
+                    <input type="checkbox" class="ace 1" name="TipoValidacao" id="TipoValidacao" value="1" <% if reg("TipoValidacao")="1" then %>checked<%end if%>>
+                    <label class="checkbox" for="TipoValidacao"> Validar Cartão de Desconto ClubFlex</label>
+                </div>
+                <% end if %>
             </div>
-   
-             <div class="col-md-3 SolicitarAutorizacao">
-                 <div class="checkbox-custom checkbox-primary">
-                    <input type="checkbox" class="ace 1" name="SolicitarAutorizaçãoParaUso" id="SolicitarAutorizaçãoParaUso" value="S" <% if reg("SolicitarAutorizacaoUso")="S" then %>checked<%end if%>>
-                    <label class="checkbox" for="SolicitarAutorizaçãoParaUso"> Solicitar Autorização para uso</label>
-                </div>  
-            </div>
+
 
         </div>
     </div>

@@ -24872,7 +24872,7 @@ body.sb-r-o #toggle_sidemenu_r span.glyphicons {
 #topbar.alt {
     /*  min-height: 70px;
   padding: 20px 22px;*/
-  background: #f8f9fb;
+  background: #f8f9fbd9;
   border-bottom: 1px solid #f5f5f5;
   border-top: 1px solid #f5f5f5;
   border-left: 1px solid #f5f5f5;
@@ -25864,7 +25864,7 @@ body.timeline-page #content {
 }
 
 #timeline.timeline-single {
-    margin-left: 6%;
+    margin-left: 5%;
     /*max-width: 750px;*/
 }
 

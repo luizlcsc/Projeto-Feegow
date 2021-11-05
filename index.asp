@@ -8,9 +8,6 @@ if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
-if session("Servidor")="dbfeegow03.cyux19yw7nw6.sa-east-1.rds.amazonaws.com" then
-  Response.redirect("./?P=Login&Log=Off")
-end if
 
 set shellExec = createobject("WScript.Shell")
 Set objSystemVariables = shellExec.Environment("SYSTEM")

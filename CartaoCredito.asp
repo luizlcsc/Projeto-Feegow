@@ -1,12 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
 if req("De")="" then
-	De=dateadd("m", -1, date())
+	De=dateadd("d", 15, date())
 else
 	De=req("De")
 end if
 if req("Ate")="" then
-	Ate=dateadd("m", 1, date())
+	Ate=dateadd("d", 7, date())
 else
 	Ate=req("Ate")
 end if

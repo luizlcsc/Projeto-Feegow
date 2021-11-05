@@ -878,16 +878,16 @@ end if
                             var gradeId = $(this).data("grade");
                             let tamanhoGrade = 0;
                             let ultimoHorarioGrade = '0000';
-                            if($('tbody[data-localid='+'<%=comps("LocalID")%>'+']').length == 1){
-                                tamanhoGrade = parseInt($('tbody[data-localid=<%=comps("LocalID")%>]').children().length)
-                                ultimoHorarioGrade = $('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')[0].id
+                            if($('tbody[data-localid="<%=comps("LocalID")%>"]').length == 1){
+                                tamanhoGrade = parseInt($('tbody[data-localid="<%=comps("LocalID")%>"]').children().length)
+                                ultimoHorarioGrade = $('tbody[data-localid="<%=comps("LocalID")%>"] tr:nth-child('+(tamanhoGrade)+')')[0].id
                             }
                            if ( $(this).attr("data-horaid")>'<%=HoraComp%>'){
                                 <%if session("FilaEspera")<>"" and comps("StaID") <> "11" then %>
                                     $('[data-horaid=<%=HoraComp%>]').remove();
                                 <% end if %>
                                 if('<%=HoraComp%>' > ultimoHorarioGrade && $($('#'+ultimoHorarioGrade)).attr('data-local') == '<%=comps("LocalID")%>'){
-                                    $($('tbody[data-localid='+'<%=comps("LocalID")%>'+'] tr:nth-child('+(tamanhoGrade)+')')).after(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
+                                    $($('tbody[data-localid="<%=comps("LocalID")%>"] tr:nth-child('+(tamanhoGrade)+')')).after(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 }else{
                                     $(this).before(`<%= conteudo %>`.replace(new RegExp("GRADE_ID",'g'), gradeId));
                                 }

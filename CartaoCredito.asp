@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 if req("De")="" then
-	De=dateadd("d", 15, date())
+	De=dateadd("d", -15, date())
 else
 	De=req("De")
 end if

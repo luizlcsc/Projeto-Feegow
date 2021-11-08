@@ -142,29 +142,33 @@ if not tryLogin.EOF then
 
 	if erro="" then
 
-	set dbProvi = newConnection("cliniccentral", Servidor)
+        set dbProvi = newConnection("cliniccentral", Servidor)
 
-    'if tryLogin("Bloqueado") = 1 then
-    '    erro = "Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entrar em contato conosco."
-    'end if
-		'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
-	IPsAcesso = tryLogin("IPsAcesso")
-	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
-		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
-		errorCode = "ip_restriction"
-	end if
-	if not isnull(tryLogin("FimTeste")) then
-		if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"I" and tryLogin("Status")<>"B" then
-			session("Bloqueado")="FimTeste"
-		'	erro = "Seu período de testes expirou. Por favor, entre em contato com nossa central de atendimento para renovar o período ou para adquirir sua licença definitiva.\nCentral de atendimento: 0800-729-6103"
-		elseif tryLogin("Status")="T" then
-			session("DiasTeste") = datediff("d", date(), formatdatetime(tryLogin("FimTeste"), 2))
-		end if
-	end if
-	if tryLogin("Status")="B" then
-		erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
-		errorCode = "license_status"
-	end if
+        'if tryLogin("Bloqueado") = 1 then
+        '    erro = "Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entrar em contato conosco."
+        'end if
+            'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
+        IPsAcesso = tryLogin("IPsAcesso")
+        if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
+            erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
+            errorCode = "ip_restriction"
+        end if
+        if not isnull(tryLogin("FimTeste")) then
+            if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"I" and tryLogin("Status")<>"B" then
+                session("Bloqueado")="FimTeste"
+            '	erro = "Seu período de testes expirou. Por favor, entre em contato com nossa central de atendimento para renovar o período ou para adquirir sua licença definitiva.\nCentral de atendimento: 0800-729-6103"
+            elseif tryLogin("Status")="T" then
+                session("DiasTeste") = datediff("d", date(), formatdatetime(tryLogin("FimTeste"), 2))
+            end if
+        end if
+        if tryLogin("Status")="B" then
+            erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
+            errorCode = "license_status"
+        end 
+        if tryLogin("Status")="X" then
+            erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
+            errorCode = "expired"
+        end if
 	end if
 
 

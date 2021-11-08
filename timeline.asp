@@ -36,6 +36,9 @@ if req("X")<>"" then
     if req("Tipo")="|Protocolos|" then
         'db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
     end if
+    if req("Tipo")="|Encaminhamentos|" then
+        db_execute("update encaminhamentos set sysactive=-1 where id="& req("X"))
+    end if
     if req("Tipo")="|AE|" then
         db_execute("update buiformspreenchidos set sysActive=-1 where id="& req("X"))
     end if
@@ -556,25 +559,89 @@ setMemedError("Prescrição clássica ativa.")
         %>
         <div class="panel timeline-add">
             <div class="panel-heading">
-                <span class="panel-title"> <%=subTitulo %>
-                </span>
+                <span class="panel-title"> <%=subTitulo %></span>
+                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and lcase(session("table"))="profissionais" then %>
+                    <span class="panel-controls">
+                        <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
+                            <i class="far fa-cog"></i>
+                            <i class="far fa-circle-notch fa-spin"></i>
+                            <span class="error-badge">&nbsp;</span>
+                        </button>
+                    </span>
+                    <script>
+                        if (memedError) {
+                            $('#btn-config-prescricao').addClass('error');
+                        }
+                        if (memedLoading) {
+                            $('#btn-config-prescricao').addClass('loading');
+                        }
+                    </script>
+                <% end if %>
             </div>
             <%
-            ' if aut("encaminhamentosI")=1 then
+            if aut("encaminhamentoI")=1 then
             %>
             <div class="panel-body" style="overflow: inherit!important;">
-                <div class="col-md-4">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-plus"></i> Inserir
+                <div class="col-md-3">
+                    <%
+                    qEspecialidadeSQL = "SELECT * FROM especialidades esp WHERE esp.sysActive=1 order by especialidade"
+
+                    if session("Table")="profissionais" then
+                        valorCheck = session("idInTable")
+                    end if
+                    response.write(quickfield("select", "EspecialidadeIDMemed", "Especialidade", "", valorCheck, qEspecialidadeSQL, "especialidade", ""))
+                    %>
+                </div>
+                <div class="col-md-3">
+                    <%
+                    qModelosSQL = "select *, IFNULL(TipoID, 99999999) as TipoID from encaminhamentostextos as pt left join prontuariosfavoritos as pf on pf.TipoID = pt.id and pf.Tipo = 'A' and pf.sysUser = "&session("User")&"  where sysActive=1 and (profissionais is null or profissionais='' or profissionais like '%|"&session("idInTable")&"|%' or "&session("Admin")&"=1) and (especialidades is null or especialidades='' or "&session("Admin")&"=1) order by TipoID"
+
+                    if session("Table")="profissionais" then
+                        valorCheck = session("idInTable")
+                    end if
+                    response.write(quickfield("select", "modelosEncaminhamentos", "Modelo", "", "", qModelosSQL, "nomeModelo", ""))
+                    %>
+                </div>
+                <br>
+                <div class="btn-group col-md-3">
+                    <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="far fa-plus"></i> Inserir Encaminhamento
                         <span class="caret ml5"></span>
                     </button>
-                    <ul class="dropdown-menu disabled" role="menu">
-                        <li><a href="javascript:iPront('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Encaminhamento </a></li>
+                    <ul class="dropdown-menu" role="menu">
+                        <%
+                        if IntegracaoUnimedLondrina<>4 then%>
+                                <li><a href="javascript:validaNovoEncaminhamento('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, $('#EspecialidadeIDMemed').val());"><i class="far fa-plus"></i> Encaminhamento Padrão</a></li>
+                            <%
+                        end if
+                            %>
+                            <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('encaminhamento')" <%end if%>><i class="far fa-plus"></i> Encaminhamento Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                            <%
+                        %>
                     </ul>
+                </div>
+                <div class="col-md-3">
+                    <%
+                    sqlBuiforms = "select id,nomeModelo from encaminhamentostextos where sysActive=1 and (profissionais is null or profissionais='' or profissionais like '%|"&session("idInTable")&"|%' or "&session("Admin")&"=1) order by nomeModelo"
+                    nForms = 0
+                    set forms = db.execute(sqlBuiforms)
+                    while not forms.eof
+                        if autForm(forms("id"), "IN", "") then
+                            nForms = nForms+1
+                            idFormUnico = forms("id")
+                            nomeFormUnico = forms("nomeModelo")
+                        end if
+                    forms.movenext
+                    wend
+                    forms.close
+                    set forms = nothing
+
+			        set forms = db.execute(sqlBuiforms)
+                    %>
                 </div>
             </div>
             <%
-            ' end if
+            end if
             %>
         </div>
         <%
@@ -1421,7 +1488,16 @@ function excluirSerie(id) {
         }
     });
 
-
+function validaNovoEncaminhamento(tipo, pacienteID, EspecialidadeID){
+    if(tipo == "Encaminhamentos" && EspecialidadeID == 0){
+        return new PNotify({
+                title: 'Dados inválidos!',
+                text: 'Selecione uma especialidade',
+                type: 'danger'
+            });
+    }
+    iPront(tipo, pacienteID, 0, '', EspecialidadeID);
+}
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

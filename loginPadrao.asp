@@ -164,7 +164,7 @@ if not tryLogin.EOF then
         if tryLogin("Status")="B" then
             erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
             errorCode = "license_status"
-        end 
+        end if
         if tryLogin("Status")="X" then
             erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
             errorCode = "expired"

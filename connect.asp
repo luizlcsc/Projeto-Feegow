@@ -9,7 +9,17 @@ if session("Servidor")="" then
 else
     sServidor = session("Servidor")
 end if
+
+On Error Resume Next
 set db = newConnection(session("Banco"), sServidor)
+
+If Err.Number <> 0 Then
+   On Error Goto 0
+   server.Execute("errors/503.html")
+   Response.End
+End If
+On Error Goto 0
+
 'db.Open ConnString
 LicenseID=replace(session("Banco"), "clinic", "")
 'componentslegacyurl = "http://localhost:8080/"

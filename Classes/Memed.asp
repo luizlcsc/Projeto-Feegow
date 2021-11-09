@@ -37,8 +37,8 @@
         }
         memedTipo = type;
 
-        // abre diretamente se for prescrição clássica
-        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+        //  2021-11-09 - permite abrir a prescrição Memed por aqui
+        if (memedTipo === 'prescricao' && false && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
             openClassicPrescription();
             return;
         }

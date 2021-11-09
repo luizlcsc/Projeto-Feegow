@@ -52,23 +52,43 @@ TipoEncaminhamento = req("TipoEncaminhamento")
 EncaminhamentoID = req("EncaminhamentoID")
 EspecialidadeID = req("EspecialidadeID")
 
-set getImpressos = db.execute("select * from encaminhamentosmodelos WHERE Tipo like '|"&TipoEncaminhamento&"|' ORDER BY id DESC")
-if not getImpressos.EOF then
-    ConteudoEncaminhamento = replaceTags(getImpressos("Conteudo")&"", req("PacienteID"), session("User"), session("UnidadeID"))
-    PapelTimbradoID = getImpressos("PapelTimbradoID")
-    set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 limit 1")
-    if not timb.eof then
-        Cabecalho = timb("Cabecalho")
-        Margens = "padding-left:"&timb("mLeft")&"px;padding-top:"&timb("mTop")&"px;padding-bottom:"&timb("mBottom")&"px;padding-right:"&timb("mRight")&"px;"
-        Cabecalho = replaceTags(timb("Cabecalho"), 0, session("UserID"), session("UnidadeID"))
-        Rodape = replaceTags(timb("Rodape"), 0, session("UserID"), session("UnidadeID"))
+        set getImpressos = db.execute("select * from Impressos")
+        if not getImpressos.EOF then
+            Cabecalho = getImpressos("Cabecalho")
+            Rodape = getImpressos("Rodape")
+            Atestados = getImpressos("Atestados")
+            Unidade = session("UnidadeID")
+            set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.profissionais like '%|"&session("idInTable")&"|%')  AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
+            if not timb.eof then
+                Cabecalho = timb("Cabecalho")
+                Margens = "padding-left:"&timb("mLeft")&"px;padding-top:"&timb("mTop")&"px;padding-bottom:"&timb("mBottom")&"px;padding-right:"&timb("mRight")&"px;"
+                if session("Banco") = "clinic1805" or session("Banco") = "clinic100000" or session("Banco") = "clinic2410" or session("Banco") = "clinic5445" or session("Banco") = "clinic6017" or session("Banco") = "clinic5873" or session("Banco") = "clinic5958" or session("Banco") = "clinic6081" then
+                'if timb("MarcaDagua")<>"" or not isnull(timb("MarcaDagua"))  then
+                    MarcaDagua = "background-image: url('https://clinic.feegow.com.br/uploads/"&replace(session("Banco"), "clinic", "")&"/Arquivos/"&timb("MarcaDagua")&"')"
+                end if
+                   Cabecalho = timb("Cabecalho")
+                   Rodape = timb("Rodape")
 
-        if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
-        if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
-        if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
-        if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
-    end if
-end if
+                    if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
+                    if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
+                    if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
+                    if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
+
+            end if
+            if lcase(session("table"))="profissionais" then
+                set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND pt.profissionais like '%|"&session("idInTable")&"|%'  AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
+                if not timb.eof then
+                   Cabecalho = timb("Cabecalho")
+                   Rodape = timb("Rodape")
+
+                    if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
+                    if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
+                    if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
+                    if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
+
+                end if
+            end if
+        end if
 
 '-----> Substituindo as tags do conteudo
 if EspecialidadeID = "" then

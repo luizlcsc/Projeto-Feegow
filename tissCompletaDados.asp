@@ -37,7 +37,7 @@ elseif tipo="5" then'Produto SADT, pois no selectinsert não aceita letra
 elseif tipo="6" then'Codigo de produto na tabela
 	call completaProdutoTabela(id, ref("ProdutoID"))
 elseif tipo="Convenio" then
-	call completaConvenio(id, ref("gPacienteID"))
+	call completaConvenio(id, ref("gPacienteID"), ref("ProfissionalSolicitanteID"))
     call completaLocalExterno(ref("LocalExternoID"), id)
 elseif tipo="Plano" then
 	call completaPlano(id, ref("gProcedimentoID"))

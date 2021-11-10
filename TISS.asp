@@ -44,7 +44,7 @@ function completaProfissionalSolicitante(id)
 	end if
 end function
 
-function completaConvenio(ConvenioID, PacienteID)
+function completaConvenio(ConvenioID, PacienteID, ProfissionalSolicitanteID)
 	set vpac = db.execute("select * from pacientes where id = '"&PacienteID&"'")
 	if not vpac.eof then
 		if not isnull(vpac("ConvenioID1")) AND vpac("ConvenioID1")=ccur(ConvenioID) then
@@ -151,8 +151,7 @@ function completaConvenio(ConvenioID, PacienteID)
 		'set contconv = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 AND (SomenteUnidades LIKE '%|"&ref("UnidadeID")&"|%' or SomenteUnidades is null OR SomenteUnidades = '') order by Contratado")'Vai chamar sempre as filiais primeiro por serem negativas, depois ver esse comportamento
 		'response.write()
 		'set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) ORDER BY (Contratado = "&session("idInTable")&") DESC ")
-		set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
-
+		set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" ORDER BY (Contratado = "&ProfissionalSolicitanteID&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
 		if not contconv.eof then
 			call completaContratado(contconv("Contratado"), conv("id"))
 			call completaContratadoSolicitante(contconv("Contratado"), conv("id"))
@@ -368,7 +367,7 @@ function completaPaciente(id)
 			Validade = pac("Validade"&Numero)
 			ConvenioID = pac("ConvenioID"&Numero)
 			PlanoID = pac("PlanoID"&Numero)
-			call completaConvenio(pac("ConvenioID"&Numero), id)
+			call completaConvenio(pac("ConvenioID"&Numero), id, 1)
 		end if
 		Nascimento = myDate(pac("Nascimento"))
 		%>

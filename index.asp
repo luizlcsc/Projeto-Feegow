@@ -1426,7 +1426,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 
-                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
+                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -2830,5 +2830,5 @@ if PermiteChat then
 end if
 %>
 <% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
-<script src="assets/js/whatsApp/whatsAppStatus.js"></script>
+<script src="assets/js/whatsApp/whatsAppStatus.js?cache_prevent=9"></script>
 <% END IF %>

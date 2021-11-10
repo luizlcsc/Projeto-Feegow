@@ -162,7 +162,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                 </div>
                 <%
                 set PedidosNoMesmoDiaSQL = db.execute("SELECT id, GuiaID FROM pedidossadt ps "&_
-                        "WHERE ps.PacienteID="&PacienteID&" AND ps.sysUser="&session("User")&" AND ps.sysActive=1 AND date(ps.sysDate)=curdate() LIMIT 6")
+                        "WHERE ps.PacienteID="&PacienteID&" AND ps.sysUser="&session("User")&" AND ps.sysActive=1 AND date(ps.sysDate)=curdate() order by id desc LIMIT 6")
 
                 set GruposExamesSQL = db.execute("SELECT tc.Capitulo, count(pp.id) qtd FROM pedidossadtprocedimentos pp "&_
                 "JOIN cliniccentral.tusscorrelacao tc ON tc.Codigo=pp.CodigoProcedimento and tc.Tabela=pp.TabelaID "&_
@@ -209,6 +209,26 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
                     PedidosNoMesmoDiaSQL.close
                     set PedidosNoMesmoDiaSQL=nothing
                     %>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <%
+                            set g = db.execute("SELECT id, GuiaID FROM pedidossadt ps "&_
+                        "WHERE ps.PacienteID="&PacienteID&" AND ps.sysUser="&session("User")&" AND ps.sysActive=1 AND date(ps.sysDate)=curdate() order by id desc LIMIT 6,10")
+
+                            while not g.eof
+                            %>
+                                    <li><a href="#" onclick="iPront('PedidosSADT', '<%=PacienteID%>', '', '<%=g("id")%>', '');"><i class="far fa-exclamation-circle text-warning"></i> <%="Pedido #"&g("id")%></a></li>
+                            <%
+                                g.movenext
+                                wend
+                                g.close
+                                set g=nothing
+                            %>
+                        </ul>
+                    </div>
                     </div>
                     <%
                 end if
@@ -487,7 +507,7 @@ function saveConteudoPedidoSADT(E){
         DataSolicitacao: $("#DataSolicitacao").val()
 
     }, function(data){
-        $("#pedidosmodelos").html(data);
+        iPront('PedidosSADT', '<%=PacienteID%>', '', $("#PedidoSADTID").val(), '');
     });
     return false;
 }

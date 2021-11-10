@@ -62,11 +62,14 @@ if rfrdValorPlano="P" and (rfValorPlano="" or rfValorPlano="0") then
 end if
 
 if ref("ageNascimento")<>"" and isnumeric(ProfissionalSQL("IdadeMinima"))then
-    idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
-    
-    if isnumeric(idadePaciente) then
-        if cint(idadePaciente) > ProfissionalSQL("IdadeMinima") then
-            erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade."
+
+    if ProfissionalSQL("IdadeMinima")>0 then
+        idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
+        
+        if isnumeric(idadePaciente) then
+            if cint(idadePaciente) < ProfissionalSQL("IdadeMinima") then
+                erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade. Verifique a configuração do profissional."
+            end if
         end if
     end if
 end if
@@ -244,7 +247,7 @@ HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 if ref("LocalID")&""<>"" and ConsultaID="0" then
     'set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where Data = "&mydatenull(ref("Data"))&" and Hora = '"&ref("Hora")&":00' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id=ag.localID and MaximoAgendamentos!='')")
-    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where ag.sysActive=1 AND Data = "&mydatenull(ref("Data"))&" and Hora = '"&ref("Hora")&"' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id="&ref("LocalID")&" and MaximoAgendamentos!='')")
+    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where ag.sysActive=1 AND Data = "&mydatenull(ref("Data"))&" and ( '"&ref("Hora")&":01' between Hora AND HoraFinal ) and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id="&ref("LocalID")&" and MaximoAgendamentos!='')")
 
     if not maxAgendamentoLocal.eof then
         erro="Local indisponível. Máximo de pacientes neste local e horário foi alcançado."
@@ -261,7 +264,7 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         sqlProfissionalOuEquipamento = "and ProfissionalID<>0 "
         LabelErroMaximoAgendamentos="profissional"
     end if
-    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,22,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
     if not ve2.EOF then
         if isnumeric(ve2("Tempo")) then
             tmp=ccur(ve2("Tempo"))

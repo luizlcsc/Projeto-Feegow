@@ -61,6 +61,16 @@ if rfrdValorPlano="P" and (rfValorPlano="" or rfValorPlano="0") then
 	erro="Erro: Selecione um conv&ecirc;nio."
 end if
 
+if ref("ageNascimento")<>"" and isnumeric(ProfissionalSQL("IdadeMinima"))then
+    idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
+    
+    if isnumeric(idadePaciente) then
+        if cint(idadePaciente) > ProfissionalSQL("IdadeMinima") then
+            erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade."
+        end if
+    end if
+end if
+
 'if session("Banco")="clinic811" and ref("ageOrigem")="0" then
 '    erro = "Erro: Selecione a origem."
 'end if

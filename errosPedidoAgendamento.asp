@@ -234,7 +234,7 @@ HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 if ref("LocalID")&""<>"" and ConsultaID="0" then
     'set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where Data = "&mydatenull(ref("Data"))&" and Hora = '"&ref("Hora")&":00' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id=ag.localID and MaximoAgendamentos!='')")
-    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where ag.sysActive=1 AND Data = "&mydatenull(ref("Data"))&" and ( '"&ref("Hora")&":01' between Hora AND HoraFinal ) and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id="&ref("LocalID")&" and MaximoAgendamentos!='')")
+    set maxAgendamentoLocal = db.execute("select count(id) id from agendamentos ag where ag.sysActive=1 AND Data = "&mydatenull(ref("Data"))&" and Hora = '"&ref("Hora")&"' and LocalID="&ref("LocalID")&" group by ag.localid having count(ag.id) >= (select lc.MaximoAgendamentos from locais lc where lc.id="&ref("LocalID")&" and MaximoAgendamentos!='')")
 
     if not maxAgendamentoLocal.eof then
         erro="Local indisponível. Máximo de pacientes neste local e horário foi alcançado."

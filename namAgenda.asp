@@ -403,8 +403,9 @@ if somenteStatus&"" <> "" then
 	sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
 end if
 
-set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
-"left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_ 
+set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
+"left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_
+"LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
 "left join locais loc on loc.id=a.LocalID "&_
 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
@@ -423,6 +424,9 @@ while not comps.EOF
     else
         CorIdentificacao = comps("CorIdentificacao")
     end if
+
+    pacientePrioridadeIcone = replace(comps("PrioridadeIcone")&"","'","""")
+
 	if not isnull(compsHora) then
 		compsHora = formatdatetime(compsHora, 4)
 	end if
@@ -488,9 +492,11 @@ while not comps.EOF
     end if
 
     if session("HVazios")="" then
+
         statusIcon = imoon(comps("StaID"))
 
 		Conteudo = "<tr style=\'background-color:"&CorProcedimento&"!important\' data-unidade="""&AgendamentoUnidadeID&""" data-toggle=""tooltip"" data-id="""&HoraComp&""" class=""ocu"& ProfissionalID&" ocu"& ProfissionalID &"_"& LocalID &""" data-html=""true"" data-placement=""bottom"" title="""&replace(fix_string_chars(NomeProcedimento)&" ", "'", "\'")&" <br> "&replace(comps("NomeProfissional")&" ", "'", "\'")&" <br> Idade: "&IdadeAbreviada(comps("Nascimento"))&""" id="""&HoraComp&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'\',\'"&GradeID&"\')""><td width=""1%"" style=""background-color:"&comps("Cor")&"""></td><td width=""1%"" "&FirstTdBgColor&" ><button type=""button"" class=""btn btn-xs btn-warning slot-cor"">"&compsHora&"</button></td><td nowrap>"&statusIcon&" "
+
 	    if comps("Encaixe")=1 and getConfig("OmitirEncaixeGrade")=0 then
 		    Conteudo = Conteudo & "<span class=""label label-alert label-sm arrowed-in arrowed-in-right"">Enc</span>"
 	    end if

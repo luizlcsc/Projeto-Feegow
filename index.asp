@@ -215,6 +215,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/old.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.css">
+
+  <link href="https://cdn.feegow.com/feegowclinic-v7/assets/fonts/material-design-icons/css/materialdesignicons.min.css" rel="stylesheet">
+
   <style>
   /*===============================================
     Custom Scrollbar

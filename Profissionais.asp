@@ -319,7 +319,9 @@ end if
                         <%end if%>
 
                         <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
-
+                        
+                        <%= quickField("number", "IdadeMinima", "Idade mínima", 3, reg("IdadeMinima"), "", "", "") %>
+                        
                         <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
 
                     </div>

@@ -339,7 +339,9 @@ if not getResource.EOF then
 					sqlValue = "'"&year(ref(getFields("columnName")))&"-"&month(ref(getFields("columnName")))&"-"&day(ref(getFields("columnName")))&"'"
 				end if
 			end if
-		else
+		elseif getFields("fieldTypeID")=7 then
+            sqlValue = treatvalnull(refhtml(getFields("columnName")))
+        else
 			sqlValue = "'"&refhtml(getFields("columnName"))&"'"
 		end if
 

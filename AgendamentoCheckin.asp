@@ -24,7 +24,7 @@ wend
 omit.close
 set omit = nothing
 
-set CamposNaAgendaSQL = db.execute("SELECT Exibir, Obrigar FROM obrigacampos WHERE Recurso='Agendamento'")
+set CamposNaAgendaSQL = db.execute("SELECT Exibir, group_concat(Obrigar) Obrigar FROM obrigacampos WHERE Recurso='Agendamento' OR Recurso='Paciente'")
 if not CamposNaAgendaSQL.eof then
     ExibirCamposAgenda = CamposNaAgendaSQL("Exibir")&""
     camposObrigatorioPaciente= CamposNaAgendaSQL("Obrigar")&""

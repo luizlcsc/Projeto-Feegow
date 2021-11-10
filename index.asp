@@ -27,6 +27,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 <head>
   <meta name="robots" content="noindex">
+  <meta name="msapplication-TitleColor" content="#3595d9">
+  <meta name="theme-color" content="#3595d9">
+
   <style type="text/css">
 
     @font-face {

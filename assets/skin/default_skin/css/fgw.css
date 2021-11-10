@@ -26252,6 +26252,7 @@ a.bg-primary:hover {
 .bg-primary.darker {
     background-color: #fff !important;
     border-top: 4px solid transparent;
+    border-color: #009CF3;
     border-bottom: 0 !important;
     border-radius: 5px;
     border-image-source: linear-gradient(to right, #00CC9B 0%, #009CF3 100%);

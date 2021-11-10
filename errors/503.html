@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="shortcut icon" type="image/png" href="https://clinic.feegow.com.br/components/public/favicon-error.ico"/>
+<link rel="shortcut icon" type="image/png" href="https://cdn.feegow.com/feegowclinic-v7/assets/img/feegowclinic.ico"/>
 
 <title>503 - Ocorreu um erro</title>
 
@@ -24,7 +24,7 @@
 <div id="notfound">
 <div class="logo-left">
 <a href="https://feegowclinic.com.br/">
-<img src="https://site.feegowclinic.com.br/wp-content/uploads/2019/05/logo-feegow-clinic.png"/></a>
+<img style="height:60px;" src="https://cdn.feegow.com/feegowclinic-v7/assets/img/login_logo.svg"/></a>
 </div>
 <div class="notfound">
 <div class="notfound-bg">
@@ -35,7 +35,8 @@
 <h1>oops!</h1>
 <h2>Erro 503 : Erro interno</h2>
 
-<a href="#" class="btn" id="pagina-login-btn">Página de login</a>
+
+<a href="/main?P=Login" class="btn" id="pagina-login-btn">Página de login</a>
 
 <div class="notfound-social">
 <a href="https://www.facebook.com/feegowclinic/"><i class="fa fa-facebook"></i></a>
@@ -58,30 +59,25 @@
 <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/95c75768/cloudflare-static/rocket-loader.min.js" data-cf-settings="d50ce990dcbf86fbbb9b71ac-|49" defer=""></script></body>
 </html>
 
-<script src="//code.jivosite.com/widget.js" data-jv-id="3j2XOJKoQb" async></script>
-
 <script>
-$(document).ready(function(){
-	var urlClinic7 = "https://clinic7.feegow.com.br/v7/ping.asp",
-		urlLoginClinic7 = "https://clinic7.feegow.com.br/v7/?P=Login",
-		urlClinic8 = "https://clinic8.feegow.com.br/v7/ping.asp",
-		urlLoginClinic8 = "https://clinic8.feegow.com.br/v7/?P=Login",
-		$btnLogin = $("#pagina-login-btn");
-	
-	$.ajax({
-    type:     "get",
-    cache:    false,
-    url:      urlClinic7,
-    dataType: "text",
-    error: function (request, error) {
-		$btnLogin.attr("href", urlLoginClinic8);
-    },
-    success: function () {
-		$btnLogin.attr("href", urlLoginClinic7);
-    }
-	});
-});
-</script>
+	function initFreshChat() {
+	  window.fcWidget.init({
+		token: "e1b3be37-181a-4a60-b341-49f3a7577268",
+		host: "https://wchat.freshchat.com",
+		config: {
+		  content:{
+			  headers: {
+			  csat_question: 'Com relação ao atendimento do seu Analista de Sucesso, você achou bom?',
+			}
+		  }
+		}
+	  });
+  
+	}
+	// Copy the below lines under window.fcWidget.init inside initFreshChat function in the above snippet
+  
+	function initialize(i,t){var e;i.getElementById(t)?initFreshChat():((e=i.createElement("script")).id=t,e.async=!0,e.src="https://wchat.freshchat.com/js/widget.js",e.onload=initFreshChat,i.head.appendChild(e))}function initiateCall(){initialize(document,"freshchat-js-sdk")}window.addEventListener?window.addEventListener("load",initiateCall,!1):window.attachEvent("load",initiateCall,!1);
+  </script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-54670639-4"></script>
 <script>

@@ -61,14 +61,16 @@ if rfrdValorPlano="P" and (rfValorPlano="" or rfValorPlano="0") then
 	erro="Erro: Selecione um conv&ecirc;nio."
 end if
 
-if ref("ageNascimento")<>"" and isnumeric(ProfissionalSQL("IdadeMinima"))then
+if ref("ageNascimento")<>"" and FieldExists(ProfissionalSQL, "IdadeMinima") then
 
-    if ProfissionalSQL("IdadeMinima")>0 then
-        idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
-        
-        if isnumeric(idadePaciente) then
-            if cint(idadePaciente) < ProfissionalSQL("IdadeMinima") then
-                erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade. Verifique a configuração do profissional."
+    if isnumeric(ProfissionalSQL("IdadeMinima")) then
+        if ProfissionalSQL("IdadeMinima")>0 then
+            idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
+            
+            if isnumeric(idadePaciente) then
+                if cint(idadePaciente) < ProfissionalSQL("IdadeMinima") then
+                    erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade. Verifique a configuração do profissional."
+                end if
             end if
         end if
     end if

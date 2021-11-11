@@ -25,6 +25,17 @@ else
 	AccountIDDebit = AccountIDInvoice
 	reverse = "C"
 end if
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = session("UnidadeID")
+contabloqueadacred = verificaBloqueioConta(2, 1, AccountIDCredit, UnidadeID,PaymentDate)
+contabloqueadadebt = verificaBloqueioConta(2, 1, AccountIDDebit, UnidadeID,PaymentDate)
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+    response.end
+end if
+' #####################################################################################
+db_execute("insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate) values ('Pagamento', '"&AccountAssociationIDCredit&"', '"&AccountIDCredit&"', '"&AccountAssociationIDDebit&"', '"&AccountIDDebit&"', "&ref("PaymentMethod")&", '"&treatVal(PaymentValue)&"', '"&myDate(PaymentDate)&"', '"&reverse&"', 'Pay', '"&ref("Obs")&"', '"&ref("PaymentCurrency")&"', '"&treatVal(ref("PaymentRate"))&"')")
+set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")
+LastMovementID = getLastMovementID("id")
 
 db.execute("insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate) values ('Pagamento', '"&AccountAssociationIDCredit&"', '"&AccountIDCredit&"', '"&AccountAssociationIDDebit&"', '"&AccountIDDebit&"', "&ref("PaymentMethod")&", '"&treatVal(PaymentValue)&"', '"&myDate(PaymentDate)&"', '"&reverse&"', 'Pay', '"&ref("Obs")&"', '"&ref("PaymentCurrency")&"', '"&treatVal(ref("PaymentRate"))&"')")
 ' set getLastMovementID = db.execute("select id from sys_financialMovement order by id desc LIMIT 1")

@@ -335,7 +335,7 @@ $(document).ready(function () {
 
 
 <script type="text/javascript">
-    $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda</a>");
+    $(".crumb-active").html("<a href='./?P=AgendaMultipla&Pers=1'>Agenda múltipla</a>");
     $(".crumb-icon a span").attr("class", "far fa-calendar");
     $(".crumb-link").replaceWith("");
     $(".crumb-trail").removeClass("hidden");
@@ -361,7 +361,7 @@ $(document).ready(function () {
     function setLoading() {
       $("#contQuadro").html(`<div class="p10">
                                 <center>
-                                     <i class="far fa-2x fa-circle-o-notch fa-spin"></i> Carregando...
+                                     <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
                                  </center>
                             </div>`);
     }
@@ -462,7 +462,11 @@ $(document).ready(function () {
             ProcedimentoID = "";
         }
 
-        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html(`<div class="p10">
+                                       <center>
+                                            <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                                        </center>
+                                   </div>`);
         af('a');
 
         let UnidadeID="", UnidadesSelecionas = $("#Locais").val();

@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <%
+ModuloCompras = recursoAdicional(40)
 
 TipoProduto = req("TipoProduto")&""
 if TipoProduto&""="" then
@@ -241,7 +242,7 @@ end if
                         </div>
 
                         <br />
-                        <div class="row">
+                        <div class="row hidden">
                             <div class="col-md-6">
                                 <div class="ml15" style="color: #AAA;"><h4> - Brasíndice</h4></div>
                                 <%=quickField("text", "CodigoTabela", "Código da Tabela", 4, CodigoTabela, "", "", "")%>
@@ -282,9 +283,15 @@ end if
                                     <div class="radio-custom radio-system">
                                         <input type="radio" name="TipoCompra" value="U" id="TipoCompraU" <% If reg("TipoCompra")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeC" for="TipoCompraU"> por unidade</label></div>
                                 </div>
+                                <%
+                                if ModuloCompras=4 then
+                                %>
                                 <div class="col-md-4">
                                     <%=selectInsert("Plano de Contas - Despesa", "CategoriaDespesaID", reg("CategoriaDespesaID"), "sys_financialexpensetype", "Name", "", "", "")%>
                                 </div>
+                                <%
+                                end if
+                                %>
                             </div>
                             <div class="row">
                                 <%=quickField("currency", "PrecoVenda", "Pre&ccedil;o Médio - Venda", 4, reg("PrecoVenda"), "", "", "")%>
@@ -296,9 +303,15 @@ end if
                                     <div class="radio-custom radio-alert">
                                         <input type="radio" name="TipoVenda" id="TipoVendaU" value="U" <% If reg("TipoVenda")="U" Then %> checked="checked" <% End If %> /><label id="lblApresentacaoUnidadeV" for="TipoVendaU"> por unidade</label></div>
                                 </div>
+                                <%
+                                if ModuloCompras=4 then
+                                %>
                                 <div class="col-md-4">
                                     <%=selectInsert("Plano de Contas - Receita", "CategoriaReceitaID", reg("CategoriaReceitaID"), "sys_financialincometype", "Name", "", "", "")%>
                                 </div>
+                                <%
+                                end if
+                                %>
                             </div>
                             <div class="row">
 
@@ -463,7 +476,7 @@ end if
 
     function lancar(P, T, L, V, PosicaoID){
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.ajax({
             type:"POST",
             url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID,
@@ -477,7 +490,7 @@ end if
     function dividir(P, T, L, V, PosicaoID)
     {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 
         if(PosicaoID === "LOTE"){
             PosicaoID=[];

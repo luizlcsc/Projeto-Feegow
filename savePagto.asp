@@ -4,7 +4,11 @@
 
 <%
 T = req("T")
-ValorPagto = ccur(ref("ValorPagto"))
+if ref("ValorPagto")>0 then
+    ValorPagto = ccur(ref("ValorPagto"))
+else
+    ValorPagto = ccur(0)
+end if
 MetodoID = ref("MetodoID")
 AccountID=ref("AccountID")
 'verifica se acc id eh array
@@ -61,6 +65,18 @@ end if
 MetodoID = ccur(ref("MetodoID"))
 sufixo = "_"&MetodoID
 
+' ######################### BLOQUEIO FINANCEIRO ########################################
+UnidadeID = treatvalzero(ref("UnidadeIDPagto"))
+contabloqueadacred = verificaBloqueioConta(2, 1, AccountIDCredit, UnidadeID,DataPagto)
+contabloqueadadebt = verificaBloqueioConta(2, 1, AccountIDDebit, UnidadeID,DataPagto)
+if contabloqueadacred = "1" or contabloqueadadebt = "1" then
+    retorno  = " alert('Esta conta está BLOQUEADA e não pode ser alterada!'); " &_
+               " $('.parcela').prop('checked', false); $('#pagar').fadeOut(); " &_
+               " geraParcelas('N'); "
+    response.write(retorno)
+    response.end
+end if
+' #####################################################################################
 
 
 insMov = "insert into sys_financialMovement (Name, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CD, Type, Obs, Currency, Rate, CaixaID, UnidadeID, sysUser) values ('Pagamento', '"&AccountAssociationIDCredit&"', '"&AccountIDCredit&"', '"&AccountAssociationIDDebit&"', '"&AccountIDDebit&"', "&ref("MetodoID")&", '"&treatVal(ValorPagto)&"', "&myDatenull(DataPagto)&", '"&reverse&"', 'Pay', '"&ref("Obs")&"', '"&ref("PaymentCurrency")&"', 1, "&treatvalnull(session("CaixaID"))&", "&treatvalzero(ref("UnidadeIDPagto"))&", "&session("User")&")"
@@ -384,7 +400,14 @@ if T="C" and InvoiceID&"" <>"" then
         CD = iInvoices("Value")
         if iInvoices("Value") = iPagoInvoices("ValorTotal")  then
         %>
-        $.get("relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=InvoiceID%>",  function(data){  });
+        $.get("relatorio.asp?TipoRel=ifrReciboIntegrado&I=<%=InvoiceID%>",  function(data){  
+            printWindow = window.open('');
+            printWindow.document.write(data);
+            
+            setTimeout(function(){
+                printWindow.top.close();
+            }, 500);
+        });
             <% if exibeListagem = 1 then %>
             setTimeout(function(){
                 listaRecibos("<%=InvoiceID%>");

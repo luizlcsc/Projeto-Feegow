@@ -87,22 +87,27 @@ end if
 <%
 if session("RemSol")<>"" then
 	%>
-<div class="panel panel-footer row">
-	<div class="col-md-6">
-        <div class="input-group">
-            <span class="input-group-addon">Selecione um hor&aacute;rio abaixo ou digite</span>
-            <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
-                    <i class="far fa-clock-o bigger-110"></i>
-                    Remarcar</button>
-            </span>
-            <span class="input-group-btn">
-                <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
-            </span>
+<div class="row">
+        <div class="panel  ">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="far fa-clock"></i></span>
+                    <input type="text" class="form-control input-mask-l-time text-right" placeholder="__:__" id="HoraRemarcar">
+
+                </div>
+                <p><i>*Selecione um hor&aacute;rio abaixo ou digite</i></p>
+            </div>
+            <div class="col-md-2">
+                <span class="btn-group">
+                    <button type="button" class="btn btn-default" onclick="remarcar(<%=session("RemSol")%>, 'Remarcar', $('#HoraRemarcar').val(), 'Search')">
+                        <i class="far fa-check bigger-110"></i>
+                        Remarcar</button>
+
+                    <button type="button" class="btn btn-danger" onclick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
+                </span>
+            </div>
         </div>
     </div>
-</div>
 
 	<%
 end if
@@ -442,7 +447,7 @@ end if
 						Conteudo = Conteudo & "<i class=""far fa-exclamation-triangle grey""  title=""Agendado para &raquo; "&replace(comps("NomeLocal")&" ", "'", "\'")&"""></i>"
 					end if
 					Conteudo = Conteudo & "</td><td width=""1%""><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"">"&compsHora&"</button></td>"&_ 
-					"<td nowrap><img src=""assets/img/"&comps("StaID")&".png""> "
+					"<td nowrap> "&imoon(comps("StaID"))
 					if comps("Encaixe")=1 then
 						Conteudo = Conteudo & "<span class=""label bg-alert label-pink label-sm arrowed-in mr10 arrowed-in-right"">encaixe</span>"
 					end if

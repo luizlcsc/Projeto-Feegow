@@ -2,7 +2,7 @@
 percentual = CalculaMinAprovacao(id)
 %>
 
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>">
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" class="invoice-linha-item" >
     <td>
 		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " quantidade text-right disable", "", " required onkeyup=""recalcular(this)""")%><input type="hidden" name="inputs" value="<%= id %>">
         <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" />

@@ -29,6 +29,10 @@ if req("X")<>"" then
         'db_execute("delete from pacientespedidos where id="& req("X"))
         db_execute("update pacientesdiagnosticos set sysActive=-1 where id="& req("X"))
     end if
+    if req("Tipo")="|Encaminhamentos|" then
+        'db_execute("delete from pacientespedidos where id="& req("X"))
+        db_execute("update pacientesencaminhamentos set sysActive=-1 where id="& req("X"))
+    end if
     if req("Tipo")="|Protocolos|" then
         'db_execute("update pacientesdiag set sysActive=-1 where id="& req("X"))
     end if
@@ -58,6 +62,9 @@ end if
 .timeline-item-inativo *{
     color: #fff!important;
 }
+.timeline-item-inativo .dropdown-menu *{
+    color: #666666!important;
+}
 .timeline-item-inativo code{
     color: #c7254e!important;
 }
@@ -71,9 +78,11 @@ end if
     font-size: 55px;
     font-weight: 700;
     text-align: center;
+    backdrop-filter: blur(1px);
 }
 .timeline-item-inativo .panel-body{
     background-color:#c5c5c5 ;
+    border-radius: 0;
 }
 .timeline-item-inativo .panel-heading{
     background-color:#9a9a9a
@@ -171,6 +180,30 @@ end if
     50% {transform: translate(0,15px);}
     100% {transform: translate(0,0);}
 }
+
+#btn-config-prescricao .error-badge {
+    display: none;
+    position: absolute; 
+    width: 7px; 
+    height: 7px; 
+    border-radius: 50%; 
+    background-color: #EE5253; 
+    top:13px; 
+    right:10px
+}
+
+#btn-config-prescricao .fa-spin {
+    display: none;
+}
+#btn-config-prescricao.loading .fa-spin {
+    display: inline-block;
+}
+#btn-config-prescricao.loading .fa-cog {
+    display: none;
+}
+#btn-config-prescricao.error .error-badge {
+    display: block;
+}
 </style>
 
 
@@ -184,7 +217,14 @@ PacienteID = req("PacienteID")
 loadMore = 0
 MaximoLimit = 20
 Tipo = req("Tipo")
+showInactive = req("showInactive")
 ComEstilo = req("ComEstilo")
+
+if Request("showInactive").Count > 0 then
+    Response.Cookies("showInactiveMedicalRecords")=showInactive
+else
+    showInactive = Request.Cookies("showInactiveMedicalRecords")
+end if
 
 set PacienteSQL = db.execute("SELECT NomePaciente, Nascimento, Sexo FROM pacientes WHERE id = "&PacienteID)
 NomePaciente = PacienteSQL("NomePaciente")
@@ -230,30 +270,56 @@ select case Tipo
             <div class="panel-heading">
                 <span class="panel-title "> <%=subTitulo %>
                 </span>
-            </div>
-            <div class="panel-body" style="overflow: inherit!important;">
-                <%
-                if req("Tipo")="|L|" then
-                %>
-                <div class="col-md-3">
+
+                <div class="panel-controls">
                     <%
-                    qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
-                                                " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
-                                                " ORDER BY p.NomeProfissional ASC                    "
-                    
-                    if session("Table")="profissionais" then
-                        valorCheck = session("idInTable")
+                    set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
+                    restoreVisible = "none"
+                    if not exe.eof then
+                        restoreVisible = "inline"
                     end if
-                    response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", "", valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+
+                    %>
+                    <button type="button" class="btn btn-default hidden-xs btn-sensitive-action" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-history"></i> Restaurar Formulário</button>
+                    <%
+                    if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
+                    %>
+                        <button class="btn btn-info hidden-xs" type="button" onclick="curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</button>
+                    <%
+                    end if
+
+                    if Tipo = "|L|" then
+                        De = DateAdd("d", -7, date())
+                    %>
+                        <button type="button" class="btn btn-system" onclick="javascript:location.href='./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1'" ><i class="far fa-external-link"></i> Ir para Laudos</button>
+                     <%
+                    end if
                     %>
                 </div>
-                <%
-                end if 
-                %>
+
+            </div>
+            <div class="panel-body" style="overflow: inherit!important;">
+
                 <div class="col-md-3">
-                        <br>
                         <%
-                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by Nome"
+                         if False then
+                             set UltimosFormsSQL = db.execute("SELECT GROUP_CONCAT(DISTINCT ModeloID) modelos FROM ( "&_
+                             "SELECT bp.ModeloID, COUNT(bp.id) qtd from buiformspreenchidos bp join buiforms b on b.id=ModeloID WHERE bp.DataHora >= DATE_SUB(NOW(), INTERVAL 30 DAY) and bp.sysUser="&session("User")&" and   "&sqlForm&"  "&_
+                             "GROUP BY bp.ModeloID "&_
+                             "ORDER BY qtd desc "&_
+                             "LIMIT 5 "&_
+                             ")t ")
+
+                            if not UltimosFormsSQL.eof then
+                                favoritos = UltimosFormsSQL("modelos")
+                                if favoritos<> "" then
+                                    sqlOrderFavoritos = " IF(id in ("&favoritos&"),0,1),"
+                                end if
+                            end if
+                        end if
+
+
+                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by "&sqlOrderFavoritos&" Nome"
                         nForms = 0
 			            set forms = db.execute(sqlBuiforms)
 			            while not forms.eof
@@ -280,9 +346,16 @@ select case Tipo
 
 			                while not forms.eof
 				                if autForm(forms("id"), "IN", "") then
+
+				                    badgeFavorito = ""
+
+				                    if instr(favoritos, forms("id")) then
+				                        badgeFavorito = " <i class='fas fa-star text-warning'></i>"
+                                    end if
+
                                 %>
                                 <li  <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%>><a  <% if EmAtendimento=1 then%>
-                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%></a></li>
+                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%> <%=badgeFavorito%></a> </li>
                                 <%
 				                end if
 			                forms.movenext
@@ -309,37 +382,6 @@ select case Tipo
 	                else
 		                formTipo = " and bf.Tipo IN(1,2)"
 	                end if
-
-                set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
-                restoreVisible = "none"
-                if not exe.eof then
-                    restoreVisible = "block"
-                end if
-
-                %>
-                    <div class="col-md-3 col-xs-12">
-                        <br>
-                        <a type="button" class="btn btn-block btn-system pull-right" id="restoreForm" style="display: <%=restoreVisible%>;"><i class="far fa-external-link"></i> Restaurar Formulário</a>
-                    </div>
-                <%
-                if not isnull(Nascimento) and not isnull(Sexo) and isdate(Nascimento) and isnumeric(Sexo) and (Sexo=1 or Sexo=2) then
-                %>
-                    <div class="col-md-3">
-                        <br>
-                        <a class="btn btn-info" href="javascript:curva(<%= PacienteID %>)"><i class="far fa-bar-chart"></i> Curvas de Evolução</a>
-                    </div>
-                <%
-                end if
-
-                if Tipo = "|L|" then
-                    De = DateAdd("d", -7, date())
-                %>
-                <div class="col-md-3">
-                    <br>
-                    <a type="button" class="btn btn-block btn-system" href="./?P=Laudos&PacienteID=<%=PacienteID%>&De=<%=De%>&Pers=1" target="_blank"><i class="far fa-external-link"></i> Ir para Laudos</a>
-                </div>
-                 <%
-                end if
                 %>
             </div>
         </div>
@@ -391,20 +433,88 @@ select case Tipo
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
+                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and lcase(session("table"))="profissionais" then %>
+                    <span class="panel-controls">
+                        <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
+                            <i class="far fa-cog"></i>
+                            <i class="far fa-circle-notch fa-spin"></i>
+                            <span class="error-badge">&nbsp;</span>
+                        </button>
+                    </span>
+                    <script>
+                    if (memedError) {
+                        $('#btn-config-prescricao').addClass('error');
+                    }
+                    if (memedLoading) {
+                        $('#btn-config-prescricao').addClass('loading');
+                    }
+                </script>
+                <% end if %>
             </div>
-            <% if aut("prescricoesI") then %>
+            <%
+
+            prescricaoDefault = "memed"
+            memedHabilitada = getConfig("MemedHabilitada")=1
+
+            if lcase(session("Table"))<>"profissionais" then
+                memedHabilitada = False
+                prescricaoDefault = "feegow"
+            end if
+            UsarPrescricaoClassica = False
+
+            if aut("prescricoesI") then
+                prescricaoMemed = getConfig("MemedHabilitada")=1
+
+                set DefaultPrescriptionModeSQL = db.execute("SELECT coalesce(COUNT(pp.id),0) qtd  FROM pacientesprescricoes pp WHERE pp.sysUser="&session("User")&" AND DATA BETWEEN date_sub(curdate(),INTERVAL 10 day)  and CURDATE() and pp.MemedID is null;")
+                set MemedTokenSQL =   db.execute("SELECT coalesce(mt.UsarPrescricaoClassica,0) UsarPrescricaoClassica FROM memed_tokens mt  WHERE mt.sysUser="&session("User")&" ;")
+
+                if not MemedTokenSQL.eof then
+                    UsarPrescricaoClassica = MemedTokenSQL("UsarPrescricaoClassica")
+                end if
+
+                if not DefaultPrescriptionModeSQL.eof then
+                    qtdPrescricaoClassica = ccur(DefaultPrescriptionModeSQL("qtd"))
+                    if isnumeric(qtdPrescricaoClassica) then
+                        if qtdPrescricaoClassica > 15 then
+                            prescricaoDefault="feegow"
+                            %>
+<script >
+setMemedError("Prescrição clássica ativa.")
+</script>
+                            <%
+                        end if
+                    end if
+                end if
+            %>
                 <div class="panel-body" style="overflow: inherit!important;">
                     <div class="row">
                         <div class="col-md-3">
-                            <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
-                                <i class="far fa-plus"></i> Inserir Prescrição
-                            </button>
+                            <% if memedHabilitada and (prescricaoDefault="feegow" or UsarPrescricaoClassica) then %>
+                                <div class="btn-group col-md-12">
+                                <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="far fa-plus"></i> Inserir Prescrição
+                                    <span class="caret ml5"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Prescrição Clássica</a></li>
+                                    <li><a href="javascript:openMemed('prescricao');"><i class="far fa-plus"></i> Prescrição Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                                </ul>
+                            </div>
+
+                            <% else
+                                if memedHabilitada and prescricaoDefault="memed" then
+                            %>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed('prescricao');"<%end if%>>
+                                    <i class="far fa-plus"></i> Inserir Prescrição
+                                </button>
+                            <% else %>
+                                <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"<%end if%>>
+                                    <i class="far fa-plus"></i> Inserir Prescrição
+                                </button>
+                            <% end if %>
+                            <% end if %>
                         </div>
-                        <div class="col-md-3">
-                            <button  type="button" class="btn btn-primary btn-block<% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed()" <%end if%>>
-                                <i class="far fa-plus"></i> Prescrição MEMED
-                            </button>
-                        </div>
+                    </div>
                 </div>
             <% end if %>
         </div>
@@ -438,6 +548,33 @@ select case Tipo
             </div>
             <%
             end if
+            %>
+        </div>
+        <%
+    case "|Encaminhamentos|"
+        subTitulo = "Encaminhamentos"
+        %>
+        <div class="panel timeline-add">
+            <div class="panel-heading">
+                <span class="panel-title"> <%=subTitulo %>
+                </span>
+            </div>
+            <%
+            ' if aut("encaminhamentosI")=1 then
+            %>
+            <div class="panel-body" style="overflow: inherit!important;">
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-plus"></i> Inserir
+                        <span class="caret ml5"></span>
+                    </button>
+                    <ul class="dropdown-menu disabled" role="menu">
+                        <li><a href="javascript:iPront('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="fa fa-plus"></i> Encaminhamento </a></li>
+                    </ul>
+                </div>
+            </div>
+            <%
+            ' end if
             %>
         </div>
         <%
@@ -584,7 +721,7 @@ function carregaAbaVacina(aba,pacienteID) {
 function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 
     $.post(pagina, { valor1: valor1,
                      valor2: valor2,
@@ -606,6 +743,23 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
                 </span>
+                <% if aut("pedidosexamesI")=1 and getConfig("MemedHabilitada")=1 then %>
+                <span class="panel-controls">
+                    <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
+                        <i class="far fa-cog"></i>
+                        <i class="far fa-circle-notch fa-spin"></i>
+                        <span class="error-badge">&nbsp;</span>
+                    </button>
+                </span>
+                <script>
+                    if (memedError) {
+                        $('#btn-config-prescricao').addClass('error');
+                    }
+                    if (memedLoading) {
+                        $('#btn-config-prescricao').addClass('loading');
+                    }
+                </script>
+                <% end if %>
             </div>
             <%
             if aut("pedidosexamesI")=1 then
@@ -613,22 +767,26 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
 
             %>
             <div class="panel-body">
-                <div class="col-md-12">
+                <div class="row">
                     <div class="btn-group col-md-3">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <i class="far fa-plus"></i> Inserir Pedido de Exame
                             <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <%if IntegracaoUnimedLondrina<>4 then%>
-                            <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
                             <%
+                            if IntegracaoUnimedLondrina<>4 then%>
+                                    <li><a href="javascript:iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido Padrão</a></li>
+                                <%
+
                             end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
-                                <li ><a <% if EmAtendimento=0 then %> disabled" data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%>" onclick="openMemed(true)" <%end if%>href="javascript:openMemed(true)"><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                                <% if getConfig("MemedHabilitada")=1 then %>
+                                <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                                <% end if %>
                                 <%
                             end if
                             %>
@@ -661,6 +819,8 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
         <%
     case "|ResultadosExames|"
         %><!--#include file="ResultadosExames.asp"--><%
+    case "|ExamesImagem|"
+        %><!--#include file="ExamesImagem.asp"--><%
     case "|Protocolos|"
         %>
         <div class="panel timeline-add">
@@ -866,13 +1026,36 @@ end select
     </script>
 
     <%
-    if instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
+    if req("Tipo")="|L|" then
+    %>
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4"></div>
+        <%
+        qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
+                                    " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
+                                    " ORDER BY p.NomeProfissional ASC                    "
+
+        if session("Table")="profissionais" then
+            valorCheck = session("idInTable")
+        end if
+        response.write(quickfield("select", "ProfissionalLaudadorID", "Profissional Laudador", 4, valorCheck, qProfissionalLaudadorSQL, "NomeProfissional", ""))
+        %>
+    <%
+    elseif instr("|ProdutosUtilizados|AssinaturaDigital|ResultadosExames|AsoPaciente|VacinaPaciente|Arquivos|Imagens|", Tipo) = 0 and getConfig("FiltrarProfissionaisProntuario")=1 then
     %>
     <div class="col-xs-12">
         <div class="row">
             <div class="col-md-4 col-md-offset-4"></div>
             <div class="col-md-4">
                 <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
+                <div class="pull-right">
+                    <div title="Inativar" class="switch switch-xs switch-default switch-inline" style="position:relative;top: 6px;">
+                        <input <% if showInactive="1" then response.write("checked") end if %>  name="RegistrosInativos" class="InativarRegistroTimeline" onchange="toggleRegistrosInativos(this)" id="RegistrosInativos" type="checkbox">
+                        <label  class="mn" for="RegistrosInativos"></label>
+                    </div>
+                    <span style="color:#959595">Registros inativos</span>
+                </div>
             </div>
         </div>
     </div>  
@@ -938,6 +1121,14 @@ End If
 <script type="text/javascript">
 
 LocalStorageRestoreHabilitar();
+    function handleFormOpenError(t, p, m, i, a, FormID, CampoID){
+            showMessageDialog("Ocorreu um erro ao abrir este registro. Tente novamente mais tarde.");
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_prontuario',
+                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+            });
+    }
 
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -963,13 +1154,15 @@ LocalStorageRestoreHabilitar();
         $(divAff).html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
+        }).fail(function (data){
+            handleFormOpenError(t, p, m, i, a, FormID, CampoID);
         });
     }
 
     <%
     ELSE
     %>
-        function iPront(t, p, m, i, a) {
+        function iPront(t, p, m, i, a, FormID, CampoID) {
             $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
@@ -997,7 +1190,10 @@ LocalStorageRestoreHabilitar();
             var pl = $("#ProfissionalLaudadorID").val();
             $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
                 $("#modal-form .panel").html(data);
-            })
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID);
+                $("#modal-form").magnificPopup("close");
+            });
         }
     <%
     END IF
@@ -1009,6 +1205,12 @@ var ativo;
 var $item;
 var RecursoID;
 var Recurso;
+
+function toggleRegistrosInativos(el){
+    var showInactive = $(el).prop("checked") ? 1 : 0;
+
+    pront(`timeline.asp?L=<%=LicenseID%>&PacienteID=<%=PacienteID%>&Tipo=<%=Tipo%>&showInactive=${showInactive}`, this);
+}
 
 function toogleInativarRegistroTimeline(el) {
     console.log('aqui', el);

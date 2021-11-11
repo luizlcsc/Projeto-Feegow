@@ -15,7 +15,7 @@
             <div class="col-md-2">
                 <BR>
                 <button class="btn btn-primary btn-block">
-                    Filtrar
+                    <i class="far fa-search"></i> Filtrar
                 </button>
             </div>
         </form>
@@ -43,9 +43,6 @@
     %>
 
     $(document).ready(function() {
-      setTimeout(function() {
-        $("#toggle_sidemenu_l").click()
-      }, 500);
 
       $("#formCirurgia").submit(function() {
           $.post("lAgendaCirurgica.asp", $(this).serialize(), function(data) {

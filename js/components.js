@@ -299,7 +299,10 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
         setTimeout(function () {
             setListeners($modal)
         }, modalTimeout);
-	});
+	}).fail(function(xhr, textStatus, error) {
+        showMessageDialog("Ocorreu um erro. Tente novamente mais tarde.", "error");
+        closeComponentsModal();
+    });
 }
 
 function openComponentsModalPost(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
@@ -332,6 +335,9 @@ function openComponentsModalPost(url, params, title, closeBtn, saveBtn, modalSiz
         setTimeout(function () {
             setListeners($modal)
         }, modalTimeout);
+    }).fail(function(xhr, textStatus, error) {
+        showMessageDialog("Ocorreu um erro. Tente novamente mais tarde.", "error");
+        closeComponentsModal();
     });
 }
 

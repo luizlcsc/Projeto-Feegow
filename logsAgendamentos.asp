@@ -4,7 +4,7 @@
 <thead>
     <tr class="info">
         <th colspan="5">Detalhes do Agendamento</th>
-        <th><button type="button" onclick="$('#divhist<%= req("AgendamentoID") %>').css('display', 'none')" class="btn btn-block btn-xs btn-primary">Fechar</button></th>
+        <th><button type="button" onclick="$('#divhist<%= req("AgendamentoID") %>').css('display', 'none')" class="btn btn-block btn-xs btn-default"><i class="far fa-close"></i> Fechar</button></th>
     </tr>
 </thead>
 <tbody>

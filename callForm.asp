@@ -39,13 +39,13 @@ if not getForm.eof then
             <code id="nomeProfissionalPreen"></code>
         </span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-alert btn-sm" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm hidden-xs btn-sensitive-action" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
+                <button class="btn btn-default btn-sm btn-print-form hidden-xs btn-sensitive-action" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
 
             <% if ExibeForm <> false then %>
-                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+                <button class="btn btn-primary btn-sm btn-save-form btn-sensitive-action" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
             <% end if %>
 
             <% if req("LaudoSC")="" then %>
@@ -81,21 +81,21 @@ if not getForm.eof then
     end if
     %>
     <div class="text-left">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 </div>
     <% if req("IFR")="" then %>
         <div class="panel-footer text-right">
-            <button type="button" class="btn btn-alert btn-sm " onclick="showLog()"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-default hidden-xs btn-sm btn-sensitive-action" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
 
-            <button type="button" class="btn btn-alert btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-default btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-info btn-sm btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
+                <button class="btn btn-default btn-sm hidden-xs btn-print-form btn-sensitive-action" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
             
             <% if ExibeForm <> false then %>
-                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+                <button class="btn btn-primary btn-sm btn-save-form btn-sensitive-action" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
             <% end if %>
         </div>
     <% end if %>
@@ -169,7 +169,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         Inserir="1";
     }
 
-    function saveForm(A, AutoSave) {
+    function saveForm(A, AutoSave,inicio=false) {
         var $btnSave = $(".btn-save-form"),
             $btnPrint = $(".btn-print-form"),
             $btnSaveText = $btnSave.find(".btn-save-form-text");
@@ -182,7 +182,56 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             }
         }
 
-        let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serialize();
+        if(!inicio){
+            let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID")
+            let erro = false;
+            let campoCheck = ""
+            formdata.map((key,input)=>{
+                let required =  $(input).prop('required')
+                if (required){
+                    if ($(input).prop('type')== 'checkbox'){
+                        if(campoCheck != $(input).attr("data-campoid")){
+                            campoCheck = $(input).attr("data-campoid")
+                            var inputs = $(input).parent().parent().find('input');
+                            let temcheckboxselecionado = false
+                            inputs.each(function(key,input){
+                                if ($(input).is(":checked")){
+                                    temcheckboxselecionado = true
+                                }
+                            });
+                            if(!temcheckboxselecionado){
+                                let nome = $(input).data('name').trim()
+                                new PNotify({
+                                        title: 'Ocorreu um erro!',
+                                        text: 'O campo '+nome+' é obrigatório!',
+                                        type: 'danger',
+                                        delay: 3000
+                                    });
+                                    erro = true
+                                    return false
+                            }
+                        }
+                    }else{
+                        let valor = $(input).val()
+                        if(valor.length<=0){
+                            let nome = $(input).data('name').trim()
+                            new PNotify({
+                                title: 'Ocorreu um erro!',
+                                text: 'O campo '+nome+' é obrigatório!',
+                                type: 'danger',
+                                delay: 3000
+                            });
+                            erro = true
+                            return false
+                        }
+                    }
+                }
+            })
+            if(erro){
+                return false
+            }
+        }
+        formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serialize()
 
         if (FormID != "N")
         {
@@ -406,7 +455,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         }
     }
     if("<%=FormID%>" === "N"){
-        saveForm(0, 1);
+        saveForm(0, 1,true);
         saveLog("create");
     }
 
@@ -432,14 +481,14 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 <style>
 
-.logTimeLine {
+#iProntCont .logTimeLine {
   width: 700px;
   margin: 25px auto;
   padding: 10px 20px 10px 20px;
   border-left: 2px solid #3498db;
 }
 
-.logTimeLine-item {
+#iProntCont .logTimeLine-item {
   background-color: #fff;
   padding: 10px;
   margin: 10px;
@@ -452,7 +501,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 }
 
-.logTimeLine-item:before {
+#iProntCont .logTimeLine-item:before {
   content: "";
   display: block;
   width: 10px;
@@ -463,7 +512,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
   left: -29px
 }
 
-.logTimeLine-item:after {
+#iProntCont .logTimeLine-item:after {
   content: "";
   width: 0;
   height: 0;

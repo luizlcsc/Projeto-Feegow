@@ -23,6 +23,12 @@ set reg=db.execute("select * from PacientesPrescricoes where id="&req("Prescrica
 			display: none !important;
 		  }
 		}
+        .signature {
+            max-height: 100px;
+            max-width: 250px;
+            position: relative;
+            top: 15px;
+        }
 		</style>
 
         <%
@@ -139,6 +145,7 @@ body{
         </div>
         <div id="areaImpressao">
         <%
+        Assinatura=""
         if not reg.EOF then
             set user = db.execute("select * from sys_users where id="&session("User"))
             if not user.EOF then
@@ -153,6 +160,10 @@ body{
                         set codigoConselho = db.execute("select * from conselhosprofissionais where id = '"&pro("Conselho")&"'")
                         if not codigoConselho.eof then
                             DocumentoProfissional = codigoConselho("codigo")&": "&pro("DocumentoConselho")&"-"&pro("UFConselho")
+                        end if
+                        Assinatura = pro("Assinatura")
+                        if Assinatura<>"" then
+                            ImgAssinatura = arqEx(Assinatura, "Imagens")
                         end if
                     end if
                 end if
@@ -223,8 +234,23 @@ body{
 
 
 
-<% if session("Banco")="clinic3882" or session("Banco")="clinic105" then %>
+<%
+ImprimirCarimbo = False
+if ImgAssinatura<>"" then
+    ImprimirCarimbo=True
+end if
+
+if session("Banco")="clinic3882" or session("Banco")="clinic105" then
+    ImprimirCarimbo = True
+end if
+
+ if ImprimirCarimbo then %>
                    <div id="Carimbo" style="text-align:center">
+
+                   <% if ImgAssinatura<>"" then %>
+                        <img class="signature" src="<%=ImgAssinatura%>" />
+                    <% end if %>
+
                     ___________________________________<br />
                         <%= NomeProfissional %><br />
                         <%= DocumentoProfissional %>

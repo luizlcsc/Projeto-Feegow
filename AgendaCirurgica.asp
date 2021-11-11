@@ -127,7 +127,7 @@ end if
                 </div>
 
                 <div class="row">
-                <div class="col-md-3"><%= selectInsert("* Nome", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div>
+                <div class="col-md-3"><%= selectInsert("Nome", "gPacienteID", PacienteID, "pacientes", "NomePaciente", " onchange=""tissCompletaDados(1, this.value);""", "required", "") %></div>
 
                 <div class="col-md-3 pt25">
                     <span class="radio-custom"><input type="radio" id="rdValorPlanoV" name="rdValorPlano" value="V" <% if rdValorPlano="V" then response.write(" checked ") end if %> /><label for="rdValorPlanoV">Particular</label></span>
@@ -153,9 +153,9 @@ end if
             <div class="row">
                 <%= quickField("text", "ContratadoLocalCodigoNaOperadora", "C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", "") %>
                 <input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
-                <%= quickField("simpleSelect", "LocalExternoID", "* Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
+                <%= quickField("simpleSelect", "LocalExternoID", "Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
                 <%= quickField("text", "ContratadoLocalCNES", "C&oacute;digo CNES", 2, ContratadoLocalCNES, "", "", "") %>
-                <%= quickField("datepicker", "DataEmissao", "* Data", 2, DataEmissao, "", "", " required ") %>
+                <%= quickField("datepicker", "DataEmissao", "Data", 2, DataEmissao, "", "", " required ") %>
                 <%= quickField("timepicker", "Hora", "Hora", 2, reg("Hora"), "", "", "") %>
             </div>
 
@@ -279,7 +279,7 @@ function itemCirurgia(T, I, II, A){
 	    $("#l"+T+II).fadeOut();
 	    $("#"+T+II).fadeIn();
 	    $("#"+T+II).removeClass('hidden');
-	    $("#"+T+II).html("Carregando...");
+	    $("#"+T+II).html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalCirurgica.asp?T="+T+"&I="+I+"&II="+II,

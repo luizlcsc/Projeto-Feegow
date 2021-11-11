@@ -49,7 +49,7 @@ end if
         border-radius: 5px;
         max-width: var(--width-main);
         min-width: var(--width-main);
-        box-shadow: 1px 1px 5px #888888;
+        box-shadow: 0 3px 18px rgba(0,0,0,0.1);
     }
     .galery-item-max{
         max-width: 100%;
@@ -65,7 +65,7 @@ end if
     .galery-item .galery-img{
         height: var(--height-main);
         text-align: center;
-        padding-bottom: 5px;
+        padding-bottom: 8px;
         display: flex;
         align-items: center;
     }
@@ -84,7 +84,10 @@ end if
         padding: 2px 10px;
         color: #efe3ea !important;
         /*background: #f8f8f8;*/
-        background: rgba(55,55,55,0.5);
+        background: rgba(85,85,85,0.5);
+        
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
     }
 
     .galery-item:hover .config{
@@ -116,10 +119,12 @@ end if
     }
 
     .data-envio{
-        background: rgba(13,13,13,0.5);
+        background: rgba(85,85,85,0.5);
         display: block;
         width: 100%;
         padding: 5px;
+        border-top-right-radius: 8px;
+        border-top-left-radius: 8px;
     }
     .checkbox-custom input[type=checkbox]:checked + label:after, .checkbox-custom input[type=radio]:checked + label:after{
         color: #1c2730 !important;
@@ -348,28 +353,28 @@ end if
                                        </div>
                                     </small>
 
-                                    <button class="btn btn-xs btn-alert" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
+                                    <button class="btn btn-xs btn-alert btn-sensitive-action" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
                                         <i class="far fa-copy"></i>
                                     </button>
-                                    <a class="btn btn-xs btn-alert" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
                                                               <i class="far fa-cog"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:expandItem(${item.id})" title="Abrir Imagem Separadamente">
                                                               <i class="far fa-expand icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="${item.ArquivoLink}&dimension=full&rotate=${item.imgRotate}" target="_blank" title="Abrir Imagem em outra aba">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="${item.ArquivoLink}&dimension=full&rotate=${item.imgRotate}" target="_blank" title="Abrir Imagem em outra aba">
                                                               <i class="far fa-external-link icon-external-link"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-alert" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}', ${item.imgRotate})" title="Girar 90°">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:r90_1('${item.NomeArquivo}', '${item.id}', ${item.imgRotate})" title="Girar 90°">
                                             <i class="far fa-rotate-right"></i>
                                     </a>
-                                    <!--<a class="btn btn-xs btn-alert" href="javascript:MaisInfo('')" title="Mais informações">
+                                    <!--<a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:MaisInfo('')" title="Mais informações">
                                                         <i class="far fa-info-circle"></i>
                                     </a>-->
-                                    <a class="hidden btn btn-xs btn-alert" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
+                                    <a class="hidden btn btn-xs btn-alert btn-sensitive-action" href="#" title="Editar Imagem" onclick="return launchEditor('image1', '${item.ArquivoLink}');">
                                                         <i class="far fa-pencil icon-pencil"></i>
                                     </a>
-                                    <a class="btn btn-xs btn-danger" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">
+                                    <a class="btn btn-xs btn-danger btn-sensitive-action" href="javascript:if(confirm('Tem certeza de que deseja excluir esta imagem?'))atualizaAlbum(${item.id});" id="excluir" title="Excluir Imagem">
                                         <i class="far fa-trash icon-trash"></i>
                                     </a>
                                 </div>
@@ -378,6 +383,7 @@ end if
                              <div class="galery-img sensitive-data">
                                 <${item.formato} href="${item.ArquivoLink}" target="_blank">
                                     <img
+                                        loading=lazy
                                         src="${item.link}"
                                         data-id="${item.id}"
                                         class="${item.extension} img-responsive"
@@ -426,6 +432,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
           </div>
           <div class="galery-img">
             <img
+                loading=lazy
                 src="${item.ArquivoLink}&dimension=full"
                 data-id="${item.id}"
                 class="${item.extension} img-responsive"
@@ -579,6 +586,7 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
                               </div>
                               <div class="galery-img">
                                 <img
+                                    loading=lazy
                                     src="${item.ArquivoLink}&dimension=full"
                                     width="100%"
                                     height="100%"

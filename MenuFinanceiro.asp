@@ -135,6 +135,17 @@
     </li>
 	    <%
 	end if
+
+	if aut("|auditoriaV") then
+	%>
+	<li <% If req("P")="Auditoria" Then %> class="active"<% End If %>>
+        <a href="./?P=Auditoria&Mod=audit&Pers=1">
+            <span class="far fa-history"></span>
+            <span class="sidebar-title"> Auditoria <span class="label label-system label-xs fleft">Novo</span></span>
+        </a>
+    </li>
+	<%
+	end if
 	if aut("|contasareceber") and aut("|contasapagar") then
 	%>
 	<li <% If req("P")="Extrato" Then %> class="active"<% End If %>>
@@ -171,7 +182,7 @@
           <li <% If req("P")="RepassesAConferir" Then %> class="active"<% End If %>>
             <a href="./?P=RepassesAConferir&Pers=1" id="RepassesConsolidacao">
               <i class="far fa-list"></i>
-              Consolidação <span class="label label-system label-xs fleft">Novo</span>
+              Consolidação
             </a>
           </li>
           

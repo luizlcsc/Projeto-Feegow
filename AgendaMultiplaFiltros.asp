@@ -28,6 +28,9 @@ if Unidades<>"" then
 else
     Unidades= session("Unidades")
 end if
+if Unidades="" then
+    Unidades = "-1"
+end if
 if ModoFranquiaUnidade then
     Unidades = "|"&session("UnidadeID")&"|"
     UnidadesSelecionadas="|UNIDADE_ID"&replace(Unidades, "|","")&"|"

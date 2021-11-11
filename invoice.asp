@@ -234,6 +234,7 @@ else
     ProfissionalSolicitante = data("ProfissionalSolicitante")
 end if
 
+Voucher = data("Voucher")
 
 ContaID = data("AccountID")
 AssID = data("AssociationAccountID")
@@ -344,11 +345,10 @@ end if
 
         <%
         if aut("|altunirectoA|")=0 and CD="C" then
-                disabUN = " disabled "
-                response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
-           end if
-           %>
-
+            disabUN = " disabled "
+            response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
+       end if
+       %>
         <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
         <%=quickField("datepicker", "sysDate", "Data", 2, sysDate, "input-mask-date", "", ""&dateReadonly)%>
@@ -542,22 +542,99 @@ end if
                 %>
             </div>
 
-
-            <div class="col-md-2">
 <%
 if getConfig("CalculoReembolso") then
 
     set ProcedimentoComReembolsoSQL=db.execute("SELECT ii.id FROM itensinvoice ii INNER JOIN procedimentos proc ON proc.id=ii.ItemID WHERE proc.PermiteReembolsoConvenio='S' AND ii.InvoiceID="&treatvalzero(InvoiceID))
     if not ProcedimentoComReembolsoSQL.eof then
 %>
+            <div class="col-md-4">
                 <br>
                 <button type="button" onclick="calculaReembolso()" class="btn btn-default disable"><i class="far fa-calculator"></i> Calcular reembolso</button>
-<%
-    end if
-end if
-%>&nbsp;
             </div>
+<%
+    else
+    %>
+    <div class="col-md-3"></div>
+    <%
+    end if
 
+else
+%>
+<div class="col-md-3"></div>
+<%
+end if
+             if getConfig("ObrigarTabelaParticular") then
+                camposRequired=" required empty"
+            else
+                camposRequired=""
+            end if
+            %>
+
+            <% if aut("profissionalsolicitanteA")=1 then
+                    if getconfig("profissionalsolicitanteobrigatorio")=1 then
+                        SolicitanteRequired = " required empty "
+                    end if
+                    qInputProfissionais = " SELECT CONCAT('0_',id) id, NomeEmpresa NomeProfissional, 0 ordem, '|0|' Unidades"&chr(13)&_
+                        " FROM empresa UNION ALL                                                          "&chr(13)&_
+                        " SELECT CONCAT('5_',id) id, NomeProfissional, 1 ordem, Unidades                  "&chr(13)&_
+                        " FROM profissionais                                                              "&chr(13)&_
+                        " WHERE sysActive=1 AND ativo='on' "&franquia("and (id in ( select ProfissionalID from profissionais_unidades where UnidadeID in ('"&session("UnidadeID")&"'))or nullif(Unidades, '') is null) ")& " UNION ALL "&chr(13)&_
+                        " SELECT CONCAT('8_',id) id, NomeProfissional, 2 ordem, ''                        "&chr(13)&_
+                        " FROM profissionalexterno                                                        "&chr(13)&_
+                        " WHERE sysActive=1                                                               "&chr(13)&_
+                        "                                                                                 "&chr(13)&_
+                        " ORDER BY ordem, NomeProfissional                                                "
+
+
+
+                    ' antiga
+                    qInputProfissionais = "SELECT * FROM ("&qInputProfissionais&") AS t "&franquia(" WHERE COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE)")
+
+
+                    set VoucherCountSQL = db.execute("SELECT count(id)qtd from voucher WHERE sysActive=1")
+                    if ccur(VoucherCountSQL("qtd"))>0 then
+                        response.write (quickfield("text", "Voucher", "Voucher", 2, Voucher, "", "", " placeholder=""Digite..."""))
+                    else
+                        %>
+                        <div class="col-md-2">&nbsp; <input type="hidden" id="Voucher" name="Voucher" value="<%=Voucher%>"></div>
+                        <%
+                    end if
+                    response.write (quickfield("simpleSelect", "ProfissionalSolicitante", "Profissional Solicitante", 2, ProfissionalSolicitante, qInputProfissionais, "NomeProfissional", SolicitanteRequired ))
+
+              else %>
+            <div class="col-md-3 qf" id="qfprofissionalsolicitante"><label for="ProfissionalSolicitante">Profissional Solicitante</label><br>
+             <input type="hidden" name="ProfissionalSolicitante" value="<%=ProfissionalSolicitante%>">
+                <%
+                if ProfissionalSolicitante&""<>"" and ProfissionalSolicitante&""<>"0" then
+                %>
+              <span> <% response.write(accountName("", ProfissionalSolicitante)) %> </span>
+                <%
+                end if
+                %>
+            </div>
+            <% end if %>
+            <%
+                sqlTabela = "select id, NomeTabela from tabelaparticular where sysActive=1 and ativo='on' "&franquiaUnidade(" AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('[Unidades]',''),'-999')),true) ")&" order by NomeTabela"
+
+                set ValorPagoSQL = db_execute("SELECT ii.*, left(md5(ii.id), 7) as senha, SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement sf LEFT JOIN itensinvoice ii ON ii.InvoiceID = sf.InvoiceID WHERE sf.InvoiceID="&InvoiceID)
+
+                if not ValorPagoSQL.eof then
+                    Executado = ValorPagoSQL("Executado")
+                    camposBloqueados = ""
+                    if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
+                        camposBloqueados = "disabled"
+                    end if
+                end if
+            %>
+            <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 3, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
+            <%
+            if camposBloqueados<>"" then
+                %>
+                <input type="hidden" name="invTabelaID" value="<%=TabelaID%>">
+                <%
+            end if
+            %>
         </div>
         <%
     end if
@@ -590,12 +667,6 @@ end if
                 end if
                 %>
 
-                <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago">
-                    <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
-                    <label for="VariosProcedimentos" id="lblprocedimentos">
-                        Adição Rápida
-                    </label>
-                </span>
 
                 <%
 
@@ -682,18 +753,25 @@ end if
                         end if
                     end if
 
+                    if CD="C" then
                         %>
+                        <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago hidden-xs">
+                            <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
+                            <label for="VariosProcedimentos" id="lblprocedimentos" style="margin-bottom:0px">
+                                Adição Rápida
+                            </label>
+                        </span>
 
-                        <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm">
+                        <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm hidden-xs">
                             <i class="far fa-check-circle"></i> Marcar execução
                         </button>
 
                         <%
 
-                        if session("Odonto")=1 and CD="C" then
+                        if session("Odonto")=1  then
                             %>
                         <div class="btn-group nao-mostrar-caso-pago">
-                            <button type="button" class="btn btn-system btn-sm" id="btn-abrir-modal-odontograma">
+                            <button type="button" class="btn btn-system btn-sm hidden-xs" id="btn-abrir-modal-odontograma">
                                 <i class="far fa-tooth"></i>
 
                                 Odontograma
@@ -703,13 +781,15 @@ end if
                         end if
                         %>
 
-                        <% if CD="C" and Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
+                        <% if  Aut("cancelamentocontareceberI") = 1 and contintegracao = 0 then %>
                         <div class="btn-group ">
                             <button type="button" class="btn btn-danger btn-sm" id="btn-abrir-modal-cancelamento">
                                 <i class="far fa-times"></i> Cancelamento
                             </button>
                         </div>
                         <% end if %>
+
+                    <% end if %>
 
                     <div class="btn-group hidden">
                         <button type="button" onclick="abrirMatrix('<%=InvoiceID%>')" class="btn btn-<%=corBtnPleres%> btn-sm" id="btn-abrir-modal-pleres" title="<%=titleBtnPleres%>">
@@ -720,7 +800,7 @@ end if
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
                         <i class="far fa-plus"></i> Adicionar Item
-                        <span class="far fa-caret-down icon-on-right"></span>
+                        <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right">
                       <%
@@ -753,7 +833,7 @@ end if
                     <div class="btn-group">
                         <button class="btn btn-success btn-sm dropdown-toggle disable<% If CD="D" Then %> hidden<% End If %>" data-toggle="dropdown">
                         <i class="far fa-plus"></i> Adicionar Pacote
-                        <span class="far fa-caret-down icon-on-right"></span>
+                        <span class="caret ml5"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-success pull-right" style="overflow-y: scroll; max-height: 400px;">
                           <%
@@ -791,7 +871,7 @@ end if
             <%server.Execute("invoiceSelectPagto.asp")%>
         </div>
         <div id="NFeContent"></div>
-        <div class="panel-body pn">
+        <div class="panel-body pn mt10">
             <div class="bs-component" id="invoiceParcelas">
                 <%server.Execute("invoiceParcelas.asp")%>
             </div>
@@ -813,7 +893,7 @@ end if
             <%
         end if
         %>
-        <button type='button' class='btn btn-default btn-sm ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='far fa-history bigger-110'></i></button>
+        <button type='button' class='btn btn-default btn-xs ml5' title='Histórico de alterações' onClick='historicoInvoice()'><i class='far fa-history bigger-110'></i></button>
     </div>
 
     </form>
@@ -1083,7 +1163,7 @@ var itensAlterados = false;
 
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
-	var inc = $('[data-val]:last').attr('data-val');
+	var inc = $('.invoice-linha-item[data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
 
@@ -1116,6 +1196,7 @@ function recalc(input, mod){
 	var _input = $("#formItens input");
     var elemSerialized = "";
     var dadosForm =  $("#formItens").serialize();
+    var Voucher = $("#Voucher").val();
     $.each(_input, function (key, val) {
         if(dadosForm.indexOf(val.name) == -1){
             elemSerialized +=  val.name + '=' + val.value + "&";
@@ -1124,8 +1205,8 @@ function recalc(input, mod){
 
     clearTimeout(clearInput);
     clearInput = setTimeout(() =>{
-        $.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
-    },500)
+        $.post("recalc.asp?InvoiceID=<%=InvoiceID%>&input="+input+"&mod="+mod+"&Voucher="+Voucher, $("#formItens").serialize()+"&"+elemSerialized, function(data, status){ eval(data);  });
+    },200)
 }
 
 function geraParcelas(Recalc,call = null){
@@ -1278,7 +1359,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#searchAccountID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("addContrato.asp?ProfissionalExecutante="+ProfissionalExecutante_final+"&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID="+ContaID, "", function(data){
             $("#modal").html(data);
         });
@@ -1309,7 +1390,7 @@ var InvoiceAlterada = false;
         if(accountId == '_'){
             alert('Você precisa selecionar um paciente!');
         }else{
-            openComponentsModal("devolucao_invoice.asp", {"accountId": accountId, "InvoiceID": <%=InvoiceID%>}, "Gerar Devoluções", false, "");
+            openComponentsModal("devolucao_invoice.asp", {"accountId": accountId, "InvoiceID": <%=InvoiceID%>}, "Gerar Devoluções", false, false, "md");
         }
     })
 
@@ -1321,8 +1402,7 @@ var InvoiceAlterada = false;
             changeComponentsModalTitle('Odontograma');
             var fn = appendComponentsModal();
             changeComponentsModalFooter('<button type="button" class="btn btn-success" id="feegow-odontograma-finalizar">Finalizar</button>');
-
-            $.get('https://components-legacy.feegow.com/index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
+            $.get('<%=componentslegacyurl%>index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
             function (data) {
                 fn(data);
             });
@@ -1330,7 +1410,7 @@ var InvoiceAlterada = false;
     });
     <% if req("Scan")="1" then %>
     $(document).ready(function(){
-        $(".modal-content").html("Carregando...");
+        $(".modal-content").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $("#modal-table").modal("show");
         $.post("ScanExecutado.asp?I=<%=InvoiceID%>", {}, function(data){
             $(".modal-content").html(data);
@@ -1346,7 +1426,7 @@ function modalEstoque(ItemInvoiceID, ProdutoID, ProdutoInvoiceID){
     });
 }
 function lancar(P, T, L, V, PosicaoID, ItemInvoiceID, AtendimentoID, ProdutoInvoiceID){
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.ajax({
         type:"POST",
         url:"EstoqueLancamento.asp?P="+P+"&T="+T+"&L="+L+"&V="+V+"&PosicaoID="+PosicaoID +"&ItemInvoiceID=" + ItemInvoiceID + "&ProdutoInvoiceID=" + ProdutoInvoiceID,
@@ -1479,18 +1559,6 @@ $("#TipoValor").on('change', function(){
     }
 });
 
-    let selects = $('#invoiceItens select[id^="ItemID"]')
-
-    if(selects.length>0){
-        selects.map(function (key,select){
-            // $(select).change()
-
-            let id = $(select).attr('data-row')
-            let val = $(select).val()
-
-            parametrosInvoice(id,val,'S',true)
-        })
-    }
 
 function tabelaChange(){
     this.InvoiceAlterada = true;
@@ -1791,7 +1859,19 @@ if not isnull(data("DataCancelamento")) then
     <%
 end if
 %>
+$("#Voucher").change(function(){
+	$.post("voucherAplica.asp?InvoiceID=<%= InvoiceID %>", $("#formItens").serialize(), function(data){
+		eval(data);
+	});
+});
 
+<%
+if req("Div")="divHistorico" then
+    %>
+    $("#rbtns").fadeIn();
+    <%
+end if
+%>
 </script>
 
 

@@ -140,7 +140,7 @@ end if
                 <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
             </div>
             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
+	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
                 <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
             <div class="row"><div class="col-xs-6">
@@ -600,14 +600,14 @@ end if
 <script type="text/javascript">
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
         $("#modal").addClass("modal-lg");
      }
 
      function modalPacienteRelativo(ID, Nome) {
          $("#modal-table").modal("show");
-         $("#modal").html("Carregando...");
+         $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
          $.post("modalPacientesRelativo.asp?I="+ID+"&Nome="+Nome, "", function (data) { $("#modal").html(data) });
          $("#modal").addClass("modal-lg");
       }
@@ -673,7 +673,7 @@ function comparaPaciente(T) {
 			if (T == 'Conta') {
 				eval(data);
 			} else {
-				$("#modal").html("Carregando...");
+				$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 				$("#modal-table").modal("show");
 				$("#modal").html(data);
 			}
@@ -719,7 +719,7 @@ $(document).ready(function () {
         $("#block-programas-saude").hide();
     <% end if %>
 
-    <% if getConfig("ExibirCareTeam") = 1 then %>
+    <% if getConfig("ExibirCareTeam") = 1 and aut("timedecuidadoV") then %>
         $("#block-care-team").show().html('<div style="width: 100%; text-align: center"><i style="margin: 30px 0" class="far fa-spin fa-spinner"></i></div>');
         getUrl("care-team/view/<%=PacienteID %>", {}, function(data) {
             $("#block-care-team").html(data);
@@ -733,7 +733,7 @@ $(document).ready(function () {
 
 </script>
 <%
-if getConfig("LembreteFormulario")=1 then
+if getConfig("LembreteFormulario")=1 and device()="" then
     set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&PacienteID)
     if not lembrarme.EOF then
         %>
@@ -787,7 +787,7 @@ if getConfig("LembreteFormulario")=1 then
         <%
     end if
 end if
-if getConfig("AvisosPendenciasProntuario")=1 and instr(Omitir, "|pendencias|")=0 then
+if getConfig("AvisosPendenciasProntuario")=1 and instr(Omitir, "|pendencias|")=0 and device()="" then
     if reg("lembrarPendencias")="S" then
     %>
     <script type="text/javascript">

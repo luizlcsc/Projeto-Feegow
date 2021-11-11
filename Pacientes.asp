@@ -143,7 +143,7 @@ end if
 </div>
 <%
 omitir = ""
-if session("Admin")=0 then
+if session("Admin")=1 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
 		tipo = omit("Tipo")
@@ -178,6 +178,15 @@ if session("MasterPwd")&""="S" then
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+.btn-sensitive-action, .btn-sensitive-action *{
+	opacity: 0.4;
+    user-select: none;
+	pointer-events: none;
+	cursor: not-allowed;
 }
     <%
 end if
@@ -258,12 +267,15 @@ end if
 	var docMask = ['999.999.999-99', '99.999.999/9999-99'];
 	var doc = document.querySelector("#pPacientesRelativos input[name^='CPF']");
 
-	doc.addEventListener('input', inputHandler.bind(undefined, docMask, 14), false);
-	doc.addEventListener('change', function(arg){
-		if(!((arg.target.value+"").length == 14 || (arg.target.value+"").length == 18)){
-			arg.target.value = ""
-		}
-	});
+    if(doc){
+
+        doc.addEventListener('input', inputHandler.bind(undefined, docMask, 14), false);
+        doc.addEventListener('change', function(arg){
+            if(!((arg.target.value+"").length == 14 || (arg.target.value+"").length == 18)){
+                arg.target.value = ""
+            }
+        });
+    }
 
 </script>
 
@@ -632,12 +644,13 @@ $(".mainTab").click(function(){
 	$("#DadosComplementares").slideDown();
 	$("#divAvatar").removeClass("col-md-1");
 	$("#divAvatar").addClass("col-md-2");
-	if($("#avatarFoto").attr("src")=="uploads/"){
+	if($("#avatarFoto").attr("src").indexOf("load-image")===-1){
 		$("#divDisplayUploadFoto").css("display", "block");
-	}
+	}	
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");
+    $("#rbtns").fadeIn();
 	//$("#save").removeClass("hidden");
 });
 $(".tab").click(function(){
@@ -659,14 +672,30 @@ $("#tabExtrato").click(function() {
 });
 
 function pront(U){
+    $("#rbtns").fadeOut();
 	$("#pacientesDadosComplementares").hide();
+    <%
+    if device()<>"" then
+        %>
+        fechar();
+        fecharSubmenu();
+        <%
+    end if
+    %>
 	$.ajax({
 		type: "POST",
 		url: U,
 		success:function(data){
 			$("#pront").html(data);
 		}
-	});
+	}).fail(function(data) {
+
+      gtag('event', 'erro_500', {
+          'event_category': 'erro_timeline',
+          'event_label': "Erro ao acessar timeline (<%=LicenseID&":"&req("I")%>)"
+      });
+
+    });
 }
 
 
@@ -909,7 +938,7 @@ $("#btnLancamentoRetroativo").click(function(){
 </script>
 
 <%if request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" then %>
-<script src="../feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <%end if %>
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
@@ -1167,9 +1196,20 @@ $(".form-control").change(function(){
     <input id="photo-data" name="photo-data" type="hidden">
 </form>
 
+<% if getConfig("MemedHabilitada")=1 and lcase(session("Table"))="profissionais" then %>
 <!--#include file="Classes/Memed.asp"-->
+<% end if %>
 
 <script>
+    function handleFormOpenError(t, p, m, i, a, FormID, CampoID){
+            showMessageDialog("Ocorreu um erro ao abrir este registro. Tente novamente mais tarde.");
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_prontuario',
+                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+            });
+    }
+
 	<%
 	FormularioNaTimeline = getConfig("FormularioNaTimeline")
 
@@ -1198,13 +1238,15 @@ $(".form-control").change(function(){
         $(divAff).html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
         $.get(scr + ".asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i + "&a=" + a + "&FormID=" + FormID + "&CampoID=" + CampoID, function (data) {
             $(divAff).html(data);
+        }).fail(function (data){
+            handleFormOpenError(t, p, m, i, a, FormID, CampoID);
         });
     }
 
     <%
     ELSE
     %>
-        function iPront(t, p, m, i, a) {
+        function iPront(t, p, m, i, a, FormID, CampoID) {
             $("#modal-form .panel").html("<center><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){
                 try{
@@ -1232,7 +1274,10 @@ $(".form-control").change(function(){
             var pl = $("#ProfissionalLaudadorID").val();
             $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
                 $("#modal-form .panel").html(data);
-            })
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID)
+                $("#modal-form").magnificPopup("close");
+            });
         }
     <%
     END IF

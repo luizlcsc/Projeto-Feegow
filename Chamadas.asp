@@ -1,19 +1,25 @@
 ﻿<!--#include file="connect.asp"-->
+<script >
+$(".crumb-active a").html("Contatos realizados");
+$(".crumb-link").removeClass("hidden");
+$(".crumb-icon a span").attr("class", "far fa-phone");
+</script>
 
-<div class="page-header">
-    <h1>CONTATOS REALIZADOS</h1>
-</div>
+<div class="panel mt15">
+    <div class="panel-body">
+        <form method="post" action="">
+            <div class="clearfix form-actions">
+                <%=quickfield("datepicker", "De", "De", 2, ref("De"), "input-mask-date", "", "") %>
+                <%=quickfield("datepicker", "Ate", "Até", 2, ref("Ate"), "input-mask-date", "", "") %>
+                <%=quickfield("users", "Operador", "Operador", 2, ref("Operador"), "", "", "") %>
+                <%=quickfield("multiple", "Canal", "Canal", 4, ref("Canal"), "select * from chamadascanais", "NomeCanal", "") %>
+                <label>&nbsp;</label><br /><button class="btn btn-sm btn-primary"><i class="far fa-search"></i> Buscar</button>
+            </div>
+        </form>
 
-<form method="post" action="">
-    <div class="clearfix form-actions">
-        <%=quickfield("datepicker", "De", "De", 2, ref("De"), "input-mask-date", "", "") %>
-        <%=quickfield("datepicker", "Ate", "Até", 2, ref("Ate"), "input-mask-date", "", "") %>
-        <%=quickfield("users", "Operador", "Operador", 2, ref("Operador"), "", "", "") %>
-        <%=quickfield("multiple", "Canal", "Canal", 4, ref("Canal"), "select * from chamadascanais", "NomeCanal", "") %>
-        <label>&nbsp;</label><br /><button class="btn btn-sm btn-primary"><i class="far fa-search"></i> Buscar</button>
+
     </div>
-</form>
-
+</div>
 
 
 <%

@@ -47,36 +47,7 @@
 });*/
 
 function abreAgenda(horario, id, data, LocalID,ProfissionalID,GradeID){
-	$("#div-agendamento").html('<div class="panel"><div class="panel-body"><i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...</div></div>');
-//	$("#modal-agenda").modal({
-//        backdrop: 'static',
-//        keyboard: false
-    //});
-    //$("#toggle_sidemenu_l").click();
-
-/*	$.magnificPopup.open({
-	    removalDelay: 500,
-	    closeOnBgClick:true,
-	    items: {
-	        src: "#div-agendamento"
-	    },
-	    // overflowY: 'hidden', // 
-	    callbacks: {
-	        beforeOpen: function(e) {
-	            this.st.mainClass = "mfp-zoomIn";
-	            $.ajax({
-	                type:"POST",
-	                url:"divAgendamento.asp?horario="+horario+"&id="+id+"&data="+data+"&profissionalID="+$("#ProfissionalID").val()+"&LocalID="+LocalID,
-	                success:function(data){
-	                    $("#div-agendamento").html(data);
-	                }
-	            });
-	        }
-	    }
-	});
-*/
-
-
+	$("#div-agendamento").html('<div class="panel"><div class="panel-body"><i class="far fa-circle-o-notch fa-spin orange bigger-125"></i> Carregando...</div></div>');
 
 	af('a');
     $.ajax({

@@ -4,12 +4,26 @@
         <%
         MovementID = req("I")
         Acao = req("Act")
+        Source = req("source")
+
         set getMovement = db.execute("select * from sys_financialMovement where id="& MovementID)
         UnidadeID = getMovement("UnidadeID")
         CD = getMovement("CD")
         CaixaID = getMovement("CaixaID")
         mType = getMovement("Type")
         AccountAssociationIDCredit = getMovement("AccountAssociationIDCredit")
+        movId = getMovement("id")
+
+        if mType="Bill" then
+            InvoiceID=getMovement("InvoiceID")
+        else
+            set MovementBillSQL = db.execute("SELECT movb.InvoiceID FROM sys_financialdiscountpayments disc "&_
+                                           "JOIN sys_financialmovement movb ON movb.id = disc.InstallmentID "&_
+                                           "WHERE disc.MovementID="&movId)
+            if not MovementBillSQL.eof then
+                InvoiceID = MovementBillSQL("InvoiceID")
+            end if
+        end if
 
 
         set vcaRep = db.execute("select rr.id FROM itensdescontados idesc LEFT JOIN rateiorateios rr ON rr.ItemDescontadoID=idesc.id WHERE (NOT ISNULL(rr.ItemContaAPagar) AND rr.ItemContaAPagar<>0) AND idesc.PagamentoID="& MovementID &"")
@@ -25,7 +39,23 @@
             erro = "Você não pode excluir pagamentos que contenham itens executados."
         end if
 
+        if InvoiceID&"" <> "" then
+            set NFSeSQL = db.execute("SELECT nf.Status, nf.Numero FROM nfse_emitidas nf "&_
+                                     "WHERE nf.InvoiceID=" & InvoiceID)
+            if not NFSeSQL.eof then
+                if NFSeSQL("status")&""="3" then
+                    erro = "Você não pode excluir pagamentos que contenham Nota Fiscal autorizada."
+                end if
+            end if
+        end if 
+
         if erro="" then
+
+            %>
+            <div class="col-md-12">
+                <p>Por favor descreva abaixo o motivo para o cancelamento da transação.</p>
+            </div>
+            <%
 
             call quickfield("memo", "Jst", "Motivo do cancelamento", 6, ref("Jst"), "", "", " rows=4 required ")
 
@@ -43,12 +73,8 @@
                 Act = "POST"
                 %>
                 <div class="col-md-6">
-                    <div class="alert alert-warning"><i class="far fa-exclamation-triangle"></i> Usuário sem acesso a cancelamento de pagamento.</div>
-                    <%= quickfield("text", "EmailAutorizador", "E-mail de acesso do autorizador", "12", "", "", "", " autocomplete='false' required ") %>
-                    <%= quickfield("password", "SenhaAutorizador", "Senha", "12", "", "", "", " autocomplete='false' required ") %>
-                    <div class="col-md-12 pt10">
-                        <button type="submit" class="btn btn-primary">CONFIRMAR CANCELAMENTO</button>
-                    </div>
+                    <div class="alert alert-warning"><i class="far fa-exclamation-triangle"></i> Usuário sem acesso a cancelamento da movimentação.</div>
+                   
                 </div>
 
                 
@@ -129,8 +155,12 @@ end if
 
 <script type="text/javascript">
     $("#confCanc").submit(function(){
-        $.post("xMovVerify.asp?I=<%= MovementID %>&Act=<%= Act %>", $(this).serialize(), function(data){
+        $.post("xMovVerify.asp?I=<%= MovementID %>&Act=<%= Act %>&Source=<%=Source%>", $(this).serialize(), function(data){
+            <% if Source="extrato" then %>
+            $('#modal-components .modal-body').html(data);
+            <% else %>
             $('#pagar .modal-body').html(data);
+            <% end if %>
         } );
         return false;
     });
@@ -138,5 +168,6 @@ end if
     function confX(AutID){
         $.post("xMov.asp", {I:<%= MovementID %>, Jst:$('#Jst').val(), AutID:AutID }, function(data){ eval(data) });
         $('#pagar').fadeOut();
+        closeComponentsModal();
     }
 </script>

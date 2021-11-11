@@ -34,11 +34,12 @@ function linhaPagtoCheckin(strTipoGuia, rdValorPlano, ClasseLinha, IDMovementBil
                 for i=0 to ubound(spl)
                     TipoGuia = spl(i)
 
+                    Rotulo = "Guia "&TipoGuia
+
                     if TipoGuia<>"Simplificada" then
-                        TipoGuia = "de "&TipoGuia
+                        Rotulo = "Guia de "&TipoGuia
                     end if
 
-                    Rotulo = "Guia "& TipoGuia
                     %>
                     <button type="button" onclick="GeraGuia('<%=TipoGuia%>')" class="btn btn-xs btn-warning"><i class="far fa-arrow-circle-up"></i> <%= ucase(Rotulo) %></button>
                     <%
@@ -197,7 +198,7 @@ if req("Checkin")="1" then
         <%idagp = agp("id")%>
         <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
         <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
-        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios) %>
+        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular) %>
 
 
         <%
@@ -266,7 +267,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
 
             $( "#pagar" ).draggable();
 
-            $("#pagar").html("Carregando...");
+            $("#pagar").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
             $.post("Pagar.asp?T=C", {
                 Parcela: '|'+MovementID+'|'
                 }, function (data) {
@@ -291,7 +292,13 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
             $('#valorTotalSomaItems, #totalvalue').val(totalBr);
         }
 
-        function lanctoCheckin(Bloco, IDMovementBill) {
+        async function lanctoCheckin(Bloco, IDMovementBill) {
+            let validacao = await checkParticularTableFields()
+
+            if(!validacao){
+                return false
+            }
+
             if(IDMovementBill!==""){abrirPagar(IDMovementBill); return;}
             var valorTotal = 0;
             valor = ""
@@ -358,6 +365,11 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
         }
 
         function lanctoCheckinNovoUpdate(Bloco) {
+
+            let retorno = checkParticularTableFields()
+            if(!retorno){
+                return false
+            }
 
             let valor          = '';
             let procedimento   = '';
@@ -536,7 +548,7 @@ $("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
                                 const divPagar = $('#pagar');
                                 divPagar.fadeIn();
                                 divPagar.draggable();
-                                divPagar.html("Carregando...");
+                                divPagar.html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                                 $.post("Pagar.asp?T=C", {
                                     Parcela: '|' + MOVEMENT_ID + '|'
                                 }, function (data) {
@@ -751,10 +763,14 @@ else
                             <%=quickField("number", "Tempo", "", 2, Tempo, "", "", " placeholder='Em minutos'"&TempoChange)%>
                         </td>
                         <td>
+                            <%
+                            if PermiteParticular then
+                            %>
                             <div class="radio-custom radio-primary">
                                 <input type="radio" onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" name="rdValorPlano" id="rdValorPlanoV" required value="V" <% If rdValorPlano="V" Then %> checked="checked" <% End If %> class="ace valplan" onclick="valplan('', 'V')" style="z-index: -1" /><label for="rdValorPlanoV" class="radio"> Particular</label>
                             </div>
                             <%
+                            end if
                     if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
                             %>
                             <div class="radio-custom radio-primary">
@@ -828,7 +844,7 @@ $(document).ready(function() {
                         else
                             if (len(Convenios)>2 or (isnumeric(Convenios) and not isnull(Convenios))) and instr(Convenios&" ", "Nenhum")=0 then
                                 %>
-                                <%=quickfield("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 12, ConvenioID, "select id, NomeConvenio from convenios where ativo='on' AND sysActive=1 and id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value);""") %>
+                                <%=quickfield("simpleSelect", "ConvenioID", "", 12, ConvenioID, "select id, NomeConvenio from convenios where ativo='on' AND sysActive=1 and id in("&Convenios&") order by NomeConvenio", "NomeConvenio", " data-exibir="""&GradeApenasConvenios&""" onchange=""parametros(this.id, this.value);""") %>
                                 <%
                             end if
                         end if
@@ -904,7 +920,7 @@ $(document).ready(function() {
             set ageprocs = db.execute("select * from agendamentosprocedimentos where AgendamentoID="& ConsultaID)
             contador = 1
             while not ageprocs.eof
-                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios)
+                call linhaAgenda("-"&contador, ageprocs("TipoCompromissoID"), ageprocs("Tempo"), ageprocs("rdValorPlano"), ageprocs("ValorPlano"), ageprocs("PlanoID"),ageprocs("ValorPlano"), Convenios, ageprocs("EquipamentoID"), ageprocs("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular)
                 contador = contador + 1
   
             ageprocs.movenext
@@ -984,19 +1000,11 @@ end if
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 <script type="text/javascript">
+$("#ageTabela").change(function() {
+     checkParticularTableFields();
+});
+
 fazerCalculoItens = (valorItem, porcentagem) => {
     return (valorItem * porcentagem) / 100;
 }
@@ -1033,6 +1041,156 @@ function round(value, decimals) {
     return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
 
+$("#ageMatricula1").change(function(){
+    checkParticularTableFields();
+});
+
+
+$("#ageCPF").change(function(){
+    checkParticularTableFields();
+});
+
+    async function  checkParticularTableFields (){
+
+                <% if not isAmorSaude() and getConfig("ValidarCartaoClubFlex") <> 1 then %>
+                return true;
+                <% end if %>
+
+                if(!$("#ageTabela").val()){
+                    return true;
+                }
+
+                let particularTable = await endpointFindValidationRules($("#ageTabela").val());
+
+                if(!particularTable){
+                    return true;
+                }
+
+                if(particularTable.TipoValidacao !== 1)
+                {
+                    return true;
+                }
+
+                if(!$("#ageMatricula1").val()){
+                    showMessageDialog("Preencha a campo matrícula","error");
+                    return false;
+                }
+
+                let returnEndpoint = await endpointGetMatricula($("#ageMatricula1").val());
+                let dataFromFeegow = returnEndpoint.data.dados;
+
+                if(!returnEndpoint || !returnEndpoint.data){
+                     showMessageDialog("Não foi possível validar a matrícula","error");
+                     return false;
+                }
+
+                if(returnEndpoint.data.elegivel && dataFromFeegow.length > 0)
+                {
+                    let encontrado = false;
+                    let cpfError = false;
+                    let status = true;
+
+                    $.each(dataFromFeegow,function(index,obj){
+                        let cpf = obj.cpf
+                        let choosenCpf = $("#ageCPF").val().replace(/\./g,"").replace("-","");
+                        if(choosenCpf){
+                            cpfError = true;
+                            if(choosenCpf == cpf){
+                                encontrado = true;
+                                cpfError = false;
+                            }
+                        }else{
+                            let arrayName = obj.nomeFiliado.trim().split(" ");
+                            let choosenName = $("#select2-PacienteID-container").text();
+                            if(!choosenName){
+                                choosenName = $("#select2-PacienteID2-container").text();
+                            }
+                            let arrayChoosenName = choosenName.split(" ");
+
+                            if(arrayChoosenName[0].toLowerCase() == arrayName[0].toLowerCase())
+                            {
+                                // validar isso com produto
+                                if(obj.statusFiliado !== "Ativo" && obj.statusFiliado !== "OK"){
+                                    showMessageDialog("Matrícula em Status: "+obj.statusFiliado,"error");
+                                    status = false
+                                    return false
+                                }
+                                encontrado = true;
+                            }
+                        }
+
+                    });
+
+                    // validar isso com produto - return caso não esteja ativo
+                    if(!status){
+                        return false
+                    }
+
+
+                    if(encontrado){
+                        showMessageDialog("Matricula válida","success");
+                        return true;
+                    }
+
+                    if(cpfError){
+                        showMessageDialog("Esta matricula não pertence a esse cpf","error");
+                        return;
+                    }
+
+                    showMessageDialog("Matricula não pertence a este paciente","error");
+                    return;
+
+                }else if(returnEndpoint.data && returnEndpoint.data.dados != undefined && returnEndpoint.data.dados[0] && returnEndpoint.data.dados[0].tipoSituacaoFinanceira === "Inadimplente"){
+                    showMessageDialog("Matrícula não autorizado","error");
+                    return;
+                }
+
+                showMessageDialog("Matrícula inválida","error");
+                return false;
+    };
+
+
+const endpointGetMatricula = async (matricula) => {
+
+    <% if isAmorSaude() then %>
+        const ans = '140188';
+    <% else %>
+        const ans = 'DNA';
+    <% end if %>
+
+    let url = `${domain}/autorizador/elegivel/${ans}/cpf/${matricula}`;
+    return $.ajax({
+        type: 'GET',
+        url: url,
+        async: false,
+        dataType: 'json',
+        done: function(results) {
+
+        },
+        fail: function( jqXHR, textStatus, errorThrown ) {
+            console.log( 'Could not get posts, server response: ' + textStatus + ': ' + errorThrown );
+        }
+    }).responseJSON;
+};
+
+const endpointFindValidationRules = async (idTable) => {
+    let url = domain+"medical-report-integration/verify-validation-type";
+    const response = await $.ajax({
+        type: 'POST',
+        url: url,
+        //async: false,
+        dataType: 'json',
+        data:{"particularTableId":idTable},
+        done: function(results) {
+
+        },
+        error: function( jqXHR, textStatus, errorThrown ) {
+            showMessageDialog("Não foi possível validar a matrícula.");
+        }
+    });
+
+    return response;
+};
 
 atualizarValores = (acrescimoTotal, descontoTotal, valorTotalSomadoFormaPagamento) => {
     document.getElementById('acrescimoForma').value = round(acrescimoTotal, 2).toLocaleString("pt-BR", { minimumFractionDigits: 2 }); 

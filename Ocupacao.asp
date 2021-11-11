@@ -12,7 +12,7 @@ else
 end if
 
 %>
-<div class="panel">
+<div class="panel mt15">
     <div class="panel-body">
         <form id="frmO">
             <%= quickfield("multiple", "Especialidades", "Especialidades", 4, "", "select id, especialidade from especialidades where sysActive=1 order by especialidade", "especialidade", " onchange='ot()'") %>
@@ -24,16 +24,16 @@ end if
         </form>
         <div class="col-md-4">
             <div class="row">
-                <div class="col-md-3 btn btn-sm btn-default">Vazia</div>
-                <div class="col-md-3 btn btn-sm btn-info">Até 25%</div>
-                <div class="col-md-3 btn btn-sm btn-system">Até 50%</div>
-                <div class="col-md-3 btn btn-sm btn-alert">Até 75%</div>
+                <div class="col-md-3 label label-sm btn-default">Vazia</div>
+                <div class="col-md-3 label label-sm btn-info">Até 25%</div>
+                <div class="col-md-3 label label-sm btn-system">Até 50%</div>
+                <div class="col-md-3 label label-sm btn-alert">Até 75%</div>
             </div>
             <div class="row mt5">
-                <div class="col-md-3 btn btn-sm btn-warning">Até 100%</div>
-                <div class="col-md-3 btn btn-sm btn-danger">Lotada</div>
-                <div class="col-md-3 btn btn-sm btn-dark">Não atende</div>
-                <div class="col-md-3 btn btn-sm btn-primary">* Exceção</div>
+                <div class="col-md-3 label label-sm btn-warning">Até 100%</div>
+                <div class="col-md-3 label label-sm btn-danger">Lotada</div>
+                <div class="col-md-3 label label-sm btn-dark">Não atende</div>
+                <div class="col-md-3 label label-sm btn-primary">* Exceção</div>
             </div>
         </div>
     </div>
@@ -44,8 +44,13 @@ end if
     </div>
 </div>
 <script type="text/javascript">
+$(".crumb-active a").html("Mapa de agenda");
+$(".crumb-link").removeClass("hidden");
+$(".crumb-link").html("taxa de ocupação das agendas");
+$(".crumb-icon a span").attr("class", "falr fa-map");
+
 function ot(){
-    $("#divOT").html("<div class='text-center'>Carregando...</div>");
+        $("#divOT").html("<div class='text-center'>Carregando...</div>");
     $.post("OcupacaoTabela.asp", $("#frmO").serialize(), function(data){ 
         $("#divOT").html(data);
     });

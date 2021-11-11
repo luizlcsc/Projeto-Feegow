@@ -28,6 +28,7 @@ if not reg.eof then
 	if reg("sysActive")=1 then
 		DataSolicitacao = reg("DataSolicitacao")
 		UnidadeID = reg("UnidadeID")
+        LoteID = reg("LoteID")
 
         if not isnull(reg("ConvenioID")) and reg("ConvenioID")<>0 then
             set convBloq=db.execute("select BloquearAlteracoes from convenios where id="&reg("ConvenioID"))
@@ -49,6 +50,23 @@ if not reg.eof then
         set StatusSQL = db.execute("SELECT Cor FROM cliniccentral.tissguiastatus WHERE id="&treatvalzero(reg("GuiaStatus")&""))
         if not StatusSQL.eof then
             ClasseStatus = StatusSQL("Cor")
+        end if
+
+        if LoteID&"" <> "" and aut("guiadentrodeloteA")=0 then
+            set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
+            if not LoteSQL.eof then
+            %>
+            <script>
+            $(document).ready(function(){
+                var numeroLote = '<%=LoteSQL("Lote")%>';
+                var dataEnvioLote = '<%=LoteSQL("DataEnvio")%>';
+                $("#GuiaSADT .admin-form").css("pointer-events","none").css("opacity","0.8").css("pointer-events","none").css("user-select","none");
+                $(".alert-error-guia").html(`<strong><i class="fa fa-exclamation-circle"></i> Atenção! </strong> Não é possivel editar uma guia em lote já enviado. <br> Número do lote: ${numeroLote} <br> Data do envio: ${dataEnvioLote}`).fadeIn();
+                $("#btnSalvar, #btnSalvarDropdown").attr("disabled", true);
+            });
+            </script>
+            <%
+            end if
         end if
 	else
 		DataSolicitacao = date()
@@ -697,6 +715,7 @@ min-width: 150px;
             </div>
 <br />
 <div class="admin-form theme-primary">
+    <div class="alert alert-warning alert-error-guia" style="display: none"></div>
    <div class="panel heading-border panel-<%=ClasseStatus%>">
         <div class="panel-body">
 
@@ -949,7 +968,7 @@ min-width: 150px;
 <div class="clearfix form-actions no-margin">
     <div class="btn-group">
     <button class="btn btn-primary btn-md" id="btnSalvar" onclick="isSolicitar = false;" ><i class="far fa-save"></i> Salvar</button>
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnSalvarDropdown">
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
@@ -1379,7 +1398,7 @@ function itemSADT(T, I, II, A){
     if(A!='Cancela'){
 //	    $("#l"+T+II).fadeOut();
         $("#"+T+II).removeClass('hidden');
-//	    $("#"+T+II).html("Carregando...");
+//	    $("#"+T+II).html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalSADT.asp?T="+T+"&I="+I+"&II="+II,
@@ -1488,7 +1507,7 @@ function addContrato(ModeloID, InvoiceID, ContaID){
         $("#gPacienteID").focus();
     }else{
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("addContrato.asp?Tipo=SADT&ModeloID="+ModeloID+"&InvoiceID="+InvoiceID+"&ContaID=3_"+$("#gPacienteID").val(), "", function(data){
             $("#modal").html(data);
         });

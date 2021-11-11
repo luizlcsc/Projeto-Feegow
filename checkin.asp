@@ -21,7 +21,7 @@
 
 
     $("#frm-filtros").submit(function(){
-        $("#GradeAgenda").html("Carregando...");
+        $("#GradeAgenda").html(`<div class="p10"><center><i class="far fa-circle-o-notch fa-spin"></i> Carregando...</center></div>`)
         $.post("checkinContent.asp?AgendamentoID="+ $("#reqAgendamentoID").val(), $(this).serialize(), function(data){
             $("#GradeAgenda").html(data);
 
@@ -52,7 +52,7 @@
 
     function abreAgenda(horario, id, data, LocalID, ProfissionalID, EquipamentoID) {
 
-        $("#div-agendamento").html('<i class="far fa-spinner fa-spin orange bigger-125"></i> Carregando...');
+        $("#div-agendamento").html(`<div class='p10'><center><i class="far fa-circle-o-notch fa-spin orange bigger-125"></i> Carregando...</center></div>`);
         af('a');
         $.ajax({
             type: "POST",

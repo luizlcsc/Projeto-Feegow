@@ -73,13 +73,13 @@ end if
         </div>
         <hr class="short alt" />
         <div class="row">
-	        <div class="col-xs-8 sensitive-data">
+	        <div class="col-xs-12 col-md-8 sensitive-data">
 		        <textarea id="receituario" name="receituario"><%=receituario %></textarea>
 		        <input id="ultimoUso" name="ultimoUso" type="hidden" />
             </div>
 
 
-            <div class="col-xs-4 pn">
+            <div class="col-xs-12 col-md-4 pn">
                 <div class="panel">
                     <div class="panel-heading">
                       <span class="panel-title">
@@ -148,7 +148,7 @@ end if
     </div>
 
 <div class="text-left mt20">
-    <a href="#" class="btn btn-info btn-sm" id="showTimeline">Mostrar/Ocultar Histórico</a>
+    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
     </div>
     <div id="conteudo-timeline"></div>
 
@@ -159,7 +159,7 @@ end if
     recursoPermissaoUnimed = recursoAdicional(12)
     if session("User")="14128" or session("Banco")="clinic5351" or session("Banco")="clinic100000" or recursoPermissaoUnimed=4 or true then
     %>
-    if('<%=req("IFR")%>'!=="S"){
+    if('<%=req("IFR")%>'!=="S" && false){
         $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
             $("#conteudo-timeline").html(data)
         });
@@ -170,7 +170,10 @@ end if
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $("#conteudo-timeline").toggle(1000);
+            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+                $("#conteudo-timeline").html(data)
+                $("#conteudo-timeline").toggle(1000);
+            });
         })
     });
 

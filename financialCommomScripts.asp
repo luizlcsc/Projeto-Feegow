@@ -1,4 +1,4 @@
-﻿function xMov(I){
+﻿function xMov(I, source = ''){
     /*
     if(confirm('ATENÇÃO:\n\nAo cancelar este pagamento, você removerá todos os lançamentos relativos a ele.\n\nTem certeza de que deseja prosseguir?')){
         $.post("xMov.asp", {I:I}, function(data){ eval(data) });
@@ -16,7 +16,13 @@
     $('.rgrec').attr("disabled", true)
     */
 
-    $.post("xMovVerify.asp?I="+I, '', function(data){ $('#pagar .modal-body').html(data); });
+    if(source == 'extrato'){
+        openComponentsModalPost("xMovVerify.asp?I="+I+"&source=extrato",{}, 'Excluir transação', true, false);
+    }else{
+        $.post("xMovVerify.asp?I="+I, '', function(data){
+            $('#pagar .modal-body').html(data);
+        });
+    }
 
 }
 
@@ -49,7 +55,8 @@ function transaction(transactionID, Save, ModalMeuCaixa){
 }
 
 function modalPaymentDetails(movementID, deleteID){
-    $("#pagar").html("Carregando...");
+    $("#pagar").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
+
     $("#pagar").fadeIn();
     $.post("modalPaymentDetails.asp",{
 		   movementID:movementID,
@@ -133,7 +140,7 @@ function dynamicallyLoadScript(url) {
 
     document.head.appendChild(script); // Add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
 }
-dynamicallyLoadScript("/feegow_components/assets/js/field-validator.js?cache-control=1");
+dynamicallyLoadScript("<%=componentslegacyurl%>/assets/js/field-validator.js?cache-control=1");
 
 <%
 if session("Banco")="clinic5459" or session("Banco")="clinic3882" or session("Banco")="clinic2263" or  session("Banco")="clinic100000" or  session("Banco")="clinic6259" or  session("User")="81847" then
@@ -144,7 +151,7 @@ dynamicallyLoadScript("https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios
 <%
 else
 %>
-dynamicallyLoadScript("/feegow_components/assets/modules-assets/nfe/js/nota-fiscal-eletronica-1.2.0.js");
+dynamicallyLoadScript("<%=componentslegacyurl%>/assets/modules-assets/nfe/js/nota-fiscal-eletronica-1.2.0.js");
 <%
 end if
 %>
@@ -180,6 +187,10 @@ function modalNFE(reciboId){
 }
 
 function modalNFEBeta() {
+    openComponentsModal("nfe/invoice/create-view", {invoiceId: invoiceId, provider: 'enotas'})
+}
+
+function modalNFEBeta2(invoiceId) {
     openComponentsModal("nfe/invoice/create-view", {invoiceId: invoiceId, provider: 'enotas'})
 }
 

@@ -9,9 +9,22 @@ if session("Servidor")="" then
 else
     sServidor = session("Servidor")
 end if
+
+On Error Resume Next
 set db = newConnection(session("Banco"), sServidor)
+
+If Err.Number <> 0 Then
+   On Error Goto 0
+   server.Execute("errors/503.html")
+   Response.End
+End If
+On Error Goto 0
+
 'db.Open ConnString
 LicenseID=replace(session("Banco"), "clinic", "")
+'componentslegacyurl = "http://localhost:8080/"
+componentslegacyurl = "https://components-legacy.feegow.com/"
+
 PorteClinica = session("PorteClinica") 
 
 if PorteClinica="" then
@@ -22,6 +35,7 @@ if PorteClinica="" then
         PorteClinica = PorteClinica
     end if
 end if
+
 
 function permissoesPadrao()
 '	permissoesPadrao = "chatI, contatosV, contatosI, contatosA, contatosX, sys_financialcurrentaccountsV, sys_financialcurrentaccountsI, sys_financialcurrentaccountsA, sys_financialcurrentaccountsX, formasrectoV, formasrectoI, formasrectoA, formasrectoX, origensV, origensI, origensA, origensX, contasapagarV, contasapagarI, contasapagarA, contasapagarX, contasareceberV, contasareceberI, contasareceberA, contasareceberX, contratadoexternoV, contratadoexternoI, contratadoexternoA, contratadoexternoX, fornecedoresV, fornecedoresI, fornecedoresA, fornecedoresX, funcionariosV, funcionariosI, funcionariosA, funcionariosX, locaisgruposV, locaisgruposI, locaisgruposA, locaisgruposX, lancamentosV, lancamentosI, lancamentosA, lancamentosX, locaisV, locaisI, locaisA, locaisX, movementV, movementI, movementA, movementX, orcamentosV, orcamentosI, orcamentosA, orcamentosX, pacotesV, pacotesI, pacotesA, pacotesX, procedimentosV, procedimentosI, procedimentosA, procedimentosX, profissionalexternoV, profissionalexternoI, profissionalexternoA, profissionalexternoX, tabelasV, tabelasI, tabelasA, tabelasX, sys_financialexpensetypeV, sys_financialexpensetypeI, sys_financialexpensetypeA, sys_financialexpensetypeX, sys_financialincometypeV, sys_financialincometypeI, sys_financialincometypeA, sys_financialincometypeX, sys_financialcompanyunitsV, sys_financialcompanyunitsI, sys_financialcompanyunitsA, sys_financialcompanyunitsX, buiformsV, buiformsI, buiformsA, buiformsX, chamadaporvozA, configconfirmacaoA, configrateioV, configrateioI, configrateioA, configrateioX, emailsV, emailsI, emailsA, emailsX, configimpressosV, configimpressosA, produtoscategoriasV, produtoscategoriasI, produtoscategoriasA, produtoscategoriasX, produtosfabricantesV, produtosfabricantesI, produtosfabricantesA, produtosfabricantesX, lctestoqueV, lctestoqueI, lctestoqueA, lctestoqueX, produtoslocalizacoesV, produtoslocalizacoesI, produtoslocalizacoesA, produtoslocalizacoesX, produtosV, produtosI, produtosA, produtosX, conveniosV, conveniosI, conveniosA, conveniosX, faturasV, guiasV, guiasI, guiasA, guiasX, conveniosplanosV, conveniosplanosI, conveniosplanosA, conveniosplanosX, repassesV, repassesI, repassesA, repassesX, formsaeV, formsaeI, formsaeA, arquivosV, arquivosI, arquivosA, arquivosX, atestadosV, atestadosI, atestadosA, atestadosX, pacientesV, pacientesI, pacientesA, pacientesX, historicopacienteV, contapacV, contapacI, contapacX, areceberpacienteV, areceberpacienteI, areceberpacienteA, areceberpacienteX, diagnosticosV, diagnosticosI, diagnosticosA, diagnosticosX, envioemailsI, imagensV, imagensI, imagensA, imagensX, formslV, formslI, formslA, pedidosexamesV, pedidosexamesI, pedidosexamesX, prescricoesV, prescricoesI, prescricoesA, prescricoesX, recibosV, recibosI, recibosA, recibosX, agendaV, agendaI, agendaA, agendaX, horariosV, horariosA, contaprofV, contaprofI, contaprofX, profissionaisV, profissionaisI, profissionaisA, profissionaisX, relatoriosestoqueV, relatoriosfinanceiroV, relatoriospacienteV, chamadatxtV, chamadavozV, senhapA, usuariosI, usuariosA, usuariosX, bloqueioagendaV, bloqueioagendaA, bloqueioagendaI, bloqueioagendaX, ageoutunidadesV, ageoutunidadesA, ageoutunidadesI, ageoutunidadesX, relatoriosfaturamentoV, relatoriosfaturamentoV, relatoriosagendaV"
@@ -765,7 +779,7 @@ function selectInsertCA(label, name, value, associations, othersToSelect, others
     <input type="text" placeholder="Digite..." class="form-control" id="search<%=name%>" name="search<%=name%>" value="<%=textValue%>" autocomplete="off" <%= othersToInput %>>
 </div>
 	</span>
-	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; background-color:#fff; z-index:1000;" class="ResultSelectContent">
+	<div id="resultSelect<%=name%>" style="position:absolute; display:none; overflow:hidden; z-index:1000;" class="ResultSelectContent">
     	<i class="far fa-circle-o-notch fa-spin fa-fw"></i> Buscando...
     </div>
 <script language="javascript">
@@ -1129,6 +1143,55 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 				select2 = "select2-single"
                 additionalTags = replace(additionalTags, "no-select2", "")
 			end if
+
+            '=== <Para busca de registros com limit> ===
+            'Exemplo: 
+            'varSQL = "select id, NomeProcedimento from procedimentos where sysActive=1 and ativo = 'on' AND "
+            'quickField("simpleSelect", "Procedimentos", "5", 12, Valor, varSQL, "NomeProcedimento", "limitSQL")
+
+            if instr(additionalTags, "limitSQL") then
+
+                if fieldValue&""<>"" then
+                    ItemSelected = " AND (id='"&fieldValue&"')"
+                else
+                    optionHTML = "<option value='' selected>Selecione</option>"
+                end if
+
+                itemSelectedSQL = sqlOrClass&ItemSelected
+                %>
+            <select name="<%= fieldName %>" id="<%= fieldName %>" class="select2Limit form-control"<%=additionalTags%> style="width:500px">
+                <%
+                ' Options gerado dinâmicamente pelo jsonQuickfields Script Abaixo
+                %>
+            </select>
+
+            <script type="text/javascript">
+                $('#<%= fieldName %>.select2Limit').select2({
+                    
+                    placeholder: 'Selecione',
+                    ajax: {
+                        url: './jsonQuickfields.asp',
+                        dataType: 'json',
+                        delay: 250,
+                        data: function (data) {
+                            return {
+                                searchTerm: data.term,
+                                searchTable:'<%= fieldName %>'
+                            };
+                        },
+                        processResults: function (response) {
+                            return {
+                                results:response
+                            };
+                        },
+                        cache: true
+                    }
+                });
+            </script>
+            <%
+            '=== </Para busca de registros com limit> ===            
+            else
+            '=== <Simpleselect Default> ===              
 			%>
             <select name="<%= fieldName %>" id="<%= fieldName %>" class="<%=select2 %> form-control"<%=additionalTags%>>
             <%if instr(additionalTags, "semVazio")=0 then%>
@@ -1150,6 +1213,8 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             %>
             </select>
             <%
+            '=== </Simpleselect Default> ===                   
+            end if
 		case "multiple"
 			response.Write(LabelFor)
 			%>
@@ -1400,7 +1465,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             set filiais = db.execute("select * from sys_financialcompanyunits where not isnull(UnitName) and sysActive=1 order by UnitName")
 			if filiais.eof then
 				%>
-				<input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="0" />
+				<input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="0" <%=additionalTags%>/>
 				<%
 			else
 				response.Write(LabelFor)
@@ -1794,8 +1859,8 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
         splPH2 = split(splPH(1), "'")
         placeholder = splPH2(0)
     end if
-    if instr(othersToInput, "required")>0 and label&""<>"" then
-        ast = " *"
+    if instr(othersToInput, "required")>0 then
+        ast = " <i class='fas fa-asterisk input-required-asterisk' ></i>"
     else
         ast = ""
     end if
@@ -2158,6 +2223,14 @@ END FUNCTION
 function autForm(FormID, TipoAut, PreenchedorID)
 	autForm = false
 	set perm = db.execute("select * from buipermissoes where FormID="&FormID)
+
+	if session("table")="profissionais" then
+	    set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
+        if not esp.eof then
+            EspecialidadeIDPreenchedor = esp("EspecialidadeID")
+        end if
+    end if
+
 	if perm.eof then
         if session("table")="profissionais" then
             autForm = true
@@ -2178,12 +2251,9 @@ function autForm(FormID, TipoAut, PreenchedorID)
 						autForm = true
 					end if
 					if autForm=false and perm("Tipo")="E" then
-						set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
-						if not esp.eof then
-							if instr(perm("Grupo"), "|"&esp("EspecialidadeID")&"|")>0 then
-								autForm = true
-							end if
-						end if
+                        if instr(perm("Grupo"), "|"&EspecialidadeIDPreenchedor&"|")>0 then
+                            autForm = true
+                        end if
 					end if
 				end if
 			end if
@@ -2211,6 +2281,11 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
         }).fail(function(data) {
             $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
             $("#<%=btnSaveID%>").removeAttr('disabled');
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_cadastro',
+                'event_label': "Erro ao salvar <%=req("P")%>."
+            });
 
             showMessageDialog("Os dados não foram salvos. Tente novamente mais tarde.", "danger");
           });
@@ -2493,16 +2568,16 @@ end function
 function macro(editor)
 	macro = "<div class=""btn-toolbar"">"
 	macro = macro&"<div class=""btn-group"">"
-	macro = macro&"	<div class=""btn-group"">      <div>Inserir Macro&nbsp;&nbsp;</div>     </div>"
+	macro = macro&"	<div class=""btn-group"">      <div class='ml10'>Inserir Macro&nbsp;&nbsp;</div>     </div>"
 
     '-> pacientes
     macro = macro&"	<div class=""btn-group"">"
-    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Paciente <span class=""caret""></span></button>"
+    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Paciente <span class=""caret""></span></button>"
     macro = macro&"	  <ul class=""dropdown-menu"">"
     strPac = "[Paciente.Nome]|^[Paciente.Idade]|^[Paciente.CPF]|^[Paciente.Prontuario]|^[Paciente.Endereco]|^[Paciente.Numero]|^[Paciente.Complemento]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Cep]|^[Paciente.Nascimento]|^[Paciente.Sexo]|^[Paciente.Cor]|^[Paciente.Altura]|^[Paciente.Peso]|^[Paciente.IMC]|^[Paciente.Religiao]|^[Paciente.Tel1]|^[Paciente.Tel2]|^[Paciente.Cel1]|^[Paciente.Cel2]|^[Paciente.Email1]|^[Paciente.Email2]|^[Paciente.Profissao]|^[Paciente.Documento]|^[Paciente.EstadoCivil]|^[Paciente.Origem]|^[Paciente.IndicadoPor]|^[Paciente.Observacoes]|^[Paciente.Convenio]|^[Paciente.Matricula]|^[Paciente.Validade]"
     splPac = split(strPac, "|^")
     for pak=0 to ubound(splPac)
-        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPac(pak)&"')"">"&splPac(pak)&"</a></li>"
+        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPac(pak)&"')""><code>"&splPac(pak)&"</code></a></li>"
     next
     macro = macro&"	  </ul>"
     macro = macro&"	</div>"
@@ -2510,12 +2585,12 @@ function macro(editor)
 
 	'-> unidades
 	macro = macro&"	<div class=""btn-group"">"
-	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Unidade <span class=""caret""></span></button>"
+	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Unidade <span class=""caret""></span></button>"
 	macro = macro&"	  <ul class=""dropdown-menu"">"
 	strUni = "Nome, NomeFantasia, Endereco, Numero, Complemento, Bairro, Cidade, Estado, Tel1, Cel1, Email1, CNPJ, CNES"
 	splUni = split(strUni, ", ")
 	for unk=0 to ubound(splUni)
-		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Unidade."&splUni(unk)&"]')"">[Unidade."&splUni(unk)&"]</a></li>"
+		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Unidade."&splUni(unk)&"]')""><code>[Unidade."&splUni(unk)&"]</code></a></li>"
 	next
 	macro = macro&"	  </ul>"
 	macro = macro&"	</div>"
@@ -2523,12 +2598,12 @@ function macro(editor)
     if editor<>"Cabecalho" and editor<>"Rodape" then
         '-> agendamento
         macro = macro&"	<div class=""btn-group"">"
-        macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Agendamento <span class=""caret""></span></button>"
+        macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Agendamento <span class=""caret""></span></button>"
         macro = macro&"	  <ul class=""dropdown-menu"">"
         strUni = "Hora, Data, HoraChegada"
         splUni = split(strUni, ", ")
         for unk=0 to ubound(splUni)
-            macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Agendamento."&splUni(unk)&"]')"">[Agendamento."&splUni(unk)&"]</a></li>"
+            macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '[Agendamento."&splUni(unk)&"]')""><code>[Agendamento."&splUni(unk)&"]</code></a></li>"
         next
         macro = macro&"	  </ul>"
         macro = macro&"	</div>"
@@ -2537,12 +2612,12 @@ function macro(editor)
 
     '<-- profissionais
     macro = macro&"	<div class=""btn-group"">"
-    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Profissional <span class=""caret""></span></button>"
+    macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Profissional <span class=""caret""></span></button>"
     macro = macro&"	  <ul class=""dropdown-menu"">"
     strPro = "[Profissional.Nome]|^[Profissional.Documento]|^[Profissional.Assinatura]"
     splPro = split(strPro, "|^")
     for prk=0 to ubound(splPro)
-        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPro(prk)&"')"">"&splPro(prk)&"</a></li>"
+        macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splPro(prk)&"')""><code>"&splPro(prk)&"</code></a></li>"
     next
     macro = macro&"	  </ul>"
     macro = macro&"	</div>"
@@ -2550,12 +2625,12 @@ function macro(editor)
 
     '<-- sistema
 	macro = macro&"	<div class=""btn-group"">"
-	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-info"" data-toggle=""dropdown"">Sistema <span class=""caret""></span></button>"
+	macro = macro&"	  <button class=""btn dropdown-toggle btn-xs btn-default"" data-toggle=""dropdown"">Sistema <span class=""caret""></span></button>"
 	macro = macro&"	  <ul class=""dropdown-menu"">"
 	strSis = "[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
 	splSis = split(strSis, "|^")
 	for sik=0 to ubound(splSis)
-		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splSis(sik)&"')"">"&splSis(sik)&"</a></li>"
+		macro = macro&"		  <li><a href=""javascript:macroJS('"&editor&"', '"&splSis(sik)&"')""><code>"&splSis(sik)&"</code></a></li>"
 	next
 	macro = macro&"	  </ul>"
 	macro = macro&"	</div>"
@@ -3052,7 +3127,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		end if
         'response.Write(recursoPerm)
 		if (hsysActive=1 and aut(recursoPerm&"A")=1) or (hsysActive=0 and aut(recursoPerm&"I")=1) or (aut("aberturacaixinhaI") and session("CaixaID")<>"" and hsysActive=0) or (hsysActive=1 and data("CaixaID")=session("CaixaID") and aut("aberturacaixinhaA")) or (aut("contasareceberI")=0 and aut("areceberpacienteI")) then
-				rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
+				rbtns = rbtns & "<button id='btn-invoice-save' class='btn btn-sm btn-primary' type='button' onclick='$(\""#btnSave\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong> SALVAR</strong>&nbsp;&nbsp;</button> "
 
 		end if
 
@@ -3141,14 +3216,14 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 			rbtns = rbtns & "<a id='Header-New' title='Novo' href='?P="&recurso&"&Pers="&hPers&"&I=N' class='btn btn-sm btn-default'><i class='far fa-plus'></i></a> "
 		end if
 		if recurso="pacientes" then
-			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn btn-sm btn-default hidden-xs'><i class='far fa-print'></i></button> "
-			rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
+			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn-sensitive-action btn btn-sm btn-default hidden-xs'><i class='far fa-print'></i></button> "
+			'rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
 		end if
 		rbtns = rbtns & "<a title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='far fa-history'></i></a> "
 		'rbtns = rbtns & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"
 		if recurso<>"profissionais" and recurso<>"funcionarios" and recurso<>"fornecedores" then
 			if (hsysActive=1 and aut(recurso&"A")=1) or (hsysActive=0 and aut(recurso&"I")=1) then
-					rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' id='Salvar' onclick='$(\""#save\"").click()'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button> "
+					rbtns = rbtns & "<button class='btn btn-sm btn-primary' type='button' id='Salvar' onclick='$(document).ready(function(){ $(\""#save\"").click(); });'>&nbsp;&nbsp;<i class='far fa-save'></i> <strong>SALVAR</strong>&nbsp;&nbsp;</button> "
             else
                     %>
                     </form>
@@ -4250,7 +4325,7 @@ function sinalAgenda(val)
             case -2
                 sinalAgenda = "<i class=""far fa-exclamation-circle text-danger""></i>"
             case 1
-                sinalAgenda = "<i class=""far fa-check-circle-o text-success""></i>"
+                sinalAgenda = "<i class=""far fa-check-circle text-success""></i>"
         end select
     end if
 end function
@@ -4425,16 +4500,20 @@ function imoon(nome)
             icone = "fa-play-circle"
             cor = "system"
             fornecedor = "fas"
-        case 3
+        case 3,115
             icone = "fa-smile-wink"
             cor = "success"
             fornecedor = "fas"
-        case 4
+        case 116
+            icone = "fa-compass"
+            cor = "primary"
+            fornecedor = "fas"
+        case 4,117
             icone = "fa-meh"
             cor = "warning"
             fornecedor = "fas"
             corFixa = "#FF9832"
-        case 5
+        case 5,116
             icone = "fa-volume-up"
             cor = "primary"
             fornecedor = "fas"
@@ -4442,7 +4521,7 @@ function imoon(nome)
             icone = "fa-frown"
             cor = "danger"
             fornecedor = "fas"
-        case 7, 9, 10
+        case 7, 9, 10,108
             icone = "fa-grin"
             cor = "warning"
             fornecedor = "fas"
@@ -4451,7 +4530,19 @@ function imoon(nome)
             icone = "fa-eye"
             cor = "primary"
             fornecedor = "fas"
-        case 11
+        case 16,101,118
+            icone = "fa-times-circle"
+            cor = "dark"
+            fornecedor = "fas"
+        case 109
+            icone = "fa-exclamation-circle"
+            cor = "warning"
+            fornecedor = "fas"
+        case 33
+            icone = "fa-pause-circle"
+            cor = "dark"
+            fornecedor = "fas"
+        case 11,22,107
             icone = "fa-minus-circle"
             cor = "danger"
             fornecedor = "fas"
@@ -4466,6 +4557,14 @@ function imoon(nome)
         case 16
             icone = "fa-times-circle"
             cor = "dark"
+            fornecedor = "fas"
+        case 111
+            icone = "fa-bell"
+            cor = "danger"
+            fornecedor = "fas"
+        case -1
+            icone = "fa-times-circle"
+            cor = "danger"
             fornecedor = "fas"
     end select
     if corFixa<>"" then
@@ -5036,7 +5135,7 @@ private function FazPosicao(ProdutoID)
 end function
 
 
-private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios)
+private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, PlanoID, ConvenioID, Convenios, EquipamentoID, LocalID, GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular)
     ischeckin = false
     ischeckin = req("Checkin")="1"
     
@@ -5068,10 +5167,10 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
             
             SomenteConvenios = ""
             if ConvenioID <> 0 then
-                SomenteConvenios = "ConvenioID"
+                SomenteConvenios = "ConvenioID"&n
             end if
         
-           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios) 
+           call selectInsert("", "ProcedimentoID"& n, ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", "agenda", SomenteConvenios)
         end if
         %>
         </td>
@@ -5101,10 +5200,14 @@ private function linhaAgenda(n, ProcedimentoID, Tempo, rdValorPlano, Valor, Plan
                     <label><%=formapg%></label> 
                 <%
             else
-            %>
-        
-            <div class="radio-custom radio-primary"><input onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" type="radio" name="rdValorPlano<%=n %>" id="rdValorPlanoV<%=n %>" required value="V"<% If rdValorPlano="V" Then %> checked="checked"<% End If %> class="ace valplan clforma" style="z-index:-1" onclick="valplan('<%=n%>', 'V')" /><label for="rdValorPlanoV<%=n %>" class="radio"> Particular</label></div>
-            <%
+
+                if PermiteParticular then
+                %>
+
+                <div class="radio-custom radio-primary"><input onchange="parametros('ProcedimentoID', $('#ProcedimentoID').val());" type="radio" name="rdValorPlano<%=n %>" id="rdValorPlanoV<%=n %>" required value="V"<% If rdValorPlano="V" Then %> checked="checked"<% End If %> class="ace valplan clforma" style="z-index:-1" onclick="valplan('<%=n%>', 'V')" /><label for="rdValorPlanoV<%=n %>" class="radio"> Particular</label></div>
+                <%
+                end if
+
                 if Convenios<>"Nenhum" and (GradeApenasConvenios<> "|P|" or isnull(GradeApenasConvenios)) then
                 %>
                 <div class="radio-custom radio-primary"><input type="radio" data-n="<%=n %>" name="rdValorPlano<%=n %>" id="rdValorPlanoP<%=n %>" required value="P"<% If rdValorPlano="P" Then %> checked="checked"<% End If %> class="ace valplan clforma" onclick="valplan('<%=n%>', 'P')" style="z-index:-1" /><label for="rdValorPlanoP<%=n %>" class="radio"> Conv&ecirc;nio</label></div>
@@ -5265,7 +5368,7 @@ end function
 
 private function atuAge(AgendamentoID)
     'set procs = db.execute("select group_concat(concat(replace(ifnull(Cor, ''), '#', '^#'), ' ', NomeProcedimento) separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
-    'set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
+    set procs = db.execute("select group_concat(NomeProcedimento separator ', ') procedimentos from procedimentos where id=(select TipoCompromissoID from agendamentos where id="& AgendamentoID &") or id in(select TipoCompromissoID from agendamentosprocedimentos where AgendamentoID="& AgendamentoID &")")
         set procs = db.execute("SELECT GROUP_CONCAT(t.procedimentos SEPARATOR ', ') procedimentos FROM ( "&_
         "SELECT GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') procedimentos "&_
         "FROM procedimentos "&_
@@ -5280,9 +5383,9 @@ private function atuAge(AgendamentoID)
         "SELECT TipoCompromissoID "&_
         "FROM agendamentosprocedimentos "&_
         "WHERE AgendamentoID="& AgendamentoID &")) AS t")
-    
+
     procedimentos = procs("procedimentos")
-    db_execute("update agendamentos ag LEFT JOIN pacientes pac ON pac.id=ag.PacienteID set ag.NomePaciente=pac.NomePaciente, ag.Tel1=pac.Tel1, ag.Cel1=pac.Cel1, ag.Email1=pac.Email1, ag.Procedimentos='"& rep(Procedimentos) &"' where ag.id="& AgendamentoID)
+    db_execute("update agendamentos ag SET ag.Procedimentos='"& rep(Procedimentos) &"' where ag.id="& AgendamentoID)
 end function
 
 private function allAtuAge(Data)
@@ -5583,18 +5686,25 @@ end function
 
 
 function recursoAdicional(RecursoAdicionalID)
-    LicencaID=replace(session("Banco"), "clinic", "")
-    Status = 0
-    set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
-    if not RecursoAdicionalSQL.eof then
-        Status=RecursoAdicionalSQL("Status")
+    recursoAdicionalCookie = Request.Cookies("recurso-adicional-"&RecursoAdicionalID)
+    if recursoAdicionalCookie<>"" then
+        recursoAdicional = cInt(recursoAdicionalCookie)
+    else
+        LicencaID=replace(session("Banco"), "clinic", "")
+        Status = 0
+        set RecursoAdicionalSQL = db.execute("SELECT Status FROM cliniccentral.clientes_servicosadicionais WHERE LicencaID="&treatvalzero(LicencaID)&" AND ServicoID="&treatvalzero(RecursoAdicionalID)&" order by DataContratacao desc limit 1")
+        if not RecursoAdicionalSQL.eof then
+            Status=RecursoAdicionalSQL("Status")
 
-		if Status=11 then
-			Status=4
-		end if
+            if Status=11 then
+                Status=4
+            end if
+        end if
+
+        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID)=Status
+        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID).Expires = Date() + 1
+        recursoAdicional=Status
     end if
-
-    recursoAdicional=Status
 end function
 
 function getPlanosOptions(ConvenioID, PlanoID)
@@ -5743,7 +5853,33 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
         end if
     end if
 
+    valorCorridoVariacaoPreco = aplicaVariacaoDePreco(procValor, ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
 
+    if valorCorridoVariacaoPreco&""<>"" and isnumeric(valorCorridoVariacaoPreco) then
+        Valor2 = valorCorridoVariacaoPreco
+    end if
+
+    if eTabelaParticular then
+        objDeTransferencia = objDeTransferencia&", nomeTabela:"""&tabelaNomeDoValor&""", idTabela:"&tabelaIdDoValor
+    elseif eVariacao then
+        objDeTransferencia = objDeTransferencia&", variacao :"&pmId
+    end if
+
+
+    if Valor2="" then
+        novoValor = procValor
+        calcValorProcedimento = procValor
+    else
+        novoValor = Valor2
+        calcValorProcedimento= Valor2
+    end if
+    objDeTransferencia = objDeTransferencia&", novoValor:'"&novoValor&"',valorCusto:"&treatvalzero(valorCusto)
+    response.Charset="utf-8"
+    informacaoValor = "{"&objDeTransferencia&"}"
+
+end function
+
+function aplicaVariacaoDePreco(procValor, ProcedimentoID, TabelaID, UnidadeID, ProfissionalID, EspecialidadeID, GrupoID)
     sqlVarPreco = "select * from("&_
                        "select (if(instr(Procedimentos, '|"&ProcedimentoID&"|'), 0, 1)) PrioridadeProc, t.* from (select * from varprecos WHERE "&_
                        "((Procedimentos='' OR Procedimentos IS NULL)  "&_
@@ -5784,8 +5920,8 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
     set vcaTab=nothing
 
     if pmTipo="F" then
-        Valor2 = pmValor
-        obsLog = obsLog&" modificado pelo valor fixo da regra de variacao (id: "&pmId&") valor final "&Valor2
+        aplicaVariacaoDePreco = pmValor
+        obsLog = obsLog&" modificado pelo valor fixo da regra de variacao (id: "&pmId&") valor final "&pmValor
     elseif pmTipo="D" or pmTipo="A" then
         eTabelaParticular= false
         eVariacao = true
@@ -5807,31 +5943,10 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
             pmValor = procValor + pmDescAcre
             obsLog = obsLog&" de acressimo"
         end if
-        Valor2 = pmValor
-        obsLog = obsLog&", valor final("&Valor2&")"
+        aplicaVariacaoDePreco = pmValor
+        obsLog = obsLog&", valor final("&pmValor&")"
 
     end if
-
-    session("obslog") = "Agendamento(id:"&ref("ConsultaID")&") grade(id:"&ref("GradeID")&")"&obsLog
-    
-    if eTabelaParticular then
-        objDeTransferencia = objDeTransferencia&", nomeTabela:"""&tabelaNomeDoValor&""", idTabela:"&tabelaIdDoValor
-    elseif eVariacao then
-        objDeTransferencia = objDeTransferencia&", variacao :"&pmId
-    end if
-
-
-    if Valor2="" then
-        novoValor = procValor
-        calcValorProcedimento = procValor
-    else
-        novoValor = Valor2
-        calcValorProcedimento= Valor2
-    end if
-    objDeTransferencia = objDeTransferencia&", novoValor:'"&novoValor&"',valorCusto:"&treatvalzero(valorCusto)
-    response.Charset="utf-8"
-    informacaoValor = "{"&objDeTransferencia&"}"
-
 end function
 
 function gravaLog(query, operacaoForce)
@@ -5857,14 +5972,21 @@ function arqEx(nArquivo, nTipo)
 end function
 
 function getConfig(configName)
-    set ConfigSQL = db.execute("SELECT IFNULL(cp.Valor, cc.ValorPadrao) ValorPadrao FROM cliniccentral.config_opcoes cc LEFT JOIN config_gerais cp ON cc.id = cp.ConfigID WHERE Coluna='"&configName&"'") 
-    getConfig = 0
-    if not ConfigSQL.eof then 
-        c = ConfigSQL("ValorPadrao")
-		if c&""="" then
-			c = 0
-		end if
-		getConfig = c
+    'cookies nao implementados ainda
+    configCookie = Request.Cookies("config-"&configName)
+    if configCookie<>"" then
+        getConfig = cInt(configCookie)
+    else
+        set ConfigSQL = db.execute("SELECT IFNULL(cp.Valor, cc.ValorPadrao) ValorPadrao FROM cliniccentral.config_opcoes cc LEFT JOIN config_gerais cp ON cc.id = cp.ConfigID WHERE Coluna='"&configName&"'")
+        getConfig = 0
+        if not ConfigSQL.eof then
+            c = ConfigSQL("ValorPadrao")
+            if c&""="" then
+                c = 0
+            end if
+
+            getConfig = c
+        end if
     end if
 end function
 
@@ -6043,10 +6165,10 @@ ModoFranquiaUnidade = getConfig("ModoFranquia") = "1" AND session("UnidadeID") <
 
 function verificaBloqueioConta(lockTypeId, accountTypeId, AccountId, UnidadeId, datafechamento)
 
-   IF getConfig("FechamentoDeData")<>"1"  THEN
-         verificaBloqueioConta = 0
-         EXIT FUNCTION
-   END IF
+   'IF getConfig("FechamentoDeData")<>"1"  THEN
+   '      verificaBloqueioConta = 0
+   '      EXIT FUNCTION
+   'END IF
 
     if InStr(1, datafechamento, "/", 1)> 0 then
         arrayDatapagamento  = split(datafechamento,"/")
@@ -6422,5 +6544,40 @@ function autCareTeam(SysUserID, PacienteID)
 
     end if
 
+end function
+
+function montaSubqueryBMJ(where)
+    urlbmj = getConfig("urlbmj")
+    if urlbmj <> "" and where <> "" then
+        montaSubqueryBMJ = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""" & urlbmj & "/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
+                           " FROM cliniccentral.cid10_bmj bmj" &_
+                           " WHERE " & where & " ) "
+    else
+        montaSubqueryBMJ = " '' "
+    end if
+end function
+
+function confereTabela (tabela)
+    sqlConfereTabela = "SELECT count(*) nTabela FROM information_schema.TABLES WHERE (TABLE_SCHEMA = '"&session("banco")&"') AND (TABLE_NAME = '"&tabela&"');"
+    set conferir = db.execute(sqlConfereTabela)
+    if cint(conferir("nTabela")) = 0 then   
+        confereTabela = 0
+    else
+        confereTabela = 1
+    end if
+end function
+
+function createTable_(I)
+    sqlCreate = " CREATE TABLE `_"&I&"` (                                                          			"&chr(13)&_
+					" 	`id` INT(11) NOT NULL AUTO_INCREMENT,                                       			"&chr(13)&_
+					" 	`PacienteID` INT(11) NULL DEFAULT NULL,                                     			"&chr(13)&_
+					" 	`DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,                    			"&chr(13)&_
+					" 	`sysUser` INT(11) NULL DEFAULT NULL,                                        			"&chr(13)&_
+					" 	`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			"&chr(13)&_
+					" 	PRIMARY KEY (`id`) USING BTREE,                                             			"&chr(13)&_
+					" 	index `PacienteID` (`PacienteID`),                                          			"&chr(13)&_
+					" 	index `sysUser` (`sysUser`)                                                 			"&chr(13)&_
+					" )                                                                            				"
+		db.execute(sqlCreate)
 end function
 %>

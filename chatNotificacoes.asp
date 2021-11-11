@@ -58,7 +58,7 @@ while not u.eof
 
 			end if
 			%>
-                        <img src="<%=img %>" class="mw40 ">
+                        <img src="<%=img %>" class="mw40 " loading=lazy>
                     </a>
                     <div class="media-body">
                         <h5 class="nome media-heading">
@@ -69,7 +69,7 @@ while not u.eof
                     isonline = "0"
 
 						%>
-                        <i class="far fa-circle text-success"></i>
+                        <i class="fas fa-circle text-success"></i>
                         <%
 					end if
 					%>

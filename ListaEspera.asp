@@ -22,7 +22,7 @@ TelemedicinaAtiva = recursoAdicional(32) = 4
 
 
             <!-- message toolbar header -->
-            <div class="panel-menu br-n">
+            <div class="panel-menu br-n hidden-xs">
               <div class="row">
                 <div class="hidden-xs hidden-sm col-md-3">
                   <div class="btn-group">
@@ -248,12 +248,12 @@ $(".crumb-active a").html("Sala de Espera");
 $(".crumb-icon a span").attr("class", "far fa-clock-o");
 $(".crumb-link").html("pacientes aguardando");
 $(".crumb-link").removeClass("hidden");
-var selectsTop = '<select name="StatusExibir" class="mr10" onChange="location.href=\'./?P=ListaEspera&Pers=1&StatusExibir=\'+this.value;"> <option <%if req("StatusExibir")="4" then%> selected="selected" <%end if%> value="4">Aguardando</option><option <%if req("StatusExibir")="3" then%> selected="selected" <%end if%> value="3">Atendido</option></select>';
-selectsTop += 'Ordenar por              <select name="Ordem" onChange="location.href=\'./?P=ListaEspera&Pers=1&Ordem=\'+this.value;">              <%
+var selectsTop = '<div class="hidden-xs"><select name="StatusExibir" class="mr10 " onChange="location.href=\'./?P=ListaEspera&Pers=1&StatusExibir=\'+this.value;"> <option <%if req("StatusExibir")="4" then%> selected="selected" <%end if%> value="4">Aguardando</option><option <%if req("StatusExibir")="3" then%> selected="selected" <%end if%> value="3">Atendido</option></select>';
+selectsTop += 'Ordenar por              <select name="Ordem" class="  " onChange="location.href=\'./?P=ListaEspera&Pers=1&Ordem=\'+this.value;">              <%
                                for i=0 to ubound(splOrdensNome)
                                %>                <option value="<%=splOrdens(i)%>"<%if Ordem=splOrdens(i) then%> selected="selected"<%end if%>><%=splOrdensNome(i)%></option>              <%
                                next
-                               %>              </select>';
+                               %>              </select></div>';
 
 
 $("#rbtns").html(selectsTop)
@@ -342,7 +342,7 @@ function loadEspecialidade(){
 
     function modalPaciente(ID) {
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
         $.post("modalPacientes.asp?I="+ID, "", function (data) { $("#modal").html(data) });
         $("#modal").addClass("modal-lg");
      }

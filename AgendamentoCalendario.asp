@@ -139,7 +139,7 @@ end if
 		
 		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN
 		%>
-			<div class="progress progress-small progress-striped active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
+			<div class="progress progress-small  active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
 		<%
 		END IF
 

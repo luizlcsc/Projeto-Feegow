@@ -6,7 +6,7 @@ if id&"" = "" then
     id=0
 end if
 %>
-<tr id="row<%=id%>" <%if id<0 then%> data-val="<%=Row+1%>"<%end if%>>
+<tr id="row<%=id%>" <%if id<0 then%> data-val="<%=Row+1%>"<%end if%> class="invoice-linha-item" >
 	<td>
     	<input type="hidden" name="Linhas" value="<%=id%>">
         <input type="hidden" name="ConvenioID<%=id%>" value="<%=ConvenioID%>">

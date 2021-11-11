@@ -49,9 +49,6 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  setTimeout(function() {
-    $("#toggle_sidemenu_l").click()
-  }, 500);
 
   $(".input-codigo").mask('9?9', {
     placeholder: ''

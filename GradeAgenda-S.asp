@@ -64,7 +64,7 @@ end if
 %>
 <script type="text/javascript">
     function crumbAgenda(){
-        $(".crumb-active").html("<a href='./?P=Agenda-S&Pers=1'>Agenda</a>");
+        $(".crumb-active").html("<a href='./?P=Agenda-S&Pers=1'>Agenda semanal</a>");
         $(".crumb-icon a span").attr("class", "far fa-calendar");
         $(".crumb-link").replaceWith("");
         $(".crumb-trail").removeClass("hidden");
@@ -137,17 +137,17 @@ if profissionalValido = true then
 end if
 
 	%>
-	<div class="alert alert-warning col-md-12 text-center" style="padding: 5px">
+	<div class="alert alert-default col-md-12 text-center" style="padding: 5px">
             Selecione um hor&aacute;rio disponível
-            <button type="button" class="btn btn-sm btn-danger" onClick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')">Cancelar</button>
+            <button type="button" class="btn btn-sm btn-danger" onClick="remarcar(<%=session("RemSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Cancelar</button>
     </div>
 	<%
 end if
 if session("RepSol")<>"" then
 	%>
-	<div class="alert alert-success col-md-12 text-center" style="padding: 5px">
+	<div class="alert alert-default col-md-12 text-center" style="padding: 5px">
         Selecione um hor&aacute;rio disponível
-        <button type="button" class="btn btn-sm btn-danger" onClick="repetir(<%=session("RepSol")%>, 'Cancelar', '')">Parar Repeti&ccedil;&atilde;o</button>
+        <button type="button" class="btn btn-sm btn-danger" onClick="repetir(<%=session("RepSol")%>, 'Cancelar', '')"><i class="far fa-times"></i> Parar Repeti&ccedil;&atilde;o</button>
     </div>
 	<%
 end if
@@ -493,7 +493,7 @@ while diaS<n
         end if
         LocalDiferente=""
 
-		    titleSemanal= replace(fix_string_chars_full(comps("NomePaciente"))&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&replace(replace(replace(replace(comps("Notas")&"", chr(13), ""), chr(10), ""), "'", ""), """", "")&"<br>"
+		    titleSemanal= replace(fix_string_chars_full(comps("NomePaciente"))&"<br>"&NomeProcedimento&"<br>Prontuário: "&Prontuario&"<br>Tel.: "&comps("Tel1")&"<br>Cel.: "&comps("Cel1")&" "&"<br> ", "'", "\'") & "Notas: "&fix_string_chars_full(comps("Notas")&"")&"<br>"
                
         Conteudo = "<tr id="""&DiaSemana&HoraComp&""""&CorLinha &" data-toggle=""tooltip"" data-html=""true"" data-placement=""bottom"" title="""&titleSemanal&""" onclick=""abreAgenda(\'"&HoraComp&"\', "&comps("id")&", \'"&comps("Data")&"\', \'"&comps("LocalID")&"\', \'"&comps("ProfissionalID")&"\',\'GRADE_ID\')"">"&_
         "<td width=""1%"">"
@@ -752,30 +752,32 @@ $(document).ready(function(){
  $(document).ready(function()
  {
      // MAKE SURE YOUR SELECTOR MATCHES SOMETHING IN YOUR HTML!!!
-     $('.dia-calendario').each(function() {
-         $(this).qtip({
-            content: {
-                text: function(event, api) {
-                    $.ajax({
-                        url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
-                    })
-                    .then(function(content) {
-                        // Set the tooltip content upon successful retrieval
-                        api.set('content.text', content);
-                    }, function(xhr, status, error) {
-                        // Upon failure... set the tooltip content to error
-                        api.set('content.text', status + ': ' + error);
-                    });
-        
-                    return 'Carregando resumo do dia...'; // Set some initial text
-                }
-            },
-            position: {
-                viewport: $(window)
-            },
-            style: 'qtip-wiki'
+     if(false){
+         $('.dia-calendario').each(function() {
+             $(this).qtip({
+                content: {
+                    text: function(event, api) {
+                        $.ajax({
+                            url: 'AgendaResumo.asp?D='+api.elements.target.attr('id')+'&ProfissionalID='+$("#ProfissionalID").val() // Use href attribute as URL
+                        })
+                        .then(function(content) {
+                            // Set the tooltip content upon successful retrieval
+                            api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                            // Upon failure... set the tooltip content to error
+                            api.set('content.text', status + ': ' + error);
+                        });
+
+                        return 'Carregando resumo do dia...'; // Set some initial text
+                    }
+                },
+                position: {
+                    viewport: $(window)
+                },
+                style: 'qtip-wiki'
+             });
          });
-     });
+     }
  });
 <%
 if session("RemSol")<>"" or session("RepSol")<>"" then

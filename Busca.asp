@@ -65,6 +65,7 @@ end if
 
 if isnumeric(q) then
 	sqlBuscaCpf = " or CPF = '"&q&"'"
+	sqlBuscaCelular = " or (Cel1 = '"&q&"' or Tel1 = '"&q&"')"
 	sqlBuscaId = " or id = '"&q&"'"
 	isstr = False
 end if
@@ -93,10 +94,10 @@ end if
 			q = replace(UCASE(q),UCASE("Silva%"),"Silva ")
 
 			if isstr then
-				sqlBuscaNome = " OR NomePaciente like '"&q&"%' or NomeSocial like '"&q&"%'"
+				sqlBuscaNome = " OR NomePaciente like '%"&q&"%' or NomeSocial like '"&q&"%'"
 			end if
 
-			set contaPac = db_execute("select count(*) as Pacientes from pacientes where sysActive=1 AND (FALSE "&sqlBuscaNome&" "&sqlBuscaCPF&sqlBuscaID & sqlNasc &")")
+			set contaPac = db_execute("select count(*) as Pacientes from pacientes where sysActive=1 AND (FALSE "&sqlBuscaNome&" "& sqlBuscaCelular &sqlBuscaCPF&sqlBuscaID & sqlNasc &")")
 		ELSE
 			set contaPac = db_execute("select count(*) as Pacientes from pacientes where TRIM(NomePaciente) like '%"&q&"%' or TRIM(NomeSocial) like '%"&q&"%' or replace(replace(CPF,'.',''),'-','') like replace(replace('"&q&"%','.',''),'-','') or Tel1 like '%"&q&"%' or Tel2 like '%"&q&"%' or Cel1 like '%"&q&"%' or Cel2 like '%"&q&"%' or id = '"&q&"' or (idImportado = '"&q&"' and idImportado <>0)" & sqlNasc)
 		END IF
@@ -144,7 +145,11 @@ end if
 	
 			<div class="tab-content">
 				<div id="divContent" class="tab-pane active">
-					Carregando...
+					<div class="panel mt40">
+					    <div class="panel-body">
+                            <i class="far fa-circle-o-notch fa-spin"></i> Carregando...
+                         </div>
+                    </div>
 				</div>
 
 			</div>

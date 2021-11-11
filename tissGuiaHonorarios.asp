@@ -11,6 +11,8 @@ if not reg.eof then
 	if reg("sysActive")=1 then
 		DataEmissao = reg("DataEmissao")
 		UnidadeID = reg("UnidadeID")
+        LoteID = reg("LoteID")
+
         if not isnull(reg("ConvenioID")) and reg("ConvenioID")<>0 then
             set convBloq=db.execute("select BloquearAlteracoes from convenios where id="&reg("ConvenioID"))
             if not convBloq.eof then
@@ -28,6 +30,23 @@ if not reg.eof then
             end if
         end if
     	Procedimentos = reg("Procedimentos")
+
+        if LoteID&"" <> "" and aut("guiadentrodeloteA")=0 then
+            set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
+            if not LoteSQL.eof then
+            %>
+            <script>
+            $(document).ready(function(){
+                var numeroLote = '<%=LoteSQL("Lote")%>';
+                var dataEnvioLote = '<%=LoteSQL("DataEnvio")%>';
+                $("#GuiaHonorarios .admin-form").css("pointer-events","none").css("opacity","0.8").css("pointer-events","none").css("user-select","none");
+                $(".alert-error-guia").html(`<strong><i class="fa fa-exclamation-circle"></i> Atenção! </strong> Não é possivel editar uma guia em lote já enviado. <br> Número do lote: ${numeroLote} <br> Data do envio: ${dataEnvioLote}`).fadeIn();
+                $("#btnSalvar").attr("disabled", true);
+            });
+            </script>
+            <%
+            end if
+        end if
 	else
 		DataEmissao = date()
 		sqlExecute = "delete from tissprocedimentoshonorarios where GuiaID="&reg("id")
@@ -414,6 +433,7 @@ end if
 
 		<input type="hidden" name="tipo" value="GuiaHonorarios" />
 	<div class="admin-form theme-primary">
+	    <div class="alert alert-warning alert-error-guia" style="display: none"></div>
 		<div class="panel heading-border panel-primary">
 			<div class="panel-body">
 				<div class="section-divider mt20 mb40">
@@ -444,7 +464,9 @@ end if
 				<div class="row">
 					<%= quickField("text", "ContratadoLocalCodigoNaOperadora", "* C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", " required ") %>
 					<input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
-					<%= quickField("simpleSelect", "LocalExternoID", "* Nome do Hospital/Local", 7, LocalExternoID, "select id, nomelocal from locaisexternos where sysActive=1 order by nomelocal", "nomelocal", " empty="""" required=""required""") %>
+					<div class="col-md-7">
+						<%= selectInsert("Nome do Hospital / Local Solicitado", "LocalExternoID", LocalExternoID, "locaisexternos", "nomelocal", " empty="""" required=""required""", "", "") %>
+					</div>
 					<%= quickField("text", "ContratadoLocalCNES", "* C&oacute;digo CNES", 2, ContratadoLocalCNES, "", "", " required='required'") %>
 				</div>
 			<br />
@@ -493,7 +515,7 @@ end if
 				</div>
 			<br />
 				<div class="clearfix form-actions no-margin">
-					<button class="btn btn-primary btn-md"><i class="far fa-save"></i> Salvar</button>
+					<button class="btn btn-primary btn-md" id="btnSalvar"><i class="far fa-save"></i> Salvar</button>
 					<button type="button" class="btn btn-md btn-default pull-right" onclick="guiaTISS('GuiaHonorarios', 0)"><i class="far fa-file"></i> Imprimir Guia em Branco</button>
 				</div>
 			</div>
@@ -575,7 +597,7 @@ function itemHonorarios(T, I, II, A){
 	    $("#l"+T+II).fadeOut();
 	    $("#"+T+II).fadeIn();
 	    $("#"+T+II).removeClass('hidden');
-	    $("#"+T+II).html("Carregando...");
+	    $("#"+T+II).html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	    $.ajax({
 	        type:"POST",
 	        url:"modalhonorarios.asp?T="+T+"&I="+I+"&II="+II,

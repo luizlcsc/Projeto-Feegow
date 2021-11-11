@@ -1,19 +1,21 @@
 <!--#include file="connect.asp"-->
-
+<!--#include file="connectCentral.asp"-->
 <%
+Ativo="on"
 if req("I")<>"N" then
-	set op = db.execute("select * from cliniccentral.licencasusuariosmulti where id="&req("I")&" and Cupom='"&session("Partner")&"'")
+	set op = dbc.execute("select * from cliniccentral.licencasusuariosmulti where id="&req("I")&" and Cupom='"&session("Partner")&"'")
 	if not op.eof then
 		Nome = op("Nome")
 		Email = op("Email")
 		Senha = op("Senha")
+		Ativo = op("Ativo")
 	end if
 end if
 if ref("Email")<>"" and ref("Senha")<>"" then
 	if req("I")="N" then
-		db_execute("insert into cliniccentral.licencasusuariosmulti (Nome, Email, Senha, LicencaAtual, Admin, Cupom, Permissoes) values ('"&ref("Nome")&"', '"&ref("Email")&"', '"&ref("Senha")&"', '"&replace(session("Banco"), "clinic", "")&"', 0, '"&session("Partner")&"', '"&permissoesPadrao()&"')")
+		dbc.execute("insert into cliniccentral.licencasusuariosmulti (Nome, Email, Senha, LicencaAtual, Admin, Cupom, Permissoes) values ('"&ref("Nome")&"', '"&ref("Email")&"', '"&ref("Senha")&"', '"&replace(session("Banco"), "clinic", "")&"', 0, '"&session("Partner")&"', '"&permissoesPadrao()&"')")
 	else
-		db_execute("update cliniccentral.licencasusuariosmulti set Nome='"&ref("Nome")&"', Email='"&ref("Email")&"', Senha='"&ref("Senha")&"' WHERE id="&req("I")&" AND Cupom='"&session("Partner")&"'")
+		dbc.execute("update cliniccentral.licencasusuariosmulti set Ativo='"&ref("Ativo")&"', Nome='"&ref("Nome")&"', Email='"&ref("Email")&"', Senha='"&ref("Senha")&"' WHERE id="&req("I")&" AND Cupom='"&session("Partner")&"'")
 	end if
 	response.Redirect("./?P=Operadores&Pers=1")
 end if
@@ -32,7 +34,14 @@ $(".crumb-active a").html("Operadore");
             <div class="row">
               <div class="col-md-4 col-md-offset-4">
                 <div class="row">
-                    <%=quickField("text", "Nome", "Nome", 12, Nome, "", "", "")%>
+                    <%=quickField("text", "Nome", "Nome", 10, Nome, "", "", "")%>
+                    <div class="col-md-2">
+                        <label for="Ativo">Ativo</label><br />
+                            <div class="switch round">
+                                <input <% If Ativo="on" or isnull(Ativo) Then %> checked="checked"<%end if%> name="Ativo" id="Ativo" type="checkbox" />
+                                <label for="Ativo"></label>
+                            </div>
+                    </div>
                     <%=quickField("text", "Email", "E-mail", 12, Email, "", "", "")%>
                     <%=quickField("password", "Senha", "Senha", 12, Senha, "", "", "")%>
                     <div class="col-md-12 text-center">

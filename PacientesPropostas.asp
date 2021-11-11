@@ -75,7 +75,7 @@
 }
 </style>
 <% IF req("PacienteID")="" THEN %>
-<script src="../feegow_components/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <% END IF %>
 <%
 tableName = "propostas"
@@ -133,12 +133,13 @@ if data("sysActive")=1 then
 	User = nameInTable(data("sysUser"))
     ProfissionalExecutanteID = data("ProfissionalExecutanteID")
 
-    set tabPac = db_execute("select Tabela,Matricula1 from pacientes where id="&treatvalzero(PacienteID))
-	if not tabPac.eof then
-	    TabelaID = tabPac("Tabela")
-	    Matricula = tabPac("Matricula1")
+    if TabelaID&""="" or TabelaID&""="0" then
+        set tabPac = db_execute("select Tabela,Matricula1 from pacientes where id="&treatvalzero(PacienteID))
+        if not tabPac.eof then
+            TabelaID = tabPac("Tabela")
+            Matricula = tabPac("Matricula1")
+        end if
     end if
-
 else
 	PacienteID = req("PacienteID")
 	TabelaID=0
@@ -482,7 +483,7 @@ end if
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-9">
-                            <%= selectInsert("Inserir procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""itens(`S`, 'I', $(this).val()); $(this).val(''); $('#select2-ProcedimentoID-container').html('')"" ", oti, "ConvenioID") %>
+                            <%= selectInsert("Inserir procedimento", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""itens($(this).val() > 0 ? `S` : `P`, 'I', Math.abs($(this).val())); $(this).val(''); $('#select2-ProcedimentoID-container').html('')"" ", oti, "ConvenioID") %>
                         </div>
                         <div class="col-md-3">
                             <button type="button" onclick="selRap()" class="mt25 btn btn-alert btn-block"><i class="far fa-check"></i> Seleção Rápida</button>
@@ -787,13 +788,13 @@ function imprimirProposta(Agrupada){
             $.get("ImprimirProposta.asp?PropostaID=<%=PropostaID%>&Agrupada="+Agrupada, function(data){ $("#modal").html(data) });
         });
         $("#modal-table").modal("show");
-        $("#modal").html("Carregando...");
+        $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     }
 }
 
 function imprimirPropostaSV(){
 	$("#modal-table").modal("show");
-	$("#modal").html("Carregando...");
+	$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 	$.get("ImprimirPropostaSV.asp?PropostaID=<%=PropostaID%>", function(data){ $("#modal").html(data) });
 }
 
@@ -824,7 +825,8 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
             $("#modal").html('');
             $("#modal-table").modal('show');
 
-            $.get(feegow_components_path+'odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
+            //$.get(feegow_components_path+'odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
+            $.get(feegow_components_path+'index.php/odontograma?P='+PacienteID+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Proposta&U=<%=session("User")%>&I=<%=PropostaID%>&L=<%=replace(session("Banco"), "clinic", "") %>',
             function (data) {
                 setTimeout(function () {
                     var content = "<div class='modal-header'>Odontograma</div><div class='modal-body'>" + data + "</div><div class='modal-footer'><div class='col-xs-12 col-md-offset-10 col-md-2'><button class='btn btn-primary btn-block' id='feegow-odontograma-finalizar'>Salvar Odontograma</button></div></div>";
@@ -932,84 +934,6 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
               prom.then((valor) => recalc());
     }
 
-var idStr = "#TabelaID";
-$('.modal').click(function(){
-    $('#select2-TabelaID-container').text("Selecione");
-    $('#TabelaID').val(0);
-    $('.error_msg').empty();
-});
-
-const validarTabela = "<% if ModoFranquia then response.write("true") else response.write("false") end if %>" == "true"
-
-$(idStr).change(function(){
-
-
-        var id          = $('#TabelaID').val();
-        var sysUser     = "<%= session("user") %>";
-        var Nometable   = $('#TabelaID :selected').text();
-        var regra = "|tabelaParticular12V|";
-
-        $.ajax({
-            method: "POST",
-            url: "TabelaAutorization.asp",
-            data: {autorization:"buscartabela",id:id,sysUser:sysUser},
-            success:function(result){
-                if(result == "Tem regra") {
-                    $("#desconto-password").attr("type","password");
-                    $('#permissaoTabelaProposta').modal('show');
-                    buscarNome(id,sysUser,regra);
-                }
-            }
-        });
-
-        $('.confirmar').click(function(){
-                var Usuario =  $('input[name="nome"]:checked').val();
-                var senha   =  $('#desconto-password').val();
-                liberar(Usuario , senha , id , Nometable);
-                $('.error_msg').empty(); 
-        });
-    });
-
-
-
-function buscarNome(id , user,regra){
-    $.ajax({
-        method: "POST",
-        ContentType:"text/html",
-        url: "TabelaAutorization.asp",
-        data: {autorization:"pegarUsuariosQueTempermissoes",id:id,LicencaID:user,regra:regra},
-        success:function(result){
-            res = result.split('|');     
-                    $('.tabelaParticular').html(result);
-            }
-        });
-}
-
-function liberar(Usuario , senha , id, Nometable){
-    $.ajax({
-    method: "POST",
-    url: "SenhaDeAdministradorValida.asp",
-    data: {autorization:"liberar",id:id ,U:Usuario , S:senha},
-    success:function(result){      
-            if( result == "1" ){
-                    $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
-                setTimeout(() => {
-                    $('#permissaoTabelaProposta').modal('hide');
-                    $('#TabelaID').val(id);
-                   
-                    $('#select2-TabelaID-container').text(Nometable);
-
-                }, 2000);
-                }else{
-                        $('.error_msg').text("Senha incorreta!").css({color:"red" }).fadeIn();
-                        $('#select2-TabelaID-container').text("Selecione");
-                        $('#TabelaID').val(0);
-                }
-            }
-          
-        });
-       
-}
 
 
        $(document).ready(() => {
@@ -1056,6 +980,90 @@ function cacularValorTabela({Procedimento,Tabela,Unidade="",AssociationAccountID
         let num = json[0].Valor;
         return Number(num.replace(".","").replace(",","."))
     });
+}
+
+
+<%
+if ModoFranquia then
+%>
+
+var idStr = "#TabelaID";
+$('.modal').click(function(){
+    $('#select2-TabelaID-container').text("Selecione");
+    $('#TabelaID').val(0);
+    $('.error_msg').empty();
+});
+
+const validarTabela = "<% if ModoFranquia then response.write("true") else response.write("false") end if %>" == "true"
+
+$(idStr).change(function(){
+
+
+        var id          = $('#TabelaID').val();
+        var sysUser     = "<%= session("user") %>";
+        var Nometable   = $('#TabelaID :selected').text();
+        var regra = "|tabelaParticular12V|";
+
+        $.ajax({
+            method: "POST",
+            url: "TabelaAutorization.asp",
+            data: {autorization:"buscartabela",id:id,sysUser:sysUser},
+            success:function(result){
+                if(result == "Tem regra") {
+                    $("#desconto-password").attr("type","password");
+                    $('#permissaoTabelaProposta').modal('show');
+                    buscarNome(id,sysUser,regra);
+                }
+            }
+        });
+
+        $('.confirmar').click(function(){
+                var Usuario =  $('input[name="nome"]:checked').val();
+                var senha   =  $('#desconto-password').val();
+                liberar(Usuario , senha , id , Nometable);
+                $('.error_msg').empty();
+        });
+    });
+
+
+
+function buscarNome(id , user,regra){
+    $.ajax({
+        method: "POST",
+        ContentType:"text/html",
+        url: "TabelaAutorization.asp",
+        data: {autorization:"pegarUsuariosQueTempermissoes",id:id,LicencaID:user,regra:regra},
+        success:function(result){
+            res = result.split('|');
+                    $('.tabelaParticular').html(result);
+            }
+        });
+}
+
+function liberar(Usuario , senha , id, Nometable){
+    $.ajax({
+    method: "POST",
+    url: "SenhaDeAdministradorValida.asp",
+    data: {autorization:"liberar",id:id ,U:Usuario , S:senha},
+    success:function(result){
+            if( result == "1" ){
+                    $('.error_msg').text("Logado Com Sucesso!").fadeIn().css({color:"green" });;
+                setTimeout(() => {
+                    $('#permissaoTabelaProposta').modal('hide');
+                    $('#TabelaID').val(id);
+
+                    $('#select2-TabelaID-container').text(Nometable);
+
+                }, 2000);
+                }else{
+                        $('.error_msg').text("Senha incorreta!").css({color:"red" }).fadeIn();
+                        $('#select2-TabelaID-container').text("Selecione");
+                        $('#TabelaID').val(0);
+                }
+            }
+
+        });
+
 }
 
 function checkParticularTableFields(){
@@ -1159,13 +1167,17 @@ function openConsultaCartaoDeTodos(){
                 type:"POST",
                 url:"AgendaParametros.asp?tipo=PacienteID&id="+paciente,
                 success:function(data){
+
                     let valorMatricula = data.split('$("#ageMatricula1").val("')[1].split('")')[0]
                     let tabelaID = data.split('$("#ageTabela, #bageTabela").val("')[1].split('")')[0]
                     $('#matricula').val(valorMatricula)
+
                     $('#TabelaID option[value='+tabelaID+']').attr('selected',true)
                     let texto = $('#TabelaID option[value='+tabelaID+']').html()
                     $('#qftabelaid .select2-selection__rendered').html(texto)
                     $('#qftabelaid .select2-selection__rendered').attr('title',texto)
+
+
 
                     if(validarTabela){
                         checkParticularTableFields()
@@ -1186,6 +1198,9 @@ function openConsultaCartaoDeTodos(){
         }
         Core && Core.init({})
     });
+    <%
+    end if
+    %>
 function MarDes(Pro, Che){
     if(Che==1){
         itens('S', 'I', Pro);
@@ -1196,7 +1211,7 @@ function MarDes(Pro, Che){
 
 function selRap(){
     $("#modal-table").modal("show");
-    $("#modal").html("Carregando...");
+    $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
     $.post("ProcedimentosRapidos.asp", $(".PIs").serialize(), function(data){
         $("#modal").html(data);
     });

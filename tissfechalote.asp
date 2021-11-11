@@ -37,7 +37,7 @@ end if
             <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
             <%= quickField("datepicker", "DataDe", "Data do Preenchimento", 2, req("DataDe"), "", "", " placeholder='De'") %>
             <%= quickField("datepicker", "DataAte", "&nbsp;", 2, req("DataAte"), "", "", " placeholder='At&eacute;'") %>
-            <div class="col-md-1">
+            <div class="col-md-3">
                 <label>&nbsp;</label><br />
                 <button class="btn btn-md btn-primary"><i class="far fa-search"></i> Buscar</button>
             </div>

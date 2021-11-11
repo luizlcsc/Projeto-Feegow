@@ -774,9 +774,6 @@ $(document).ready(function(){
 //  TAREFAS VINCULADAS FIM
 
 $(document).ready(function() {
-    setTimeout(function() {
-    $("#toggle_sidemenu_l").click()
-    }, 500);
 
         <%if session("User")=reg("De") then %>
     $('#stars-existing').on('starrr:change', function(e, value){

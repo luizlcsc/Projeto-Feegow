@@ -2,6 +2,7 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="AgendamentoUnificado.asp"-->
+<!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <%
 ConsultaID = req("ConsultaID")
 token = req("token")
@@ -84,7 +85,7 @@ if req("Confirma")="0" then
 else
 
     agendaEquipamento = ref("tipoequipamento")
-	set pCon=db.execute("select * from agendamentos where id="&ConsultaID)
+	set pCon=db.execute("select *, l.UnidadeID,ag.id as id from agendamentos ag left JOIN locais l ON (l.id  = ag.LocalID) where ag.id="&ConsultaID)
 	ProfissionalID=pCon("ProfissionalID")
 	PacienteID=pCon("PacienteID")
 	ProcedimentoID=pCon("TipoCompromissoID")
@@ -92,6 +93,27 @@ else
 	Hora=hour(pCon("Hora"))&":"&minute(pCon("Hora"))
 	Sta=0
 	Usuario=session("User")
+
+    ' ######################### BLOQUEIO FINANCEIRO ########################################
+    if not isnull(pcon("UnidadeID")) then
+        contabloqueada = verificaBloqueioConta(2, 2, 0, pcon("UnidadeID"),Data)
+        if contabloqueada = "1" then
+            redirectID = ProfissionalID
+            if agendaEquipamento <> "" then
+                redirectID = agendaEquipamento
+            end if
+             %>
+            <script type="text/javascript">
+                showMessageDialog('Agenda bloqueada para edição retroativa (data fechada).', 'danger', 'Não permitido!');
+                loadAgenda('<%=Data%>', <%= redirectID %>);
+                af('f');
+            </script>
+            <%
+            Response.End
+        end if
+    end if
+    ' #####################################################################################
+
 	if isNumeric(ref("Motivo")) and ref("Motivo")<>"" then
 		Motivo=ref("Motivo")
 	else
@@ -108,6 +130,12 @@ else
     if token = "98b4d9bbfdfe2170003fcb23b8c13e6b" then
 
         call agendaUnificada("delete", ConsultaID, ProfissionalID)
+
+        if cdate(pCon("Data"))< date() then
+            call registraEventoAuditoria("exclui_agendamento_passado", ConsultaID, Obs)
+        else
+            call registraEventoAuditoria("exclui_agendamento", ConsultaID, Obs)
+        end if
         
         sqlDel = "update agendamentos set sysActive='-1' where id="&ConsultaID
 

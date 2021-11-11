@@ -22,35 +22,40 @@ if req("Convert")="1" then
 end if
 
 tableName = req("P")
-	if id="N" then
-		sqlVie = "select id, sysUser, sysActive, Versao from "&tableName&" where sysUser="&session("User")&" and sysActive=0"
+if id="N" then
+	sqlVie = "select id, sysUser, sysActive, Versao from "&tableName&" where sysUser="&session("User")&" and sysActive=0"
+	set vie = db_execute(sqlVie)
+	if vie.eof then
+		db.execute("insert into "&tableName&" (sysUser, sysActive, Versao) values ("&session("User")&", 0, 2)")
 		set vie = db.execute(sqlVie)
-		if vie.eof then
-			db_execute("insert into "&tableName&" (sysUser, sysActive, Versao) values ("&session("User")&", 0, 2)")
-			set vie = db.execute(sqlVie)
-			db_execute("CREATE TABLE `_"&vie("id")&"` ("&_
-			"`id` INT(11) NOT NULL AUTO_INCREMENT,"&_
-			"`PacienteID` INT(11) NULL DEFAULT NULL,"&_
-			"`DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"&_
-			"`sysUser` INT(11) NULL,"&_
-            "`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "&_
-			"PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=MyISAM ROW_FORMAT=COMPACT;")
-		else
-			if vie("Versao")=1 then
-				db_execute("update buiforms set Versao=2 where id="&vie("id"))
-			end if
-		end if
-		if vie("Versao")=1 then
-			response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers"))
-		elseif vie("Versao")=2 then
-			response.Redirect("?P=newform&I="&vie("id")&"&Pers="&req("Pers"))
-		end if
+		sqlCreate = " CREATE TABLE `_"&vie("id")&"` (                                                          	"&chr(13)&_
+					" 	`id` INT(11) NOT NULL AUTO_INCREMENT,                                       			"&chr(13)&_
+					" 	`PacienteID` INT(11) NULL DEFAULT NULL,                                     			"&chr(13)&_
+					" 	`DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,                    			"&chr(13)&_
+					" 	`sysUser` INT(11) NULL DEFAULT NULL,                                        			"&chr(13)&_
+					" 	`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,			"&chr(13)&_
+					" 	PRIMARY KEY (`id`) USING BTREE,                                             			"&chr(13)&_
+					" 	index `PacienteID` (`PacienteID`),                                          			"&chr(13)&_
+					" 	index `sysUser` (`sysUser`)                                                 			"&chr(13)&_
+					" )                                                                            				"
+
+		db_execute(sqlCreate)
 	else
-		set data = db.execute("select * from "&tableName&" where id="&id)
-		if data.eof then
-			response.Redirect("?P="&tableName&"&I=N&Pers="&req("Pers"))
+		if vie("Versao")=1 then
+			db_execute("update buiforms set Versao=2 where id="&vie("id"))
 		end if
 	end if
+	if vie("Versao")=1 then
+		response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&req("Pers"))
+	elseif vie("Versao")=2 then
+		response.Redirect("?P=newform&I="&vie("id")&"&Pers="&req("Pers"))
+	end if
+else
+	set data = db.execute("select * from "&tableName&" where id="&id)
+	if data.eof then
+		response.Redirect("?P="&tableName&"&I=N&Pers="&req("Pers"))
+	end if
+end if
 set reg = db.execute("select * from buiforms where id="&req("I"))
 if reg("Versao")=2 then
 	response.Redirect("?P=newform&I="&reg("id")&"&Pers="&req("Pers"))
@@ -294,7 +299,7 @@ $(".form-control").change(function(){
 });
 function permissoes(){
 	$.post("formPermissoes.asp?F=<%=FormID%>", '', function(data, status){
-  		   $("#modal").html("Carregando...");
+  		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	});

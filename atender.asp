@@ -748,7 +748,7 @@ if Conteudo="Play" then
 
                     function atEspera() {
                         $.get("atEspera.asp?PacienteID=<%= PacienteID %>&Atendimentos=<%= session("Atendimentos")%>", function (data) {
-                            $("#modal").html("Carregando...");
+                            $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
                             $("#modal-table").modal("show");
                             $("#modal").html(data);
                         });
@@ -765,7 +765,7 @@ if Conteudo="Play" then
             <% end if %>
           </div>
           <%
-          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 or True then
+          if lcase(session("Table")) = "profissionais" and recursoAdicional(20)=4 then
 
             set AssinaturaDigitalConfiguradaSQL = db_execute("select id from dc_pdfstampconfigs WHERE UsuarioID="&treatvalzero(session("User")))
 

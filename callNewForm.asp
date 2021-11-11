@@ -1,37 +1,46 @@
 <!--#include file="./Classes/TagsConverte.asp"-->
 <style type="text/css">
-.imagem {
+#iProntCont .imagem {
 	background-image:url(assets/img/imagem.png);
 	background-repeat:no-repeat;
 	background-position:center;
 	height:85%;
 }
-.btn-20 {
+#iProntCont .btn-20 {
 	width:20px;
 }
-.tabTit {
+#iProntCont .tabTit {
 	background:none;
 	border:none;
 	font-weight:bold;
 	width:100%;
 }
-.memorando{
+#iProntCont .memorando{
 	border:1px solid #CCC;
 }
 
-table thead tr th, table tbody tr td {
+#iProntCont table thead tr th, #iProntCont table tbody tr td {
 	padding:1px!important;
 }
-table tbody tr td input {
+#iProntCont table tbody tr td input {
 	border:none!important;
 }
 
-.lembrar {
+#iProntCont .lembrar {
     top: -4px;
     height: 27px;
     color: #fff;
+    border-radius: 4px;
+    backdrop-filter: blur(10px);
+    background-color: #aeaeae73;
+    
+    padding: 5px;
+    font-weight: 500;
 }
-.tbl {
+#iProntCont .lembrar.checkbox-custom input[type=checkbox]:checked + label:after {
+    color: #666;
+}
+#iProntCont .tbl {
     width:100%;
 }
 </style>
@@ -266,12 +275,16 @@ var gridster0 = null;
 var gridster1 = null;
 
   $(function(){
+      <%
+      if device()="" then
+      %>
 	gridster0 = $("#demo-0 > ul").gridster({
 		namespace: '#demo-0',
 		widget_base_dimensions: [50, 25],
 		widget_margins: [4, 4]
 	}).data('gridster').disable();
 	<%
+	    end if
 	splGrupos = split(strGrupos, "|")
 	for ig=1 to ubound(splGrupos)
 	%>
@@ -292,9 +305,18 @@ var gridster1 = null;
 	next
 	%>
   });
-
+<%
+if device()="" then
+%>
 $("#demo-0 ul").css("left", "50%");
 $("#demo-0 ul").css("margin-left", "-406px");
+<%
+else
+%>
+$("#demo-0 ul").css("padding-left", "0");
+<%
+end if
+%>
 
 <%=ckrender%>
 if(typeof idsCk !== "undefined"){
@@ -324,24 +346,6 @@ function editCurva(CampoID){
 		$("#modal").html(data);
 	});
 }
-
-
-    /*
-    usados abaixo para quando formscompiladorcampopreenchidotextareaativadesativa
-
-$(document).ready(function () {
-	CKEDITOR.on('instanceReady', function (ev) {
-		document.getElementById(ev.editor.id + '_top').style.display = 'none';
-		ev.editor.on('focus', function (e) {
-			document.getElementById(ev.editor.id + '_top').style.display = 'block';
-		});
-		ev.editor.on('blur', function (e) {
-			document.getElementById(ev.editor.id + '_top').style.display = 'none';
-		});
-	});
-});
-*/
-
     <%
     on error resume next
 

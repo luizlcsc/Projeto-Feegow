@@ -14,9 +14,9 @@ else
 end if
 %>
 <style>
-    .tableFixHead          { overflow-y: auto; height: 100px; }
-    .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
-    table  { border-collapse: collapse; width: 100%; }
+    #iProntCont .tableFixHead          { overflow-y: auto; height: 100px; }
+    #iProntCont .tableFixHead thead th { position: sticky; top: 0; z-index: 9999 }
+    #iProntCont table  { border-collapse: collapse; width: 100%; }
 </style>
 
 <%
@@ -36,7 +36,7 @@ end if
 %>
 
 <li id="<%=CampoID%>" class="<%if TipoCampoID=13 then response.Write("caixaGrupo campo") else response.Write("campo") end if%>" data-row="<%=pTop%>" style="text-align:left; <%=EstiloImagem%>" data-col="<%=pLeft%>" data-sizex="<%=Colunas%>" data-sizey="<%=Linhas%>">
-	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="badge badge-info lembrar hidden-print checkbox-custom checkbox-danger"><i class="far fa-flag red"></i> <input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> Lembrar-me disso</label></span><%end if%>
+	<%if TipoCampoID<>3 and TipoCampoID<>12 and getConfig("LembreteFormulario")=1 then%><span class="lembrar hidden-print checkbox-custom checkbox-default"><input class="postvalue lembrarme tbl" type="checkbox" data-campoid="<%=CampoID%>" id="lembrarme_<%=CampoID%>" value="<%=CampoID %>" name="lembrarme" <%if instr(LembrarmeS, "|"&CampoID&"|") then response.Write("checked") end if %> /><label for="lembrarme_<%=CampoID%>"> <i class="far fa-flag red"></i>  Lembrar-me disso</label></span><%end if%>
 	<%
 	  select case TipoCampoID
 	  	case 1'Texto
@@ -51,9 +51,9 @@ end if
 			CampoExtra = ""
 			
 			if LadoALado="S" then
-				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%></label></td><td width="99%" class="cel_input"><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text"></td></tr></table><%
+				%><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td width="1%" class="cel_label" nowrap><label class="campoLabel"><%=RotuloCampo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label></td><td width="99%" class="cel_input"><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" data-name="<%=RotuloCampo%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text" <% if Obrigatorio = "S" then %>required <%end if%> ></td></tr></table><%
 			else
-				%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%><input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text"><%
+				%><label class="campoLabel"><%=RotuloCampo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label><input tabindex="<%=Ordem%>" data-name="<%=RotuloCampo%>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" class="campoInput form-control" type="text" <% if Obrigatorio = "S" then %>required <%end if%>><%
 			end if
 
 			IF TipoCampoInfo = 30 THEN
@@ -278,15 +278,6 @@ $(function() {
 
 </script>
 
-
-
-
-
-
-
-
-                
-                
                 <%
 	  	case 4'checkbox
 			if Checado="S" then
@@ -294,10 +285,10 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%><br /><%
+			%><label class="campoLabel"><%=RotuloCampo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label><br /><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
-					%><span class="checkbox-custom"><input class="campoCheck postvalue" id="input_<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (instr(ValorPadrao, "|"&checks("id")&"|")>0 and FormID<>"N") then%> checked<%end if%> value="|<%=checks("id")%>|" type="checkbox" /><label for="input_<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
+					%><span class="checkbox-custom"><input class="campoCheck postvalue" id="input_<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (instr(ValorPadrao, "|"&checks("id")&"|")>0 and FormID<>"N") then%> checked<%end if%> value="|<%=checks("id")%>|" type="checkbox"  <% if Obrigatorio = "S" then %>required<%end if%> data-name="<%=RotuloCampo%>"/><label for="input_<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
 				checks.movenext
 				wend
 				checks.close
@@ -308,10 +299,10 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%><br /><%
+			%><label class="campoLabel"><%=RotuloCampo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label><br /><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
-					%><span class="radio-custom"><input class="campoInput postvalue" name="input_<%=CampoID%>" id="<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (ValorPadrao=cstr(checks("id")) and FormID<>"N") then%> checked<%end if%> type="radio" value="<%=checks("id")%>" /><label for="<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
+					%><span class="radio-custom"><input data-name="<%=RotuloCampo%>" class="campoInput postvalue" name="input_<%=CampoID%>" id="<%=CampoID%>_<%=checks("id") %>" data-campoid="<%=CampoID%>"<%if (checks("Selecionado")="S" and FormID="N") or (ValorPadrao=cstr(checks("id")) and FormID<>"N") then%> checked<%end if%> type="radio" value="<%=checks("id")%>" <% if Obrigatorio = "S" then %>required<%end if%> /><label for="<%=CampoID%>_<%=checks("id") %>"><%=checks("Nome")%></label></span> <%=Separador%><%
 				checks.movenext
 				wend
 				checks.close
@@ -322,9 +313,9 @@ $(function() {
 			else
 				Separador = "&nbsp;&nbsp;"
 			end if
-			%><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%>
+			%><label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>
             	<br />
-                <select class="campoInput form-control postvalue" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>"><%
+                <select class="campoInput form-control postvalue" data-name="<%=RotuloCampo%>" name="input_<%=CampoID%>" id="input_<%=CampoID%>" data-campoid="<%=CampoID%>" <% if Obrigatorio = "S" then %> required <% end if%> ><%
 				set checks = db.execute("select * from buiopcoescampos where CampoID="&CampoID)
 				while not checks.eof
 					%><option value="<%=checks("id")%>"<% If (checks("Selecionado")="S" and FormID="N") or (ValorPadrao=cstr(checks("id")) and FormID<>"N") Then %> selected="selected"<% End If %>><%=checks("Nome")%></option><%
@@ -335,9 +326,9 @@ $(function() {
 				%></select><%
 	  	case 8'textarea
                 ckrender = ckrender & "altura = $('#"& CampoID &"').innerHeight()-22 + 'px'; $('#input_"& CampoID &"mem').css('height', altura );"
-			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%></label><%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%>
+			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>
 
-            <textarea class="hidden campoInput" id="input_<%=CampoID %>" name="input_<%=CampoID %>"><%=ValorPadrao %></textarea>
+            <textarea class="hidden campoInput" data-name="<%=RotuloCampo%>" id="input_<%=CampoID %>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <% end if %>><%=ValorPadrao %></textarea>
 
             <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
 

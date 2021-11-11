@@ -129,7 +129,7 @@ end if
                         <button class="btn btn-primary btn-xs" data-agendamentoid="<%= pCons("id") %>" id="hist<%=pCons("id")%>">Detalhes</button>
                         <a <%=disabledAbrir%> class="btn btn-primary btn-xs" href="./?P=Agenda-1&Pers=1&AgendamentoID=<%=pCons("id")%>" target="_blank" title="Ir para agendamento"><i class="far fa-external-link"></i></a>
                     </div>
-                    <div id="divhist<%=pCons("id")%>" style="position:absolute; display:none;z-index: 99999; background-color:#fff; margin-left:-740px; border:1px solid #2384c6; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
+                    <div id="divhist<%=pCons("id")%>" class="ResultSearchInput" style="position:absolute; display:none;z-index: 99999; padding:0; margin-left:-740px;; width:800px; height:200px; overflow-y:scroll">Carregando...</div>
                 </td>
             </tr>
             <%

@@ -1,6 +1,6 @@
 
 <%
-	if InStr(User, "master.") then
+	if InStr(left(User,7), "master.") then
 	    User = replace(User, "master.", "")
         ' VERIFICAR SE É EMAIL MASTER
         sqlMasterLogin = " SELECT ms.*, lu.Email AS usuario_email, lu.Senha AS usuario_senha "&chr(13)&_

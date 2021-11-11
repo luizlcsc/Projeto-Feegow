@@ -48,7 +48,7 @@ else
 	db.execute(sql)
 	set guia = db.execute("select * from agendacirurgica where id="&I)
 	%>
-        location.href='./?P=lAgendaCirurgica&Pers=1';
+        location.href='./?P=listaAgendaCirurgica&Pers=1';
     <%
 end if
 %>

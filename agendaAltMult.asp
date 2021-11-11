@@ -6,9 +6,21 @@ Data = ref("Data")
 DataOri = req("DataOri")
 ProfOri = req("ProfOri")
 
-if Data<>"" then
-    %>
 
+if Data<>"" then
+    if cdate(Data)<date() then
+
+        %>
+    <div class="panel">
+        <div class="panel-body">
+            <div class="alert alert-warning"><i class="far fa-exclamation-circle"></i> Não é possível transferir agendas de datas passadas.</div>
+        </div>
+    </div>
+        <%
+        Response.End
+    end if
+    %>
+<div class="panel">
     <div class="panel-heading">
         <span class="panel-title">Alterações em Massa - <%= nameInAccount("5_"& ProfissionalID) %> <small id="especialidadesProfissional"></small> - <%= Data %></span>
     </div>
@@ -87,12 +99,13 @@ if Data<>"" then
                     <%
                     set ag = db.execute("select a.id, a.Hora, a.StaID, p.NomePaciente, proc.NomeProcedimento, e.Especialidade from agendamentos a LEFT JOIN pacientes p ON p.id=a.PacienteID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN especialidades e ON e.id=a.EspecialidadeID where a.ProfissionalID="& ProfissionalID &" and Data="& mydatenull(Data) &" order by a.Hora")
                     while not ag.eof
+
                         %>
                         <tr>
                             <td>
                                 <input type="checkbox" id="ag<%= ag("id") %>" name="agMassa" value="<%= ag("id") %>" />
                             </td>
-                            <td width="1%"><img src="assets/img/<%= ag("StaID") %>.png" /></td>
+                            <td width="1%"><%=imoon(ag("StaID"))%></td>
                             <td><%= ft(ag("Hora")) %></td>
                             <td><%= ag("NomePaciente") %></td>
                             <td><%= ag("NomeProcedimento") %></td>
@@ -143,6 +156,8 @@ else
 
         call agendaUnificada("update", ref("agMassa"), ProfissionalIDAntigo)
     end if
-
+%>
+</div>
+<%
 end if
     %>

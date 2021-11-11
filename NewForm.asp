@@ -47,7 +47,9 @@ I = req("I")
 			"`DataHora` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"&_
 			"`sysUser` INT(11) NULL,"&_
             "`DHUp` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "&_
-			"PRIMARY KEY (`id`)) COLLATE='utf8_general_ci' ENGINE=MyISAM ROW_FORMAT=COMPACT;")
+			"PRIMARY KEY (`id`)), "&_
+			"INDEX `PacienteID` (`PacienteID`) USING BTREE, "&_
+			"INDEX `sysUser` (`sysUser`) USING BTREE;")
 		end if
 		response.Redirect("?P=newform&I="&vie("id")&"&Pers="&req("Pers"))
 	else
@@ -127,7 +129,7 @@ $(".form-control").change(function(){
 function estilo(){
 	$.post("formEstilo.asp?FormID=<%=I%>", '', function(data, status){
 
-		$("#modal").html("Carregando...");
+		$("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		$("#modal-table").modal('show');
 		setTimeout(function(){$("#modal").html(data);}, 1000);
 
@@ -164,7 +166,7 @@ $(".btn-20").click(function(){
 */
 function permissoes(){
 	$.post("formPermissoes.asp?F=<%=I%>", '', function(data, status){
-  		   $("#modal").html("Carregando...");
+  		   $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
 		   $("#modal-table").modal('show');
 		   setTimeout(function(){$("#modal").html(data);}, 1000);
 	});

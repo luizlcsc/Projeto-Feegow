@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="ProntCompartilhamento.asp"-->
 <%
 if PacienteID="" then
     PacienteID = req("PacienteID")
@@ -40,22 +41,32 @@ else%>
                 sqlBmj = " '' as bmj_link  "
             END IF
             sqlcid = "select *, "&sqlBmj&" from cliniccentral.cid10 where id="&pdiag("CidID")
-            set pcid = db.execute(sqlcid)
-            if not pcid.EOF then
-                cid = pcid("Codigo")&": "&pcid("Descricao")&" "& pcid("bmj_link")
-                'response.write (cid)
+
+            podever = True
+            permissao = VerificaProntuarioCompartilhamento(session("User"), "Diagnostico", pdiag("id"))
+            if permissao <> "" then
+                permissaoSplit = split(permissao,"|")
+                podever = permissaoSplit(0)
             end if
-            %>
-            <tr>
-                <td><span class="label label-lg label-warning arrowed-in arrowed-right">Em <%=formatdatetime(pdiag("DataHora"),1)%>, &agrave;s <%=formatdatetime(pdiag("DataHora"),3)%></span><br><%=cid%><br>
-				<%=quickField("memo", "memo"&pdiag("id"), "", 12, pdiag("Descricao"), " memodiagnostico", "", " placeholder='Observa&ccedil;&otilde;es...'")%></td>
-                <td width="1%">
-                <% if recursoAdicional(37) = 4 then %>
-                <button style="margin-bottom: 10px" type="button" class="btn btn-xs btn-success" onclick="openCalculator(<%=pdiag("CidID")%>, <%=PacienteID%>)"><i class="far fa-calculator"></i></button>
-                <% end if %>
-                <button type="button" class="hidden btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))cid10(<%=pdiag("id")%>);"><i class="far fa-trash"></i></button>
-            </tr>
-            <%
+
+            if podever then
+                set pcid = db.execute(sqlcid)
+                if not pcid.EOF then
+                    cid = pcid("Codigo")&": "&pcid("Descricao")&" "& pcid("bmj_link")
+                    'response.write (cid)
+                end if
+                %>
+                <tr>
+                    <td><span class="label label-lg label-warning arrowed-in arrowed-right">Em <%=formatdatetime(pdiag("DataHora"),1)%>, &agrave;s <%=formatdatetime(pdiag("DataHora"),3)%></span><br><%=cid%><br>
+                    <%=quickField("memo", "memo"&pdiag("id"), "", 12, pdiag("Descricao"), " memodiagnostico", "", " placeholder='Observa&ccedil;&otilde;es...'")%></td>
+                    <td width="1%">
+                    <% if recursoAdicional(37) = 4 then %>
+                    <button style="margin-bottom: 10px" type="button" class="btn btn-xs btn-success" onclick="openCalculator(<%=pdiag("CidID")%>, <%=PacienteID%>)"><i class="far fa-calculator"></i></button>
+                    <% end if %>
+                    <button type="button" class="hidden btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este registro?'))cid10(<%=pdiag("id")%>);"><i class="far fa-trash"></i></button>
+                </tr>
+                <%
+            end if
         pdiag.movenext
         wend
         pdiag.close

@@ -85,7 +85,7 @@ function ValidaDesconto(TipoRecurso, Procedimentos, UserID, UnidadeID, PercDesco
 
         ' verifica quais dessas regras estão associadas ao usuário
         sqlRegraUsuario = "SELECT rp.id RegraID FROM sys_users u " &_
-                          "INNER JOIN regraspermissoes rp ON u.Permissoes LIKE CONCAT('%[',rp.id,']%') " &_
+                          "INNER JOIN regraspermissoes rp ON u.RegraID = rp.id " &_
                           "WHERE u.id=" & UserID & " AND rp.id IN (" & RegraDescontosID & ")"
         set resRegraUsuario = db.execute(sqlRegraUsuario)
 
@@ -99,13 +99,7 @@ function ValidaDesconto(TipoRecurso, Procedimentos, UserID, UnidadeID, PercDesco
             ' verifica o desconto dos procedimentos informados e associados a regra do usuário
             countRegras = 0
             For Each ProcedimentoID in dicProcedimentosValores.Keys
-
-                ProcedimentoValor = dicProcedimentosValores.Item(ProcedimentoID)
                 ProcedimentoID = split(ProcedimentoID, "_")
-                ProcedimentoID = ProcedimentoID(0)
-
-                ProcedimentoID = split(ProcedimentoID, "_")
-
                 Procedimento = ProcedimentoID(0)
 
                 sqlMaximo = "SELECT id, DescontoMaximo, TipoDesconto FROM regrasdescontos WHERE RegraID="&RegraID&" AND "&_

@@ -150,6 +150,12 @@ subTitulo = "Produtos Utilizados"
                             link = "./?P=tissguiasadt&I="&anexos("id")&"&Pers=1"
                         end if
 
+                        ValorUnitario = anexos("ValorUnitario")
+
+                        if not isnumeric(ValorUnitario) then
+                            ValorUnitario=0
+                        end if
+
                         %>
                         <!--<tr>-->
                             <!--<th></th>-->
@@ -164,7 +170,7 @@ subTitulo = "Produtos Utilizados"
                             <td><%=TipoUnidade%></td>
                             <td><%=anexos("Codigo")%></td>
                             <td><%=anexos("Forma")%></td>
-                            <td><%=formatnumber(anexos("ValorUnitario"),2)%></td>
+                            <td><%=formatnumber(ValorUnitario,2)%></td>
                             <td><%=anexos("Data")%></td>
                             <td>
                                 <button type="button" class="btn btn-xs btn-success" onclick="modalEstoque('', <%=anexos("ProdutoID")%>, <%=anexos("ProdutoID")%>)"><i class="far fa-level-up"></i> Lançar</button>

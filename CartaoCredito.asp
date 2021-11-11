@@ -1,12 +1,12 @@
 <!--#include file="connect.asp"-->
 <%
 if req("De")="" then
-	De=dateadd("m", -1, date())
+	De=dateadd("d", -15, date())
 else
 	De=req("De")
 end if
 if req("Ate")="" then
-	Ate=dateadd("m", 1, date())
+	Ate=dateadd("d", 7, date())
 else
 	Ate=req("Ate")
 end if
@@ -23,6 +23,15 @@ end if
     <input type="hidden" name="Pers" value="<%=req("Pers")%>">
     <br>
     <div class="panel hidden-print">
+        <div class="panel-heading">
+            <span class="panel-title">Buscar recebimentos</span>
+            <span class="panel-controls">
+                <button class="btn btn-sm btn-info" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
+                <button class="btn btn-sm btn-success" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> Excel</button>
+
+                <button id="btnBuscar" class="btn btn-primary"><i class="far fa-search"></i> Buscar</button>
+            </span>
+        </div>
         <div class="panel-body">
             <div class="row">
                 <%= quickfield("multiple", "Conta", "Selecione o cartão", 3, req("Conta"), "select id, CONCAT(AccountName, ' ', IFNULL(IF(Empresa = 0, (SELECT Sigla from empresa where id=1), (SELECT Sigla from sys_financialcompanyunits where id = Empresa)), '') ) NomeConta from sys_financialcurrentaccounts where "&franquiaUnidade("'[Unidades]' like CONCAT('%|',Empresa,'|%')  AND")&" AccountType in(3, 4) AND sysActive=1", "NomeConta", " required") %>
@@ -46,18 +55,6 @@ end if
                 <%=quickField("text", "Transacao", "Transação", 2, "", "", "", "")%>
                 <%=quickField("text", "Autorizacao", "Autorização", 2, "", "", "", "")%>
                 <%= quickfield("multiple", "Bandeira", "Selecione a bandeira", 3, req("Bandeira"), "SELECT Bandeira,Bandeira as id FROM cliniccentral.bandeiras_cartao", "Bandeira", "") %>
-                <div class="col-md-2">
-                    <label>&nbsp;</label>
-                    <button id="btnBuscar" class="btn btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
-                </div>
-                <div class="col-md-offset-6 col-md-1">
-                    <label>&nbsp;</label><br />
-                    <button class="btn btn-sm btn-info" name="Filtrate" onclick="print()" type="button"><i class="far fa-print bigger-110"></i> Imprimir</button>
-                </div>
-                <div class="col-md-1">
-                    <label>&nbsp;</label><br />
-                    <button class="btn btn-sm btn-success" name="Filtrate" onclick="downloadExcel()" type="button"><i class="far fa-table bigger-110"></i> Excel</button>
-                </div>
             </div>
         </div>
     </div>

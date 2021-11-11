@@ -638,7 +638,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         </script>
     <% end if %>
 
-    <div id="disc" class="alert alert-danger text-center hidden" style="position:absolute; z-index:9999; width:100%"></div>
+    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
 
         <div id="modalCaixa" class="modal fade" tabindex="-1">
             <div class="modal-dialog">

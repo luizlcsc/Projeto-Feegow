@@ -38,9 +38,9 @@
         memedTipo = type;
 
         //  2021-11-09 - permite abrir a prescrição Memed por aqui
-        if (memedTipo === 'prescricao' && false && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
-            openClassicPrescription();
-            return;
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+            // openClassicPrescription();
+            // return;
         }
 
         // se já estiver inicializando, exibe mensagem e seta para abrir após a inicialização
@@ -279,8 +279,8 @@
 
     async function newPrescricaoMemed() {
         if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
-            openClassicPrescription();
-            return;
+            // openClassicPrescription();
+            // return;
         }
 
         setMemedLoading(true);

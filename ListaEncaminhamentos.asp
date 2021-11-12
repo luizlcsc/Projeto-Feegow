@@ -15,7 +15,7 @@ else
 	set listaEncaminhamentos = db.execute("select *, IFNULL(TipoID, 99999999) as TipoID from encaminhamentostextos as pt left join prontuariosfavoritos as pf on pf.TipoID = pt.id and pf.Tipo = 'A' and pf.sysUser = "&session("User")&" where NomeAtestado like '%"&Filtro&"%' and (profissionais is null or profissionais='' or profissionais like '%|"&session("idInTable")&"|%' or "&session("Admin")&"=1) and (especialidades is null or especialidades='' or especialidades like '%|"&EspecialidadeID&"|%' or "&session("Admin")&"=1) and sysActive=1 order by TipoID")
 end if
 while not listaEncaminhamentos.EOF
-	'TextoAtestado = listaTextosAtestados("TextoAtestado")
+	'TextoAtestado = listaEncaminhamentos("TextoAtestado")
     if 1=2 then
 	%>
 	<div class="profile-activity clearfix">
@@ -69,7 +69,7 @@ while not listaEncaminhamentos.EOF
 			<i class="fa fa-edit icon-edit bigger-125"></i>
 		</a>
 		<%
-		elseif (aut("atestadosA")=0 and aut("modelosprontuarioA")=1 and listaTextosAtestados("sysUser")=session("User")) then%>
+		elseif (aut("atestadosA")=0 and aut("modelosprontuarioA")=1 and listaEncaminhamentos("sysUser")=session("User")) then%>
 		<a class="btn btn-xs btn-success tooltip-info" href="javascript:modalEncaminhamento('Encaminhamento','<%=listaEncaminhamentos("id") %>')">
 			<i class="fa fa-edit icon-edit bigger-125"></i>
 		</a>
@@ -81,7 +81,7 @@ while not listaEncaminhamentos.EOF
 			<i class="fa fa-remove icon-remove bigger-125"></i>
 		</a>
         <%
-        elseif (aut("atestadosX")=0 and aut("modelosprontuarioA")=1 and listaTextosAtestados("sysUser")=session("User")) then
+        elseif (aut("atestadosX")=0 and aut("modelosprontuarioA")=1 and listaEncaminhamentos("sysUser")=session("User")) then
         %>
 		<a href="javascript:if(confirm('Tem certeza de que deseja excluir este modelo?'))ListaEncaminhamentos('Encaminhamento','<%=listaEncaminhamentos("id")%>')" class="btn btn-xs btn-danger tooltip-info" title="" data-placement="top" data-rel="tooltip" data-original-title="Excluir">
 			<i class="fa fa-remove icon-remove bigger-125"></i>

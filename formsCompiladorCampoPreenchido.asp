@@ -74,19 +74,16 @@ end if
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td width="1%" class="cel_label" nowrap>
-                            <label class="campoLabel"><%=RotuloCampo%></label>
-                            <%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%>
-                        </td>
+                            <label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>                        </td>
                         <td width="99%" class="cel_input">
-                            <input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text">
+                            <input tabindex="<%=Ordem%>"  data-name="<%=RotuloCampo%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text" <% if Obrigatorio = "S" then %>required <%end if%>>
                         </td>
                     </tr>
 				  </table><%
 			else
 				%>
-                <label class="campoLabel"><%=RotuloCampo%></label>
-                <%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%>
-                <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control campoInput">
+                <label class="campoLabel"><%=RotuloCampo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label>
+                <select id="input_<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=RotuloCampo%>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput">
                     <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
                 </select>
     		<script type="text/javascript">

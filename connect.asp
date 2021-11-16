@@ -6382,7 +6382,7 @@ function retornaChamadaIntegracaoLaboratorial(link)
                                                     " $("".app"").html(data); " &_
                                                     " $("".app"").fadeIn('slow');}); "
         else
-            retornaChamadaIntegracaoLaboratorial =  "getUrl(""web/labs-integration/"&link&""",{}, function(data) { " &_
+            retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
                                                     " $("".app"").hide(); " &_
                                                     " $("".app"").html(data); " &_
                                                     " $("".app"").fadeIn('slow');},""integracaolaboratorial""); "

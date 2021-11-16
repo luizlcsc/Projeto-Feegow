@@ -28,33 +28,7 @@ function ref(ColVal)
     val = strip_tags(val)
 
     ref = clear_ref_req(val)
-    'ref=SQLInject2(val)
 end function
-
-function SQLInject2(strWords)
-  dim badChars, newChars, tmpChars, regEx, i
-  badChars = array( _
-  "select(.*)(from|with|by){1}", "insert(.*)(into|values){1}", "update(.*)set", "delete(.*)(from|with){1}", _
-  "drop(.*)(from|aggre|role|assem|key|cert|cont|credential|data|endpoint|event|f ulltext|function|index|login|type|schema|procedure|que|remote|role|route|sign| stat|syno|table|trigger|user|view|xml){1}", _
-  "alter(.*)(application|assem|key|author|cert|credential|data|endpoint|fulltext |function|index|login|type|schema|procedure|que|remote|role|route|serv|table|u ser|view|xml){1}", _
-  "xp_", "sp_", "restore\s", "grant\s", "revoke\s", _
-  "dbcc", "dump", "use\s", "set\s", "truncate\s", "backup\s", _
-  "load\s", "save\s", "shutdown", "cast(.*)\(", "convert(.*)\(", "execute\s", _
-  "updatetext", "writetext", "reconfigure", _
-  "/\*", "\*/", ";", "\-\-", "\[", "\]", "char(.*)\(", "nchar(.*)\(") 
-  newChars = strWords
-  for i = 0 to uBound(badChars)
-    Set regEx = New RegExp
-    regEx.Pattern = badChars(i)
-    regEx.IgnoreCase = True
-    regEx.Global = True
-    newChars = regEx.Replace(newChars, "")
-    Set regEx = nothing
-  next
-  newChars = replace(newChars, "'", "''")
-  SQLInject2 = newChars
-end function
-
 
 function refHTML(ColVal)
     val = request.Form(ColVal)

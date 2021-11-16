@@ -148,7 +148,7 @@
                             while not modeloDeMensagem.eof
                             
                                 sysID = modeloDeMensagem("SysID")&""
-                                nomeModelo = "Modelo de confirmação Whatsapp (Padrão)"
+                                nomeModelo = modeloDeMensagem("ModeloWpp")
                                 whatsappID = modeloDeMensagem("EventosWhatsappID")
 
                                 eveID = modeloDeMensagem("EventoID")&""

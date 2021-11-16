@@ -25,10 +25,10 @@ end function
 
 function ref(ColVal)
     val = request.Form(ColVal)
-    ' val = strip_tags(val)
+    val = strip_tags(val)
 
-    ' ref = clear_ref_req(val)
-    ref=SQLInject2(val)
+    ref = clear_ref_req(val)
+    'ref=SQLInject2(val)
 end function
 
 function SQLInject2(strWords)

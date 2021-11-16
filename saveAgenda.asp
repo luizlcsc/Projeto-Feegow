@@ -502,7 +502,7 @@ if erro="" then
 
             '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
-                
+            
                 'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
                 validaEventosSQL =  "SELECT ev.id, ev.Status                                                               "&chr(13)&_
                                     "FROM eventos_emailsms ev                                                              "&chr(13)&_                                                              
@@ -523,9 +523,8 @@ if erro="" then
                         
                         EventoStatus = validaEventos("Status")
                         EventoID = validaEventos("id")
-                        bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
-                        bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
-
+                        bodyContentFrom = "|LicencaHash|,|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
+                        bodyContentTo   = "|"& ref("LicenseHash") &"|,|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
                         'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
                         if (ref("StaID") = 1 and instr(EventoStatus,"|1|")>0 ) then
                             call webhook(119, true, bodyContentFrom, bodyContentTo)  

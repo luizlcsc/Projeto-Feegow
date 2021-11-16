@@ -131,41 +131,44 @@
         
                     <tbody>
                         <% 
-                            modeloDeMensagemSQL =   " SELECT                                                                    "&chr(13)&_
-                                                    " eve.ModeloID, eveW.Nome, eve.Descricao 'NomeEvento', eveW.Descricao,      "&chr(13)&_
-                                                    " eveW.Conteudo, eve.`Status`, eveW.ExemploResposta, eve.id 'EventoID',     "&chr(13)&_
-                                                    " sys.id 'SysID', eve.AntesDepois, eve.IntervaloHoras, eve.Unidades,        "&chr(13)&_
-                                                    " eve.Especialidades, eve.ApenasAgendamentoOnline, eve.EnviarPara,          "&chr(13)&_
-                                                    " eve.Procedimentos, eve.Profissionais,eve.Ativo, eve.sysActive   			"&chr(13)&_
-                                                    " FROM cliniccentral.eventos_whatsapp eveW                                  "&chr(13)&_
-                                                    " LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome                   "&chr(13)&_
-                                                    " LEFT JOIN eventos_emailsms eve ON eve.ModeloID = sys.id                   "
+                            modeloDeMensagemSQL =   " SELECT                                                                        "&chr(13)&_
+                                                    " sys.EventosWhatsappID, eveW.Nome 'ModeloWpp', eve.Descricao 'NomeEvento',     "&chr(13)&_
+                                                    " eveW.Descricao, eveW.Conteudo, eve.`Status`, eveW.ExemploResposta,            "&chr(13)&_
+                                                    " eve.id 'EventoID', sys.id 'SysID', eve.AntesDepois, eve.IntervaloHoras,       "&chr(13)&_
+                                                    " eve.Unidades, eve.Especialidades, eve.ApenasAgendamentoOnline,                "&chr(13)&_
+                                                    " eve.EnviarPara, eve.Procedimentos, eve.Profissionais,eve.Ativo, eve.sysActive "&chr(13)&_
+                                                    " FROM cliniccentral.eventos_whatsapp eveW                                      "&chr(13)&_
+                                                    " LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id                 "&chr(13)&_
+                                                    " LEFT JOIN eventos_emailsms eve ON eve.ModeloID = sys.id                       "&chr(13)&_
+                                                    " WHERE eveW.FacebookStatus = 1 AND eve.WhatsApp = 1                            "
                             SET modeloDeMensagem = db.execute(modeloDeMensagemSQL)
+                            
 
                             i = 1
                             while not modeloDeMensagem.eof
                             
                                 sysID = modeloDeMensagem("SysID")&""
-                                nomeModelo = modeloDeMensagem("Nome")
+                                nomeModelo = "Modelo de confirmação Whatsapp (Padrão)"
+                                whatsappID = modeloDeMensagem("EventosWhatsappID")
 
                                 eveID = modeloDeMensagem("EventoID")&""
                                 nomeEvento = modeloDeMensagem("NomeEvento")
                                 eventoPadrao = "Confirmação de agendamento (Padrão)"
 
-                                if sysID = "" then
-                                    
-                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `AtivoWhatsapp`, `sysUser`, `sysActive`) VALUES ('"&nomeModelo&"', 'on', '"&session("User")&"', 0)"
+                                if sysID = "" AND whatsappID = "" then
+
+                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `AtivoWhatsapp`, `EventosWhatsappID`, `sysUser`, `sysActive`) VALUES ('"&nomeModelo&"', 'on', '"&whatsappID&"', '"&session("User")&"', 0)"
                                     db.execute(AddModeloNoSysSQL) %>
 
                                     <script type="text/javascript">document.location.reload(true);</script> <%
 
                                 end if
                                 
-                                if sysID <> "" AND eveID <> "" then
-
+                                if whatsappID <> "" AND eveID <> "" then
+                                'dd(modeloDeMensagem("EventoID"))
                                     descricao      = modeloDeMensagem("Descricao")
                                     modelo         = modeloDeMensagem("Conteudo")
-                                    modeloID       = modeloDeMensagem("ModeloID")
+                                    modeloID       = sysID
                                     resposta       = modeloDeMensagem("ExemploResposta")
                                     ativoWhatsApp  = modeloDeMensagem("Ativo")
                                     sysActive      = modeloDeMensagem("sysActive")
@@ -220,12 +223,12 @@
                                                     <i class="far fa-remove bigger-130"></i>
                                                 </a>
                                             </div>
-                    
+
                                         </td>
                                     </tr>
                             <%
                                 else
-                                    if nomeModelo = "agendamento_confirmacao_link01" then
+                                    if whatsappID <> "" then
                                         
                                         AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `ModeloID`, `Whatsapp`, `Ativo`, `sysUser`, `sysActive`) VALUES ('"&eventoPadrao&"', '"&sysID&"', 1, 0, '"&session("User")&"', 1)"
                                         db.execute(AddModeloNoEveSQL) %>

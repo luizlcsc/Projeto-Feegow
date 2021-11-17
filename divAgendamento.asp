@@ -454,7 +454,6 @@ end if
         <form onsubmit="submitAgendamento(true); return false;" method="post" action="" id="formAgenda" name="formAgenda">
         <input type="hidden" name="ConsultaID" id="ConsultaID" value="<%=ConsultaID%>" />
         <input type="hidden" name="GradeID" id="GradeID" value="<%=GradeID%>" />
-        <input type="hidden" name="LicenseHash" id="LicenseHash" value="<%=replace(session("Banco"),"clinic","")%>" />
 
         <div class="modal-body">
             <div class="bootbox-body">
@@ -1532,37 +1531,24 @@ var saveAgenda = function(){
         //$("#btnSalvarAgenda").attr('disabled', 'disabled');
         $("#btnSalvarAgenda").prop("disabled", true);
 
-        var licenseID = $("#LicenseHash").val()
-        const createLicenseHash = {
-        "async": true,
-        "crossDomain": true,
-        "url": `https://api.feegow.com.br/create-hash/${licenseID}`,
-        "method": "GET",
-        "headers": {}
-        };
-        
-        $.ajax(createLicenseHash).done(function (response) {
-            $("#LicenseHash").val(response)
+        $.post("saveAgenda.asp", $("#formAgenda").serialize())
+        .done(function(data){
+            //$("#btnSalvarAgenda").removeAttr('disabled');
+            eval(data);
+            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+            $("#btnSalvarAgenda").prop("disabled", false);
+            crumbAgenda();
+            gravaWorklist();
+        })
 
-            $.post("saveAgenda.asp", $("#formAgenda").serialize())
-            .done(function(data){
-                //$("#btnSalvarAgenda").removeAttr('disabled');
-                eval(data);
-                $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-                $("#btnSalvarAgenda").prop("disabled", false);
-                crumbAgenda();
-                gravaWorklist();
-            })
-
-            .fail(function(err){
-                $("#btnSalvarAgenda").prop("disabled", true);
-                showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+        .fail(function(err){
+            $("#btnSalvarAgenda").prop("disabled", true);
+            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
 
-                gtag('event', 'erro_500', {
-                    'event_category': 'erro_agenda',
-                    'event_label': "Erro ao salvar agendamento."
-                });
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_agenda',
+                'event_label': "Erro ao salvar agendamento."
             });
         });
 

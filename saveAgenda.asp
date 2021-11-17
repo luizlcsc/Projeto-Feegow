@@ -504,18 +504,18 @@ if erro="" then
             if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
             
                 'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
-                validaEventosSQL =  "SELECT ev.id, ev.Status                                                                     "&chr(13)&_
-                                    "FROM eventos_emailsms ev                                                                    "&chr(13)&_                                                              
-                                    "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID                               "&chr(13)&_                                                              
-                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID "&chr(13)&_
-                                    "WHERE ev.WhatsApp=1                                                                         "&chr(13)&_                                                                                         
-                                    "AND ev.sysActive=1                                                                          "&chr(13)&_
-                                    "AND ev.Ativo=1                                                                              "&chr(13)&_
-                                    "AND eveWha.id IS NOT NULL                                                                   "&chr(13)&_                                                                                          
-                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|1879|%')                   "&chr(13)&_               
-                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|0|%')                                "&chr(13)&_                       
-                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|126|%')                  "&chr(13)&_           
-                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|16|%')                     "
+                validaEventosSQL =  "SELECT ev.id, ev.Status                                                                                "&chr(13)&_
+                                    "FROM eventos_emailsms ev                                                                               "&chr(13)&_                                                              
+                                    "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID                                          "&chr(13)&_                                                              
+                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID            "&chr(13)&_
+                                    "WHERE ev.WhatsApp=1                                                                                    "&chr(13)&_                                                                                         
+                                    "AND ev.sysActive=1                                                                                     "&chr(13)&_
+                                    "AND ev.Ativo=1                                                                                         "&chr(13)&_
+                                    "AND eveWha.id IS NOT NULL                                                                              "&chr(13)&_                                                                                          
+                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
+                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
+                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
+                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "
 
                 set validaEventos = db.execute(validaEventosSQL)
                 if not validaEventos.eof then
@@ -524,8 +524,8 @@ if erro="" then
                         
                         EventoStatus = validaEventos("Status")
                         EventoID = validaEventos("id")
-                        bodyContentFrom = "|LicencaHash|,|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
-                        bodyContentTo   = "|"& ref("LicenseHash") &"|,|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
+                        bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
+                        bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
                         'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
                         if (ref("StaID") = 1 and instr(EventoStatus,"|1|")>0 ) then
                             call webhook(119, true, bodyContentFrom, bodyContentTo)  

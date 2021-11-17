@@ -46,12 +46,6 @@ if isnumeric(EventID) then
 
           'PREPARA QUERYS E INFORMA O NOME DE CADA MÓDULO QUE FOI PASSADO  ATRAVÉS DO "replaceFrom"
           select case itemNome
-          'Select criado apenas com o propósito de passar o hash da LicencaID
-          'Não incluí esse replace de tag do sistema na linha 22 pois não vi uma 
-          'forma de passar o valor para esse arquivo visto que não posso add novo parametro nessa função
-          case "LicencaHash"
-              ModuleName = "Sistema"
-              ModuleSQL = "Select '"&itemID&"' LicencaHash"
 
             case "PacienteID"
               ModuleName = "Paciente" 

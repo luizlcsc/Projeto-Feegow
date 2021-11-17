@@ -75,7 +75,7 @@ if eventoID <> "" then
 
         <div class="row" id="row3">
 
-            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, modeloID, "SELECT Nome, sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome", "Nome", "required") %>
+            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, modeloID, "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
 
             <div class="col-md-6">
                 <label for="Tipo">
@@ -138,7 +138,7 @@ if eventoID = "" then %>
 
         <div class="row" id="row3">
 
-            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, "", "SELECT Nome, sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome", "Nome", "required") %>
+            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, "", "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
 
             <div class="col-md-6">
                 <label for="Tipo">

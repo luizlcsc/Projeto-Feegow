@@ -1532,25 +1532,25 @@ var saveAgenda = function(){
         $("#btnSalvarAgenda").prop("disabled", true);
 
         $.post("saveAgenda.asp", $("#formAgenda").serialize())
-            .done(function(data){
-                //$("#btnSalvarAgenda").removeAttr('disabled');
-                eval(data);
-                $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-                $("#btnSalvarAgenda").prop("disabled", false);
-                crumbAgenda();
-                gravaWorklist();
-            })
+        .done(function(data){
+            //$("#btnSalvarAgenda").removeAttr('disabled');
+            eval(data);
+            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+            $("#btnSalvarAgenda").prop("disabled", false);
+            crumbAgenda();
+            gravaWorklist();
+        })
 
-            .fail(function(err){
-                $("#btnSalvarAgenda").prop("disabled", true);
-                showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+        .fail(function(err){
+            $("#btnSalvarAgenda").prop("disabled", true);
+            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
 
-                gtag('event', 'erro_500', {
-                    'event_category': 'erro_agenda',
-                    'event_label': "Erro ao salvar agendamento."
-                });
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_agenda',
+                'event_label': "Erro ao salvar agendamento."
             });
+        });
 
         if(typeof callbackAgendaFiltros === "function"){
             callbackAgendaFiltros();

@@ -46,10 +46,11 @@ if isnumeric(EventID) then
 
           'PREPARA QUERYS E INFORMA O NOME DE CADA MÓDULO QUE FOI PASSADO  ATRAVÉS DO "replaceFrom"
           select case itemNome
+
             case "PacienteID"
               ModuleName = "Paciente" 
               ModuleSQL = "SELECT                                                                                          "&chr(13)&_
-                    "p.NomePaciente as Nome,COALESCE(p.Cel1,p.Cel2,0) AS Celular,                                          "&chr(13)&_
+                    "p.NomePaciente as Nome,COALESCE(p.Cel1,p.Cel2,0) AS Celular, COALESCE(p.Email1,p.Email2,0) AS Email,  "&chr(13)&_
                     "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3',        "&chr(13)&_
                     "pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3',                    "&chr(13)&_
                     "ec.EstadoCivil, s.NomeSexo AS Sexo, g.GrauInstrucao, o.Origem, corPel.NomeCorPele,                    "&chr(13)&_
@@ -73,9 +74,11 @@ if isnumeric(EventID) then
             case "EventoID"
               ModuleName = "Evento"
               ModuleSQL = "SELECT eve.id, IF(eve.AntesDepois='A','subtract','add') AS AntesDepois, eve.IntervaloHoras, "&chr(13)&_
-                          "sysSmsEma.Descricao AS WhatsAppModelo                                                       "&chr(13)&_
+                          "eveW.Nome AS WhatsAppModelo, sysSmsEma.TextoEmail AS EmailModelo,                           "&chr(13)&_
+                          "sysSmsEma.TituloEmail AS EmailAssunto, sysSmsEma.TextoSMS AS SmsModelo                      "&chr(13)&_
                           "FROM eventos_emailsms eve                                                                   "&chr(13)&_
                           "LEFT JOIN sys_smsemail sysSmsEma ON sysSmsEma.id = eve.ModeloID                             "&chr(13)&_
+                          "LEFT JOIN cliniccentral.eventos_whatsapp eveW ON eveW.id = sysSmsEma.EventosWhatsappID      "&chr(13)&_
                           "where eve.id="&treatvalzero(itemID)
 
             case "AgendamentoID"

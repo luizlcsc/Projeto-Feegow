@@ -1636,7 +1636,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
+    let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
     $("#Chegada").val(horaAtual);
 }
 

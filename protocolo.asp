@@ -82,7 +82,7 @@ while not campo.eof
     Estruturacao = campo("Estruturacao")&""
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
-    Obrigatorio = campo("Obrigatorio")&""
+    Obrigatorio = trim(campo("Obrigatorio")&"")
     Valor = ""
     Texto = campo("Texto")&""
     if campo("MaxCarac")&"" <> "" then
@@ -90,7 +90,7 @@ while not campo.eof
     end if
     if campo("TipoCampoID")=1 or campo("TipoCampoID")=4 or campo("TipoCampoID")=5 or campo("TipoCampoID")=8 then
         if not reg.eof then
-            Valor = reg(""& campo("id") &"")
+            Valor = trim(reg(""& campo("id") &""))
         end if
     end if
     cols = 12
@@ -101,10 +101,12 @@ while not campo.eof
     if TipoCampoAnterior=1 and TipoCampoID<>1  and TipoCampoID<>2 then
         response.write("</div>")
     end if
-
+    required=""
+ 
     if Obrigatorio = "S" then
         required = " required"
     end if 
+
 
     select case campo("TipoCampoID")
         case 1'TEXTO SIMPLES
@@ -118,7 +120,7 @@ while not campo.eof
         case 2'DATA
         %>
             <div class="col-md-6">
-                <span><b><%= campo("RotuloCampo") %><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></b></span>
+                <span><b><%= campo("RotuloCampo") %></b></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", ""&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id"))%>
             </div>
@@ -214,13 +216,13 @@ while not campo.eof
                         <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="col-md-<%= cols %>">
-                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &""&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id")) %>
+                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &"") %>
                     </div>
                     <%
                     if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
                         %>
                         <div class="col-md-6">
-                            <%= quickfield("text", "Cid"& campo("id"), "", 12, "", "", "", " placeholder='Buscar...' autocomplete='off'  onkeyup=""sug("& campo("id") &", 'Cid', 'CidCiap')"" "&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id")) %>
+                            <%= quickfield("text", "Cid"& campo("id"), "", 12, "", "", "", " placeholder='Buscar...' autocomplete='off'  onkeyup=""sug("& campo("id") &", 'Cid', 'CidCiap')"" ") %>
                             <div id="sugCid<%= campo("id") %>" class="p10 panel panel-body sug" style="width:500px; height:400px; position:absolute; z-index:10000; display:none; overflow:auto; cursor:pointer">
                             </div>
                             <script type="text/javascript">

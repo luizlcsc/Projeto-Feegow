@@ -1006,7 +1006,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 		case "memo"
 			response.Write(LabelFor)
 			%>
-			<textarea class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>"<%=additionalTags%>><%=fieldValue%></textarea>
+			<textarea class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" <%=additionalTags%> ><%=fieldValue%></textarea>
 			<%
 		case "palavras"
 			response.Write(LabelFor)

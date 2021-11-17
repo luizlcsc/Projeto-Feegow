@@ -138,7 +138,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             <%
             PermissaoArquivo = true
 
-            if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" then
+            if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" and ti("sysUser")&""<>"0" then
                 'logica de compartilhamento de prontuario, e arquivos
                 'verifica permissão para acesso dos arquivos
                 permissao = VerificaProntuarioCompartilhamento(session("User"), ti("Tipo"), ti("id"))

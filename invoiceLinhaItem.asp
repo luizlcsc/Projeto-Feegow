@@ -136,6 +136,23 @@
             <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50'")%></td>
             <td >
                 <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
+                <%
+                Fornecedor = req("fornecedor")&""
+                if Fornecedor <> "" AND Fornecedor <> "0" then
+                    spl = split(Fornecedor, "_")
+                    TipoFornecedor = spl(0)
+                    FornecedorID = spl(1)
+                    if TipoFornecedor = "2" then
+                        set FornecedorPlanoContasSQL = db_execute("SELECT limitarPlanoContas FROM fornecedores WHERE id="&FornecedorID)
+                        if not FornecedorPlanoContasSQL.eof then
+                            FornecedorLimitarPlanoContas = FornecedorPlanoContasSQL("limitarPlanoContas")&""
+                            if FornecedorLimitarPlanoContas <> "" then
+                                LimitarPlanoContas = replace(FornecedorLimitarPlanoContas,"|","")
+                            end if
+                        end if
+                    end if                    
+                end if
+                %>
                 <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>
             <td>
                 <%=selectInsert("", "CentroCustoID"&id, CentroCustoID, "CentroCusto", "NomeCentroCusto", "", "", "")%></td>

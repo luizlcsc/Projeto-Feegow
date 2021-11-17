@@ -1,5 +1,7 @@
-﻿<%
+﻿<!--#include file="Classes/LogService.asp"-->
+<%
 if session("User")="" then
+    call sendLogSessionExpired()
     %>
     $("#disc").html('<i class="far fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login&qs=<%=ref("qs")%>">VOLTAR AO LOGIN</a>');
     $("#disc").removeClass('hidden');

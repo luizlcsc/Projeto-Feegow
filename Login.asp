@@ -1,3 +1,4 @@
+<!--#include file="Classes/LogService.asp"-->
 <%
 if request("Log")="Off" then
 	if session("Partner")="" then
@@ -5,10 +6,12 @@ if request("Log")="Off" then
 	else
 		urlRedir = "./?P=Login&Partner="&session("Partner")
 	end if
+    call sendLogLogout()
 	session.Abandon()
 	response.Redirect(urlRedir)
+elseif session("User")="" then
+    call sendLogSessionExpired() 'não loga tudo, a lógica está dentro desta função
 end if
-
 
 %>
 <!--#include file="functions.asp"-->

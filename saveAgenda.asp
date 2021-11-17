@@ -504,17 +504,18 @@ if erro="" then
             if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
             
                 'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
-                validaEventosSQL =  "SELECT ev.id, ev.Status                                                               "&chr(13)&_
-                                    "FROM eventos_emailsms ev                                                              "&chr(13)&_                                                              
-                                    "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID                         "&chr(13)&_                                                              
-                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.Nome = sSmsEma.Descricao "&chr(13)&_
-                                    "WHERE ev.WhatsApp=1                                                                   "&chr(13)&_                                                                                         
-                                    "AND ev.sysActive=1                                                                    "&chr(13)&_
-                                    "AND eveWha.id IS NOT NULL                                                             "&chr(13)&_                                                                                          
-                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|1879|%')             "&chr(13)&_               
-                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|0|%')                          "&chr(13)&_                       
-                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|126|%')            "&chr(13)&_           
-                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|16|%')               "
+                validaEventosSQL =  "SELECT ev.id, ev.Status                                                                     "&chr(13)&_
+                                    "FROM eventos_emailsms ev                                                                    "&chr(13)&_                                                              
+                                    "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID                               "&chr(13)&_                                                              
+                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID "&chr(13)&_
+                                    "WHERE ev.WhatsApp=1                                                                         "&chr(13)&_                                                                                         
+                                    "AND ev.sysActive=1                                                                          "&chr(13)&_
+                                    "AND ev.Ativo=1                                                                              "&chr(13)&_
+                                    "AND eveWha.id IS NOT NULL                                                                   "&chr(13)&_                                                                                          
+                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|1879|%')                   "&chr(13)&_               
+                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|0|%')                                "&chr(13)&_                       
+                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|126|%')                  "&chr(13)&_           
+                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|16|%')                     "
 
                 set validaEventos = db.execute(validaEventosSQL)
                 if not validaEventos.eof then

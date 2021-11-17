@@ -868,15 +868,27 @@ end if
                 end if
                 if aut("pedidosexame")=1 then
                 %>
-                <li class="checkStatus">
-                    <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`, this);'>
-                        <span class="far fa-hospital-o bigger-110"></span>
-                        <span class="sidebar-title">Pedidos de Exame</span>
-                        <span class="sidebar-title-tray">
-                        <span class="label label-xs bg-primary" id="totalpedidos"></span>
-                        </span>
-                    </a>
-                </li>
+                    <li class="checkStatus">
+                        <a data-toggle="tab" class="tab menu-aba-pacientes-pedidos-de-exame" id="abaPedidos" href="#pront" onclick='pront(`timeline.asp?L=<%=session("Banco")%>&PacienteID=<%=req("I")%>&Tipo=|Pedido|`, this);'>
+                            <span class="far fa-hospital-o bigger-110"></span>
+                            <span class="sidebar-title">Pedidos de Exame</span>
+                            <span class="sidebar-title-tray">
+                            <span class="label label-xs bg-primary" id="totalpedidos"></span>
+                            </span>
+                        </a>
+                    </li>
+                <%
+                end if
+                if recursoAdicional(27)=4 and aut("examesimagem")=1 then
+                %>
+                    <li class="checkStatus">
+                        <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaExamesImagem" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|ExamesImagem|`);'>
+                            <span class="far fa-x-ray bigger-110"></span>
+                            <span class="sidebar-title">Exames de Imagem</span>
+                            <span class="sidebar-title-tray">
+                            <span class="label label-xs bg-primary" id="totalexamesimagem"></span>
+                        </a>
+                    </li>
                 <%
                 end if
                 recursoPermissaoUnimed = recursoAdicional(12)

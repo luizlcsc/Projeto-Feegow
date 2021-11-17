@@ -60,6 +60,43 @@ function completaConvenio(ConvenioID, PacienteID, ProfissionalSolicitanteID)
 			Matricula = vpac("Matricula"&Numero)
 			Validade = vpac("Validade"&Numero)
 		end if
+		Plano1 = ""
+		Plano2 = ""
+		Plano3 = ""
+		if  vpac("PlanoID1")&"" <> "" then
+			Plano1 = vpac("PlanoID1")
+		end if
+		if  vpac("PlanoID2")&"" <> "" then
+			Plano2 = ","&vpac("PlanoID2")
+		end if
+		if vpac("PlanoID3")&"" <> "" then
+			Plano3 = ","&vpac("PlanoID3")
+		end if
+		PlanoPacienteID = Plano1&Plano2&Plano3
+        if PlanoPacienteID<>"" then
+			%>
+			let arrayPlanos = [];
+			$('#PlanoID').html(`<option value="0">Selecione</option>`);
+			<%
+			set PlanoPacienteSQL = db_execute("SELECT id, NomePlano FROM conveniosplanos WHERE ConvenioID = "&ConvenioID&" AND id IN("&PlanoPacienteID&")")
+			while not PlanoPacienteSQL.eof 
+				%>
+					arrayPlanos.push({
+						"id":"<%=PlanoPacienteSQL("id")%>",
+						"NomePlano":"<%=PlanoPacienteSQL("NomePlano")%>"
+					});
+				<%
+				PlanoPacienteSQL.movenext
+			wend
+			%>
+				if(arrayPlanos.length > 0){
+					$('#PlanoID').children().detach();
+					arrayPlanos.map((plano)=>{
+						$('#PlanoID').append(`<option value="${plano.id}">${plano.NomePlano}</option>`)
+					});
+				}
+			<%
+        end if
 	end if
     'chama funcao que refaz a lista de contratados
     %>
@@ -366,8 +403,9 @@ function completaPaciente(id)
             NomeConvenio = pac("NomeConvenio"&Numero)
 			Validade = pac("Validade"&Numero)
 			ConvenioID = pac("ConvenioID"&Numero)
-			PlanoID = pac("PlanoID"&Numero)
+
 			call completaConvenio(pac("ConvenioID"&Numero), id, 1)
+
 		end if
 		Nascimento = myDate(pac("Nascimento"))
 		%>
@@ -420,8 +458,6 @@ function completaPaciente(id)
 
       $("#gConvenioID").select2("destroy");
    	  s2aj("gConvenioID", 'convenios', 'NomeConvenio', '', '');
-
-    $("#PlanoID").val("<%=PlanoID%>");
 	<%
 end function
 

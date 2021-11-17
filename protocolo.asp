@@ -82,6 +82,7 @@ while not campo.eof
     Estruturacao = campo("Estruturacao")&""
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
+    Obrigatorio = campo("Obrigatorio")&""
     Valor = ""
     Texto = campo("Texto")&""
     if campo("MaxCarac")&"" <> "" then
@@ -101,29 +102,32 @@ while not campo.eof
         response.write("</div>")
     end if
 
+    if Obrigatorio = "S" then
+        required = " required"
+    end if 
 
     select case campo("TipoCampoID")
         case 1'TEXTO SIMPLES
         %>
             <div class="col-md-4" style="position: relative; z-index:1">
-                <span><b><%= campo("RotuloCampo") %></b></span>
+                <span><b><%= campo("RotuloCampo") %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
-                <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", input_maxlength)%>
+                <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", input_maxlength&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id") )%>
             </div>
         <%
         case 2'DATA
         %>
             <div class="col-md-6">
-                <span><b><%= campo("RotuloCampo") %></b></span>
+                <span><b><%= campo("RotuloCampo") %><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></b></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
-                <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>
+                <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", ""&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id"))%>
             </div>
         <%
         case 4'CHECKBOX
             %>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <span><b><%= Rotulo %></b></span>
+                    <span><b><%= Rotulo %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                     <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
                 <div class="row">
@@ -132,7 +136,7 @@ while not campo.eof
                     while not op.eof
                         %>
                         <div class="col-xs-3 pt10">
-                            <span class="checkbox-custom"><input type="checkbox" id="chk<%= CampoID &"_"& op("id") %>" name="<%= "Campo"& CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
+                            <span class="checkbox-custom"><input type="checkbox" id="chk<%= CampoID &"_"& op("id") %>" name="<%= "Campo"& CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" <%=required%> data-campoid="chk<%= CampoID &"_"& op("id") %>" data-name="<%= Rotulo %>" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
                         </div>
                         <% if instr(Rotulo, "Vacina")>0 then %>
                             <div class="col-xs-2"><input type="date" class="form-control" /></div>
@@ -157,7 +161,7 @@ while not campo.eof
             %>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <span><b><%= Rotulo %></b></span>
+                    <span><b><%= Rotulo %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                     <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
 
@@ -168,7 +172,7 @@ while not campo.eof
                     while not op.eof
                         %>
                         <div class="col-xs-3 pt10">
-                            <span class="radio-custom"><input type="radio" id="chk<%= CampoID &"_"& op("id") %>" name="Campo<%= CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
+                            <span class="radio-custom"><input type="radio" id="chk<%= CampoID &"_"& op("id") %>" name="Campo<%= CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" <%=required%> data-name="<%= Rotulo %>" data-campo-id="chk<%= CampoID &"_"& op("id") %>" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
                         </div>
                         <%
                     op.movenext
@@ -206,17 +210,17 @@ while not campo.eof
             %>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <span><b><%= Rotulo %></b></span>
+                        <span><b><%= Rotulo %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                         <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="col-md-<%= cols %>">
-                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &"") %>
+                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &""&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id")) %>
                     </div>
                     <%
                     if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
                         %>
                         <div class="col-md-6">
-                            <%= quickfield("text", "Cid"& campo("id"), "", 12, "", "", "", " placeholder='Buscar...' autocomplete='off'  onkeyup=""sug("& campo("id") &", 'Cid', 'CidCiap')"" ") %>
+                            <%= quickfield("text", "Cid"& campo("id"), "", 12, "", "", "", " placeholder='Buscar...' autocomplete='off'  onkeyup=""sug("& campo("id") &", 'Cid', 'CidCiap')"" "&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id")) %>
                             <div id="sugCid<%= campo("id") %>" class="p10 panel panel-body sug" style="width:500px; height:400px; position:absolute; z-index:10000; display:none; overflow:auto; cursor:pointer">
                             </div>
                             <script type="text/javascript">
@@ -699,6 +703,55 @@ end if
 %>
 
     function salvarAtendimento(ID){
+        // if(!inicio){
+            let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID")
+            let erro = false;
+            let campoCheck = ""
+            formdata.map((key,input)=>{
+                let required =  $(input).prop('required')
+                if (required){
+                    if ($(input).prop('type')== 'checkbox'){
+                        if(campoCheck != $(input).attr("data-campoid")){
+                            campoCheck = $(input).attr("data-campoid")
+                            var inputs = $(input).parent().parent().find('input');
+                            let temcheckboxselecionado = false
+                            inputs.each(function(key,input){
+                                if ($(input).is(":checked")){
+                                    temcheckboxselecionado = true
+                                }
+                            });
+                            if(!temcheckboxselecionado){
+                                let nome = $(input).data('name').trim()
+                                new PNotify({
+                                        title: 'Ocorreu um erro!',
+                                        text: 'O campo '+nome+' é obrigatório!',
+                                        type: 'danger',
+                                        delay: 3000
+                                    });
+                                    erro = true
+                                    return false
+                            }
+                        }
+                    }else{
+                        let valor = $(input).val()
+                        if(valor.length<=0){
+                            let nome = $(input).data('name').trim()
+                            new PNotify({
+                                title: 'Ocorreu um erro!',
+                                text: 'O campo '+nome+' é obrigatório!',
+                                type: 'danger',
+                                delay: 3000
+                            });
+                            erro = true
+                            return false
+                        }
+                    }
+                }
+            })
+            if(erro){
+                return false
+            }
+        // }
         $.post("saveProt.asp?FormID="+ID+"&Salvar=1", $("#fEst").serialize(), function (data) { eval(data) });
     }
 
@@ -847,6 +900,9 @@ end if
         saveProt(0);
     }
     $(".campo-memo-protocolo").ckeditor();
+
+
+
 
 <!--#include file="JQueryFunctions.asp"-->
 </script>

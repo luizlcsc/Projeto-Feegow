@@ -1095,9 +1095,12 @@ function itens(T, A, II, autoPCi, cb){
 	var inc = $('.invoice-linha-item[data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
-
+    var fornecedor = "";
+    if(T=="O"){
+        fornecedor = "&fornecedor="+$('#AccountID').val();
+    }
 	if(inc==undefined){inc=0}
-	$.post("invoiceItens.asp?I=<%=InvoiceID%>&Row="+inc+"&autoPCi="+autoPCi, {T:T,A:A,II:II, CC: centroCustoId, LimitarPlanoContas: LimitarPlanoContas}, function(data, status){
+	$.post("invoiceItens.asp?I=<%=InvoiceID%>&Row="+inc+fornecedor+"&autoPCi="+autoPCi, {T:T,A:A,II:II, CC: centroCustoId, LimitarPlanoContas: LimitarPlanoContas}, function(data, status){
 	if(A=="I"){
 		$("#footItens").before(data);
 	}else if(A=="X"){

@@ -69,7 +69,7 @@ end if
     </thead>
     <tbody>
         <%
-        set pprocs = db.execute("select * from pedidossadtprocedimentos pp LEFT JOIN procedimentos p on p.Codigo=pp.CodigoProcedimento LEFT JOIN procedimentosgrupos pg ON pg.id=p.GrupoID where PedidoID="& I)
+        set pprocs = db.execute("select pp.*,pg.NomeGrupo from pedidossadtprocedimentos pp LEFT JOIN procedimentos p on p.Codigo=pp.CodigoProcedimento LEFT JOIN procedimentosgrupos pg ON pg.id=p.GrupoID where PedidoID="& I)
             while not pprocs.eof
                 %>
                 <tr>

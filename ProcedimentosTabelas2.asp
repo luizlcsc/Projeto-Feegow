@@ -56,7 +56,7 @@ tiposAutorizados = ""
 
 tiposAutorizados = ""
 
-if aut("|tabelasprecoscustoV|")=1 then
+if aut("|tabelasprecoscustoA|")=1 then
     if tiposAutorizados<>"" then
         tiposAutorizados = tiposAutorizados & ", 'C'"
     else
@@ -64,7 +64,7 @@ if aut("|tabelasprecoscustoV|")=1 then
     end if
 end if
 
-if aut("|tabelasprecosV|")=1 then
+if aut("|tabelasprecosA|")=1 then
     if tiposAutorizados<>"" then
         tiposAutorizados = tiposAutorizados & ", 'V'"
     else

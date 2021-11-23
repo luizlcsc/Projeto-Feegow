@@ -1106,12 +1106,6 @@ end select
         </div>
     </div>
 
-</div>
- 
-
-</div>
-
-</div>
 <%
 If Err.Number <> 0 Then
     db.execute("INSERT INTO cliniccentral.exceptions (Message, File, LicencaID, UsuarioID, Linha, Metadata) VALUES ('"&Err.Description&"', '"&Request.ServerVariables("SCRIPT_NAME")&"', '"&replace(session("Banco"), "clinic","")&"', "&session("User")&", 0, "&PacienteID&")")

@@ -2735,6 +2735,15 @@ end if
         <a href="?P=programasdesaudetipos&Pers=1"><span class="far fa-list"></span> <span class="sidebar-title">Tipos de Programa</span></a>
     </li>
     <%
+    case "email_config", "email_modelos", "enviaemail"
+    %>
+    <li>
+        <a href="?P=email_config&Pers=0"><span class="far fa-at"></span> <span class="sidebar-title">Configuração de e-mail</span></a>
+    </li>
+    <li>
+        <a href="?P=email_modelos&Pers=0"><span class="far fa-envelope"></span> <span class="sidebar-title">Modelos de e-mail</span></a>
+    </li>
+    <%
 end select
 
 if session("AutoConsolidar")="" then

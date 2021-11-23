@@ -45,6 +45,7 @@ end if
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr class="success">
+                        <th width="1%"></th>
                         <th width="8%">Data</th>
                         <%if req("PacienteID")="" then%>
                             <th>Paciente</th>
@@ -86,6 +87,14 @@ end if
                         PropostaNaoExecutada = false
                         %>
                         <tr>
+                            <td nowrap>
+                                <%if session("OtherCurrencies")="phone" then %>
+                                <a class="btn btn-xs btn-info" title="Enviar por E-mail" onclick="location.href='./?P=EnviaEmail&Pers=1&Tipo=Proposta&idTipo=<%=p("id")%>'"><i class="far fa-paper-plane"></i></a>
+                                <%end if %>
+                                <a class="btn btn-xs btn-success" href="<%if req("PacienteID")="" then%>./?P=PacientesPropostas&Pers=1&I=<%=req("I")%>&PropostaID=<%=p("id")%><%
+                                    else
+                                    %>javascript:ajxContent('PacientesPropostas&CallID=<%=CallID %>&PacienteID=<%=req("PacienteID")%>&PropostaID=<%=p("id")%>', '', '1', 'pront<%=CallID %>')<%end if%>" title="Editar Proposta"><i class="far fa-edit"></i></a>
+                            </td>
                             <td><%=p("DataProposta")%></td>
                             <%if req("PacienteID")="" then
 
@@ -138,21 +147,13 @@ end if
                                 %>
                                 <td class="text-right">R$ <%=formatnumber(valor,2)%></td>
                             <% end if %>
-                            <td nowrap>
-                                <%if session("OtherCurrencies")="phone" then %>
-                                <a class="btn btn-xs btn-info" title="Enviar por E-mail"
-                                    onclick="enviarPorEmail(<%=p("id")%>)"
-                                    ><i class="far fa-paper-plane"></i></a>
-                                <%end if %>
-                                <a class="btn btn-xs btn-success" href="<%if req("PacienteID")="" then%>./?P=PacientesPropostas&Pers=1&I=<%=req("I")%>&PropostaID=<%=p("id")%><%
-                                    else
-                                    %>javascript:ajxContent('PacientesPropostas&CallID=<%=CallID %>&PacienteID=<%=req("PacienteID")%>&PropostaID=<%=p("id")%>', '', '1', 'pront<%=CallID %>')<%end if%>" title="Editar Proposta"><i class="far fa-edit"></i></a>
+                            <td>
                                 <%
-                                if aut("|propostasX|")=1 and PropostaNaoExecutada then
-                                %>
-                                <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=p("id")%>)" title="Excluir Proposta"><i class="far fa-remove"></i></button>
-                                <%
-                                end if
+                                    if aut("|propostasX|")=1 and PropostaNaoExecutada then
+                                    %>
+                                    <button type="button" class="btn btn-xs btn-danger" onClick="x(<%=p("id")%>)" title="Excluir Proposta"><i class="far fa-remove"></i></button>
+                                    <%
+                                    end if
                                 %>
                             </td>
                         </tr>

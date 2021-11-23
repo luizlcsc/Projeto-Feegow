@@ -337,7 +337,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="Celular" class="field prepend-icon">
-                                                                <input type="text" name="Celular" id="Celular" class="gui-input input-mask-phone" placeholder="Celular..." required>
+                                                                <input type="text" name="Celular" id="Celular" class="gui-input input-mask-phone" placeholder="Celular...">
                                                                 <label for="Celular" class="field-icon">
                                                                 <i class="far fa-mobile-phone"></i>
                                                                 </label>
@@ -356,7 +356,7 @@
 
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <select name="ComoConheceu" class="gui-input" required>
+                                                            <select name="ComoConheceu" class="gui-input">
                                                                 <option value="">Como nos Conheceu?</option>
                                                                 <option>Hospitalar</option>
                                                                 <option value="Evento">Evento / Congresso</option>
@@ -370,7 +370,7 @@
                                                     <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="NomeEmpresa" class="field prepend-icon">
-                                                                <input type="text" required name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
+                                                                <input type="text" name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
                                                                 <label for="NomeEmpresa" class="field-icon">
                                                                 <i class="far fa-hospital-o"></i>
                                                                 </label>
@@ -378,7 +378,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="UsuariosPretendidos" class="field prepend-icon">
-                                                                <input type="text" required name="UsuariosPretendidos" id="UsuariosPretendidos" class="gui-input" placeholder="Quantidade de Profissionais da Clínica" >
+                                                                <input type="text" name="UsuariosPretendidos" id="UsuariosPretendidos" class="gui-input" placeholder="Quantidade de Profissionais da Clínica" >
                                                                 <label for="UsuariosPretendidos" class="field-icon">
                                                                 <i class="far fa-group"></i>
                                                                 </label>
@@ -388,7 +388,7 @@
                                                     <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="Cargo" class="field prepend-icon">
-                                                                <input type="text" required name="Cargo" id="Cargo" class="gui-input" placeholder="Cargo" >
+                                                                <input type="text" name="Cargo" id="Cargo" class="gui-input" placeholder="Cargo" >
                                                                 <label for="Cargo" class="field-icon">
                                                                 <i class="far fa-suitcase"></i>
                                                                 </label>

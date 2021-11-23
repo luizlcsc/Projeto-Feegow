@@ -343,6 +343,7 @@ ELSE
                 db.execute("insert ignore into cartaoconciliacao (AdquirenteID"& Colunas & ", Hash) VALUES ("& AdquirenteID & Valores &", md5('"& hash &"'))")
                 
                 db.execute("UPDATE cartaoconciliacao as filho INNER JOIN cartaoconciliacao AS pai ON (filho.Transacao=pai.Transacao AND filho.Autorizacao=pai.Autorizacao AND filho.Parcela=pai.Parcela and pai.ValorBruto>0) SET filho.Pai=pai.id WHERE filho.conciliado=0 AND filho.ValorBruto<0 AND filho.Pai=0")
+                db.execute("UPDATE cartaoconciliacao SET ValorTaxa=ValorBruto-ValorLiquido WHERE Conciliado=0 AND ISNULL(ValorTaxa) AND ValorBruto>0 AND ValorLiquido>0")
 
 END IF
             end if

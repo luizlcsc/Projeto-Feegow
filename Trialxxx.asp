@@ -10,6 +10,7 @@
     <meta name="author" content="Feegow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
+    <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
 
     <!-- Font CSS (Via CDN) -->
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'>
@@ -229,7 +230,7 @@
 
                 <div class="admin-form theme-info" id="login1" style="margin-top: 0">
 
-                    <div class="row mb15 table-layout">
+                    <div class="row mb10 table-layout">
 
                         <div class="col-xs-6 va-m pln">
                             <a href="./?P=Login" title="Logo">

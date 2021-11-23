@@ -39,7 +39,6 @@ function SendMailMarketing(Para, Titulo, Mensagem)
 	objCDOSYSMail.Subject = Titulo
 	objCDOSYSMail.HtmlBody = "<html> <head><meta http-equiv=""Content-Type"" content=""text/html;charset=utf-8""></head><body>"& Mensagem &"</body></html>"
 	objCDOSYSMail.Send
-	
 	Set objCDOSYSMail = Nothing 
 	Set objCDOSYSCon = Nothing 
 
@@ -51,7 +50,7 @@ end function
 
 if instr(ref("Para"), "@") then
 
-    call SendMailMarketing(trim(ref("Para")), ref("Assunto"), ref("Mensagem"))
+    call SendMailMarketing(trim(ref("Para")), ref("Assunto"), refhtml("Mensagem"))
 
 else
 

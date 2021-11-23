@@ -121,7 +121,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         'Adicionar aqui...
       case "AtendimentoID"          
         item_AtendimentoID          = item_id
-
+        
       case "FaturaID"          
         item_FaturaID          = item_id
         'ALIAS DE TAGS RELACIONADAS A FATURAS / Invoices
@@ -314,6 +314,58 @@ function tagsConverte(conteudo,itens,moduloExcecao)
           'response.write("<pre>"&qUnidadeSQL&"</pre>")
                
         case "Profissional"
+
+          'TRATANDO TAG DE PROFISSIONAL DENTRO DO MODELO ATESTADO
+          if item_nome = "AtendimentoID" then
+
+            'Não tem um atendimento e não é um profissional a variavel ProfissionalAtendimentoID fica vazia: a tag fica em branco
+            ProfissionalAtendimentoID = ""
+            set ProfissionalAtendimentoSQL = db_execute("SELECT HoraFim, ProfissionalID FROM atendimentos WHERE PacienteID="&req("PacienteID")&" ORDER BY id DESC LIMIT 1")
+
+            if not ProfissionalAtendimentoSQL.eof then
+              
+              if session("Table")="profissionais" then
+                'Tem atendimento: pegar profissional atendimento
+                HoraFimAtendimento = ProfissionalAtendimentoSQL("HoraFim")&""
+                ProfissionalAtendimentoID = ProfissionalAtendimentoSQL("ProfissionalID")
+              end if
+
+            else
+
+              'Não tem um atendimento e é um profissional: pegar profissional logado
+              if session("Table")="profissionais" then           
+                ProfissionalAtendimentoID = session("idInTable")
+              end if
+              
+            end if
+
+            if ProfissionalAtendimentoID <> "" then
+              set DadosProfissionalSQL = db_execute("SELECT f.id FornecedorID, prof.RQE, prof.Conselho, prof.NomeProfissional, t.Tratamento, cp.descricao, COALESCE(f.NomeFornecedor, prof.NomeProfissional) RazaoSocial, f.CPF CPFCNPJ , CONCAT(IF(t.Tratamento is null,'',concat(t.Tratamento,' ')),IF(prof.NomeSocial is null or prof.NomeSocial ='', SUBSTRING_INDEX(prof.NomeProfissional,' ', 1), prof.NomeSocial)) PrimeiroNome, "&_
+                                                    "CONCAT(cp.descricao, ' ', prof.DocumentoConselho, ' ', prof.UFConselho) Documento, prof.Assinatura, prof.DocumentoConselho, prof.CPF, prof.NomeSocial, esp.especialidade Especialidade "&_
+                                                    "FROM profissionais prof "&_
+                                                    "LEFT JOIN conselhosprofissionais cp ON cp.id=prof.Conselho "&_
+                                                    "LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+                                                    "LEFT JOIN fornecedores f ON f.id=prof.FornecedorID "&_
+                                                    "LEFT JOIN tratamento t ON t.id=prof.TratamentoID "&_
+                                                    "WHERE prof.id="&ProfissionalAtendimentoID)
+              if not DadosProfissionalSQL.eof then
+                conteudo = replace(conteudo, "[Profissional.Nome]", trim(DadosProfissionalSQL("NomeProfissional")&""))
+                conteudo = replace(conteudo, "[Profissional.RQE]", trim(DadosProfissionalSQL("RQE")&""))
+                conteudo = replace(conteudo, "[Profissional.Documento]", trim(DadosProfissionalSQL("Documento")&""))
+                conteudo = replace(conteudo, "[Profissional.DocumentoConselho]", trim(DadosProfissionalSQL("DocumentoConselho")&""))
+                conteudo = replace(conteudo, "[Profissional.Tratamento]", trim(DadosProfissionalSQL("Tratamento")&""))
+                conteudo = replace(conteudo, "[ProfissionalSolicitante.Nome]", trim(DadosProfissionalSQL("NomeProfissional")&""))
+              
+                if DadosProfissionalSQL("Assinatura")&"" = "" then
+                  conteudo = replace(conteudo, "[Profissional.Assinatura]", "______________________________________________")
+                else
+                  conteudo = replace(conteudo, "[Profissional.Assinatura]", "<img style='max-width:200px;max-height:150px;width:auto;height:auto;' src='"&imgSRC("Imagens",trim(DadosProfissionalSQL("Assinatura"))&"&dimension=full")&"'>" )
+                end if
+
+              end if
+            end if
+          end if
+
           if item_ProfissionalExternoID>0 then
             qContentSQL = "SELECT pro.NomeProfissional, pro.DocumentoConselho "&_
             "FROM profissionalexterno AS pro "&_

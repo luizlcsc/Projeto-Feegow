@@ -201,7 +201,7 @@ while not campo.eof
                 </span>
             </div>
             <%
-        case 8'MEMORANDO
+        case 8,16'MEMORANDO
 '            Valor = reg(""& campo("id") &"")
             if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
                 cols = 6

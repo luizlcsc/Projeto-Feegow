@@ -460,6 +460,7 @@ else
     if SubtipoAgendamento<>"" then
 		response.Write(" &raquo; <small>"&SubtipoAgendamento&"</small>")
 	end if
+    if veseha("Retorno")=1 then%><span class="label label-warning ml5"><i class="far fa-undo"></i> Retorno </span><%end if
     %></td>
     <td nowrap="nowrap">
     <%=StaConsulta%>&nbsp;

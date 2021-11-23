@@ -276,7 +276,13 @@
 <!--                                                        Teste agora o Feegow Clinic!</span>-->
                         </div>
                         <%
-                        ShortVersion = True
+                        ShortVersion = Request.QueryString("short")="1"
+                        Cupom = req("Cupom")
+
+                        if Cupom = "" then
+                            Cupom = Request.QueryString("source")
+                        end if
+                        
 
                         if ShortVersion then    
                         %>
@@ -342,7 +348,7 @@
                                                     <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="Cupom" class="field prepend-icon">
-                                                                <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=req("Cupom")%>">
+                                                                <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=Cupom%>">
                                                                 <label for="Cupom" class="field-icon">
                                                                 <i class="far fa-ticket"></i>
                                                                 </label>

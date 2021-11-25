@@ -655,8 +655,8 @@ function setInputDescontoEmPorcentagem(descontoInput){
 }
 
 function convertRealParaPorcentagem(valorReal, valorUnitario){
-    valorReal      = valorReal.replace(".","");
-    valorUnitario  = valorUnitario.replace(".","");
+    valorReal      = String(valorReal).replace(".","");
+    valorUnitario  = String(valorUnitario).replace(".","");
     valorReal      = parseFloat(valorReal.replace(",","."));
     valorUnitario  = parseFloat(valorUnitario.replace(",","."));
     if(valorReal == "0.00" || valorUnitario == "0.00") return "0,00";
@@ -728,14 +728,18 @@ function onChangeProcedimento(linhaId, procedimentoId) {
 }
 
 $(document).ready(function(){
-    inputs = $("input[name^='PercentDesconto']");
-    inputs.each(function (key, input) {
-        let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val().replace(",",".");
-        let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
-        let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
-        $(input).val(descontoEmPercentual);
-        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
-    });
+    let inputs = $("input[name^='PercentDesconto']");
+	if (inputs.length>0){
+		inputs.each(function (key, input) {
+			let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val();
+			valorUnitario !== undefined ? valorUnitario = valorUnitario.replace(",","."):valorUnitario=0
+			let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val();
+			descontoEmReais !== undefined ? descontoEmReais = descontoEmReais.replace(",","."):descontoEmReais=0
+			let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
+			$(input).val(descontoEmPercentual);
+			$(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
+		});
+	}
     <%
     if req("T")="C" then
     %>

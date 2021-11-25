@@ -36,7 +36,15 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
          font-family: "Open Sans";
          src: url('https://cdn.feegow.com/feegowclinic-v7/assets/fonts/open-sans/OpenSans-Regular.ttf');
     }
-
+    .fake{
+        height: 39px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #dddddd;
+        border-radius: 0 4px 4px 0;
+    }
     .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
       }

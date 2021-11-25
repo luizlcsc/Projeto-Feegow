@@ -13,17 +13,6 @@
     end if
 
 %>
-<style>
-.fake{
-    height: 39px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #dddddd;
-    border-radius: 0 4px 4px 0;
-}
-</style>
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" data-imposto="<%=imposto%>">
     <td>
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">

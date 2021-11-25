@@ -648,6 +648,7 @@ end if
                 else
                     compsWhereSql = "where a.Data="&mydatenull(Data)&" and (a.sysActive=1 and a.StaID NOT IN ("&statusCancelados&")) and a.ProfissionalID="&ProfissionalID & sqlSomentestatus &" AND COALESCE( l.UnidadeID = "&session("UnidadeID")&",FALSE) order by Hora) as k"
                 end if
+
                 set comps=db.execute(compsSql&compsWhereSql)
 
                 while not comps.EOF
@@ -760,12 +761,11 @@ end if
 
                      if Matricula1 <>"" then
 
-						matricula1 = "<br>Matrícula: "&Matricula1
-
 						if session("banco") = "clinic10402" and len(Matricula1) > 21 then
-							matricula1 = "<br>Matrícula: "&mid(Matricula1,8,7)
+							matricula1 = "<br>Matrícula: "&mid(Matricula1,8,7)&"..."
+						else
+                            matricula1 = "<br>Matrícula: "&Matricula1
 						end if
-
                     else
                         matricula1 = "<br>Matrícula: *"
                     end if

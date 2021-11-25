@@ -256,7 +256,6 @@ if existePagto="" then
 			totParc = totParc+valPar
 		end if
 	next
-
 	if totInvo<=(totParc-0.05) or totInvo>=(totParc+0.05) then
 		erro = "O valor total n&atilde;o coincide com a soma das parcelas."
 	end if

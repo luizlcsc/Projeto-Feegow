@@ -3,6 +3,9 @@
 Lotes = req("Lotes")
 ConvenioID = req("ConvenioID")
 TG = lcase(req("T"))
+CriaInvoice = req("CriaInvoice")
+valorGuias =  req("V")
+
 if TG="guiaconsulta" then
     coluna = "ValorProcedimento"
 elseif TG="guiasadt" then
@@ -74,6 +77,11 @@ if not plote.eof then
     for i=0 to ubound(spl)
         db_execute("insert into tissguiasinvoice (ItemInvoiceID, InvoiceID, GuiaID, TipoGuia) values ("& ItemInvoiceID &", "& InvoiceID &", "& spl(i) &", '"&TG&"')")
     next
+
+    if CriaInvoice = 1 then
+        call lancarImposto(InvoiceID,valorGuias,ConvenioID)
+    end if 
+    
     %>
     location.href='./?P=Invoice&Pers=1&T=C&I=<%=InvoiceID %>';
     <%

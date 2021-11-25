@@ -2,14 +2,12 @@
 <!--#include file="./../connect.asp"-->
 <%
 Function webhook(EventId, Async, replaceFrom, replaceTo)
-
 'VERIFICA SE O EVENTOID É NÚMERO PARA CONSULTAR NO CLINICCENTRAL O EVENTO WEBHOOK CADASTRADO
 if isnumeric(EventID) then
 
   checkEndPointSQL =  " SELECT webEnd.id, webEnd.URL, webEve.Metodo, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve "&chr(13)&_
                       " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id                                               "&chr(13)&_
                       " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&EventId&"  AND webEve.Ativo='S'"
-    
   SET  checkEndPoint = db.execute(checkEndPointSQL)
   if not checkEndPoint.eof then
 
@@ -27,7 +25,6 @@ if isnumeric(EventID) then
       webhook_body = replace(webhook_body, "[Sistema.Data]",date())
       webhook_body = replace(webhook_body, "[Sistema.Hora]", time())
     end if
-
     'VERIFICA SE O REPLACEFROM É MÚLTIPLO E FAZ O TRATAMENTO ADEQUADO
     if instr(replaceFrom, "|,") > 0 then
       
@@ -46,11 +43,10 @@ if isnumeric(EventID) then
 
           'PREPARA QUERYS E INFORMA O NOME DE CADA MÓDULO QUE FOI PASSADO  ATRAVÉS DO "replaceFrom"
           select case itemNome
-
             case "PacienteID"
               ModuleName = "Paciente" 
               ModuleSQL = "SELECT                                                                                          "&chr(13)&_
-                    "p.NomePaciente as Nome,COALESCE(p.Cel1,p.Cel2,0) AS Celular, COALESCE(p.Email1,p.Email2,0) AS Email,  "&chr(13)&_
+                    "p.NomePaciente as Nome, COALESCE(p.Cel1,p.Cel2,0) AS Celular, COALESCE(p.Email1,p.Email2,0) AS Email, "&chr(13)&_
                     "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3',        "&chr(13)&_
                     "pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3',                    "&chr(13)&_
                     "ec.EstadoCivil, s.NomeSexo AS Sexo, g.GrauInstrucao, o.Origem, corPel.NomeCorPele,                    "&chr(13)&_
@@ -84,7 +80,8 @@ if isnumeric(EventID) then
             case "AgendamentoID"
               ModuleName = "Agendamento"
               ModuleSQL  = "SELECT "&chr(13)&_
-                           "DATE_FORMAT(a.Data, '%Y')*1 Ano, DATE_FORMAT(a.Data, '%m')*1 Mes, DATE_FORMAT(a.Data, '%d')*1 Dia, TIME_FORMAT(a.Hora, '%H')*1 AS Hora, TIME_FORMAT(a.Hora, '%m')*1 AS Minuto, "&chr(13)&_
+                           "DATE_FORMAT(a.Data, '%Y') Ano, DATE_FORMAT(a.Data, '%m') Mes, DATE_FORMAT(a.Data, '%d') Dia,                "&chr(13)&_
+                           "LPAD(MOD(TIME_FORMAT(a.Hora, '%H'),60),2,0) AS Hora, LPAD(MOD(TIME_FORMAT(a.Hora, '%m'),60),2,0) AS Minuto, "&chr(13)&_
                            "a.id, a.Data, a.TipoCompromissoID,  a.StaID,  a.ValorPlano,  a.rdValorPlano,  a.Notas,  a.Falado,  a.FormaPagto,  a.LocalID,  a.Tempo,  a.HoraFinal,  a.SubtipoProcedimentoID,  a.HoraSta,  a.ConfEmail,  a.ConfSMS,  a.Encaixe,  a.EquipamentoID,  a.NomePaciente,  a.Tel1,  a.Cel1,  a.Email1, a.Procedimentos,  a.EspecialidadeID,  a.IndicadoPor,  a.TabelaParticularID,  a.CanalID,  a.Retorno,  a.RetornoID,  a.Primeira,  a.PlanoID, a.PermiteRetorno, esp.Especialidade "&chr(13)&_
                            "FROM agendamentos a "&chr(13)&_
                            "LEFT JOIN especialidades esp ON esp.id = a.EspecialidadeID "&chr(13)&_
@@ -122,10 +119,16 @@ if isnumeric(EventID) then
                            "COALESCE(uni.NomeFantasia,uni.NomeEmpresa,'Indefinido') AS Nome, COALESCE(uni.Tel1, uni.Tel2, 0) AS Telefone, "&chr(13)&_
                            "uni.* "&chr(13)&_
                            "FROM vw_unidades AS uni "&chr(13)&_
-                           "WHERE uni.id="&treatvalzero(itemID)  
+                           "WHERE uni.id="&treatvalzero(itemID)
+
+            case "PropostaID"
+              ModuleName = "Proposta"
+              ModuleSQL  = "SELECT NomeProfissional, propostas.sysUser, tabelaparticular.NomeTabela FROM propostas "_
+                &"LEFT JOIN profissionais ON profissionais.id = propostas.ProfissionalID "_
+                &"LEFT JOIN tabelaparticular ON  tabelaparticular.id = propostas.TabelaID "_
+                &"WHERE propostas.id ="&treatvalzero(itemID)
 
           end select
-          
           SET moduleValue = db.execute(ModuleSQL)
 
           'CONSULTA O NOME DAS COLUNAS ATRAVÉS DA TABELA "cliniccentral.tags"
@@ -180,7 +183,6 @@ if isnumeric(EventID) then
     else
       'WEBHOOK ANTIGO replaceFrom / replaceTo 1 PARA 1
       webhook_body     = replace(webhook_body, replaceFrom,replaceTo)
-
     end if
 
     CALL sendWebAPI(webhook_endpoint, webhook_body, webhook_method, True, Token, webhook_header)
@@ -195,8 +197,7 @@ End Function
 '***
 'ENVIO API REST VIA ASP
 '
-Function sendWebAPI(EndPoint, Content, Method, Async, Token, EndPointHeader) 
-
+Function sendWebAPI(EndPoint, Content, Method, Async, Token, EndPointHeader)
   if Async= false then
     Set xmlhttp = CreateObject("MSXML2.serverXMLHTTP") 'NÃO FUNCIONANDO ASYNC
   else

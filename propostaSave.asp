@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="webhookFuncoes.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <%
 PropostaID = req("PropostaID")
@@ -262,6 +263,11 @@ if erro="" then
 
 		sqlSave = "update propostas set Valor="&treatvalzero(totalProposta)&" where id="&PropostaID
 		db_execute(sqlSave)
+		'<Aciona webhook de sincronização com SalesForce>
+		if recursoAdicional(45) = 4 then
+			call webhook(124, true, "[PropostaID]", PropostaID)
+		end if
+		'</Aciona webhook de sincronização com SalesForce>
 
 		'formas da proposta
 		db_execute("delete from pacientespropostasformas where PropostaID="&PropostaID)

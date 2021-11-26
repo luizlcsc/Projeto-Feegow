@@ -329,10 +329,12 @@ end if
                         <div class='col-md-5'>
                             <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
 
-                            <% IF session("admin")=1 THEN %>
-                                <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                            <% IF session("admin") = 1 and recursoadicional(37) = 4 THEN %>
+                                <%=quickField("simpleCheckbox", "auditor", "Este é um médico auditor", 12,reg("auditor"), "", "", "")%>
+                                <%=quickField("simpleCheckbox", "farmaceutico_auditor", "Este é um farmacêutico é auditor", 12,reg("farmaceutico_auditor"), "", "", "")%>
                             <% ELSE %>
                                 <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
+                                <input type="hidden" value="<%=reg("farmaceutico_auditor")%>" name="farmaceutico_auditor">
                             <% END IF %>
                         </div>
                     </div>
@@ -656,6 +658,13 @@ function selecionarTodasUnidades(cel){
 function VisualizarEnvioDasAgendas() {
     openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)
 }
+
+$("#farmaceutico_auditor").change(()=>{
+    document.getElementById('auditor').checked = false;
+})
+$("#auditor").change(()=>{
+    document.getElementById('farmaceutico_auditor').checked = false;
+})
 </script>
 
 <script src="src/imageUtil.js"></script>

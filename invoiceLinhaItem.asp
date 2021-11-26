@@ -698,22 +698,3 @@ end if
 
 end if
 %>
-<script>
-
-$('.deletaGuia').on('click', function(){
-    var itemGuiaId = $(this).data('id');
-    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]');
-
-    if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
-        $.post("deletaItemGuia.asp", { guiaInvoiceID: guiaInvoiceID , itemID:itemID, InvoiceID:InvoiceID}, function(data) {
-            if(data){
-                linhaItem.fadeOut('fast', function (){
-                    $('#totalGeral').html(data);
-                });
-            }
-        })
-    };
-})
-
-
-</script>

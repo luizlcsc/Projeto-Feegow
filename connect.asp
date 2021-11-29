@@ -924,14 +924,29 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			%>
 			<div class="input-group">
                 <input type="text" class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
+                <%
+                    ValidaCampoCPF = true
+                    if lcase(session("Table"))="funcionarios" and session("Admin")=0 then
+                        set OmiteCampoSemCPFSQL = db_execute("SELECT * FROM omissaocampos WHERE ((Tipo='F' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR Tipo='C') AND Omitir LIKE '%SemCPF|%'")
+                        if not OmiteCampoSemCPFSQL.eof then
+                            ValidaCampoCPF = false
+                        end if
+                    elseif lcase(session("Table"))="profissionais" and session("Admin")=0 then
+                        set OmiteCampoSemCPFSQL = db_execute("SELECT * FROM omissaocampos WHERE ((Tipo='P' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR (Tipo='E' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR Tipo='C') AND Omitir LIKE '%SemCPF|%'")
+                        if not OmiteCampoSemCPFSQL.eof then
+                            ValidaCampoCPF = false
+                        end if
+                    end if
+                    if ValidaCampoCPF <> false then
+                %>
+                    <span class="input-group-addon">
+                    <div class="checkbox-custom checkbox-warning">
+                            <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
 
-                <span class="input-group-addon">
-                   <div class="checkbox-custom checkbox-warning">
-                        <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
-
-                        <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
-                    </div>
-                </span>
+                            <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
+                        </div>
+                    </span>
+                <% end if %>
             </div>
 
 			<%

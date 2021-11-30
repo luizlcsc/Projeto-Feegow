@@ -318,9 +318,11 @@ end if
                             <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
                         <%end if%>
 
-                        <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
+                        <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 4, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
                         
-                        <%= quickField("number", "IdadeMinima", "Idade mínima", 3, reg("IdadeMinima"), "", "", "") %>
+                        <%= quickField("number", "IdadeMinima", "Idade mínima", 2, reg("IdadeMinima"), "", "", "") %>
+
+                        <%= quickField("number", "IdadeMaxima", "Idade máxima", 2, reg("IdadeMaxima"), "", "", "") %>
                         
                         <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
 

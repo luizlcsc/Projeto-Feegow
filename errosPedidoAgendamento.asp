@@ -76,6 +76,21 @@ if ref("ageNascimento")<>"" and FieldExists(ProfissionalSQL, "IdadeMinima") then
     end if
 end if
 
+if ref("ageNascimento")<>"" and FieldExists(ProfissionalSQL, "IdadeMaxima") then
+
+    if isnumeric(ProfissionalSQL("IdadeMaxima")) then
+        if ProfissionalSQL("IdadeMaxima")>0 then
+            idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
+            
+            if isnumeric(idadePaciente) then
+                if cint(idadePaciente) > ProfissionalSQL("IdadeMaxima") then
+                    erro = "Profissional atende apenas pacientes com idade até "&ProfissionalSQL("IdadeMaxima")&" anos de idade. Verifique a configuração do profissional."
+                end if
+            end if
+        end if
+    end if
+end if
+
 'if session("Banco")="clinic811" and ref("ageOrigem")="0" then
 '    erro = "Erro: Selecione a origem."
 'end if

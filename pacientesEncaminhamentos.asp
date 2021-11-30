@@ -8,6 +8,7 @@ if req("i")<>"" then
         EncaminhamentoId = pp("id")
         EspecialidadeID = pp("especialidadeid")
         ConteudoEncaminhamento = pp("descricao")
+        Cid10 = pp("codigocid")
     end if
 else
     set getImpressos = db.execute("select * from encaminhamentosmodelos WHERE Tipo like '|Encaminhamento|' ORDER BY id DESC")
@@ -38,10 +39,13 @@ end if
             <div class="col-xs-8">
                 <div id="encaminhar" class="tab-pane in active">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <input type="hidden" id="EncaminhamentoId" value="<%=EncaminhamentoId%>">
                         <input type="hidden" id="EspecialidadeID" value="<%=EspecialidadeID%>">
                         <%response.write(quickField("simpleSelect", "EspecialidadeID", "Especialidade para encaminhamento", 12, EspecialidadeID, "SELECT * FROM especialidades esp WHERE esp.sysActive=1 order by especialidade", "especialidade", "required semVazio disabled"))%>
+                    </div>
+                    <div class="col-md-6">
+                        <%response.write selectInsert(" CID 10 ", "Cid1", Cid10, "cliniccentral.cid10", "codigo", "", "", "") %>
                     </div>
                 </div>
                 </div>
@@ -144,7 +148,7 @@ $("#savePrescription").click(function(){
 
 
 function aplicarEncaminhamento(id){
-	$.post("PacientesAplicarFormula.asp?Tipo=Enc&PacienteID=<%=PacienteID%>", {id:id}, function(data, status){
+	$.post("PacientesAplicarFormula.asp?Tipo=Enc&PacienteID=<%=PacienteID%>", {id:id,CidId:$('#Cid1').val()}, function(data, status){
         $("#ConteudoEncaminhamento").val($("#ConteudoEncaminhamento").val()+data);
         // $("#EspecialidadeID").val( $("#EspecialidadeID"+id) );
     } );
@@ -182,6 +186,7 @@ function SaveAndPrint(salvarEncaminhamento){
 		   PacienteID:'<%=PacienteID%>',
 		   receituario:$("#ConteudoEncaminhamento").val(),
 		   EspecialidadeID:$("#EspecialidadeID").val(),
+		   CidId:$("#Cid1").val(),
            save: salvarEncaminhamento,
            EncaminhamentoId: EncaminhamentoId
 		   },function(data,status){

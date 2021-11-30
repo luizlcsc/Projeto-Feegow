@@ -7,7 +7,7 @@ set reg = db.execute("select * from encaminhamentos where descricao like '"&rece
 
 if reg.EOF then
     if cbool(save) then
-            db_execute("insert into encaminhamentos (pacienteid, especialidadeid, profissionalemissorid, descricao, sysactive, UnidadeID) values ("&ref("PacienteID")&","&ref("EspecialidadeID")&","&session("User")&",'"&receituario&"', 1, "&session("UnidadeID")&")")
+            db_execute("insert into encaminhamentos (pacienteid, especialidadeid, codigocid, profissionalemissorid, descricao, sysactive, UnidadeID) values ("&ref("PacienteID")&","&ref("EspecialidadeID")&",'"&ref("CidID")&"',"&session("User")&",'"&receituario&"', 1, "&session("UnidadeID")&")")
 
         set reg = db.execute("select * from encaminhamentos where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")
     else

@@ -111,13 +111,27 @@ elseif req("Tipo")="E" then
 '	PedidoExame = PedidoExame + $("#TextoPedido"+id).html()+"</p>";
 '	$("#pedidoexame").val($("#pedidoexame").val()+PedidoExame);
 elseif req("Tipo")="Enc" then
+
+	if ref("CidId") <> "" then
+		set cidSQL = db.execute("SELECT CONCAT(Codigo,' - ',Descricao) descricao FROM cliniccentral.cid10 WHERE id="&ref("CidId"))
+	
+		Descricao = ""	
+		if not cidSQL.eof then
+			Descricao = cidSQL("Descricao")&""
+		end if
+		DescricaoCid = "<p>Cid 10: "&Descricao&"</p>"
+	else
+		DescricaoCid = "<p>Cid 10: </p>"
+	end if
+
 	set listaEncaminhamentos= db.execute("select * from encaminhamentostextos where id="&ref("id"))
 	if not listaEncaminhamentos.eof then
 		TituloEncaminhamento= listaEncaminhamentos("TituloTexto")
 		if TituloEncaminhamento <> "" then
 			Encaminhamento = "<p><strong>"&TituloEncaminhamento&"</strong><br /><br />"
 		end if
-		Encaminhamento = Encaminhamento &listaEncaminhamentos("conteudoTexto")&"</p>"
+
+		Encaminhamento = Encaminhamento &DescricaoCid&listaEncaminhamentos("conteudoTexto")&"</p>"
 		TextoFinal = Encaminhamento
 
 		PacienteID = req("PacienteID")

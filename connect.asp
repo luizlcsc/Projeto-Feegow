@@ -6549,4 +6549,12 @@ function createTable_(I)
 					" )                                                                            				"
 		db.execute(sqlCreate)
 end function
+
+function Floor(Number)
+    Floor = Int(Number)
+end function
+
+function Ceil(Number)
+    Ceil = round(Number+0.1)
+end function
 %>

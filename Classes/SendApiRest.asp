@@ -24,6 +24,11 @@ if isnumeric(EventID) then
       webhook_body = replace(webhook_body, "[Data.DDMMAAAA]", "[Sistema.Data]" )
       webhook_body = replace(webhook_body, "[Sistema.Data]",date())
       webhook_body = replace(webhook_body, "[Sistema.Hora]", time())
+
+      webhook_body = replace(webhook_body, "[Evento.EnviarWhatsApp]", forceNotSendWhatsApp)
+      webhook_body = replace(webhook_body, "[Evento.EnviarSMS]", forceNotSendSMS)
+      webhook_body = replace(webhook_body, "[Evento.EnviarEmail]", forceNotSendEmail)
+
     end if
     'VERIFICA SE O REPLACEFROM É MÚLTIPLO E FAZ O TRATAMENTO ADEQUADO
     if instr(replaceFrom, "|,") > 0 then

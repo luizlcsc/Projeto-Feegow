@@ -61,7 +61,7 @@ function webhookMessage()
             EventoStatus = validaEventos("Status")
             EventoID = validaEventos("id")
             bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
-            bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
+            bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ConsultaID &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
             'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
             webhookID = false
 

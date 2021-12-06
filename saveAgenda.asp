@@ -495,17 +495,17 @@ if erro="" then
         $.get(feegow_components_path+"/googlecalendar/save", {Licenca: "<%=LicenseID%>" ,Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"<%=GCNomePaciente%>", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
 
         <%
-        forceNotSendSMS = "false"
-        forceNotSendWhatsApp = "false"
-        forceNotSendEmail = "false"
+        forceNotSendSMS = "true"
+        forceNotSendWhatsApp = "true"
+        forceNotSendEmail = "true"
 
         if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
             if ref("ConfSMS")="S" then
-                forceNotSendSMS = "true"
-                forceNotSendWhatsApp = "true"
+                forceNotSendSMS = "false"
+                forceNotSendWhatsApp = "false"
             end if
             if ref("ConfEmail")="S" then
-                forceNotSendEmail = "true"
+                forceNotSendEmail = "false"
             end if
             '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
             if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then

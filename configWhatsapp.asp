@@ -35,15 +35,14 @@ if eventoID <> "" then
         
             <%= quickfield("multiple", "Status", "Status do agendamento", 2, statusAgenda, "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "required") %>
 
+            <%= quickfield("simpleSelect", "Envio", "Envio", 3, antesDepois, "SELECT 'A' id, 'Antes' Envio UNION ALL SELECT 'D' id, 'Depois' Envio UNION ALL SELECT 'I' id, 'Imediato' Envio", "Envio", "required") %>
+            
             <div class="col-md-2">
                 <label for="IntervaloHoras">
                     Intervalo (em horas)
                 </label>
                 <input type="text" value="<%=intervalo%>" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" required />
             </div>
-
-            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, antesDepois, "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "required") %>
-
 
             <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
@@ -163,7 +162,7 @@ end if
         const sysUser        = $("#SysUser").val()
         const statusAgenda   = $("#Status").val()
         const intervalo      = $("#IntervaloHoras").val()
-        const antesDepois    = $("#AntesDepois").val()
+        const antesDepois    = $("#Envio").val()
         const paraApenas     = $("#ApenasAgendamentoOnline").val()
         const ativoCheckbox  = $("#ativoCheckbox").is(':checked') === true ? 1 : 0
         const profissionais  = $("#Profissionais").val()
@@ -205,6 +204,15 @@ end if
 
         }
     }
+
+    $("#Envio").change( () => {
+        if($("#Envio").val() === "I") {
+            $("#IntervaloHoras").attr("disabled", true)
+            $("#IntervaloHoras").val('')
+        } else {
+            $("#IntervaloHoras").attr("disabled", false)
+        }
+    });
 
     $(".crumb-active a").html("Configurar Eventos");
     $(".crumb-icon a span").attr("class", "far fa-");

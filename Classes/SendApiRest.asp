@@ -74,7 +74,8 @@ if isnumeric(EventID) then
               
             case "EventoID"
               ModuleName = "Evento"
-              ModuleSQL = "SELECT eve.id, IF(eve.AntesDepois='A','subtract','add') AS AntesDepois, eve.IntervaloHoras, "&chr(13)&_
+              ModuleSQL = "SELECT eve.id, IF(eve.AntesDepois='I', 'true', 'false') AS EnvioImediato,                   "&chr(13)&_
+                          "IF(eve.AntesDepois='A','subtract','add') AS AntesDepois, eve.IntervaloHoras,                "&chr(13)&_
                           "eveW.Nome AS WhatsAppModelo, sysSmsEma.TextoEmail AS EmailModelo,                           "&chr(13)&_
                           "sysSmsEma.TituloEmail AS EmailAssunto, sysSmsEma.TextoSMS AS SmsModelo                      "&chr(13)&_
                           "FROM eventos_emailsms eve                                                                   "&chr(13)&_

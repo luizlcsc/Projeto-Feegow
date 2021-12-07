@@ -283,9 +283,9 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
     end if
     StaDasa = ""
     if session("Banco")="clinic9021" then
-        StaDasa = "22"
+        StaDasa = ",22"
     end if
-    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4,15,"&StaDasa&")  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4,15"&StaDasa&")  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
     if not ve2.EOF then
         if isnumeric(ve2("Tempo")) then
             tmp=ccur(ve2("Tempo"))

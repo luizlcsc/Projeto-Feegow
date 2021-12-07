@@ -164,6 +164,7 @@ if ConsultaID<>"0" then
     if altCarac>0 and aut("senhaagendaI")=0 and session("SenhaStatusAgenda")="S" then
         if not pCon.eof then
             altCarac = 0
+            status = pCon("StatID")
             'se config:alteracao de carac somente mediante senha e usuario nao tem perm, e (status anterior aguard ou atend) e status atual <> aguard ou atend
             if isnumeric(rfValorPlano) and rfValorPlano<>"" then
                 ccurValorPlano = ccur(rfValorPlano)
@@ -413,7 +414,7 @@ if erro="" then
 
     if cdate(ref("Data"))< date() then
 
-        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and pCon("StaID")&"" <> rfStaID then
+        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and status&"" <> rfStaID&"" then
             'status de agendamento passado alterado para status em que o atendimento nao foi prestado.
 
             call registraEventoAuditoria("altera_status_agendamento_passado", ConsultaID, "")

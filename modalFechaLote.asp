@@ -10,42 +10,142 @@ end if
 
 ConvenioID=req("ConvenioID")
 
-set ConvenioSQL = db.execute("SELECT DiasRecebimento, DataRecebimentoEspecifico FROM convenios WHERE id="&treatvalzero(ConvenioID))
+set ConvenioSQL = db.execute("SELECT TipoRecebimento, DiasRecebimento FROM convenios WHERE id="&treatvalzero(ConvenioID))
 
 if not ConvenioSQL.eof then
+	TipoRecebimento=ConvenioSQL("TipoRecebimento")
     DiasRecebimento=ConvenioSQL("DiasRecebimento")
-    DataRecebimentoEspecifico=ConvenioSQL("DataRecebimentoEspecifico")
 
 	DateFormat = split(date(), "/")
 	Dia = cint(DateFormat(0))
-
-	if DataRecebimentoEspecifico&"" <> "" AND  DataRecebimentoEspecifico > Dia then
-		Dia = DataRecebimentoEspecifico
-		Mes = DateFormat(1)
-		Ano = DateFormat(2)
-		if isDate(Dia&"/"&Mes&"/"&Ano) then
-			DataPrevisao = Dia&"/"&Mes&"/"&Ano
-		end if
-	else
-		Dia = DataRecebimentoEspecifico
-		if DateFormat(1) = 12 then
-			Mes = 1
-		else 
-			Mes = DateFormat(1) + 1
-		end if
-		Ano = DateFormat(2)
-		if isDate(Dia&"/"&Mes&"/"&Ano) then
-			DataPrevisao = Dia&"/"&Mes&"/"&Ano
-		end if
-	end if
-
-    if DiasRecebimento&"" <> "" then
-        if isnumeric(DiasRecebimento) then
-            DataPrevisao = DateAdd("d", DiasRecebimento, date())
-        end if
-    end if
+	Mes = DateFormat(1)
+	Ano = DateFormat(2)
+	DataPrevisao = CalculaDataPrevisao(DiasRecebimento,TipoRecebimento,Dia,Mes,Ano)
 end if
 
+	function CalculaDataPrevisao(DiasRecebimento,TipoRecebimento,Dia,Mes,Ano)
+	select case TipoRecebimento
+		case 1 'Dias Corridos
+			if DiasRecebimento&"" <> "" then
+				if isnumeric(DiasRecebimento) then
+					DataPrevisao = DateAdd("d", DiasRecebimento, date())
+				end if
+			end if
+		case 2 'Dia Fixo do Mês Vigente
+			if DiasRecebimento&"" <> "" AND  DiasRecebimento > Dia then
+				Dia = DiasRecebimento
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					DataPrevisao = Dia&"/"&Mes&"/"&Ano
+				end if
+			else
+				Dia = DiasRecebimento
+				if Mes = 12 then
+					Mes = 1
+				else
+					Mes = Mes + 1
+				end if
+				Ano = Ano
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+						DataPrevisao = DateAdd("d", 1, Dia&"/"&Mes&"/"&Ano)
+					elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+						DataPrevisao = DateAdd("d", 2, Dia&"/"&Mes&"/"&Ano)
+					else
+						DataPrevisao = Dia&"/"&Mes&"/"&Ano
+					end if
+				end if
+			end if
+		case 3 'Dia Fixo do Mês Subsequente
+			if DiasRecebimento&"" <> "" then
+				Dia = DiasRecebimento
+				if Mes = 12 then
+					Mes = 1
+				else 
+					Mes = Mes + 1
+				end if
+				Ano = Ano
+				'Pula os finais de semana
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+						DataPrevisao = DateAdd("d", 1, Dia&"/"&Mes&"/"&Ano)
+					elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+						DataPrevisao = DateAdd("d", 2, Dia&"/"&Mes&"/"&Ano)
+					else
+						DataPrevisao = Dia&"/"&Mes&"/"&Ano
+					end if
+				end if
+			end if
+		case 4 'Dia Fixo do 3º Mês
+			if DiasRecebimento&"" <> "" then
+				Dia = DiasRecebimento				
+				'Verifica se o mês é Novembro ou Dezembro e seta o ano seguinte caso seja.
+				if Mes = 12 then
+					Mes = 3
+					Ano = Ano + 1
+				elseif Mes = 11 then
+					Mes = 2
+					Ano = Ano + 1
+				elseif Mes = 10 then
+					Mes = 1
+					Ano = Ano + 1
+				else
+					Mes = Mes + 3
+				end if
+				'Pula os finais de semana
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+						DataPrevisao = DateAdd("d", 1, Dia&"/"&Mes&"/"&Ano)
+					elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+						DataPrevisao = DateAdd("d", 2, Dia&"/"&Mes&"/"&Ano)
+					else
+						DataPrevisao = Dia&"/"&Mes&"/"&Ano
+					end if
+				end if
+			else
+				DataPrevisao = date()
+			end if
+		case 5 '5º Dia Útil do Mês Subsequente ou do Segundo Mês
+			Dia = 0
+			DiaUtil = 0
+			'Verifica se o mês é Dezembro e seta o ano seguinte caso seja.
+			if Mes = 12 then
+				Mes = 1
+				Ano = Ano + 1
+			else
+				Mes = Mes + 1
+			end if
+			'Pega somente dias úteis
+			while DiaUtil <= 4
+				Dia = Dia + 1
+				if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+					DiaUtil = DiaUtil
+				elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+					DiaUtil = DiaUtil
+				else
+					DiaUtil = DiaUtil + 1
+				end if
+			wend
+			if isDate(Dia&"/"&Mes&"/"&Ano) then
+				DataPrevisao = Dia&"/"&Mes&"/"&Ano
+			end if
+		case 6 'Último dia util do mês vigente
+			Dia = 1
+			Mes=10
+			'Inicia no começo do mês seguinte e subtrai até encontrar um dia útil
+			if Mes = 12 then
+				Mes = 1
+				Ano = Ano + 1
+			else
+				Mes = Mes + 1
+			end if
+			'Pega somente dias úteis
+			DataPrevisao = DateAdd("d", -1, Dia&"/"&Mes&"/"&Ano)
+			while Weekday(DataPrevisao) = 1 or Weekday(DataPrevisao) = 7
+				DataPrevisao = DateAdd("d", -1, DataPrevisao)
+			wend
+	end select
+	CalculaDataPrevisao = DateValue(DataPrevisao)
+end function
 %>
 	<div class="modal-header">
     	<h4>Fechar Lote</h4>

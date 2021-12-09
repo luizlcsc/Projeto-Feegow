@@ -143,6 +143,8 @@ end if
 			while Weekday(DataPrevisao) = 1 or Weekday(DataPrevisao) = 7
 				DataPrevisao = DateAdd("d", -1, DataPrevisao)
 			wend
+		case else
+			DataPrevisao = Dia&"/"&Mes&"/"&Ano
 	end select
 	CalculaDataPrevisao = DateValue(DataPrevisao)
 end function

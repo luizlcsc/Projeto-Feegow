@@ -344,7 +344,7 @@ if not getResource.EOF then
             if getFields("columnName") = "DiasAvisoValidade" then
                 sqlValue = treatvalnull(refhtml(getFields("columnName")))
             else
-                sqlValue = ref(getFields("columnName"))
+                sqlValue = nullToZero(ref(getFields("columnName")))
             end if
         else
             sqlValue = "'"&refhtml(getFields("columnName"))&"'"

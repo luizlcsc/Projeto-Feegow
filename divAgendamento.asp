@@ -995,9 +995,6 @@ end if
                                         <tr>
                                             <td>Termina:</td>
                                             <td>
-                                                <div class="row col-xs-12">
-                                                    <label><input type="radio" class="ace" name="TerminaRepeticao" value="N" checked /><span class="lbl"> Nunca </span></label>
-                                                </div>
                                                 <div class="row">
                                                     <div class="col-xs-3">
                                                         <label><input type="radio" class="ace" name="TerminaRepeticao" value="O" /><span class="lbl"> Após </span></label>

@@ -24,6 +24,10 @@ if not ConvenioSQL.eof then
 end if
 
 	function CalculaDataPrevisao(DiasRecebimento,TipoRecebimento,Dia,Mes,Ano)
+	'seta data atual como padrão
+	DataPrevisao = Dia&"/"&Mes&"/"&Ano
+
+	'Verifica se alguma regra é válida e monta a nova data
 	select case TipoRecebimento
 		case 1 'Dias Corridos
 			if DiasRecebimento&"" <> "" then

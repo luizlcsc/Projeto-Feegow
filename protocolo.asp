@@ -216,7 +216,7 @@ while not campo.eof
                         <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="col-md-<%= cols %>">
-                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &"") %>
+                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo ", "", " data-name='"&campo("RotuloCampo")&" '"&required&" rows=4 "& chamaProtSug &"") %>
                     </div>
                     <%
                     if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
@@ -706,7 +706,7 @@ end if
 
     function salvarAtendimento(ID){
         // if(!inicio){
-            let formdata = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID")
+            let formdata = $(".campoInput, .campo-memo-protocolo, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID")
             let erro = false;
             let campoCheck = ""
             formdata.map((key,input)=>{
@@ -901,7 +901,10 @@ end if
         $("#PosologiaMedicamento"+CampoId).val(Dose+" "+Apresentacao+" de "+TempoTratamento+" em "+TempoTratamento+" "+TipoTratamento+" "+Frequencia+" "+Duracao);
         saveProt(0);
     }
+    
+    const requiredMemos = $(".campo-memo-protocolo[required]");
     $(".campo-memo-protocolo").ckeditor();
+    requiredMemos.attr('required', 'required');
 
 
 

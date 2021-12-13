@@ -673,8 +673,8 @@ function convertPorcentagemParaReal(valorPorcentagem, valorUnitario){
 }
 
 function inputBRL(value) {
-    let replacedValue    = value.toString().replace(",",".");
-    let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",");
+    let replacedValue    = value.toString().replace(".","").replace(",",".");
+    let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",").replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     return inputBRLCurrency;
 }
 

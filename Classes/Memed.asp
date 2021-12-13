@@ -79,7 +79,14 @@
         } else if (memedTipo === 'prescricao'){
             iPront('Prescricao', MEMED_PACIENTE_ID, 0, '', '');
         } else if (memedTipo === 'encaminhamento'){
-            iPront('Encaminhamentos', MEMED_PACIENTE_ID, 0, '', '');
+            if ($('#EspecialidadeIDMemed').val() == 0 || $('#modelosEncaminhamentos').val() == 0){
+                return new PNotify({
+                    title: 'Dados inválidos!',
+                    text: 'Selecione uma especialidade e um modelo',
+                    type: 'danger'
+                });
+            }
+            iPront('Encaminhamentos', MEMED_PACIENTE_ID, 0, '', $('#EspecialidadeIDMemed').val());
         } else {
             return new PNotify({
                 title: 'Tipo inválido!',

@@ -16,11 +16,13 @@ else
         ConteudoEncaminhamento = replaceTags(getImpressos("Conteudo")&"", PacienteID, session("User"), session("UnidadeID"))
     end if
 
-    if EspecialidadeID<>"0" then
+    if EspecialidadeID<>"0" and EspecialidadeID <> "" then
         set getEspecialidadeEncaminhada = db.execute("SELECT COALESCE(especialidade, nomeEspecialidade) especialidade FROM especialidades WHERE id="&EspecialidadeID)
         if not getEspecialidadeEncaminhada.eof then
             NomeEspecialidade = getEspecialidadeEncaminhada("especialidade")
         end if
+    else
+        NomeEspecialidade = ""
     end if
 
     ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Especialidade]", NomeEspecialidade)

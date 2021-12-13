@@ -166,7 +166,7 @@ function abreModal(){ $('#modalOpcoesImpressao').modal('toggle'); }
 
                 set GruposExamesSQL = db.execute("SELECT tc.Capitulo, count(pp.id) qtd FROM pedidossadtprocedimentos pp "&_
                 "JOIN cliniccentral.tusscorrelacao tc ON tc.Codigo=pp.CodigoProcedimento and tc.Tabela=pp.TabelaID "&_
-                " WHERE pp.PedidoID="&treatvalzero(I)&" GROUP BY tc.Grupo")
+                " WHERE pp.PedidoID="&treatvalzero(I)&" GROUP BY tc.Capitulo")
 
                 qtdGrupos = 0
 

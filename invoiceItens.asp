@@ -190,7 +190,7 @@ if Acao="" then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
 
-				if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
+				if (not integracaofeita.eof or DataCancelamento&""<>"") and req("T")<>"D" and itens("Tipo")<>"M" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%

@@ -41,7 +41,7 @@ if ref("Codigo")<>"" then
             Descricao = "(select descricao from cliniccentral.procedimentos where TipoTabela='"& ref("Tabela") &"' AND Codigo='"& ref("Codigo") &"' LIMIT 1)"
         end if
 
-        db_execute("insert into pedidossadtprocedimentos set PedidoID="& I &", TabelaID="& ref("Tabela") &", CodigoProcedimento='"& ref("Codigo") &"', Quantidade='1', Descricao="&Descricao&" ")
+        db_execute("insert into pedidossadtprocedimentos set PedidoID="& I &", TabelaID="& ref("Tabela") &", CodigoProcedimento='"& ref("Codigo") &"', Quantidade='1', Descricao="&Descricao&", grupo='"& ref("NomGrupo") &"', procedimentoid="& ref("IdProc"))
     else
         %>
         <div class="alert alert-danger">
@@ -54,8 +54,11 @@ end if
 if ref("X")<>"" then
     db_execute("delete from pedidossadtprocedimentos where id="& ref("X"))
 end if
+
+
 %>
 <input type="hidden" name="PedidoSADTID" id="PedidoSADTID" value="<%= I %>" />
+<input type="hidden" name="CodProc" id="CodProc" value="<%= CodProc %>" />
 
 <table class="table table-condensed">
     <thead>
@@ -69,13 +72,13 @@ end if
     </thead>
     <tbody>
         <%
-        set pprocs = db.execute("select pp.*,pg.NomeGrupo from pedidossadtprocedimentos pp LEFT JOIN procedimentos p on p.Codigo=pp.CodigoProcedimento LEFT JOIN procedimentosgrupos pg ON pg.id=p.GrupoID where PedidoID="& I)
+        set pprocs = db.execute("select pp.* from pedidossadtprocedimentos pp where PedidoID="& I )
             while not pprocs.eof
                 %>
                 <tr>
                 <input hidden id="idPedidoSADT" value="<%= pprocs("id") %>">
                     <td><%= pprocs("CodigoProcedimento") %></td>
-                    <td><%= pprocs("NomeGrupo") %></td>
+                    <td><%= pprocs("Grupo") %></td>
                     <td><%= pprocs("Descricao") %></td>
                     <td><%= quickfield("number", "Quantidade_"&pprocs("id"), "", 1, pprocs("Quantidade"), " quantidade", "", "") %></td>
                     <td>

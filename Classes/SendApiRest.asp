@@ -148,14 +148,14 @@ if isnumeric(EventID) then
 
             while not tagsValidate.eof
 
-              tagName = tagsValidate("tagNome")
+              tagName = tagsValidate("tagNome")&""
               columnName = replace(tagsValidate("tagNome"),ModuleName&".","")
 
               'SE HOUVER ["tagName"] NO "webhook_body" ACIONA O REPLACE DE FORMA DINÂMICA
               if instr(webhook_body, tagName) > 0 then
                 'IGNORA ERROS PARA EVITAR INTERRUPÇÕES NO SISTEMA 
                 On error Resume Next
-                webhook_body = replace(webhook_body, "["&tagName&"]", moduleValue(columnName))
+                webhook_body = replace(webhook_body, "["&tagName&"]", moduleValue(columnName)&"")
 
                 If Err.number <> 0 then
                   'CASO ALGUM VALOR NÃO SEJA CONVERTIDO, ALTERE O VALOR DE "ativaDebug" PARA true

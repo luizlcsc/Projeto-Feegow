@@ -433,7 +433,7 @@ select case Tipo
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
-                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and lcase(session("table"))="profissionais" then %>
+                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPrescricaoClassica")<>1 and lcase(session("table"))="profissionais" then %>
                     <span class="panel-controls">
                         <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                             <i class="far fa-cog"></i>
@@ -454,7 +454,7 @@ select case Tipo
             <%
 
             prescricaoDefault = "memed"
-            memedHabilitada = getConfig("MemedHabilitada")=1
+            memedHabilitada = getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPrescricaoClassica")<>1
 
             if lcase(session("Table"))<>"profissionais" then
                 memedHabilitada = False
@@ -743,7 +743,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
                 </span>
-                <% if aut("pedidosexamesI")=1 and getConfig("MemedHabilitada")=1 then %>
+                <% if aut("pedidosexamesI")=1 and getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
                 <span class="panel-controls">
                     <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                         <i class="far fa-cog"></i>
@@ -784,7 +784,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
-                                <% if getConfig("MemedHabilitada")=1 then %>
+                                <% if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
                                 <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
                                 <% end if %>
                                 <%
@@ -1106,12 +1106,6 @@ end select
         </div>
     </div>
 
-</div>
- 
-
-</div>
-
-</div>
 <%
 If Err.Number <> 0 Then
     db.execute("INSERT INTO cliniccentral.exceptions (Message, File, LicencaID, UsuarioID, Linha, Metadata) VALUES ('"&Err.Description&"', '"&Request.ServerVariables("SCRIPT_NAME")&"', '"&replace(session("Banco"), "clinic","")&"', "&session("User")&", 0, "&PacienteID&")")

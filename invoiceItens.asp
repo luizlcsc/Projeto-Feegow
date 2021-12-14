@@ -172,7 +172,13 @@ if Acao="" then
                 HoraExecucao = itens("HoraExecucao")
                 Senha = itens("senha")
                 PacoteID = itens("PacoteID")
-                ValorUnitarioOld = itens("ValorUnitarioOld")
+				imposto = itens("imposto")
+
+				' if imposto = 1 then
+				' 	Desconto =  valorUnitario
+				' 	valorUnitario = 0
+				' end if 
+
                 if session("Odonto")=1 then
                     OdontogramaObj = itens("OdontogramaObj")
                 end if
@@ -184,7 +190,7 @@ if Acao="" then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
 
-				if not integracaofeita.eof or DataCancelamento&""<>"" and req("T")<>"D" then
+				if (not integracaofeita.eof or DataCancelamento&""<>"") and req("T")<>"D" and itens("Tipo")<>"M" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -649,8 +655,8 @@ function setInputDescontoEmPorcentagem(descontoInput){
 }
 
 function convertRealParaPorcentagem(valorReal, valorUnitario){
-    valorReal      = valorReal.replace(".","");
-    valorUnitario  = valorUnitario.replace(".","");
+    valorReal      = String(valorReal).replace(".","");
+    valorUnitario  = String(valorUnitario).replace(".","");
     valorReal      = parseFloat(valorReal.replace(",","."));
     valorUnitario  = parseFloat(valorUnitario.replace(",","."));
     if(valorReal == "0.00" || valorUnitario == "0.00") return "0,00";
@@ -667,8 +673,8 @@ function convertPorcentagemParaReal(valorPorcentagem, valorUnitario){
 }
 
 function inputBRL(value) {
-    let replacedValue    = value.toString().replace(",",".");
-    let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",");
+    let replacedValue    = value.toString().replace(".","").replace(",",".");
+    let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",").replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     return inputBRLCurrency;
 }
 
@@ -722,14 +728,18 @@ function onChangeProcedimento(linhaId, procedimentoId) {
 }
 
 $(document).ready(function(){
-    inputs = $("input[name^='PercentDesconto']");
-    inputs.each(function (key, input) {
-        let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val().replace(",",".");
-        let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val().replace(",",".");
-        let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
-        $(input).val(descontoEmPercentual);
-        $(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
-    });
+    let inputs = $("input[name^='PercentDesconto']");
+	if (inputs.length>0){
+		inputs.each(function (key, input) {
+			let valorUnitario           = $(this).closest('tr').find("input[name^='ValorUnitario']").val();
+			valorUnitario !== undefined ? valorUnitario = valorUnitario.replace(",","."):valorUnitario=0
+			let descontoEmReais         = $(this).closest('tr').find("input[name^='Desconto']").val();
+			descontoEmReais !== undefined ? descontoEmReais = descontoEmReais.replace(",","."):descontoEmReais=0
+			let descontoEmPercentual    = convertRealParaPorcentagem(descontoEmReais, valorUnitario);
+			$(input).val(descontoEmPercentual);
+			$(input).prop('data-desconto',$("input[name^='PercentDesconto']").val());
+		});
+	}
     <%
     if req("T")="C" then
     %>

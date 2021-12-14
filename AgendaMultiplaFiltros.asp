@@ -45,51 +45,47 @@ if getConfig("ExibirApenasUnidadesNoFiltroDeLocais") then
 
     if sysConf("ConfigGeolocalizacaoProfissional")="S" and recursoAdicional(39)=4  then
 
-        sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa e            "&chr(13)&_
+        sqlAM = " (select '1' ordem, CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa e "&chr(13)&_
                 " JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',0,'|%')                                                                                   "&chr(13)&_
                 " WHERE e.id = 1 "&sqlLimitarProfissionais                                                                                                       &chr(13)&_
                 " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
                 " ) UNION ALL                                                                                                                                   "&chr(13)&_
-                " (select CONCAT('UNIDADE_ID', fcu.id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',fcu.id,'|') as Unidades                         "&chr(13)&_
+                " (select '2' ordem, CONCAT('UNIDADE_ID', fcu.id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',fcu.id,'|') as Unidades              "&chr(13)&_
                 "  FROM sys_financialcompanyunits fcu                                                                                                           "&chr(13)&_
                 "  LEFT JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',fcu.id,'|%')                                                                        "&chr(13)&_
                 "  WHERE fcu.sysActive = 1                                                                                                                      "&chr(13)&_
                 sqlLimitarProfissionais                                                                                                                          &chr(13)&_
-                " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
-                "  order by fcu.NomeFantasia) "
+                " GROUP BY NomeLocal) "
     else
-        sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa WHERE id = 1 "&chr(13)&_
-            " AND 0 in ("&replace(Unidades, "|","")&")                                                                                                     "&chr(13)&_
-            " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
-            " ) UNION ALL                                                                                                                                   "&chr(13)&_
-            " (select CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                 "&chr(13)&_
-            "  FROM sys_financialcompanyunits                                                                                                               "&chr(13)&_
-            "  WHERE sysActive = 1                                                                                                                          "&chr(13)&_
-            "  AND id in ("&replace(Unidades, "|","")&")                                                                                                    "&chr(13)&_
-            " GROUP BY NomeLocal                                                                                                                            "&chr(13)&_
-            "  order by NomeFantasia) "
+        sqlAM = " (select '1' ordem, CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa WHERE id = 1  "&chr(13)&_
+            " AND 0 in ("&replace(Unidades, "|","")&")                                                                                                                      "&chr(13)&_
+            " GROUP BY NomeLocal                                                                                                                                            "&chr(13)&_
+            " ) UNION ALL                                                                                                                                                   "&chr(13)&_
+            " (select '2' ordem, CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                      "&chr(13)&_
+            "  FROM sys_financialcompanyunits                                                                                                                               "&chr(13)&_
+            "  WHERE sysActive = 1                                                                                                                                          "&chr(13)&_
+            "  AND id in ("&replace(Unidades, "|","")&")                                                                                                                    "&chr(13)&_
+            " GROUP BY NomeLocal) "
     end if
 else
     if sysConf("ConfigGeolocalizacaoProfissional")="S" and recursoAdicional(39)=4  then
-        sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa e                         "&chr(13)&_
+        sqlAM = " (select '1' ordem, CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa e              "&chr(13)&_
             " JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',0,'|%')                                                                                                    "&chr(13)&_
             " WHERE e.id = 1 "&sqlLimitarProfissionais                                                                                                                        &chr(13)&_
             " GROUP BY NomeLocal                                                                                                                                             "&chr(13)&_
             " ) UNION ALL                                                                                                                                                    "&chr(13)&_
-            " (select CONCAT('UNIDADE_ID', fcu.id) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',fcu.id,'|') as Unidades                                  "&chr(13)&_
+            " (select '2' ordem, CONCAT('UNIDADE_ID', fcu.id) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',fcu.id,'|') as Unidades                       "&chr(13)&_
             "  FROM sys_financialcompanyunits fcu                                                                                                                            "&chr(13)&_
             "  LEFT JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',fcu.id,'|%')                                                                                         "&chr(13)&_
             "  WHERE fcu.sysActive = 1 "&sqlLimitarProfissionais                                                                                                              &chr(13)&_
-            " GROUP BY NomeLocal                                                                                                                                             "&chr(13)&_
-            "  order by NomeFantasia)                                                                                                                                        "&chr(13)&_
+            " GROUP BY NomeLocal)                                                                                                                                            "&chr(13)&_
             " UNION ALL                                                                                                                                                      "&chr(13)&_
-            " (SELECT concat('G', id) id, concat('Grupo: ', NomeGrupo) NomeLocal                                                                                             "&chr(13)&_
+            " (SELECT '3' ordem, concat('G', id) id, concat('Grupo: ', NomeGrupo) NomeLocal                                                                                  "&chr(13)&_
             "        ,(SELECT GROUP_CONCAT(distinct CONCAT('|',locais.UnidadeID,'|')) FROM locais WHERE locaisgrupos.Locais like CONCAT('%|',Locais.id,'|%'))                "&chr(13)&_
             "  from locaisgrupos                                                                                                                                             "&chr(13)&_
-            "  where sysActive = 1                                                                                                                                           "&chr(13)&_
-            "  order by NomeGrupo)                                                                                                                                           "&chr(13)&_
+            "  where sysActive = 1)                                                                                                                                          "&chr(13)&_
             " UNION ALL                                                                                                                                                      "&chr(13)&_
-            " (select l.id,                                                                                                                                                  "&chr(13)&_
+            " (select '4' ordem, l.id,                                                                                                                                       "&chr(13)&_
             "         CONCAT(l.NomeLocal,                                                                                                                                    "&chr(13)&_
             "               IF(l.UnidadeID = 0, IFNULL(concat(' - ', e.Sigla), ''), IFNULL(concat(' - ', fcu.Sigla), ''))) NomeLocal,CONCAT('|',l.UnidadeID,'|') as Unidades "&chr(13)&_
             "  from locais l                                                                                                                                                 "&chr(13)&_
@@ -97,37 +93,37 @@ else
             "           LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID                                                                                      "&chr(13)&_
             "  LEFT JOIN profissionais p ON p.Unidades LIKE CONCAT('%|',l.UnidadeID,'|%')                                                                                    "&chr(13)&_
             "  where l.sysActive = 1 "&sqlLimitarProfissionais                                                                                                                &chr(13)&_
-            "  order by l.NomeLocal) "
+            " GROUP BY l.id )"
+
     else
-        sqlAM = " (select CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa WHERE id = 1                  "&chr(13)&_
-                " AND 0 in ("&replace(Unidades, "|","")&")                                                                                                                      "&chr(13)&_
-                " GROUP BY NomeLocal                                                                                                                                             "&chr(13)&_
-                " ) UNION ALL                                                                                                                                                    "&chr(13)&_
-                " (select CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                                  "&chr(13)&_
-                "  FROM sys_financialcompanyunits                                                                                                                                "&chr(13)&_
-                "  WHERE sysActive = 1                                                                                                                                           "&chr(13)&_
-                "  AND id in ("&replace(Unidades, "|","")&")                                                                                                                     "&chr(13)&_
-                " GROUP BY NomeLocal                                                                                                                                             "&chr(13)&_
-                "  order by NomeFantasia)                                                                                                                                        "&chr(13)&_
-                " UNION ALL                                                                                                                                                      "&chr(13)&_
-                " (SELECT concat('G', id) id, concat('Grupo: ', NomeGrupo) NomeLocal                                                                                             "&chr(13)&_
-                "        ,(SELECT GROUP_CONCAT(distinct CONCAT('|',locais.UnidadeID,'|')) FROM locais WHERE locaisgrupos.Locais like CONCAT('%|',Locais.id,'|%'))                "&chr(13)&_
-                "  from locaisgrupos                                                                                                                                             "&chr(13)&_
-                "  where sysActive = 1                                                                                                                                           "&chr(13)&_
-                "  order by NomeGrupo)                                                                                                                                           "&chr(13)&_
-                " UNION ALL                                                                                                                                                      "&chr(13)&_
-                " (select l.id,                                                                                                                                                  "&chr(13)&_
-                "         CONCAT(l.NomeLocal,                                                                                                                                    "&chr(13)&_
-                "                IF(l.UnidadeID = 0, IFNULL(concat(' - ', e.Sigla), ''), IFNULL(concat(' - ', fcu.Sigla), ''))) NomeLocal,CONCAT('|',l.UnidadeID,'|') as Unidades"&chr(13)&_
-                "  from locais l                                                                                                                                                 "&chr(13)&_
-                "           LEFT JOIN empresa e ON e.id = IF(l.UnidadeID = 0, 1, 0)                                                                                              "&chr(13)&_
-                "           LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID                                                                                      "&chr(13)&_
-                "  AND fcu.id in ("&replace(Unidades, "|","")&")                                                                                                                 "&chr(13)&_
-                "  where l.sysActive = 1                                                                                                                                         "&chr(13)&_
-                "  order by l.NomeLocal) "
+        sqlAM = " (select '1' ordem, CONCAT('UNIDADE_ID', 0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',0,'|') as Unidades FROM empresa WHERE id = 1          "&chr(13)&_
+                " AND 0 in ("&replace(Unidades, "|","")&")                                                                                                                          "&chr(13)&_
+                " GROUP BY NomeLocal                                                                                                                                                "&chr(13)&_
+                " ) UNION ALL                                                                                                                                                       "&chr(13)&_
+                " (select '2' ordem, CONCAT('UNIDADE_ID', id), CONCAT('Unidade: ', NomeFantasia) NomeLocal, CONCAT('|',id,'|') as Unidades                                          "&chr(13)&_
+                "  FROM sys_financialcompanyunits                                                                                                                                   "&chr(13)&_
+                "  WHERE sysActive = 1                                                                                                                                              "&chr(13)&_
+                "  AND id in ("&replace(Unidades, "|","")&")                                                                                                                        "&chr(13)&_
+                " GROUP BY NomeLocal)                                                                                                                                               "&chr(13)&_
+                " UNION ALL                                                                                                                                                         "&chr(13)&_
+                " (SELECT '3' ordem, concat('G', id) id, concat('Grupo: ', NomeGrupo) NomeLocal                                                                                     "&chr(13)&_
+                "        ,(SELECT GROUP_CONCAT(distinct CONCAT('|',locais.UnidadeID,'|')) FROM locais WHERE locaisgrupos.Locais like CONCAT('%|',Locais.id,'|%'))                   "&chr(13)&_
+                "  from locaisgrupos                                                                                                                                                "&chr(13)&_
+                "  where sysActive = 1)                                                                                                                                             "&chr(13)&_
+                " UNION ALL                                                                                                                                                         "&chr(13)&_
+                " (select '4' ordem, l.id,                                                                                                                                          "&chr(13)&_
+                "         CONCAT(l.NomeLocal,                                                                                                                                       "&chr(13)&_
+                "                IF(l.UnidadeID = 0, IFNULL(concat(' - ', e.Sigla), ''), IFNULL(concat(' - ', fcu.Sigla), ''))) NomeLocal,CONCAT('|',l.UnidadeID,'|') as Unidades   "&chr(13)&_
+                "  from locais l                                                                                                                                                    "&chr(13)&_
+                "           LEFT JOIN empresa e ON e.id = IF(l.UnidadeID = 0, 1, 0)                                                                                                 "&chr(13)&_
+                "           LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID                                                                                         "&chr(13)&_
+                "  AND fcu.id in ("&replace(Unidades, "|","")&")                                                                                                                    "&chr(13)&_
+                "  where l.sysActive = 1) "
     end if
 
 end if
+
+sqlAM = "SELECT * FROM (" &sqlAM& ")t ORDER BY ordem, NomeLocal ASC"
 
 if Profissionais<>"" then
     sqlProfissionais = "SELECT id, NomeProfissional, Ordem FROM (SELECT 0 as 'id', 'Nenhum' as 'NomeProfissional', 0 'Ordem' "&_

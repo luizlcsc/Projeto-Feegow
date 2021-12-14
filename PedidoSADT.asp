@@ -61,6 +61,7 @@ end if
     <thead>
         <tr class="primary">
             <th width="10%">Código</th>
+            <th width="10%">Grupo</th>
             <th width="80%">Descrição</th>
             <th width="5%">Qte</th>
             <th width="1%"></th>
@@ -68,12 +69,13 @@ end if
     </thead>
     <tbody>
         <%
-        set pprocs = db.execute("select * from pedidossadtprocedimentos where PedidoID="& I)
+        set pprocs = db.execute("select pp.*,pg.NomeGrupo from pedidossadtprocedimentos pp LEFT JOIN procedimentos p on p.Codigo=pp.CodigoProcedimento LEFT JOIN procedimentosgrupos pg ON pg.id=p.GrupoID where PedidoID="& I)
             while not pprocs.eof
                 %>
                 <tr>
                 <input hidden id="idPedidoSADT" value="<%= pprocs("id") %>">
                     <td><%= pprocs("CodigoProcedimento") %></td>
+                    <td><%= pprocs("NomeGrupo") %></td>
                     <td><%= pprocs("Descricao") %></td>
                     <td><%= quickfield("number", "Quantidade_"&pprocs("id"), "", 1, pprocs("Quantidade"), " quantidade", "", "") %></td>
                     <td>

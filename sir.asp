@@ -232,7 +232,9 @@ if aut(lcase(ref("resource"))&"A")=1 then
             tableName = dadosResource("tableName")
             Pers = dadosResource("Pers")
             mainFormColumn = dadosResource("mainFormColumn")
-        
+            if sqlExibir<>"" then
+                sql = replace(sql, " order ",sqlExibir&" order ")
+            end if
         elseif ref("t")="locais" then
             set dadosResource = db.execute("select * from cliniccentral.sys_resources where tableName = '"&ref("t")&"'")
 

@@ -16,7 +16,7 @@ function debugMessage(msg)
 end function
 
 'ATENÇÃO: ESTA FUNÇÃO NÃO BUSCA SEM ESPECIALIDADE!!!
-function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais)
+function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais, ConsiderarEspecialidadeReal)
     De = cdate(De)
     Ate = cdate(Ate)
 
@@ -191,9 +191,13 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     splrfesp = split(refEspecialidade, ", ")
 
     for k=0 to ubound(splrfesp)
-        EspecialidadeID = replace(splrfesp(k), "|","")
-        rfEspecialidade = EspecialidadeID
-                Data = De
+            EspecialidadeID = replace(splrfesp(k), "|","")
+            rfEspecialidade = EspecialidadeID
+            if ConsiderarEspecialidadeReal and SomenteEspecialidades="" then
+                SomenteEspecialidades = "|"&EspecialidadeID&"|"
+            end if
+
+            Data = De
 
                 while Data<=Ate
                     refLocais = rfLocais
@@ -214,6 +218,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         next
                         sqlGradeEspecialidade=sqlGradeEspecialidade&")"
                     end if
+
                     '<- procedimento filtrado selecionado
                     if instr(refLocais, "UNIDADE_ID")>0 then
                         UnidadesIDs=""
@@ -292,8 +297,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         sqlOrder = " ORDER BY OrdemAgenda DESC"
                     end if
                     sql = "select t.ProfissionalID, p.EspecialidadeID, t.LocalID, IF (p.NomeSocial IS NULL OR p.NomeSocial='', p.NomeProfissional, p.NomeSocial) NomeProfissional, p.ObsAgenda, p.Cor, Especialidades,  p.SomenteConvenios "& fieldEsp &" from (select Especialidades, ProfissionalID, LocalID, Convenios from assfixalocalxprofissional WHERE HoraDe !='00:00:00' AND DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR InicioVigencia <= "&mydatenull(Data)&") AND (FimVigencia IS NULL OR FimVigencia >= "&mydatenull(Data)&") "&sqlProcedimentosGrade&sqlEspecialidadesGrade&") UNION ALL select Especialidades, ProfissionalID, LocalID, '' Convenios from assperiodolocalxprofissional WHERE DataDe<="& mydatenull(Data) &" and DataA>="& mydatenull(Data) &") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda))  "& sqlEspecialidadesSel & sqlProfissionais & sqlConvenios & sqlProfesp & sqlGradeEspecialidade& sqlUnidades &" GROUP BY t.ProfissionalID"&sqlOrder
-
-
                     sqlVerme = "select t.FrequenciaSemanas, t.InicioVigencia, t.FimVigencia, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.NomeProfissional, p.ObsAgenda, p.Cor, p.SomenteConvenios "& fieldEsp &" from (select Especialidades, FrequenciaSemanas, InicioVigencia, FimVigencia, ProfissionalID, LocalID, Convenios from assfixalocalxprofissional WHERE DiaSemana=[DiaSemana] AND ((InicioVigencia IS NULL OR (DATE_FORMAT(InicioVigencia ,'%Y-%m-01') <= "&mydatenull(Data)&")) AND (FimVigencia IS NULL OR (DATE_FORMAT(FimVigencia ,'%Y-%m-30') >= "&mydatenull(Data)&" )))) t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "& sqlEspecialidadesSel & sqlConvenios & sqlProfissionais & sqlGradeEspecialidade &sqlProfesp & sqlUnidades &" "
 
                     sqlVermePer = "select t.DataDe, t.DataA, t.ProfissionalID, p.EspecialidadeID, t.LocalID, p.SomenteConvenios "& fieldEsp &" from (select ProfissionalID, LocalID, DataDe, DataA, '' Convenios from assperiodolocalxprofissional WHERE DataDe>="& mydatenull( DiaMes("P", Data ) )&" AND DataA<="& mydatenull( DiaMes("U", Data) ) &") t LEFT JOIN profissionais p on p.id=t.ProfissionalID "& leftEsp &" WHERE p.Ativo='on' AND (p.NaoExibirAgenda!='S' or isnull(p.NaoExibirAgenda)) "& sqlEspecialidadesSel & sqlConvenios & sqlProfissionais & sqlProfesp & sqlUnidades
@@ -341,19 +344,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         end if
                         if SomenteEspecialidades="" AND refEspecialidade<>"" and instr(refEspecialidade, ",")=0 then
                             SomenteEspecialidades = refEspecialidade
-                        end if
-
-                        if SomenteEspecialidades<>""  then
-                            spltEspecialidades = split(SomenteEspecialidades, ", ")
-
-                            sqlGradeEspecialidade = " AND (ass.Especialidades is null or ass.Especialidades='' "
-
-                            for i=0 to ubound(spltEspecialidades)
-                                EspecialidadeID=replace(spltEspecialidades(i),"|","")
-
-                                sqlGradeEspecialidade =  sqlGradeEspecialidade&" OR ass.Especialidades LIKE '%"&EspecialidadeID&"%'"
-                            next
-                            sqlGradeEspecialidade=sqlGradeEspecialidade&")"
                         end if
 
                         Hora = cdate("00:00")
@@ -486,9 +476,14 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             end if
 
                             IF 1 THEN
+                            whereEspecialidadesAgendamentos=""
+
+                            if ConsiderarEspecialidadeReal then
+                                whereEspecialidadesAgendamentos = " AND a.EspecialidadeID="&EspecialidadeID
+                            end if
 
                             set comps=db.execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_
-                            "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &" and a.sysActive=1 order by Hora")
+                            "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &whereEspecialidadesAgendamentos &" and a.sysActive=1 order by Hora")
                             while not comps.EOF
                                 HoraComp = HoraToID(comps("Hora"))
                                 EspecialidadeIDAgendada = comps("EspecialidadeID")

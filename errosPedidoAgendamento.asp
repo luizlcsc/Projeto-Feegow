@@ -61,6 +61,36 @@ if rfrdValorPlano="P" and (rfValorPlano="" or rfValorPlano="0") then
 	erro="Erro: Selecione um conv&ecirc;nio."
 end if
 
+if ref("ageNascimento")<>"" and FieldExists(ProfissionalSQL, "IdadeMinima") then
+
+    if isnumeric(ProfissionalSQL("IdadeMinima")) then
+        if ProfissionalSQL("IdadeMinima")>0 then
+            idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
+            
+            if isnumeric(idadePaciente) then
+                if cint(idadePaciente) < ProfissionalSQL("IdadeMinima") then
+                    erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade. Verifique a configuração do profissional."
+                end if
+            end if
+        end if
+    end if
+end if
+
+if ref("ageNascimento")<>"" and FieldExists(ProfissionalSQL, "IdadeMaxima") then
+
+    if isnumeric(ProfissionalSQL("IdadeMaxima")) then
+        if ProfissionalSQL("IdadeMaxima")>0 then
+            idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
+            
+            if isnumeric(idadePaciente) then
+                if cint(idadePaciente) > ProfissionalSQL("IdadeMaxima") then
+                    erro = "Profissional atende apenas pacientes com idade até "&ProfissionalSQL("IdadeMaxima")&" anos de idade. Verifique a configuração do profissional."
+                end if
+            end if
+        end if
+    end if
+end if
+
 'if session("Banco")="clinic811" and ref("ageOrigem")="0" then
 '    erro = "Erro: Selecione a origem."
 'end if
@@ -251,7 +281,13 @@ if ref("Encaixe")<>"1" and ref("StaID")<>"6" and ref("StaID")<>"11" and ref("Sta
         sqlProfissionalOuEquipamento = "and ProfissionalID<>0 "
         LabelErroMaximoAgendamentos="profissional"
     end if
-    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4, 15)  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+
+    StaDasa = ""
+    if session("Banco")="clinic9021" then
+        StaDasa = ",22"
+    end if
+    set ve2=db.execute("select * from agendamentos where sysActive=1 AND (ProfissionalID = '"&rfProfissionalID&"' and EquipamentoID='"&rdEquipamentoID&"') AND StaID NOT IN (6,11,3,4,15"&StaDasa&")  "&sqlProfissionalOuEquipamento&" and Data = '"&mydate(rfData)&"' and not id = '"&ConsultaID&"' and Encaixe IS NULL and Hora=time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') order by Hora")
+
     if not ve2.EOF then
         if isnumeric(ve2("Tempo")) then
             tmp=ccur(ve2("Tempo"))

@@ -1076,7 +1076,17 @@ $("#ageCPF").change(function(){
                     return false;
                 }
 
-                let returnEndpoint = await endpointGetMatricula($("#ageMatricula1").val());
+                <% if isAmorSaude() then %>
+                    let returnEndpoint = await endpointGetMatricula($("#ageMatricula1").val());
+                <% else %>
+                    let passCpf = $("#ageCPF").val().replace(/\./g,"").replace("-","");
+                    if(!passCpf){
+                        showMessageDialog("Preencha a campo CPF","error");
+                        return false;
+                    }
+                    let returnEndpoint = await endpointGetMatricula(passCpf + '|' + $("#ageMatricula1").val());
+                <% end if %>
+
                 let dataFromFeegow = returnEndpoint.data.dados;
 
                 if(!returnEndpoint || !returnEndpoint.data){
@@ -1154,11 +1164,13 @@ const endpointGetMatricula = async (matricula) => {
 
     <% if isAmorSaude() then %>
         const ans = '140188';
+        const by  = 'cpf';
     <% else %>
         const ans = 'DNA';
+        const by  = 'cartao';
     <% end if %>
 
-    let url = `${domain}/autorizador/elegivel/${ans}/cpf/${matricula}`;
+    let url = `${domain}/autorizador/elegivel/${ans}/${by}/${matricula}`;
     return $.ajax({
         type: 'GET',
         url: url,

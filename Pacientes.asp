@@ -143,7 +143,7 @@ end if
 </div>
 <%
 omitir = ""
-if session("Admin")=1 then
+if session("Admin")<>1 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
 		tipo = omit("Tipo")

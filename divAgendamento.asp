@@ -995,9 +995,6 @@ end if
                                         <tr>
                                             <td>Termina:</td>
                                             <td>
-                                                <div class="row col-xs-12">
-                                                    <label><input type="radio" class="ace" name="TerminaRepeticao" value="N" checked /><span class="lbl"> Nunca </span></label>
-                                                </div>
                                                 <div class="row">
                                                     <div class="col-xs-3">
                                                         <label><input type="radio" class="ace" name="TerminaRepeticao" value="O" /><span class="lbl"> Após </span></label>
@@ -1532,25 +1529,25 @@ var saveAgenda = function(){
         $("#btnSalvarAgenda").prop("disabled", true);
 
         $.post("saveAgenda.asp", $("#formAgenda").serialize())
-            .done(function(data){
-                //$("#btnSalvarAgenda").removeAttr('disabled');
-                eval(data);
-                $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-                $("#btnSalvarAgenda").prop("disabled", false);
-                crumbAgenda();
-                gravaWorklist();
-            })
+        .done(function(data){
+            //$("#btnSalvarAgenda").removeAttr('disabled');
+            eval(data);
+            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+            $("#btnSalvarAgenda").prop("disabled", false);
+            crumbAgenda();
+            gravaWorklist();
+        })
 
-            .fail(function(err){
-                $("#btnSalvarAgenda").prop("disabled", true);
-                showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+        .fail(function(err){
+            $("#btnSalvarAgenda").prop("disabled", true);
+            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
 
-                gtag('event', 'erro_500', {
-                    'event_category': 'erro_agenda',
-                    'event_label': "Erro ao salvar agendamento."
-                });
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_agenda',
+                'event_label': "Erro ao salvar agendamento."
             });
+        });
 
         if(typeof callbackAgendaFiltros === "function"){
             callbackAgendaFiltros();
@@ -1636,7 +1633,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
+    let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
     $("#Chegada").val(horaAtual);
 }
 

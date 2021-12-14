@@ -1,3 +1,4 @@
+<!--#include file="Classes/LogService.asp"-->
 <%
 if request("Log")="Off" then
 	if session("Partner")="" then
@@ -5,10 +6,12 @@ if request("Log")="Off" then
 	else
 		urlRedir = "./?P=Login&Partner="&session("Partner")
 	end if
+    call sendLogLogout()
 	session.Abandon()
 	response.Redirect(urlRedir)
+elseif session("User")="" then
+    call sendLogSessionExpired() 'não loga tudo, a lógica está dentro desta função
 end if
-
 
 %>
 <!--#include file="functions.asp"-->
@@ -20,7 +23,7 @@ end if
 <html>
 
 <head>
-    <% if GTM_ID <> "" and False then %>
+    <% if GTM_ID <> "" then %>
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

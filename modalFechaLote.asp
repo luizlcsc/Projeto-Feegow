@@ -10,42 +10,148 @@ end if
 
 ConvenioID=req("ConvenioID")
 
-set ConvenioSQL = db.execute("SELECT DiasRecebimento, DataRecebimentoEspecifico FROM convenios WHERE id="&treatvalzero(ConvenioID))
+set ConvenioSQL = db.execute("SELECT TipoRecebimento, DiasRecebimento FROM convenios WHERE id="&treatvalzero(ConvenioID))
 
 if not ConvenioSQL.eof then
+	TipoRecebimento=ConvenioSQL("TipoRecebimento")
     DiasRecebimento=ConvenioSQL("DiasRecebimento")
-    DataRecebimentoEspecifico=ConvenioSQL("DataRecebimentoEspecifico")
 
 	DateFormat = split(date(), "/")
 	Dia = cint(DateFormat(0))
-
-	if DataRecebimentoEspecifico&"" <> "" AND  DataRecebimentoEspecifico > Dia then
-		Dia = DataRecebimentoEspecifico
-		Mes = DateFormat(1)
-		Ano = DateFormat(2)
-		if isDate(Dia&"/"&Mes&"/"&Ano) then
-			DataPrevisao = Dia&"/"&Mes&"/"&Ano
-		end if
-	else
-		Dia = DataRecebimentoEspecifico
-		if DateFormat(1) = 12 then
-			Mes = 1
-		else 
-			Mes = DateFormat(1) + 1
-		end if
-		Ano = DateFormat(2)
-		if isDate(Dia&"/"&Mes&"/"&Ano) then
-			DataPrevisao = Dia&"/"&Mes&"/"&Ano
-		end if
-	end if
-
-    if DiasRecebimento&"" <> "" then
-        if isnumeric(DiasRecebimento) then
-            DataPrevisao = DateAdd("d", DiasRecebimento, date())
-        end if
-    end if
+	Mes = DateFormat(1)
+	Ano = DateFormat(2)
+	DataPrevisao = CalculaDataPrevisao(DiasRecebimento,TipoRecebimento,Dia,Mes,Ano)
 end if
 
+	function CalculaDataPrevisao(DiasRecebimento,TipoRecebimento,Dia,Mes,Ano)
+	'seta data atual como padrão
+	DataPrevisao = Dia&"/"&Mes&"/"&Ano
+
+	'Verifica se alguma regra é válida e monta a nova data
+	select case TipoRecebimento
+		case 1 'Dias Corridos
+			if DiasRecebimento&"" <> "" then
+				if isnumeric(DiasRecebimento) then
+					DataPrevisao = DateAdd("d", DiasRecebimento, date())
+				end if
+			end if
+		case 2 'Dia Fixo do Mês Vigente
+			if DiasRecebimento&"" <> "" AND  DiasRecebimento > Dia then
+				Dia = DiasRecebimento
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					DataPrevisao = Dia&"/"&Mes&"/"&Ano
+				end if
+			else
+				Dia = DiasRecebimento
+				if Mes = 12 then
+					Mes = 1
+				else
+					Mes = Mes + 1
+				end if
+				Ano = Ano
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+						DataPrevisao = DateAdd("d", 1, Dia&"/"&Mes&"/"&Ano)
+					elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+						DataPrevisao = DateAdd("d", 2, Dia&"/"&Mes&"/"&Ano)
+					else
+						DataPrevisao = Dia&"/"&Mes&"/"&Ano
+					end if
+				end if
+			end if
+		case 3 'Dia Fixo do Mês Subsequente
+			if DiasRecebimento&"" <> "" then
+				Dia = DiasRecebimento
+				if Mes = 12 then
+					Mes = 1
+				else 
+					Mes = Mes + 1
+				end if
+				Ano = Ano
+				'Pula os finais de semana
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+						DataPrevisao = DateAdd("d", 1, Dia&"/"&Mes&"/"&Ano)
+					elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+						DataPrevisao = DateAdd("d", 2, Dia&"/"&Mes&"/"&Ano)
+					else
+						DataPrevisao = Dia&"/"&Mes&"/"&Ano
+					end if
+				end if
+			end if
+		case 4 'Dia Fixo do 3º Mês
+			if DiasRecebimento&"" <> "" then
+				Dia = DiasRecebimento				
+				'Verifica se o mês é Novembro ou Dezembro e seta o ano seguinte caso seja.
+				if Mes = 12 then
+					Mes = 3
+					Ano = Ano + 1
+				elseif Mes = 11 then
+					Mes = 2
+					Ano = Ano + 1
+				elseif Mes = 10 then
+					Mes = 1
+					Ano = Ano + 1
+				else
+					Mes = Mes + 3
+				end if
+				'Pula os finais de semana
+				if isDate(Dia&"/"&Mes&"/"&Ano) then
+					if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+						DataPrevisao = DateAdd("d", 1, Dia&"/"&Mes&"/"&Ano)
+					elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+						DataPrevisao = DateAdd("d", 2, Dia&"/"&Mes&"/"&Ano)
+					else
+						DataPrevisao = Dia&"/"&Mes&"/"&Ano
+					end if
+				end if
+			else
+				DataPrevisao = date()
+			end if
+		case 5 '5º Dia Útil do Mês Subsequente ou do Segundo Mês
+			Dia = 0
+			DiaUtil = 0
+			'Verifica se o mês é Dezembro e seta o ano seguinte caso seja.
+			if Mes = 12 then
+				Mes = 1
+				Ano = Ano + 1
+			else
+				Mes = Mes + 1
+			end if
+			'Pega somente dias úteis
+			while DiaUtil <= 4
+				Dia = Dia + 1
+				if Weekday(Dia&"/"&Mes&"/"&Ano) = 1  then
+					DiaUtil = DiaUtil
+				elseif Weekday(Dia&"/"&Mes&"/"&Ano) = 7 then
+					DiaUtil = DiaUtil
+				else
+					DiaUtil = DiaUtil + 1
+				end if
+			wend
+			if isDate(Dia&"/"&Mes&"/"&Ano) then
+				DataPrevisao = Dia&"/"&Mes&"/"&Ano
+			end if
+		case 6 'Último dia util do mês vigente
+			Dia = 1
+			Mes=10
+			'Inicia no começo do mês seguinte e subtrai até encontrar um dia útil
+			if Mes = 12 then
+				Mes = 1
+				Ano = Ano + 1
+			else
+				Mes = Mes + 1
+			end if
+			'Pega somente dias úteis
+			DataPrevisao = DateAdd("d", -1, Dia&"/"&Mes&"/"&Ano)
+			while Weekday(DataPrevisao) = 1 or Weekday(DataPrevisao) = 7
+				DataPrevisao = DateAdd("d", -1, DataPrevisao)
+			wend
+		case else
+			DataPrevisao = Dia&"/"&Mes&"/"&Ano
+	end select
+	CalculaDataPrevisao = DateValue(DataPrevisao)
+end function
 %>
 	<div class="modal-header">
     	<h4>Fechar Lote</h4>
@@ -109,7 +215,7 @@ end if
 			if req("T") = "GuiaConsulta" then
 				coluna = "ValorProcedimento"
 			elseif req("T") = "GuiaHonorarios" then
-				coluna = "Procedimentos"
+				coluna = "ValorPago"
 			else
 				coluna = "TotalGeral"
 			end if
@@ -117,7 +223,7 @@ end if
 			set g = db.execute("select count(id) Qtd, sum("&coluna&") Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
 
 			if not g.eof then
-				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total "&_
+				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total, coalesce((select distinct imposto from itensinvoice where InvoiceID = conta.id and imposto = 1),0) temImposto "&_
 										" FROM sys_financialinvoices conta "&_
 										" LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
 										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
@@ -125,9 +231,11 @@ end if
 				set ContasSQL = db.execute(sqlcontas)
 			end if
 			while not ContasSQL.eof
+				if ContasSQL("temImposto") = 0 then 
 			%>
 					<li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="far fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
 			<%
+				end if
 				ContasSQL.movenext
 				wend
 				ContasSQL.close

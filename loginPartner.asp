@@ -51,6 +51,8 @@
 
 							dbProvi.execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
 
+							call sendLogLoginSuccess()
+
 							response.Redirect("./?P=Home&Pers=1")
                         else
                             %>

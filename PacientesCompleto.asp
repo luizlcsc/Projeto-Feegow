@@ -228,9 +228,11 @@ end if
         <div class="row">
             <%= quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", " empty")%>
             <%= quickField("text", "NomeSocial", "Nome Social", 2, reg("NomeSocial"), "", "", " autocomplete='nome-social' ") %>
-			<%= quickField("text", "Altura", "Altura", 2, reg("Altura"), " input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "Peso", "Peso", 2, reg("Peso"), "input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "IMC", "IMC", 2, reg("IMC"), "text-right", "", " readonly") %>
+			<div class="col-md-4">
+                <%= quickField("text", "Altura", "Altura", 4, reg("Altura"), " input-mask-brl text-right", "", "") %>
+                <%= quickField("text", "Peso", "Peso", 4, reg("Peso"), "input-mask-brl text-right", "", "") %>
+                <%= quickField("text", "IMC", "IMC", 4, reg("IMC"), "text-right", "", " readonly") %>
+            </div>
             <div class="col-md-2">
             	<label>Prontu&aacute;rio
 
@@ -248,7 +250,6 @@ end if
                   <br /></label>
 			<%
                 if AlterarNumeroProntuario = 1 then
-                'if session("banco")="clinic1612" or session("banco")="clinic5868" or session("banco")="clinic3610" or session("banco")="clinic105" or session("banco")="clinic3859" or session("banco")="clinic5491" then
 				Prontuario = reg("idImportado")
 				if isnull(Prontuario) then
 					set pultPront = db.execute("select idImportado Prontuario from pacientes where not isnull(idImportado) order by idImportado desc limit 1")
@@ -264,6 +265,11 @@ end if
     	        <input type="text" class="form-control text-right" value="<%=reg("id")%>" disabled='disabled' />
 			<% End If%>
             </div>
+            <%
+                sqlprioridade = "select * from cliniccentral.pacientesprioridades"
+            %>
+            <%= quickField("simpleSelect", "Prioridade", "Prioridade", 2, reg("Prioridade"), sqlprioridade , "Prioridade", "") %>
+            
         </div>
 
         <%

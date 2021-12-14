@@ -134,7 +134,7 @@ while not pcampos.eof
                     sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
                     if pcampos("TipoCampoID")  = 16 and  pcampos("enviardadoscid") = 1 then
                         sqlIncluirCid = "INSERT INTO pacientesdiagnosticos ( PacienteID, CidID, Descricao, DataHora, sysUser, sysActive,  AtendimentoID) "&_
-                                        " VALUES ("&PacienteID&", "&inputValor&", '', NOW(), "&session("User")&", 1, null)"
+                                        " VALUES ("&PacienteID&", '"&inputValor&"', '', NOW(), "&session("User")&", 1, null)"
                         db.execute( sqlIncluirCid )
                     end if
                 end if

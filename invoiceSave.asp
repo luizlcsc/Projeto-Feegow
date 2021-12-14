@@ -256,7 +256,6 @@ if existePagto="" then
 			totParc = totParc+valPar
 		end if
 	next
-
 	if totInvo<=(totParc-0.05) or totInvo>=(totParc+0.05) then
 		erro = "O valor total n&atilde;o coincide com a soma das parcelas."
 	end if
@@ -394,7 +393,7 @@ if erro="" then
 			desInv = ref("Desconto"&splInv(i))
 			acrInv = ref("Acrescimo"&splInv(i))
 			if isnumeric(valInv) and valInv<>"" then valInv=ccur(valInv) else valInv=0 end if
-			if isnumeric(quaInv) and quaInv<>"" then quaInv=ccur(quaInv) else quaInv=1 end if
+			if isnumeric(quaInv) and quaInv<>"" then quaInv=replace(ccur(quaInv),",",".") else quaInv=1 end if
 			if isnumeric(desInv) and desInv<>"" then desInv=ccur(desInv) else desInv=0 end if
 			if isnumeric(acrInv) and acrInv<>"" then acrInv=ccur(acrInv) else acrInv=0 end if
 			if Row>0 then

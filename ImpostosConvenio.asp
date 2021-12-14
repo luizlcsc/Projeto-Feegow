@@ -1,217 +1,154 @@
 <!--#include file="connect.asp"-->
 <%
 ConvenioID = req("ConvenioID")
+
+
+sqlImposto = "Select * from impostos where sysActive = 1"
+
+sqlContrato = "SELECT id, CodigoNaOperadora FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND sysActive = 1 AND CodigoNaOperadora <> '' "
+
+sqlCentroCusto = "select * from centrocusto c where sysActive = 1"
+
+sqlPlanoDeContas = "select * from sys_financialexpensetype sf2 where sysActive = 1"
 %>
-<form id="frmOC" onsubmit="return salvarProcedimentos()" >
-    <div id="main-nofitificados">
-        <div class="row">
-            <div class="col-md-12"  style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px">
-                 <%
-                  sql = "SELECT descricao, descricao AS id FROM "&_
-                        "(SELECT 'ISS' Descricao UNION ALL SELECT 'PIS' UNION ALL SELECT 'CSSL' UNION ALL SELECT 'IR' UNION ALL SELECT 'COFINS' UNION ALL SELECT 'OUTROS')  AS T"
-                  %>
-                 <%= quickfield("multiple", "Impostos[0]" , "Imposto"   , 2, Imposto,sql, "descricao", "") %>
-                 <%= quickfield("multiple", "Contratos[0]", "Contratos" , 3, Contratos,"SELECT id, CodigoNaOperadora FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND sysActive = 1 AND CodigoNaOperadora <> '' ", "CodigoNaOperadora", "") %>
-                 <%=quickField("text"     , "valor[0]"    , "Valor" , 2, valor, " sql-mask-4-digits  ", "", " ")%>
-                 <%=quickField("text"     , "de[0]"       , "De " , 2, de, " sql-mask-4-digits  ", "", " ")%>
-                 <%=quickField("text"     , "ate[0]"      , "Até" , 2, ate, " sql-mask-4-digits  ", "", " ")%>
-                 <div class="col-md-1 mt25 text-right">
-                    <button type="button" class="btn btn-success w100" onclick="addNotificados(null,null)"> <i class="far fa-plus"></i></button>
-                 </div>
-            </div>
+
+<style>
+    .mt50{
+        margin-top:50px
+    }
+</style>
+
+<button id="criarRegra" type="button" class="btn btn-success btn-lg" data-toggle="modalImposto" data-target="#modalImposto" onClick="criarRegra()">
+  + Criar imposto
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalImposto" tabindex="-1" role="dialog" aria-labelledby="modalImposto">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Imposto</h4>
+        </div>
+        <div class="modal-body" style="min-height: 300px;">
+            <form id="regra" class="col-md-12">
+                <div class="row">
+                    <%= quickfield("simpleSelect", "Imposto" , "Imposto"   , 6, Imposto, sqlImposto, "nome", "") %>
+                    <%= quickfield("multiple", "Contratos", "Contratos" , 6, Contratos, sqlContrato,"CodigoNaOperadora", "") %>
+                </div>
+                <div class="row">
+                    <%= quickfield("simpleSelect", "planoConta" , "Plano de Contas"   , 6, planoDecontas, sqlPlanoDeContas, "Name", "") %>
+                    <%= quickfield("simpleSelect", "centroCusto" , "Centro de custo"   , 6, NomeCentroCusto, sqlCentroCusto, "NomeCentroCusto", "") %>
+                    <%=quickField("porcentagem"     , "valor"    , "Valor" , 3, valor, " sql-mask-2-digits ", "", " ")%>
+                    <div class="col-md-3"></div>
+                    <%=quickField("currency"     , "de"       , "De " , 3, de, " sql-mask-2-digits  ", "", " ")%>
+                    <%=quickField("currency"     , "ate"      , "Até" , 3, ate, " sql-mask-2-digits  ", "", " ")%>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onClick="sendToSave()">Salvar</button>
         </div>
     </div>
+  </div>
+</div>
 
-    <div id="add-nofitificados">
+<hr>
 
-    </div>
-    <div class="text-right">
-        <button type="submit" class="btn btn-success btn-sm">Salvar</button>
-    </div>
-</form>
+<div id="conteudo" class="mt50">
+    <i class="fa fa-spinner fa-spin orange bigger-125"></i> Carregando...
+<div>
 
 <script type="text/javascript">
-var countCombinacao = 0;
-
-function removerRow(arg) {
-    $(arg).parent().parent().parent().remove()
+criarRegra = ()=>{
+    $("#modalImposto").modal("show")
 }
 
-function addNotificados(values){
-    countCombinacao++;
+sendToSave = () =>{
+    let data = $("#regra").serialize()
+    envio(data)
+      
+}
 
-    let impostos = $("#main-nofitificados select")[0].outerHTML;
-        impostos = impostos.replace(/Impostos\[0\]/g,"Impostos["+ countCombinacao +"]");
-        impostos = impostos.replace(/qfimpostos\[0\]/g,"qfimpostos["+ countCombinacao +"]");
+envio = (data) =>{
+    $.ajax({
+        type:"POST",
+        url:"saveImpostosAssociacao.asp?acao=N&convenio=<%=ConvenioID%>",
+        data:data,
+        success:function(data){
+            load()
+            $("#modalImposto").modal("hide")
+        }
+    });
+    return false; 
+}
 
-    let contratos = $("#main-nofitificados select")[1].outerHTML;
-        contratos = contratos.replace(/Contratos\[0\]/g,"Contratos["+ countCombinacao +"]");
-        contratos = contratos.replace(/qfcontratos\[0\]/g,"qfcontratos["+ countCombinacao +"]");
+load = () =>{
+    $.get( "loadImpostosAssociacao.asp?convenio=<%=ConvenioID%>", function( data ) {
+        if(!data){
+            $("#conteudo").html("<p><i class='fa fa-exclamation-triangle'></i> Sem Regras cadastradas</p>")
+        }else{
+            formatRule(JSON.parse(data))
+        }
+    });
+    return false; 
+}
 
-    let valor = $("#valor\\[0\\]")[0].outerHTML;
-        valor = valor.replace(/valor\[0\]/g,"valor["+ countCombinacao +"]");
-
-    let de = $("#de\\[0\\]")[0].outerHTML;
-        de = de.replace(/de\[0\]/g,"de["+ countCombinacao +"]");
-
-    let ate = $("#ate\\[0\\]")[0].outerHTML;
-        ate = ate.replace(/ate\[0\]/g,"ate["+ countCombinacao +"]");
-
-
-    let html  = `<div class="row">
-                     <div class="col-md-12"  style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px">
-                        <div class="col-md-2 qf">
-                            <label>Impostos</label>
-                            ${impostos}
-                        </div>
-                        <div class="col-md-3 qf">
-                            <label>Contrato</label>
-                            ${contratos}
-                        </div>
-                        <div class="col-md-2 qf">
-                            <label>Valor</label>
-                            ${valor}
-                        </div>
-                        <div class="col-md-2 qf">
-                            <label>De</label>
-                            ${de}
-                        </div>
-                        <div class="col-md-2 qf">
-                            <label>Até</label>
-                            ${ate}
-                        </div>
-                        <div class="col-md-1 mt25 text-right">
-                            <button type="submit" class="btn btn-danger w100" onclick="removerRow(this)"> <i class="far fa-times"></i></button>
-                        </div>
-                     </div>
-                  </div>`;
-
-    $("#add-nofitificados").append(html);
-
-    let config = {
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true,
-                    filterPlaceholder: 'Filtrar ...',
-                    allSelectedText: 'Todos Selecionados',
-                    maxHeight: 200,
-                    numberDisplayed: 3,
-                    includeSelectAllOption: true
-    };
-
-    let tagImposto        = $('#add-nofitificados > div').last().find("select.multisel").eq(0);
-    let tagContrato       = $('#add-nofitificados > div').last().find("select.multisel").eq(1);
-
-    if(values){
-        tagImposto.val(values.impostos.split(","));
-        tagContrato.val(values.contratos.split(","));
-
-        $(`[name='valor[${countCombinacao}]`).val(values.valor);
-        $(`[name='de[${countCombinacao}]`).val(values.de);
-        $(`[name='ate[${countCombinacao}]`).val(values.ate);
+formatMoney = (val)=>{
+    if (val.indexOf(",") < 0){
+        return val+",00"
     }
-
-    $('#add-nofitificados > div').last().find("select.multisel").multiselect(config)
-
-    $(".sql-mask-4-digits").maskMoney({prefix:'', thousands:'.', decimal:',', affixesStay: true, precision: 4});
+    return val
 }
 
-function getValues(){
-    let keys = [];
+apagarRegra = (id) =>{
+}
+var html= ""
+formatRule = (dados) =>{
+    $('#conteudo').html("")
+        html=`
+        <table id="percentual-conta" class="table table-bordered table-striped">
+            <tr class="primary">						
+                <th width="12%">Imposto</th>
+                <th width="12%">Contratos</th>
+                <th width="16%">Plano de Contas</th>
+                <th width="16%">Centro de Custo</th>
+                <th width="12%">valor</th>
+                <th width="12%">De</th>
+                <th width="12%">Ate</th>
+                <th width="2%">Ação</th>
+            </tr>
+            <tbody>`
+        dados.map((dado)=>{
+        html +=`<tr>
+                    <td>`+dado.imposto+`</td>
+                    <td>`
+                    for (let index = 0; index < dado.contratos.length; index++) {
+                        const contrato = dado.contratos[index];
+                            if (index>0){
+                                html+=","
+                            }
+                            html += "<span>"+contrato.contrato_nome+"</span>"
+                    }
+        html +=    `</td>
+                    <td>`+dado.planoContas+`</td>
+                    <td>`+dado.CentroCusto+`</td>
+                    <td>`+dado.valor+`%</td>
+                    <td>R$ `+formatMoney(dado.de)+`</td>
+                    <td>R$ `+formatMoney(dado.ate)+`</td>
+                    <td><button type="button" class="btn btn-sm btn-danger pull-right" title="Excluir" onclick="if(confirm('Tem certeza de que deseja excluir essa regra?'))apagarRegra(`+dado.id+`);">
+                            <i class="fa fa-trash icon-trash"></i>
+                        </button></td>
+                </tr>`
+        })
+        html+=`</tbody>
+        </table>
+            `
 
-    ["Impostos","Contratos"].forEach((tagName) => {
-        $("select[name^='"+tagName+"']").each((item,tag) => {
-            re = new RegExp(tagName+"\\[(.)+\\]", "g");
-            let key = $(tag).attr("name").replace(re, '$1');
-
-            if(keys.indexOf(key) === -1){
-                keys.push(key);
-            }
-        });
-    });
-
-    let result = {};
-
-    ["Impostos","Contratos"].forEach((tagName)=>{
-        keys.forEach((key) => {
-            $("select[name='"+tagName+"["+key+"]']").each((item,tag) => {
-                if(!result[key]){
-                    result[key] = {};
-                }
-                result[key][tagName] = $(tag).val();
-            });
-        });
-    });
-
-
-    keys.forEach((key) => {
-         result[key]["valor"]  = $(`[name='valor[${key}]']`).val();
-         result[key]["de"] = $(`[name='de[${key}]']`).val().replace(".","").replace(",",".");
-         result[key]["ate"] = $(`[name='ate[${key}]']`).val().replace(".","").replace(",",".");
-    });
-    return result;
+    $('#conteudo').append(html)
 }
 
-var salvarProcedimentos = function(){
-      fetch(domain+'api/convenios-impostos/save',{
-         method:"POST",
-         headers: {
-                "x-access-token":localStorage.getItem("tk"),
-                 'Accept': 'application/json',
-                 'Content-Type': 'application/json'
-         },
-         body:JSON.stringify({parametros:getValues(),convenio:<%=ConvenioID%>})
-      }).then(() => {
-             new PNotify({
-                  title: 'Sucesso!',
-                  text: 'Dados cadastrados com sucesso.',
-                  type: 'success',
-                  delay: 2500
-              });
-      });
-
-      return false;
-};
-
-var resultados = [];
-
-<%
-    set objRec = db.execute("SELECT * FROM impostos_associacao WHERE  AssociationID=6 and AccountID="&ConvenioID&" ORDER BY 1 ASC ")
-
-    While Not objRec.EOF
-    %>
-    resultados.push({
-       impostos:  '<%=objRec("impostos") %>',
-       contratos: '<%=objRec("contratos") %>',
-       valor:     '<% if not isnull(objRec("valor")) then
-                            response.write(formatnumber(objRec("valor"),4))
-                  end if %>',
-       de:        '<% if not isnull(objRec("de")) then
-                                  response.write(formatnumber(objRec("de"),4))
-                  end if %>',
-       ate:       '<% if not isnull(objRec("ate")) then
-                                  response.write(formatnumber(objRec("ate"),4))
-                  end if %>'
-    });
-    <%
-      objRec.MoveNext
-    Wend
-%>
-
-let i = 0;
-resultados.map((key) => {
-    if(i == 0){
-        i++;
-           jQuery("#Impostos\\[0\\]").val(key.impostos.split(","));
-           jQuery("#Contratos\\[0\\]").val(key.contratos.split(","))
-           jQuery("#valor\\[0\\]").val(key.valor);
-           jQuery("#ate\\[0\\]").val(key.ate);
-           jQuery("#de\\[0\\]").val(key.de);
-
-           return;
-    }
-
-    addNotificados(key);
-});
-
+load()
 <!--#include file="JQueryFunctions.asp"-->
 </script>

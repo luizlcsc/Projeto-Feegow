@@ -385,8 +385,9 @@ while diaS<n
         sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
     end if
 
-    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, p.CorIdentificacao, proc.NomeProcedimento,proc.Cor , s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
+    set comps=db.execute("select a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.PacienteID,a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, a.Primeira, p.NomePaciente, p.IdImportado, p.Tel1, p.Cel1, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, p.CorIdentificacao, proc.NomeProcedimento,proc.Cor , s.StaConsulta, a.rdValorPlano, a.ValorPlano, a.Notas, c.NomeConvenio, l.UnidadeID, l.NomeLocal, (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta from agendamentos a "&_
     "left join pacientes p on p.id=a.PacienteID "&_
+    "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
     "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
     "left join staconsulta s on s.id=a.StaID "&_
     "left join convenios c on c.id=a.ValorPlano "&_
@@ -399,6 +400,7 @@ while diaS<n
         podeVerAgendamento=True
         UnidadeID=comps("UnidadeID")
         CorIdentificacao = comps("CorIdentificacao")
+        pacientePrioridadeIcone = replace(comps("PrioridadeIcone")&"","'","""")
 
         if UnidadeID&""<>"" and session("admin")=0 then
             if instr(session("Unidades"),"|"&UnidadeID&"|")=0 then
@@ -517,7 +519,9 @@ while diaS<n
         statusIcon = imoon(comps("StaID"))
 
         Conteudo = Conteudo & "</td><td width=""1%"" "&FirstTdBgColor&"><button type=""button"" data-hora="""&replace( compsHora, ":", "" )&""" class=""btn btn-xs btn-default btn-comp"& DiaSemana &""">"&compsHora&"</button></td>"&_
+
         "<td nowrap> "&statusIcon
+
         if comps("Encaixe")=1 and OmitirEncaixeGrade=0 then
             Conteudo = Conteudo & "<span class=""label label-alert"">enc</span>"
         end if

@@ -62,7 +62,9 @@ function modalPaymentDetails(movementID, deleteID){
 		   movementID:movementID,
 		   deleteID:deleteID
 		   },function(data,status){
-      $("#pagar, #modal").html(data);
+        $("#pagar, #modal").html(data);
+        $("#pagar").fadeIn();
+        $("#pagar").removeClass('fade');
     });
 }
 

@@ -2,7 +2,6 @@
 <!--#include file="Classes/IPUtil.asp"-->
 <!--#include file="Classes/Environment.asp"-->
 <!--#include file="functions.asp"-->
-
 <%
 if IP<>"::1" then
    'on error resume next
@@ -647,6 +646,8 @@ if not tryLogin.EOF then
 
             call odonto()
 
+            call sendLogLoginSuccess()
+
             if QueryStringParameters<>"" then
                 response.Redirect("./?"&QueryStringParameters)
             else
@@ -658,6 +659,7 @@ else
     set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&User &"' LIMIT 1")
 
     if not licenca.eof then
+        logErrorLicenseId = licenca("LicencaID")
 '                                if licenca("Bloqueado") = 0 then
             dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&licenca("LicencaID")&", "&licenca("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
 
@@ -682,5 +684,19 @@ else
 	    ErroLogin = True
         ErroLoginMsg = "E-mail de acesso ou senha não conferem."
 	end if
+end if
+
+' loga a tentativa de login
+if ErroLogin then
+    if logErrorLicenseId&"" = "" then
+        if instr(Dominio, "dasa")>0 then
+            logErrorLicenseId = 9021
+        elseif instr(Dominio, "amor-saude")>0 then
+            logErrorLicenseId = 7211
+        end if
+    end if
+    if logErrorLicenseId <> "" then
+        call sendLogLoginError(logErrorLicenseId, ErroLoginMsg, User, permiteMasterLogin)
+    end if
 end if
 %>

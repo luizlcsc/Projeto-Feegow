@@ -36,7 +36,15 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
          font-family: "Open Sans";
          src: url('https://cdn.feegow.com/feegowclinic-v7/assets/fonts/open-sans/OpenSans-Regular.ttf');
     }
-
+    .fake{
+        height: 39px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #dddddd;
+        border-radius: 0 4px 4px 0;
+    }
     .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
       }
@@ -215,6 +223,9 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/old.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.css">
+
+  <link href="https://cdn.feegow.com/feegowclinic-v7/assets/fonts/material-design-icons/css/materialdesignicons.min.css" rel="stylesheet">
+
   <style>
   /*===============================================
     Custom Scrollbar
@@ -635,7 +646,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         </script>
     <% end if %>
 
-    <div id="disc" class="alert alert-danger text-center hidden" style="position:absolute; z-index:9999; width:100%"></div>
+    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
 
         <div id="modalCaixa" class="modal fade" tabindex="-1">
             <div class="modal-dialog">
@@ -1426,7 +1437,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 
-                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
+                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -2506,7 +2517,7 @@ function abreModalUnidade(backdrop=true){
   </script>
   <!-- END: PAGE SCRIPTS -->
 
-<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:#903; color:#FFF; padding:3px; display:none" id="legend">
+<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px); " id="legend">
 	<marquee id="legendText"></marquee>
 </div>
 <iframe width="250" id="speak" name="speak" height="195" scrolling="no" style="position:fixed; bottom:0; left:0; display:none" frameborder="0" src="about:blank"></iframe>
@@ -2830,5 +2841,5 @@ if PermiteChat then
 end if
 %>
 <% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
-<script src="assets/js/whatsApp/whatsAppStatus.js"></script>
+<script src="assets/js/whatsApp/whatsAppStatus.js?cache_prevent=9"></script>
 <% END IF %>

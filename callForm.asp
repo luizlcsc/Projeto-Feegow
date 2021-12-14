@@ -361,9 +361,8 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             ultimo=atual;
 
             recordLog({
-                module:"forms",
-                action: action,
-                logUrl: "<%= Request.ServerVariables("SERVER_NAME") &"/"& Request.ServerVariables("SCRIPT_NAME") %>",
+                category:"forms",
+                event: action,
                 licenseId: "<%=LicenseId%>",
                 userId: "<%=Session("User")%>",
                 oldData: {},

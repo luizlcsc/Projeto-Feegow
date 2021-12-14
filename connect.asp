@@ -397,7 +397,7 @@ function treatValZero(Val)
 end function
 
 function treatValTISS(Val)
-	if isnumeric(Val) and Val<>"" then
+	if isnumeric(Val) and Val&""<>"" then
 		Val = formatnumber(Val,2)
 		Val = replace(Val, ".", "")
 		treatValTISS = replace(Val, ",", ".")
@@ -411,6 +411,13 @@ function nullToZero(val)
         val = 0
     end if 
     nullToZero = val
+end function 
+
+function valnullToZero(val)
+    if Val&"" = "" then
+        val = 0
+    end if 
+    valnullToZero = val
 end function 
 
 function treatValNULL(Val)
@@ -924,14 +931,29 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			%>
 			<div class="input-group">
                 <input type="text" class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
+                <%
+                    ValidaCampoCPF = true
+                    if lcase(session("Table"))="funcionarios" and session("Admin")=0 then
+                        set OmiteCampoSemCPFSQL = db_execute("SELECT * FROM omissaocampos WHERE ((Tipo='F' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR Tipo='C') AND Omitir LIKE '%SemCPF|%'")
+                        if not OmiteCampoSemCPFSQL.eof then
+                            ValidaCampoCPF = false
+                        end if
+                    elseif lcase(session("Table"))="profissionais" and session("Admin")=0 then
+                        set OmiteCampoSemCPFSQL = db_execute("SELECT * FROM omissaocampos WHERE ((Tipo='P' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR (Tipo='E' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR Tipo='C') AND Omitir LIKE '%SemCPF|%'")
+                        if not OmiteCampoSemCPFSQL.eof then
+                            ValidaCampoCPF = false
+                        end if
+                    end if
+                    if ValidaCampoCPF <> false then
+                %>
+                    <span class="input-group-addon">
+                    <div class="checkbox-custom checkbox-warning">
+                            <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
 
-                <span class="input-group-addon">
-                   <div class="checkbox-custom checkbox-warning">
-                        <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
-
-                        <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
-                    </div>
-                </span>
+                            <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
+                        </div>
+                    </span>
+                <% end if %>
             </div>
 
 			<%
@@ -1006,7 +1028,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 		case "memo"
 			response.Write(LabelFor)
 			%>
-			<textarea class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>"<%=additionalTags%>><%=fieldValue%></textarea>
+			<textarea class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" <%=additionalTags%> ><%=fieldValue%></textarea>
 			<%
 		case "palavras"
 			response.Write(LabelFor)
@@ -1063,10 +1085,24 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 <strong>R$</strong>
             <% end if %>
             </span>
-            <input id="<%=fieldName%>" class="form-control input-mask-brl <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
+            <input id="<%=fieldName%>" class="form-control input-mask-brl  <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
              <% if fieldType = "currency" then %>
             </div>
             <% end if %>
+			<%
+		case "porcentagem"
+			response.Write(LabelFor)
+            if fieldValue&"" ="" then
+                fieldValue = 0
+            end if
+            fieldValue = formatnumber(fieldValue,2)
+			%>
+            <div class="input-group">
+            <input id="<%=fieldName%>" class="form-control input-mask-brl sql-mask-2-digits" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
+                <span class="input-group-addon">
+                    <strong>%</strong>
+                </span>
+            </div>
 			<%
 		case "select"
 			response.Write(LabelFor)
@@ -4862,7 +4898,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             PosicaoE = PosicaoID
             PosicaoS = 0
         elseif Tipo="S" or Tipo="M" then
-            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' "& sqlValidade
             set posSaida = db.execute(sqlPosSaida)
             'jamais dar saida de uma posicao que nao foi criada previamente
             if not posSaida.eof then
@@ -6557,6 +6593,72 @@ function montaSubqueryBMJ(where)
     end if
 end function
 
+function lancarImposto(invoice,valor,convenio)
+    if valor&"" = "" then
+        valor = 0
+    end if  
+
+    sqlImpostos =   " select                                                            "&chr(13)&_
+                    " 	ia.id,                                                          "&chr(13)&_
+                    " 	i.nome,                                                         "&chr(13)&_
+                    " 	fe.name planoContas_nome,                                       "&chr(13)&_
+                    " 	fe.id planoContas_id,                                           "&chr(13)&_
+                    " 	cc.NomeCentroCusto CentroCusto_nome,                            "&chr(13)&_
+                    " 	cc.id CentroCusto_id,                                           "&chr(13)&_
+                    " 	ia.valor,                                                       "&chr(13)&_
+                    " 	ia.de,                                                          "&chr(13)&_
+                    " 	ia.ate                                                          "&chr(13)&_
+                    " from                                                              "&chr(13)&_
+                    " 	impostos_associacao ia                                          "&chr(13)&_
+                    " 	left join sys_financialexpensetype fe on ia.planoContas = fe.id "&chr(13)&_
+                    " 	left join centrocusto cc on ia.CentroCusto = cc.id              "&chr(13)&_
+                    " 	left join impostos i on ia.imposto = i.id                       "&chr(13)&_
+                    " where                                                             "&chr(13)&_
+                    " 	ia.convenio = "&convenio
+
+    set impostos = db.execute(sqlImpostos)
+
+    descontoTotal = 0
+
+    while not impostos.eof
+            imposto = impostos("valor")
+            if imposto&"" = "" then
+                imposto = 0
+            end if 
+
+            de = impostos("de")
+            ate = impostos("ate")
+            dentroDaRegra = 0
+            if cdbl(valor) >= cdbl(de) and cdbl(valor) <= cdbl(ate) then
+
+
+                dentroDaRegra = 1
+            end if
+            if dentroDaRegra = 1 then
+            
+                valorImposto = formatnumber(((imposto/100) * valor),2)
+                sqlinsertiii = "insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, Executado, sysUser, ProfissionalID, Associacao, CentroCustoID,imposto) values ("& invoice &", 'O', 1, "&impostos("planoContas_id")&", 0, 0 , "&treatvalzero(valorImposto)&", 'Imposto:"&impostos("nome")&"', '', "&session("User")&", 0, 0,"&impostos("CentroCusto_id")&" ,1)"
+                
+                descontoTotal =  descontoTotal + valorImposto
+
+                db_execute(sqlinsertiii)
+
+                sqlgetValueMov = "SELECT Value FROM sys_financialmovement WHERE invoiceid="&invoice
+                set sqlValor =  db_execute(sqlgetValueMov)
+
+                if not sqlValor.eof then
+                    valorAtual = sqlValor("Value")
+                    valorAtual =  valorAtual - valorImposto
+                    sqlupdadeMov = "UPDATE sys_financialmovement SET Value="&valorAtual&" WHERE invoiceid="&invoice
+                    db.execute(sqlupdadeMov)
+                end if 
+            end if 
+        impostos.movenext
+    wend 
+    sqlupdadeInv = "UPDATE sys_financialinvoices SET Value="&descontoTotal&" WHERE id="&invoice
+    db.execute(sqlupdadeInv)
+end function
+
 function confereTabela (tabela)
     sqlConfereTabela = "SELECT count(*) nTabela FROM information_schema.TABLES WHERE (TABLE_SCHEMA = '"&session("banco")&"') AND (TABLE_NAME = '"&tabela&"');"
     set conferir = db.execute(sqlConfereTabela)
@@ -6579,5 +6681,13 @@ function createTable_(I)
 					" 	index `sysUser` (`sysUser`)                                                 			"&chr(13)&_
 					" )                                                                            				"
 		db.execute(sqlCreate)
+end function
+
+function Floor(Number)
+    Floor = Int(Number)
+end function
+
+function Ceil(Number)
+    Ceil = round(Number+0.1)
 end function
 %>

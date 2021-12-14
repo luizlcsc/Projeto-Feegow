@@ -13,11 +13,11 @@
     end if
 
 %>
-<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> class="invoice-linha-item" data-id="<%=id%>">
+<tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> data-id="<%=id%>" data-imposto="<%=imposto%>">
     <td>
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
     	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
-		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))""")%><input type="hidden" name="inputs" value="<%= id %>">
+		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&disabled)%><input type="hidden" name="inputs" value="<%= id %>">
         <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" />
     </td>
         <%
@@ -113,17 +113,17 @@
                     <input type="radio" name="Executado<%=id %>" id="Executado<%=id %>U" value="U" <%if Executado="U" then %> checked <%end if %> /><label for="Executado<%=id %>U">Unidade</label>
                 </div>
             </div>
-<div class="col-md-8 mt5"><%= selectInsert("", "ItemID"&id, ItemID, "produtos", "NomeProduto", " onchange=""parametrosProduto("&id&", this.value);""", " required", "") %></div></td>
-<td colspan="2">
-                                        <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
-                                        <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%> </td>
+    <div class="col-md-8 mt5"><%= selectInsert("", "ItemID"&id, ItemID, "produtos", "NomeProduto", " onchange=""parametrosProduto("&id&", this.value);""", " required", "") %></div></td>
+    <td colspan="2">
+
+            <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%> </td>
 
             <%
         elseif Tipo="O" then
             ItemInvoiceID = id
             ProdutoInvoiceID = ""
 			if not InvoiceSQL.eof then
-				if InvoiceSQL("CD")="C" then
+				if InvoiceSQL("CD")="C" and imposto = 0 then
 					TabelaCategoria = "sys_financialincometype"
 					LimitarPlanoContas=""
 				else
@@ -133,16 +133,20 @@
 				end if
 			end if
             %>
-            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50'")%></td>
-            <td >
-                <%'= quickfield("simpleSelect", "CategoriaID"&id, "", 5, CategoriaID, "SELECT t1.id, concat( ifnull(t2.name, ''), ' -> ', t1.name) Categoria FROM sys_financialexpensetype AS t1 LEFT JOIN sys_financialexpensetype AS t2 ON t2.id = t1.category LEFT JOIN sys_financialexpensetype AS t3 ON t3.id = t2.category LEFT JOIN sys_financialexpensetype AS t4 ON t4.id = t3.category where t1.Nivel=(select max(Nivel) from sys_financialexpensetype) order by t2.name, t1.name", "Categoria", "") %>
-                <%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>
-            <td>
-                <%=selectInsert("", "CentroCustoID"&id, CentroCustoID, "CentroCusto", "NomeCentroCusto", "", "", "")%></td>
-            <script>
-                $("#hCentroCusto").html("Centro de Custo");
-                $("#hPlanoContas").html("Plano de Contas");
-            </script>
+            <td><%=quickField("text", "Descricao"&id, "", 4, Descricao, " ", "", " placeholder='Descri&ccedil;&atilde;o...' required maxlength='50' "&disabled)%></td>
+                <% if imposto = 0 then%>
+                    <td><%=selectInsert("", "CategoriaID"&id, CategoriaID, TabelaCategoria, "Name", "data-exibir="""&LimitarPlanoContas&"""", "", "")%></td>
+                    <td><%=selectInsert("", "CentroCustoID"&id, CentroCustoID, "CentroCusto", "NomeCentroCusto", "", "", "")%></td>
+                    <script>
+                        $("#hCentroCusto").html("Centro de Custo");
+                        $("#hPlanoContas").html("Plano de Contas");
+                    </script>
+                <% else%>
+                    <td hidden ><%=quickField("select", "CategoriaID"&id, "", 12, CategoriaID, TabelaCategoria, "Name", "")%></td>
+                    <td><%=quickField("select", "CategoriaIDS"&id, "", 12, CategoriaID, TabelaCategoria, "Name", " disabled  ")%></td>
+                    <td hidden ><%=quickField("select", "CentroCustoID"&id, "", 12, CentroCustoID, "centrocusto" , "NomeCentroCusto", " ")%></td>
+                    <td><%=quickField("select", "CentroCustoIDS"&id, "", 12, CentroCustoID, "centrocusto" , "NomeCentroCusto", " disabled ")%></td>
+                <% end if%>
             <%
         end if
 
@@ -156,17 +160,39 @@
             notEdit = " notedit "
         end if
 
-        DescontoReadonly = ""
-        if Voucher<> "" then
-            DescontoReadonly = " readonly "
-        end if
-
-        if aut("valordoprocedimentoA")=0 and Tipo="S" then
+        if (aut("valordoprocedimentoA")=0 and Tipo="S")then
             ValorUnitarioReadonly=" readonly"
             notEdit = " notedit "
         end if
+    if imposto = 1 then 
         %>
-    <td><%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right disable", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%></td>
+    <td>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default btn-descontox" data-toggle="dropdown" aria-expanded="false"
+                    style="width: 41px !important;">R$</button>
+            </div>
+            <div hidden>
+                <%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%>
+            </div>
+            <div class="fake col-md-4 CampoDesconto input-mask-brl text-right disabled"><%=fn(ValorUnitario)%></div>
+        </div>
+    </td>
+    <% else %>
+        <td><%=quickField("currency", "ValorUnitario"&id, "", 4, fn(ValorUnitario), " " & notEdit & " CampoValorUnitario text-right", "", " onkeyup=""syncValuePercentReais($(this))""" & ValorUnitarioReadonly)%></td>
+    <% end if %>
+    <% if imposto = 1 then %>
+    <td>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default btn-descontox" data-toggle="dropdown" aria-expanded="false"
+                    style="width: 41px !important;">R$</button>
+            </div>
+            <%=quickField("text", "Desconto"&id, "", 4, fn(Desconto), " CampoDesconto input-mask-brl text-right hidden", "", " data-desconto='"&fn(Desconto)&"'hidden onkeyup=""setInputDescontoEmPorcentagem(this)""")%>
+            <div class="fake col-md-4 CampoDesconto input-mask-brl text-right disabled"><%=fn(Desconto)%></div>
+        </div>
+    </td>
+    <% else %>
     <td>
         <div class="input-group">
             <div class="input-group-btn">
@@ -180,7 +206,27 @@
             <%=quickField("text", "PercentDesconto"&id, "", 4, "0.00", " PercentDesconto input-mask-brl text-right disable", "", "style='display:none' data-desconto='0.00' onkeyup=""setInputDescontoEmReais(this)""")%>
         </div>
     </td>
-    <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
+    <% end if %>
+    <% if imposto = 1 then %>
+    <td>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default btn-descontox" data-toggle="dropdown" aria-expanded="false"
+                    style="width: 41px !important;">R$</button>
+            </div>
+            <div hidden>
+                <%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%>
+            </div>
+            <div class="fake col-md-4 CampoDesconto input-mask-brl text-right disabled"><%=fn(Acrescimo)%></div>
+        </div>
+    </td>
+    <% else %>
+        <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
+    <% end if %>
+
+
+
+
     <td class="text-right" data-valor="<%= fn( Subtotal) %>" id="sub<%=id%>" nowrap>R$ <%= fn( Subtotal) %></td>
     <td><button
     <% if id<0 then %>
@@ -302,7 +348,6 @@ if req("T")="D" then
         var $linhaFatura = $("#invoiceItens").find("[id^='row']").eq("0");
         $linhaFatura.find("input").attr("readonly",true);
         $linhaFatura.find("[name^='Desconto'], [name^='Acrescimo']").attr("readonly",false);
-
         $linhaFatura.find(".btn-danger, .btn-alert").attr("disabled",true);
     }, 250);
 </script>
@@ -653,21 +698,3 @@ end if
 
 end if
 %>
-<script>
-
-$('.deletaGuia').on('click', function(){
-    var itemGuiaId = $(this).data('id');
-    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]');
-
-    if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
-        $.post("deletaItemGuia.asp", { guiaInvoiceID: guiaInvoiceID , itemID:itemID, InvoiceID:InvoiceID}, function(data) {
-            if(data){
-                linhaItem.fadeOut('fast', function (){
-                    $('#totalGeral').html(data);
-                });
-            }
-        })
-    };
-})
-
-</script>

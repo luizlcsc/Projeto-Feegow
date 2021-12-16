@@ -801,8 +801,8 @@ function DefaultForm(tableName, id)
 					age.close
 					set age=nothing
 
+					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data desc, a.Hora desc limit 1")
 
-					set age = db.execute("select a.PacienteID, a.id, MAX(a.Data) Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) group by PacienteID order by a.PacienteID, a.Data desc, a.Hora desc limit 200")
 					while not age.eof
 						%>
 						$("#calendarH<%=age("PacienteID")%>").html( $("#calendarH<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-alert btn-alt btn-gradient item-active mn tooltip-info" data-original-title="Profissional &raquo; <%=age("NomeProfissional")%>"><i class="far fa-calendar"></i> <%=age("Data")%> - <%=formatdatetime(age("Hora"),4)%></button>');

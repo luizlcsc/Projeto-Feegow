@@ -124,9 +124,11 @@ if not Horarios.eof then
 
 
     <div class="panel-heading p5 mn" style="line-height:14px!important; color:#777; font-size:11px; font-weight:bold">
-        <span class="panel-title">
-            <%=left(ucase(NomeProfissional),20)%> <br /><small><%= NomeEspecialidade %></small>
-        </span>
+        <%if MostraGrade then%>
+            <span class="panel-title">
+                <%=left(ucase(NomeProfissional),20)%> <br /><small><%= NomeEspecialidade %></small>
+            </span>
+        <%end if%>
             <div style="position:absolute; top:0; right:0; width:22px">
                 <%
                 if aut("horarios")=1 then

@@ -256,9 +256,11 @@ function completaContratado(id, ConvenioID)
 			set emp = db.execute("select * from empresa")
 			if not emp.eof then
 				CodigoCNES = emp("CNES")
+				CNPJ = emp("CNPJ")
 			end if
 		elseif id>0 then
 			CodigoCNES = "9999999"
+			CNPJ = "99999999999999"
 			%>
 			$("#gProfissionalID").val("<%=id%>");
 			<%
@@ -267,6 +269,7 @@ function completaContratado(id, ConvenioID)
 			set com = db.execute("select * from sys_financialcompanyunits where id="&(id*(-1)))
 			if not com.eof then
 				CodigoCNES = com("CNES")
+				CNPJ = com("CNPJ")
 			end if
 		end if
 	end if
@@ -277,9 +280,12 @@ function completaContratado(id, ConvenioID)
 			'set contrato = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) ORDER BY (Contratado = "&session("idInTable")&") DESC ")
 			'set contrato = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
 			if not contrato.eof then
-
+				IdentificadorCNPJ = contrato("IdentificadorCNPJ")
 				CodigoNaOperadora = contrato("CodigoNaOperadora") 'conv("NumeroContrato")
 				Contratado = contrato("Contratado")
+				if IdentificadorCNPJ = "S" then
+					CodigoNaOperadora = CNPJ
+				end if
 				%>
                 $("#Contratado, #ContratadoID").val("<%=Contratado%>");
 				<%

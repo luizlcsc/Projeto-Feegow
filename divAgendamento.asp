@@ -1653,7 +1653,12 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
+    //let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
+    var data    = new Date();
+    var hora    = data.getHours();          // 0-23
+    var min     = data.getMinutes();        // 0-59
+    let horaAtual = ("00"+ hora).slice(-2) + ':' + ("00"+ min).slice(-2) ;
+    
     $("#Chegada").val(horaAtual);
 }
 

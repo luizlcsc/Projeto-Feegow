@@ -114,7 +114,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 		                sqlTipo = " and (buiforms.Tipo=1 or buiforms.Tipo=2)"
 	                end if
 
-                    set preen = db.execute("select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc")
+                    sqlPreen = "select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc"
+
+                    set preen = db.execute(sqlPreen)
 
 
                     if not preen.eof then
@@ -125,7 +127,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 			                    icone = "lock"
 		                    end if
 
-                            if autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User") then
+                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
                                 exibe = 1
                             else
                                 exibe = 0
@@ -161,6 +163,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
                 PermissaoArquivo=true
             end if
+            
+            if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                PermissaoArquivo = true
+            end if 
 
             if not PermissaoArquivo then
     
@@ -169,6 +175,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 if SinalizarFormulariosSemPermissao&""<>"1" then
                     hiddenRegistro = " hidden "
                 end if
+
 
                 %>
             <div class="timeline-item <%=hiddenRegistro%>">

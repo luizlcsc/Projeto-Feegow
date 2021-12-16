@@ -184,6 +184,7 @@ if buscaAgendamentos.EOF then
 	ConsultaID = 0
 	StaID = 1
     ProgramaID = ""
+    statusDescricao= ""
 else
     'Validar a permissão
     if aut("alterarcheckinpagoA") = 1 then
@@ -244,6 +245,7 @@ else
 
     indicadoId = buscaAgendamentos("IndicadoPor")
     ProgramaID = buscaAgendamentos("ProgramaID")
+    statusDescricao = buscaAgendamentos("StaConsulta")
 end if
 
 if PacienteID<>"" then
@@ -1614,7 +1616,7 @@ async function submitAgendamento(check) {
 
 function excluiAgendamento(ConsultaID, Confirma){
     let StaAgendamento = '<%=StaID%>';
-    let descricaoStatus = '<%=buscaAgendamentos("StaConsulta")%>'
+    let descricaoStatus = '<%=statusDescricao%>'
     let permissaoExcluir = '<%=aut("|agestafinX|")%>';
     let permiteExcluir = true;
 

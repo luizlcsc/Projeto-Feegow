@@ -75,6 +75,7 @@ end if
             <thead>
                 <tr class="info">
                     <th>Status</th>
+                    <th>Lote</th>
                     <th>Data</th>
                     <th>Hora</th>
                     <th>Paciente</th>
@@ -89,16 +90,21 @@ end if
             </thead>
             <tbody>
             <%
-            sqlCirurgia = "select s.NomeStatus, ac.StatusID, ac.rdValorPlano, ac.IDFaturamento, ac.Tabela, ac.id, ac.DataEmissao, ac.Hora, pac.NomePaciente, c.NomeConvenio, ac.ContratadoLocalNome, if(ac.rdValorPlano='V', 'Particular', c.NomeConvenio) NomeConvenio, ac.PacienteID, pac.Cel1 "&_
+            sqlCirurgia = "SELECT COALESCE(tl.Lote,'Sem Lote') AS loteID, s.NomeStatus, ac.IDFaturamento AS Lote, ac.StatusID, ac.rdValorPlano, ac.IDFaturamento, ac.Tabela, ac.id, ac.DataEmissao, ac.Hora, pac.NomePaciente, c.NomeConvenio, ac.ContratadoLocalNome, if(ac.rdValorPlano='V', 'Particular', c.NomeConvenio) NomeConvenio, ac.PacienteID, pac.Cel1 "&_
                                       " ,(SELECT NomeProfissional FROM profissionaiscirurgia pc INNER JOIN profissionais prof ON prof.id=pc.ProfissionalID WHERE pc.GuiaID=ac.id AND pc.GrauParticipacaoID=100 LIMIT 1) Cirurgiao "&_
-                                      "from agendacirurgica ac LeFT JOIN agendacirurgicastatus s ON s.id=ac.StatusID LEFT JOIN pacientes pac ON pac.id=ac.PacienteID LEFT JOIN convenios c ON c.id=ac.ConvenioID "&_
-                                      "where ac.sysActive=1 "&sqlProfissionais&" "&sqlData&" "&sqlUnidades&" "&StatusAgenda&" order by ac.DataEmissao desc, Hora desc"
-
+                                      "FROM agendacirurgica ac LeFT JOIN agendacirurgicastatus s ON s.id=ac.StatusID "&_
+                                      "LEFT JOIN tissguiahonorarios tgh ON ac.IDFaturamento = tgh.id "&_
+                                      "LEFT JOIN tissguiasadt tgs ON ac.IDFaturamento = tgs.id "&_
+                                      "LEFT JOIN pacientes pac ON pac.id=ac.PacienteID "&_
+                                      "LEFT JOIN convenios c ON c.id=ac.ConvenioID "&_
+                                      "LEFT JOIN tisslotes tl ON tl.id=if(ac.Tabela='tissguiahonorarios',tgh.LoteID,if(ac.Tabela='tissguiasadt',tgs.LoteID,0)) "&_
+                                      "WHERE ac.sysActive=1 "&sqlProfissionais&" "&sqlData&" "&sqlUnidades&" "&StatusAgenda&" ORDER BY ac.DataEmissao desc, Hora desc"
             set ac = db.execute(sqlCirurgia)
             while not ac.eof
                 %>
                 <tr>
                     <td><%= ac("NomeStatus") %></td>
+                    <td><%= ac("LoteID")&"" %></td>
                     <td><%= ac("DataEmissao") %></td>
                     <td><%= replace(ft(ac("Hora")), "00:00", "") %></td>
                     <td><a href="?P=Pacientes&Pers=1&I=<%=ac("PacienteID")%>" target="_blank"><%= ac("NomePaciente") %></a></td>

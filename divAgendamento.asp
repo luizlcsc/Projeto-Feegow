@@ -174,9 +174,9 @@ end if
 
 if req("id")<>"" and isNumeric(req("id")) then
 	AgendamentoID = req("id")
-	set buscaAgendamentos = db.execute("select * from agendamentos where id="&req("id"))
+	set buscaAgendamentos = db.execute("select a.*, s.StaConsulta from agendamentos a LEFT JOIN staconsulta s ON s.id = a.StaID where a.id="&req("id"))
 else
-	set buscaAgendamentos = db.execute("select * from agendamentos where ProfissionalID="&ProfissionalID&" and Hora='"&Hora&"' and Data='"&mydate(Data)&"'")
+	set buscaAgendamentos = db.execute("select a.*, s.StaConsulta from agendamentos a LEFT JOIN staconsulta s ON s.id = a.StaID where a.ProfissionalID="&ProfissionalID&" and a.Hora='"&Hora&"' and a.Data='"&mydate(Data)&"'")
 	'VERIFICAR -> esse este der mais de um registro no horaio/profissional criar consulta em grupo
 end if
 
@@ -1613,15 +1613,32 @@ async function submitAgendamento(check) {
 }
 
 function excluiAgendamento(ConsultaID, Confirma){
+    let StaAgendamento = '<%=StaID%>';
+    let descricaoStatus = '<%=buscaAgendamentos("StaConsulta")%>'
+    let permissaoExcluir = '<%=aut("|agestafinX|")%>';
+    let permiteExcluir = true;
 
-	$.ajax({
-		type:"POST",
-		url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma+"&token=98b4d9bbfdfe2170003fcb23b8c13e6b",
-		data:$("#formExcluiAgendamento").serialize(),
-		success:function(data){
-			$("#div-agendamento").html(data);
-		}
-	});
+    if((StaAgendamento == "2" ||StaAgendamento == "3" || StaAgendamento == "4" ||StaAgendamento == "6" ) && permissaoExcluir == "0"){
+        permiteExcluir = false;
+    }
+
+    if(permiteExcluir){
+        $.ajax({
+            type:"POST",
+            url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma+"&token=98b4d9bbfdfe2170003fcb23b8c13e6b",
+            data:$("#formExcluiAgendamento").serialize(),
+            success:function(data){
+                $("#div-agendamento").html(data);
+            }
+        });
+    }else{
+        new PNotify({
+        title: 'Não excluído!',
+        text: 'Você não possui permissão para excluir este agendamento com status de '+descricaoStatus+'.',
+        type: 'danger',
+        delay: 3000
+    });
+    }
 }
 function repeteAgendamento(ConsultaID){
 	$.ajax({

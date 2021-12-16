@@ -4438,6 +4438,7 @@ End Function
 
 function agendaOcupacoes(ProfissionalID, Data)
 	set ocup = db.execute("select * from agendaocupacoes where ProfissionalID="&ProfissionalID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data")
+    'response.write("select * from agendaocupacoes where ProfissionalID="&ProfissionalID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data")
 	while not ocup.eof
 		oHLivres = ocup("HLivres")
 		oHAgendados = ocup("HAgendados")
@@ -4451,8 +4452,20 @@ function agendaOcupacoes(ProfissionalID, Data)
 			percOcup = cInt( oFator* (oHAgendados+oHBloqueados) )
 			percLivre = cInt( oFator* oHLivres )
 		end if
+
+        if oHLivres = 0 then
+            alerta =  "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress""></div>"
+        elseif oHAgendados = 0  then 
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres & """><div class=""progress-bar bg-success"" style=""width:100%;"" ></div></div>"
+        elseif oHLivres = oHAgendados then
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres &  """><div class=""progress-bar bg-danger"" style=""width:100%;"" ></div></div>"
+        elseif oHLivres > oHAgendados then 
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres &  """><div class=""progress-bar bg-warning"" style=""width:100%;"" ></div></div>"
+        end if
+
 		%>
-		$("#prog<%=replace(ocup("Data"), "/", "")%>").html('<% If percOcup>0 Then %><div class="progress-bar progress-bar-danger" style="width: <%=percOcup%>%;"></div><% End If %><%if percLivre>0 then%><div class="progress-bar progress-bar-success" style="width: <%=percLivre%>%;"></div><% End If %>');
+         $("#prog<%=replace(ocup("Data"), "/", "")%>").html('<%=alerta%>');
+         
 		<%
 	ocup.movenext
 	wend

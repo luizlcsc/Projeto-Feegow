@@ -507,7 +507,15 @@ end if
                     %>
             </li>
             <li class="row sidebar-stat">
+                <div class="col-xs-12" id="btnAtualizarCalendario" style="text-align: center;" >
+                    <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:atualizaCalendario();" title="Atualiza vagas ocupadas no calendário">
+                        <span class="fas fa-sync"></span>
+                        <span class="sidebar-title">Atualizar Calendário</span>
+                        <span class="sidebar-title-tray"></span>
+                    </a>
+                </div>
                 <div class="fs11 col-xs-12" id="divCalendario">
+                    
                     <div class="panel panel-body pn bs-component calendario-resumo-agenda-content">
                         <%server.Execute("AgendamentoCalendario.asp")%>
                     </div>

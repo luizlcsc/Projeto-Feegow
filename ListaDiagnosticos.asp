@@ -43,7 +43,12 @@ else%>
             sqlcid = "select *, "&sqlBmj&" from cliniccentral.cid10 where id="&pdiag("CidID")
 
             podever = True
-            permissao = VerificaProntuarioCompartilhamento(session("User"), "Diagnostico", pdiag("id"))
+            permissao = ""
+
+            if session("User") <> pdiag("sysUser") then
+                permissao = VerificaProntuarioCompartilhamento(session("User"), "Diagnostico", pdiag("id"))
+            end if
+
             if permissao <> "" then
                 permissaoSplit = split(permissao,"|")
                 podever = permissaoSplit(0)

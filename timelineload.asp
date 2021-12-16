@@ -254,6 +254,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             'and aut("prescricoesX")>0 and (ti("Tipo")<>"AE" and ti("Tipo")<>"L")
                             if cstr(session("User"))=ti("sysUser")&""  then
                             %>
+
+                                <a title="Ver mais" href="javascript:JustificativaTimeline('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                   <i class="far fa-list "></i>
+                                </a>
+
                                 <a title="Compartilhamento" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
                                     <i class="far fa-share-alt "></i>
                                 </a>

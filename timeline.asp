@@ -1156,6 +1156,40 @@ LocalStorageRestoreHabilitar();
     <%
     ELSE
     %>
+        function JustificativaTimeline(t, p, m, i, a, FormID, CampoID) {
+            $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            if(t=='AE'||t=='L'){
+                try{
+                    $.magnificPopup.open({
+                            removalDelay: 500,
+                            closeOnBgClick:false,
+                            modal: true,
+                            items: {
+                                src: '#modal-form'
+                            },
+                            // overflowY: 'hidden', //
+                            callbacks: {
+                                beforeOpen: function(e) {
+                                    this.st.mainClass = "mfp-zoomIn";
+                                }
+                            }
+                        });
+                }catch (e) {
+                    alert(e)
+
+                }
+            }else{
+                mfp('#modal-form');
+            }
+            var pl = $("#ProfissionalLaudadorID").val();
+            $.get("listaJustificativaTimeline.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+                $("#modal-form .panel").html(data);
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID);
+                $("#modal-form").magnificPopup("close");
+            });
+        }
+
         function iPront(t, p, m, i, a, FormID, CampoID) {
             $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){

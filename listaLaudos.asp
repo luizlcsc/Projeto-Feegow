@@ -66,7 +66,7 @@ end if
                 sqlProcGS = " AND gps.ProcedimentoID="& ref("ProcedimentoID") &" "
                 Procedimentos = ref("ProcedimentoID")
             else
-                set gp = db.execute("select group_concat(id) Procedimentos from procedimentos WHERE integracaopleres<>'S' AND  Laudo=1 AND GrupoID="& replace(ref("ProcedimentoID"), "G", ""))
+                set gp = db.execute("select group_concat(id) Procedimentos from procedimentos where Laudo=1 AND GrupoID="& replace(ref("ProcedimentoID"), "G", ""))
                 Procedimentos = gp("Procedimentos") &""
                 if Procedimentos="" then
                     Procedimentos = 0
@@ -82,6 +82,8 @@ end if
 
         if ref("Unidades")<>"" then
             Unidades = replace(ref("Unidades"),"|","")
+
+
             sqlUnidadesP = " AND i.CompanyUnitID IN ("& Unidades &") "
             sqlUnidadesG = " AND gs.UnidadeID IN ("& Unidades &") "
         end if
@@ -89,9 +91,12 @@ end if
         if ref("Status")<>"" then
             Status = replace(ref("Status"),"|","")
             sqlStatus = " AND l.StatusID IN ("& Status &") "
+
             if instr(replace(ref("Status"),"|",""), 1) then
                 sqlStatus = " AND ( l.StatusID IN ("& Status &") OR l.id IS NULL )"
             end if
+
+
         end if
 
         if ref("ProfissionalID")<>"0" then
@@ -105,43 +110,59 @@ end if
         sqlDataII = ""
         sqlDataI = ""
         sqlDataGPS = ""
-        sqlPrevisao = "  AND (l.PrevisaoEntrega BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" or l.id is null) "
-        sqlPrevisaoII = " WHERE cliniccentral.sf_adddiasuteis(tab.dataexecucao, tab.diaslaudo) BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &"  "
+        'sqlPrevisao = " AND l.PrevisaoEntrega BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+        sqlPrevisao =  "AND (SELECT max(DataResultado) "&_
+                        " FROM labs_invoices_exames lie  "&_
+                        " INNER JOIN labs_invoices_amostras lia ON lia.id = lie.AmostraID "&_
+                        " INNER JOIN cliniccentral.labs_exames le ON le.id  = lie.LabExameID "&_
+                        " WHERE lia.InvoiceID = t.invoiceid)  BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
 
         if ref("TipoData")="1" then
             sqlDataII = " AND ii.DataExecucao BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
-            sqlDataI = " AND i.sysDate BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
+            sqlDataI = " and i.sysDate BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
             sqlDataGPS = " AND gps.Data BETWEEN "& mydatenull(De) &" AND "& mydatenull(Ate) &" "
             sqlPrevisao = ""
-            sqlPrevisaoII = ""
         end if
 
         IF Procedimentos <> "" THEN
             filtroGrupo = " ii.ItemID in ("&Procedimentos&") AND "
         END IF
-      
-        sql =   " SELECT tab.*,  prof_lau.NomeProfissional NomeProfissionalLaudador , tab.DiasLaudo FROM "&_
-                " (SELECT proc.DiasLaudo, l.Associacao AssociacaoLaudadorID, l.ProfissionalID ProfissionalLaudadorID, (SELECT count(arq.id) FROM arquivos arq WHERE arq.LaudoID=l.id )TemArquivos, "&_ 
-                " proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, 0 , IF(t.ProcedimentoID =0, 'Laboratório', "&_
-                " NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, "&_ 
-                " l.id Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
-                " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, "&_
-                " 'Particular' NomeConvenio, null labid, ii.InvoiceID invoiceid, null nomelab FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' "&_ 
-                " AND ii.dataexecucao  >= date(SUBDATE(NOW(), INTERVAL 60 DAY)) AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
-                " UNION ALL "&_
-                " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio, 0 labid, "&_
-                " 0 invoiceid, '' as nomelab FROM tissguiasadt gs "&_ 
-                " LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id "&_ 
-                " LEFT JOIN convenios conv ON conv.id=gs.ConvenioID "&_ 
-                " WHERE gs.sysDate >= date(SUBDATE(NOW(), INTERVAL 60 DAY)) AND gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
-                ") t INNER JOIN procedimentos proc ON proc.id=t.ProcedimentoID and proc.integracaopleres <>'S'"&_ 
-                " INNER JOIN pacientes pac ON pac.id=t.PacienteID  "&_
-                " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id and l.tabela<> 'sys_financialinvoices') "&_
-                " LEFT JOIN profissionais prof ON prof.id=IFNULL(t.ProfissionalID, l.ProfissionalID ) "&_
-                " WHERE true "& sqlProf & sqlStatus & sqlPrevisao & " "&_
-                " GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"&_
-                " LEFT JOIN profissionais prof_lau ON prof_lau.id=tab.ProfissionalLaudadorID AND tab.AssociacaoLaudadorID=5 " & sqlPrevisaoII
+        sqldiaslaudo  = " IF(t.ProcedimentoID =0,(SELECT le.DiasResultado + le.DiasAdicionais "&_
+                        " FROM cliniccentral.labs_exames le  "&_
+                        " INNER JOIN labs_invoices_exames lia ON (lia.LabExameID = le.id)  "&_
+                        " WHERE lia.InvoiceID = t.invoiceid  order by le.DiasResultado desc limit 1) ,proc.DiasLaudo) as DiasLaudo , "&_
+                        "(SELECT max(DataResultado) "&_
+                        " FROM labs_invoices_exames lie  "&_
+                        " INNER JOIN labs_invoices_amostras lia ON lia.id = lie.AmostraID "&_
+                        " INNER JOIN cliniccentral.labs_exames le ON le.id  = lie.LabExameID "&_
+                        " WHERE lia.InvoiceID = t.invoiceid) AS DataPrevisao "
 
+        sqlnomelab = "(SELECT lab.NomeLaboratorio "&_
+                     "   FROM labs_invoices_exames lie "&_
+                     "   INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.labexameid) "&_
+                     "   INNER JOIN cliniccentral.labs lab ON (lab.id = le.labid) "&_
+                     "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS nomelab "
+
+        sqllabid = "(SELECT le.labid "&_
+                     "   FROM labs_invoices_exames lie "&_
+                     "   INNER JOIN cliniccentral.labs_exames le ON (le.id = lie.labexameid) "&_
+                     "   WHERE lie.invoiceid = ii.invoiceid LIMIT 1 ) AS labid "
+
+        sql = " SELECT tab.*, DataPrevisao AS DataAtualizada , prof_lau.NomeProfissional NomeProfissionalLaudador FROM "&_
+            " (SELECT l.Associacao AssociacaoLaudadorID, l.ProfissionalID ProfissionalLaudadorID, (SELECT count(arq.id) FROM arquivos arq WHERE arq.LaudoID=l.id )TemArquivos, proc.SepararLaudoQtd, t.quantidade, t.id IDTabela, t.Tabela, t.DataExecucao, t.PacienteID, t.NomeConvenio, t.ProcedimentoID, "& sqldiaslaudo &" , IF(t.ProcedimentoID =0, 'Laboratório',NomeProcedimento)NomeProcedimento, prof.NomeProfissional, pac.Cel1, IF( pac.NomeSocial IS NULL OR pac.NomeSocial ='', pac.NomePaciente, pac.NomeSocial)NomePaciente, IF(t.Tabela='sys_financialinvoices', t.id, l.id) Identificacao, t.Associacao, t.ProfissionalID, t.labid, invoiceid, nomelab  FROM ("&_
+            " SELECT ii.id,ii.Quantidade quantidade, 'itensinvoice' Tabela, ii.DataExecucao, ii.ItemID ProcedimentoID, i.AccountID PacienteID, ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, "&sqllabid&", ii.InvoiceID invoiceid, "&sqlnomelab&" FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE ii.Tipo='S' AND ii.Executado='S' AND ii.ItemID IN ("& procsLaudar &") "& sqlDataII & sqlUnidadesP & sqlProcP & sqlPacP &_
+            " UNION ALL "&_
+            " SELECT i.id, ii.Quantidade quantidade,  'sys_financialinvoices' Tabela, i.sysDate DataExecucao, 0 ProcedimentoID, i.AccountID PacienteID,ii.ProfissionalID, ii.Associacao, 'Particular' NomeConvenio, ls.labid, i.id invoiceid , '' nomelab FROM sys_financialinvoices i INNER JOIN labs_solicitacoes ls ON ls.Success='S' AND ls.InvoiceID=i.id INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id WHERE "&filtroGrupo&" ii.Executado = 'S' "& sqlDataI & sqlUnidadesP & sqlPacP &" GROUP BY i.id"&_
+            " UNION ALL "&_
+            " SELECT gps.id, gps.Quantidade quantidade,  'tissprocedimentossadt', gps.Data, gps.ProcedimentoID, gs.PacienteID, gps.ProfissionalID, gps.Associacao, conv.NomeConvenio, 0 labid, 0 invoiceid, '' as nomelab FROM tissguiasadt gs LEFT JOIN tissprocedimentossadt gps ON gps.GuiaID=gs.id LEFT JOIN convenios conv ON conv.id=gs.ConvenioID WHERE gps.ProcedimentoID IN("& procsLaudar &") "& sqlDataGPS & sqlProcGS & sqlPacGS & sqlUnidadesG &_
+            ") t LEFT JOIN procedimentos proc ON proc.id=t.ProcedimentoID INNER JOIN pacientes pac ON pac.id=t.PacienteID "&_
+            " LEFT JOIN Laudos l ON (l.Tabela=t.Tabela AND l.IDTabela=t.id) "&_
+            " LEFT JOIN labs_exames_procedimentos lep ON (lep.ProcedimentoID=t.ProcedimentoID) "&_
+            " LEFT JOIN cliniccentral.labs_exames le ON le.id  = lep.LabExameID "&_
+            " LEFT JOIN profissionais prof ON prof.id=IFNULL(t.ProfissionalID, l.ProfissionalID ) "&_
+            "WHERE 1 and lep.id is null "& sqlProf & sqlStatus & sqlPrevisao & " "&_
+            "GROUP BY t.id ORDER BY pac.NomePaciente ) as tab"&_
+            " LEFT JOIN profissionais prof_lau ON prof_lau.id=tab.ProfissionalLaudadorID AND tab.AssociacaoLaudadorID=5 "
 
 
         set ii = db.execute( sql )
@@ -180,9 +201,12 @@ end if
                 PacienteID = ii("PacienteID")
                 ItemN = contador
                 disabledEdit=""
-                Identificacao = ii("Identificacao")
-                Previsao  = dateAdd("d", DiasLaudo, DataExecucao)
-                
+                'Identificacao = ii("Identificacao")
+                if  ii("NomeProcedimento") = "Laboratório" then
+                    Previsao  =  ii("DataAtualizada")
+                ELSE
+                    Previsao  = dateAdd("d", DiasLaudo, DataExecucao)
+                END IF
 
                 sql = "select l.id, ls.Status, l.PrevisaoEntrega from laudos l LEFT JOIN laudostatus ls ON ls.id=l.StatusID where l.Tabela='"& Tabela &"' and l.IDTabela="& IDTabela &" and l.Serie="&ItemN
                  'response.write (sql)
@@ -330,6 +354,14 @@ end if
                             </div>
                         </td>
                     </tr>
+                    <% if NomeProcedimento = "Laboratório"  then%>
+                    <TR id="tr<%=ii("Identificacao")%>" style="display: none;">
+                        <TD> &nbsp;<TD>
+                        <TD colspan="100%"> 
+                            <DIV id="div<%=ii("Identificacao")%>"> </DIV>
+                        </TD> 
+                    </TD>
+                    <% end if %>
                     <%
                     end if
 
@@ -341,7 +373,15 @@ end if
         ii.close
         set ii = nothing
     end if
+    set ultimasync = db.execute("SELECT * FROM labs_integracao_log WHERE metodo = 'SINCRONIZACAO_CRON' ORDER BY id DESC LIMIT 1")
+    if not ultimasync.eof THEN 
     %>
+    <TR><TD colspan="100%">        
+        <div class="col-md-3 " style="float: right;">
+            <p style="margin-top: 10px; opacity: 0.80">Última sincronização:<%=ultimasync("DataHora") %></p>
+        </div>              
+    </TD></TR>
+    <% end if %>
     </tbody>
 </table>
 

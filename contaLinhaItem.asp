@@ -122,8 +122,8 @@
 				'set temintegracao = db.execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&inv("id")&" and p.IntegracaoPleres = 'S'")
 				
 				while not mov.eof
-                  response.Write( btnParcela(mov("id"), mov("ValorPago"), mov("Value"), mov("Date"), mov("CD"), mov("CaixaID")) )
-				mov.movenext
+                    response.Write( btnParcela(mov("id"), mov("ValorPago"), mov("Value"), mov("Date"), mov("CD"), mov("CaixaID")) )
+				    mov.movenext
 				wend
 				mov.close
 				set mov=nothing

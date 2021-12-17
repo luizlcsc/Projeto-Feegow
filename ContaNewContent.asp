@@ -92,7 +92,7 @@ end if
             " UNION ALL (select ifnull(hgs.statusAutorizacao,0) AS GuiaStatus,'GuiaHonorario', hgs.ProfissionalID, hgs.ProcedimentoID, pcd.NomeProcedimento, pgs.NomeProfissional, cgs.NomeConvenio, hgs.GuiaID, gh.NGuiaPrestador, gh.NGuiaOperadora, cgs.NaoImprimirGuia, hgs.Data, hgs.ValorTotal, 1 ,'5', gh.UnidadeID, null DataCancelamento from tissprocedimentoshonorarios hgs left join tissguiahonorarios gh on gh.id=hgs.GuiaID left join profissionais pgs on pgs.id=hgs.ProfissionalID left join convenios cgs on cgs.id=gh.ConvenioID left join procedimentos pcd on pcd.id=hgs.ProcedimentoID where gh.PacienteID="&PacienteID&")"&_
             " UNION ALL (select ifnull(gi.GuiaStatus,0) AS GuiaStatus,'GuiaInternacao', 0, tpi.ProcedimentoID, pcd.NomeProcedimento, '', cgs.NomeConvenio, tpi.GuiaID, gi.NGuiaPrestador, gi.NGuiaOperadora, cgs.NaoImprimirGuia, gi.DataSolicitacao, 0, 1 ,'5', gi.UnidadeID, null DataCancelamento from tissprocedimentosinternacao tpi left join tissguiainternacao gi on gi.id=tpi.GuiaID left join convenios cgs on cgs.id=gi.ConvenioID left join procedimentos pcd on pcd.id=tpi.ProcedimentoID where gi.PacienteID="&PacienteID&")"&_
             " ORDER BY DataFatura desc"
-            '                response.Write(sqlInv)
+           '                 response.Write(sqlInv)
 		  set inv = db.execute(sqlInv)
 
           if inv.eof then
@@ -137,7 +137,9 @@ end if
 					    tipoLinha = "s"
 					    check = 1
 				    end if
-				    set ii = db.execute("select ii.*, p.NomeProcedimento, ( ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo) ) Valor, ap.id APID from itensinvoice ii LEFT JOIN procedimentos p on p.id=ii.ItemID LEFT JOIN atendimentosprocedimentos ap on ii.id=ap.ItemInvoiceID WHERE ii.InvoiceID="&inv("id"))
+                    sqlitens = "select ii.*, p.NomeProcedimento, ( ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo) ) Valor, ap.id APID from itensinvoice ii LEFT JOIN procedimentos p on p.id=ii.ItemID LEFT JOIN atendimentosprocedimentos ap on ii.id=ap.ItemInvoiceID WHERE ii.InvoiceID="&inv("id")
+                    'response.write(sqlitens)
+				    set ii = db.execute(sqlitens)
 				    while not ii.eof
     					if ii("Tipo")="S" or ii("Tipo")="P" then
                             Observacoes = ii("Descricao")
@@ -191,9 +193,9 @@ end if
 					        'desabilitei a incrementacao da Descricao pois estava juntando tudo
 						    Descricao =  left(ii("Descricao"), 23)
 					    end if
-                            %>
-                            <!--#include file="contaLinhaItem.asp"-->
-                            <%
+                        %>
+                        <!--#include file="contaLinhaItem.asp"-->
+                        <%
 				    ii.movenext
 				    wend
 				    ii.close

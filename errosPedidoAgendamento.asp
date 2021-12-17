@@ -104,7 +104,7 @@ end if
 AgendamentoAlterado = ref("ConsultaID")
 
 ' Verificando se o usuário tempermissão para alterar ou excluir agendamentos com esses status
-if (aut("|agestafinA|")=0 OR aut("|agestafinX|")=0) AND ref("Checkin")<>"1" AND AgendamentoAlterado <> "" then
+if aut("|agestafinA|")=0 AND ref("Checkin")<>"1" AND AgendamentoAlterado <> "" then
 
     set StaAgendamentoSQL = db_execute("SELECT a.StaID, s.StaConsulta FROM agendamentos a LEFT JOIN staconsulta s ON s.id = a.StaID WHERE a.id="&AgendamentoAlterado)
     if not StaAgendamentoSQL.eof then

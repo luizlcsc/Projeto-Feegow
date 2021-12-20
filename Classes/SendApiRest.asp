@@ -5,9 +5,9 @@ Function webhook(EventId, Async, replaceFrom, replaceTo)
 'VERIFICA SE O EVENTOID É NÚMERO PARA CONSULTAR NO CLINICCENTRAL O EVENTO WEBHOOK CADASTRADO
 if isnumeric(EventID) then
 
-  checkEndPointSQL =  " SELECT webEnd.id, webEnd.URL, webEve.Metodo, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve "&chr(13)&_
-                      " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id                                               "&chr(13)&_
-                      " WHERE webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" AND webEve.id="&EventId&"  AND webEve.Ativo='S'"
+  checkEndPointSQL =  " SELECT webEnd.id, webEnd.URL, webEve.Metodo, webEve.id evento_id, webEve.ModeloJSON FROM `cliniccentral`.`webhook_eventos` webEve       "&chr(13)&_
+                      " LEFT JOIN `cliniccentral`.`webhook_endpoints` webEnd ON webEnd.EventoID = webEve.id                                                     "&chr(13)&_
+                      " WHERE (webEnd.LicencaID="&replace(session("Banco"),"clinic","")&" OR webEnd.LicencaID=0) AND webEve.id="&EventId&"  AND webEve.Ativo='S'"
   SET  checkEndPoint = db.execute(checkEndPointSQL)
   if not checkEndPoint.eof then
 

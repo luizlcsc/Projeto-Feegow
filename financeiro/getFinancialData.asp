@@ -195,7 +195,7 @@ dadosDaPagina = recordToJSON(pesquisa)
 ' esse sql pega a quatidade total de linhas para saber quantas paginas precisa ser montada
 sqlQt = "select count(0) as total from ( select "&sqlbase&sqlFiltro&") as t"
 set quantidade = db.execute(sqlQt)
-qtdpPagina = Ceil(cint(quantidade("total"))/cint(qtdPerPage))
+qtdpPagina = Ceil(CLng(quantidade("total"))/CLng(qtdPerPage))
 ' fim
 
 ' esse sql pega o resumo

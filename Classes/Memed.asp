@@ -265,13 +265,11 @@
         const peso         = $('#Peso').val()   ? parseFloat($('#Peso').val().replace('.', '').replace(',', '.')) : null;
         const altura       = $('#Altura').val() ? parseFloat($('#Altura').val().replace('.', '').replace(',', '.')) : null;
         const cpf          = $('#CPF').val().replace(/\D/g,'');
-        const nascimento   = $('#Nascimento').val();
 
         const dadosPaciente = {
             idExterno: MEMED_NUMERO_PRONTUARIO,
             nome: nome,
             cpf: cpf,
-            data_nascimento: nascimento,
             endereco: fullEndereco,
             cidade: cidade,
             telefone: telefone,

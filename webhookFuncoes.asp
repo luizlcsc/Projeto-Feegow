@@ -39,21 +39,42 @@ function addToQueue(eventId, body, EndPoint)
 end function
 
 'WEBHOOK QUE UTILIZA O SERVIÇO DE MENSAGERIA DESACOPLADO DO SAVE.ASP
-function webhookMessage()
+function webhookMessage(channel)
+
     'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
-    validaEventosSQL =  "SELECT ev.id, ev.Status                                                                                "&chr(13)&_
-                        "FROM eventos_emailsms ev                                                                               "&chr(13)&_                                                              
-                        "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID                                          "&chr(13)&_                                                              
-                        "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID            "&chr(13)&_
-                        "WHERE ev.WhatsApp=1                                                                                    "&chr(13)&_                                                                                         
-                        "AND ev.sysActive=1                                                                                     "&chr(13)&_
-                        "AND ev.Ativo=1                                                                                         "&chr(13)&_
-                        "AND eveWha.id IS NOT NULL                                                                              "&chr(13)&_                                                                                          
-                        "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
-                        "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
-                        "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
-                        "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "
-        
+
+    validaEventosJoinSQL = ""
+    validaEventosWhereSQL = "WHERE ev.sysActive=1                                                                                   "&chr(13)&_                                                                                         
+                            "AND sSmsEma.sysActive=1                                                                                "&chr(13)&_                                                                                         
+                            "AND ev.Ativo=1                                                                                         "&chr(13)&_
+                            "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
+                            "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
+                            "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
+                            "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "
+
+    Select Case channel 
+
+        Case "whatsapp" 
+
+            validaEventosJoinSQL  = "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID"
+            validaEventosWhereSQL = validaEventosWhereSQL&" AND ev.WhatsApp=1"
+
+        Case "email" 
+
+            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoEmail = 'on' AND ev.Whatsapp=0"
+
+        Case "sms"
+
+            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoSMS = 'on' AND ev.Whatsapp=0"
+
+    End Select
+
+    validaEventosSQL =  "SELECT ev.id, ev.Status                                        "&chr(13)&_
+                        "FROM eventos_emailsms ev                                       "&chr(13)&_
+                        "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID  "&chr(13)&_
+                        validaEventosJoinSQL&chr(13)&_  
+                        validaEventosWhereSQL
+
     set validaEventos = db.execute(validaEventosSQL)
     if not validaEventos.eof then
         while not validaEventos.eof
@@ -95,7 +116,7 @@ function webhookMessage()
                         webhookID = 124
                     end if
             end select
-                
+
             if webhookID then
                 call webhook(webhookID, true, bodyContentFrom, bodyContentTo)
             end if

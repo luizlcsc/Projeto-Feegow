@@ -500,22 +500,33 @@ if erro="" then
         forceNotSendWhatsApp = "true"
         forceNotSendEmail = "true"
 
-        if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
+        if ref("ConfWhatsapp")="S" or ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
+
+            if ref("ConfWhatsapp")="S" then
+                forceNotSendWhatsApp = "false"
+            end if
             if ref("ConfSMS")="S" then
                 forceNotSendSMS = "false"
-                forceNotSendWhatsApp = "false"
             end if
             if ref("ConfEmail")="S" then
                 forceNotSendEmail = "false"
             end if
-            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
-            if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
-                call webhookMessage()
-            end if
-            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP>
+
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES DA MENSAGERIA 2.0 (WHATSAPP, EMAIL, SMS)> 
+            if recursoAdicional(43) = 4 then
+
+                if ref("ConfWhatsapp")="S" and forceNotSendWhatsApp="false" then
+                    channel = "whatsapp"
+                end if
+
+                call webhookMessage(channel)
+
+            else
+            '<ACIONA FEEGOW-API COM O ANTIGO SERVIÇO DE MENSAGERIA>
             %>
-            getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
+                getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
             <%
+            end if
         end if
         %>
 	}

@@ -831,16 +831,18 @@ end if
                         response.write("    </div>")
                         end if
 
-                        if recursoAdicional(31)=4 then
+                        if recursoAdicional(31)=4 or recursoAdicional(43)=4 or recursoAdicional(49)=4 then
                             LabelSmsZap = "WhatsApp"
+                            idSmsZap = "ConfWhatsapp"
                         else
                             LabelSmsZap = "SMS"
+                            idSmsZap = "ConfSMS"
                         end if
 						%>
 
                             <div class="col-md-4">
-                            <%if ServicoSMS="S" then%>
-                                <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar <%=LabelSmsZap%></label></div>
+                            <%if ServicoSMS="S" or ServicoWhatsapp="S" then%>
+                                <div class="checkbox-custom checkbox-primary"><input name="<%=idSmsZap%>"  id="<%=idSmsZap%>" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" or ConfWhatsapp="S" then%> checked="checked"<%end if%> /><label for="<%=idSmsZap%>"> Enviar <%=LabelSmsZap%></label></div>
                             <%end if%>
                                 <%
 								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))

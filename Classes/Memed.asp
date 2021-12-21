@@ -264,16 +264,26 @@
         const fullEndereco = endereco+numero;
         const peso         = $('#Peso').val()   ? parseFloat($('#Peso').val().replace('.', '').replace(',', '.')) : null;
         const altura       = $('#Altura').val() ? parseFloat($('#Altura').val().replace('.', '').replace(',', '.')) : null;
+        const cpf          = $('#CPF').val().replace(/\D/g,'');
+        const nascimento   = $('#Nascimento').val();
 
         const dadosPaciente = {
+            idExterno: MEMED_NUMERO_PRONTUARIO,
             nome: nome,
-            telefone: telefone,
+            cpf: cpf,
+            data_nascimento: nascimento,
             endereco: fullEndereco,
             cidade: cidade,
+            telefone: telefone,
             peso: peso,
-            altura: altura,
-            idExterno: MEMED_NUMERO_PRONTUARIO
+            altura: altura
         };
+
+        // não envia dados vazios
+        Object.keys(dadosPaciente).forEach((k) => {
+            !dadosPaciente[k] && delete dadosPaciente[k]
+        });
+
         return MdHub.command.send('plataforma.prescricao', 'setPaciente', dadosPaciente);
     }
 

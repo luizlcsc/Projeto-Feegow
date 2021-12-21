@@ -45,7 +45,6 @@ function webhookMessage(channel)
 
     validaEventosJoinSQL = ""
     validaEventosWhereSQL = "WHERE ev.sysActive=1                                                                                   "&chr(13)&_                                                                                         
-                            "AND sSmsEma.sysActive=1                                                                                "&chr(13)&_                                                                                         
                             "AND ev.Ativo=1                                                                                         "&chr(13)&_
                             "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
                             "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
@@ -61,11 +60,11 @@ function webhookMessage(channel)
 
         Case "email" 
 
-            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoEmail = 'on' AND ev.Whatsapp=0"
+            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoEmail = 'on' AND ev.Whatsapp=0 AND sSmsEma.sysActive=1"
 
         Case "sms"
 
-            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoSMS = 'on' AND ev.Whatsapp=0"
+            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoSMS = 'on' AND ev.Whatsapp=0 AND sSmsEma.sysActive=1"
 
     End Select
 

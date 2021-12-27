@@ -128,23 +128,26 @@ end function
 
 function verificaStatusIntegracaoConta(tabela,id)
     arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(),"|")
+    resultado = 0
     if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao
             sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
+                            " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
+                            " WHERE lia.InvoiceID = "&treatvalzero(id)&" AND lia.ColetaStatusID <> 5 "
         else
-            sqlintegracao = "SELECT id FROM slabs_solicitacoes WHERE tabelaid = '"&id&"' AND tabela  = '"&treatvalzero(InvoiceID)&"';"
+            sqlintegracao = "SELECT id FROM slabs_solicitacoes WHERE tabelaid = "&treatvalzero(id)&" AND tabela  = '"&tabela&"' AND success='S' AND statusid = 1;"
         end if 
+       
         set integracaofeita = db_execute(sqlintegracao)
         if integracaofeita.eof then
-            verificaStatusIntegracaoConta = false
+            resultado = 0
         else
-            verificaStatusIntegracaoConta = true
+            resultado = 1
         end if     
     else
-        verificaStatusIntegracaoConta = false
+        resultado = 0
     end if 
+    verificaStatusIntegracaoConta = resultado
 end function
 
 %>

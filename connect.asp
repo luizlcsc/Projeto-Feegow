@@ -3533,6 +3533,7 @@ function db_execute(txt)
 executeInReadOnly = False
 
     sqlStatement = txt
+    'response.write(sqlStatement)
 
     if sqlStatement&""<>"" then
         tipoLog = split(sqlStatement, " ")(0)
@@ -3566,9 +3567,6 @@ function gravaRepasse(SN, DominioID, ItemInvoiceID, ItemGuiaID, ProfissionalID)
 	end if
 
 	if SN=true or SN="S" then
-
-
-
 		'response.Write("Gravando as funcoes deste item invoice<br>")
 		set func = db.execute("select * from rateiofuncoes where DominioID="&DominioID)
 		while not func.eof

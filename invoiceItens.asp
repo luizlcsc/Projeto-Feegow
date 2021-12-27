@@ -40,12 +40,7 @@ end if
 
 set ValorPagoSQL = db_execute("SELECT SUM(IFNULL(ValorPago,0)) ValorPago FROM sys_financialmovement WHERE InvoiceID="&InvoiceID)
 
-'sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-'				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-'				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-'set integracaofeita = db_execute(sqlintegracao)
-
-integracaofeita = verificaStatusIntegracaoConta("sys_financialinvoices", InvoiceID)
+retintegracaofeita = verificaStatusIntegracaoConta("sys_financialinvoices", InvoiceID)
 
 if not ValorPagoSQL.eof then
     if ValorPagoSQL("ValorPago")>0 and session("Admin")=0 then
@@ -192,7 +187,8 @@ if Acao="" then
                     HoraFim = formatdatetime(HoraFim, 4)
                 end if
 
-				if (integracaofeita = 1 or DataCancelamento&""<>"") and req("T")<>"D" and itens("Tipo")<>"M" then
+				if (retintegracaofeita = 1 or DataCancelamento&""<>"") and req("T")<>"D" and itens("Tipo")<>"M" then
+				
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -263,9 +259,8 @@ if Acao="" then
 				if not isnull(HoraFim) and isdate(HoraFim) then
 					HoraFim = formatdatetime(HoraFim, 4)
 				end if
-				'response.write("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))			
 				
-				if integracaofeita =1 or DataCancelamento&"" <>"" and req("T")<>"D" then
+				if retintegracaofeita = 1 or DataCancelamento&"" <>"" and req("T")<>"D" then
 				%>
 					<!--#include file="invoiceLinhaItemRO.asp"-->
 				<%
@@ -284,7 +279,7 @@ if Acao="" then
 		</tr>
 		</tbody>
 		<tfoot>
-			<% if integracaofeita = 1 then
+			<% if retintegracaofeita = 1 then
 				%>
 			<tr>
 				<th colspan="5"><%=conta%> itens</th>
@@ -414,7 +409,7 @@ elseif Acao="I" then
 	if ref("T")<>"P"  and ref("T")<>"K" then
 		ItemID = 0'id do procedimento
 		ValorUnitario = 0
-		if integracaofeita=1 or DataCancelamento&"" <>"" and req("T")<>"D" then
+		if retintegracaofeita= 1 or DataCancelamento&"" <>"" and req("T")<>"D" then
 		%>
 			<!--#include file="invoiceLinhaItemRO.asp"-->
 		<%
@@ -432,7 +427,7 @@ elseif Acao="I" then
 			Subtotal = ValorUnitario * Quantidade
             PacoteID = II
             Executado="U"
-			if integracaofeita=1 or DataCancelamento&""<>"" and req("T")<>"D" then
+			if retintegracaofeita = 1 or DataCancelamento&""<>"" and req("T")<>"D" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%
@@ -453,7 +448,7 @@ elseif Acao="I" then
 			ValorUnitario = pct("ValorUnitario")
 			Subtotal = ValorUnitario
             PacoteID = II
-			if integracaofeita = 1 or DataCancelamento&""<>"" and req("T")<>"D" then
+			if retintegracaofeita = 1 or DataCancelamento&""<>"" and req("T")<>"D" then
 			%>
 				<!--#include file="invoiceLinhaItemRO.asp"-->
 			<%

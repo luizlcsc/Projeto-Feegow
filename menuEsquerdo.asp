@@ -1944,39 +1944,39 @@ end if
         </li>
         <%end if%>
         <%if aut("relatoriospacienteperfilV")=1 then %>
-        <li>
-            <a href="#" class="accordion-toggle menu-open">
-                <span class="far fa-user"></span>
-                <span class="sidebar-title"> Pacientes </span>
+            <li>
+                <a href="#" class="accordion-toggle menu-open">
+                    <span class="far fa-user"></span>
+                    <span class="sidebar-title"> Pacientes </span>
 
-                <span class="caret"></span>
-            </a>
+                    <span class="caret"></span>
+                </a>
 
-            <ul class="nav sub-nav">
-                <li>
-                    <a href="javascript:callReport('rpPerfil');">
-                                            <i class="far fa-double-angle-right"></i>
-                                            Por Perfil
-                                        </a>
-                </li>
+                <ul class="nav sub-nav">
+                    <li>
+                        <a href="javascript:callReport('rpPerfil');">
+                                                <i class="far fa-double-angle-right"></i>
+                                                Por Perfil
+                                            </a>
+                    </li>
 
 
-                <li class="hidden">
-                    <a href="javascript:callReport('CadastrosEfetuadosPorPeriodo');">
-                        <i class="far fa-double-angle-right"></i>
-                        Por Data de Cadastro
-                    </a>
-                </li>
+                    <li class="hidden">
+                        <a href="javascript:callReport('CadastrosEfetuadosPorPeriodo');">
+                            <i class="far fa-double-angle-right"></i>
+                            Por Data de Cadastro
+                        </a>
+                    </li>
 
-                <li class="hidden">
-                    <a href="javascript:callReport('rpSatisfacao');">
-                        <i class="far fa-double-angle-right"></i>
-                        Satisfação dos Pacientes <span class="label label-system label-xs fleft">Novo</span>
-                    </a>
-                </li>
+                    <li class="hidden">
+                        <a href="javascript:callReport('rpSatisfacao');">
+                            <i class="far fa-double-angle-right"></i>
+                            Satisfação dos Pacientes <span class="label label-system label-xs fleft">Novo</span>
+                        </a>
+                    </li>
 
-            </ul>
-        </li>
+                </ul>
+            </li>
         <%end if%>
         <li class="open hidden">
             <a href="#" class="dropdown-toggle">
@@ -2013,6 +2013,20 @@ end if
         <li>
             <a href="#" class="accordion-toggle menu-open">
                 <span class="far fa-calendar"></span>
+                <span class="sidebar-title"> Integração Laboratorial </span>
+                <span class="caret"></span>
+            </a>
+            <% 
+                if verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))="1|1" or verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))="1|2" then
+                    %>   
+                    <!--#include file="menuRelatoriosIntegracaoLaboratorial.asp"-->
+                    <% 
+                end if 
+            %>
+        </li>
+        <li>
+            <a href="#" class="accordion-toggle menu-open">
+                <span class="far fa-calendar"></span>
                 <span class="sidebar-title"> Agenda </span>
 
                 <span class="caret"></span>
@@ -2022,64 +2036,38 @@ end if
                 <%
                 if aut("|agendaV|")=1 or lcase(session("Table"))="profissionais" then
                 %>
+                    <li>
+                        <a href="#" onClick="callReport('DetalhesAtendimentos');">
+                            <i class="far fa-double-angle-right"></i>
+                            Agendamentos e Atendimentos
+                        </a>
+                    </li>
+                    <li class="hidden">
+                        <a href="#" onClick="callReport('rpAgendamentos');">
+                            <i class="far fa-double-angle-right"></i>
+                            Consultas e Retornos
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="#" onClick="callReport('DetalhesAtendimentos');">
-                        <i class="far fa-double-angle-right"></i>
-                        Agendamentos e Atendimentos
-                    </a>
-                </li>
-                <li class="hidden">
-                    <a href="#" onClick="callReport('rpAgendamentos');">
-                        <i class="far fa-double-angle-right"></i>
-                        Consultas e Retornos
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" onClick="callReport('OcupacaoMultipla');">
-                        <i class="far fa-double-angle-right"></i>
-                        Taxa de Ocupação
-                    </a>
-                </li>
-                <%
-                if recursoAdicional(35)=4 then
-                %>
-                <li>
-                    <a href="#" onClick="callReport('UraReport');">
-                        <i class="far fa-double-angle-right"></i>
-                        Relatório URA
-                    </a>
-                </li>
-                <%
-                end if
-                if recursoAdicional(24)=4 then
-                    set labAutenticacao = db.execute("SELECT * FROM slabs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-                    if not labAutenticacao.eof then
+                    <li>
+                        <a href="#" onClick="callReport('OcupacaoMultipla');">
+                            <i class="far fa-double-angle-right"></i>
+                            Taxa de Ocupação
+                        </a>
+                    </li>
+                    <%
+                    if recursoAdicional(35)=4 then
                     %>
-                <li>
-                    <a href="#" onClick="callReport('RelatorioLabs');">
-                        <i class="far fa-double-angle-right"></i>
-                        Mapa Laboratório
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onClick="callReport('ConferenciadeAmostras');">
-                        <i class="far fa-double-angle-right"></i>
-                        Conferência de Amostras
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onClick="callReport('RelatorioRecoletas');">
-                        <i class="far fa-double-angle-right"></i>
-                        Relatório de Recoletas
-                    </a>
-                </li>
-
-                <%
-                end if
+                    <li>
+                        <a href="#" onClick="callReport('UraReport');">
+                            <i class="far fa-double-angle-right"></i>
+                            Relatório URA
+                        </a>
+                    </li>
+                    <%
                     end if
                 end if
+               
                 
                 if aut("|relatoriosagendaV|")=1 then
                 %>
@@ -2655,10 +2643,7 @@ end if
             telas.close
             set telas = nothing
     end if
-    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs"
-    %>
-    <!--#include file="menuIntegracaoLaboratorial.asp"-->
-    <%
+
     case "programasdesaude", "programasdesaudetipos"
     %>
     <li>
@@ -2676,6 +2661,8 @@ end if
     <li>
         <a href="?P=email_modelos&Pers=0"><span class="far fa-envelope"></span> <span class="sidebar-title">Modelos de e-mail</span></a>
     </li>
+
+    <!--#include file="menuIntegracaoLaboratorial.asp"-->
     <%
 end select
 

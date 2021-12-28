@@ -1,14 +1,32 @@
 <%
 
-function verificaSevicoIntegracaoLaboratorial()
+function verificaSevicoIntegracaoLaboratorial(unidade)
     'Verifica se possui o servico adicional integração laboratorial habilitado e qual versão
     sql = "SELECT max(ServicoID) id FROM cliniccentral.clientes_servicosadicionais cs WHERE cs.LicencaID = '"&replace(session("Banco"),"clinic","")&"' AND  cs.ServicoID in(24,48) AND cs.`Status`=4"
     set rs1 = db.execute(sql)
     if not rs1.eof then
         if rs1("id") = 24 then 
-           verificaSevicoIntegracaoLaboratorial = "1|1"
+           if unidade <> "" then
+               set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(unidade))
+               if labAutenticacao.eof then
+                    verificaSevicoIntegracaoLaboratorial = "0|0"
+               else
+                    verificaSevicoIntegracaoLaboratorial = "1|1"
+               end if 
+            else 
+               verificaSevicoIntegracaoLaboratorial = "1|1"
+            end if 
         else 
-           verificaSevicoIntegracaoLaboratorial = "1|2"
+            if unidade <> "" then
+               set labAutenticacao = db.execute("SELECT * FROM slabs_autenticacao WHERE UnidadeID="&treatvalzero(unidade))
+               if labAutenticacao.eof then
+                    verificaSevicoIntegracaoLaboratorial = "0|0"
+               else
+                    verificaSevicoIntegracaoLaboratorial = "1|2"
+               end if 
+            else 
+               verificaSevicoIntegracaoLaboratorial = "1|2"
+            end if 
         end if
     else 
         verificaSevicoIntegracaoLaboratorial = "0|0"
@@ -108,7 +126,7 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
 end function 
 
 function retornaChamadaIntegracaoLaboratorial(link)
-    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(),"|")
+    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
     if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao
             retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
@@ -127,7 +145,7 @@ function retornaChamadaIntegracaoLaboratorial(link)
 end function 
 
 function verificaStatusIntegracaoConta(tabela,id)
-    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(),"|")
+    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
     resultado = 0
     if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao

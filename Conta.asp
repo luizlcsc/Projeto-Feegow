@@ -408,7 +408,7 @@ function verificaServicoIntegracaoLaboratorial()
     });
       
 }
-<% if verificaSevicoIntegracaoLaboratorial()= "1|2" then %>
+<% if verificaSevicoIntegracaoLaboratorial("")= "1|2" then %>
  verificaServicoIntegracaoLaboratorial();
 <% end if %>
 

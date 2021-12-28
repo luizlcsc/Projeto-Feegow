@@ -499,34 +499,37 @@ if erro="" then
         forceNotSendSMS = "true"
         forceNotSendWhatsApp = "true"
         forceNotSendEmail = "true"
-
+        channel = ""
         if ref("ConfWhatsapp")="S" or ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
 
-            if ref("ConfWhatsapp")="S" then
-                forceNotSendWhatsApp = "false"
+            if recursoAdicional(43) = 4 then
+                if ref("ConfWhatsapp")="S" then
+                    channel = "whatsapp"
+                    forceNotSendWhatsApp = "false"
+                end if
             end if
+
             if ref("ConfSMS")="S" then
                 forceNotSendSMS = "false"
+                channel = channel&",sms"
             end if
+
             if ref("ConfEmail")="S" then
                 forceNotSendEmail = "false"
+                channel = channel&",email"
             end if
 
             '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES DA MENSAGERIA 2.0 (WHATSAPP, EMAIL, SMS)> 
-            if recursoAdicional(43) = 4 then
-
-                if ref("ConfWhatsapp")="S" and forceNotSendWhatsApp="false" then
-                    channel = "whatsapp"
-                end if
-
+            if channel<>"" then
+                '##### SERVIÇO DE MENSAGERIA 2.0 (FEEGOW MESSAGE) #####
                 call webhookMessage(channel)
+            end if
 
-            else
-            '<ACIONA FEEGOW-API COM O ANTIGO SERVIÇO DE MENSAGERIA>
+            '##### SERVIÇO DE MENSAGERIA FEEGOW API #####
             %>
                 getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
             <%
-            end if
+
         end if
         %>
 	}

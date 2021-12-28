@@ -155,7 +155,14 @@ if isnumeric(EventID) then
               if instr(webhook_body, tagName) > 0 then
                 'IGNORA ERROS PARA EVITAR INTERRUPÇÕES NO SISTEMA 
                 On error Resume Next
-                webhook_body = replace(webhook_body, "["&tagName&"]", moduleValue(columnName)&"")
+
+                columnNameValue = moduleValue(columnName)&""
+
+                if forceNotSendSMS = "true" and columnName = "SmsModelo" or forceNotSendWhatsApp = "true" and columnName = "WhatsAppModelo" or forceNotSendEmail = "true" and columnName = "EmailModelo" then
+                  columnNameValue = "nao sera enviado"
+                end if
+
+                webhook_body = replace(webhook_body, "["&tagName&"]", columnNameValue)
 
                 If Err.number <> 0 then
                   'CASO ALGUM VALOR NÃO SEJA CONVERTIDO, ALTERE O VALOR DE "ativaDebug" PARA true

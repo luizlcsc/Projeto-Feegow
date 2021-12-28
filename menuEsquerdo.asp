@@ -1120,11 +1120,23 @@ end if
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="far fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
-        <%  if recursoAdicional(24)=4 then %>
-        <li>
-            <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li>
-        <% end if %>
+        <% 
+        arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
+        if arrayintegracao(0) = "1" then 
+            if arrayintegracao(1) = "1" then
+                %>
+                <li>
+                    <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) </span></a>
+                </li>
+                <%
+            else
+                %>
+                <li>
+                    <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
+                </li>
+                <%
+            end if
+        end if  %>
         <li class="hidden">
             <a  href="?P=Frases&Pers=0"><span class="far fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>

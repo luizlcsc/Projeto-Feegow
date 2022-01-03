@@ -4443,24 +4443,17 @@ function agendaOcupacoes(ProfissionalID, Data)
 		oHLivres = ocup("HLivres")
 		oHAgendados = ocup("HAgendados")
 		oHBloqueados = ocup("HBloqueados")
-		oTotais = oHLivres+oHAgendados+oHBloqueados
-		if oTotais=0 then
-			percOcup=100
-			percLivre = 0
-		else
-			oFator = 100 / oTotais
-			percOcup = cInt( oFator* (oHAgendados+oHBloqueados) )
-			percLivre = cInt( oFator* oHLivres )
-		end if
+
+        'oHLivres = oHLivres - oHBloqueados
 
         if oHLivres = 0 then
             alerta =  "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress""></div>"
-        elseif oHAgendados = 0  then 
-            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres & """><div class=""progress-bar bg-success"" style=""width:100%;"" ></div></div>"
-        elseif oHLivres = oHAgendados then
-            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres &  """><div class=""progress-bar bg-danger"" style=""width:100%;"" ></div></div>"
+        elseif (oHAgendados = 0) and (oHLivres - oHBloqueados > 0)  then 
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres - oHBloqueados & """><div class=""progress-bar bg-success"" style=""width:100%;"" ></div></div>"
+        elseif (oHLivres = oHAgendados) or (oHLivres - oHBloqueados <= 0) then
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres - oHBloqueados &  """><div class=""progress-bar bg-danger"" style=""width:100%;"" ></div></div>"
         elseif oHLivres > oHAgendados then 
-            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres &  """><div class=""progress-bar bg-warning"" style=""width:100%;"" ></div></div>"
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres - oHBloqueados &  """><div class=""progress-bar bg-warning"" style=""width:100%;"" ></div></div>"
         end if
 
 		%>

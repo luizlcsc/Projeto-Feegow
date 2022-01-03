@@ -347,11 +347,17 @@ end if
         if aut("|altunirectoA|")=0 and CD="C" then
             disabUN = " disabled "
             response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
-       end if
-       %>
-        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
-        <%
+            set UnidadeSQL = db.execute("SELECT NomeFantasia FROM vw_unidades WHERE id="&treatvalzero(UnidadeID))
+            %>
+            <div class="col-md-2"><label>Unidade</label><br> <%=UnidadeSQL("NomeFantasia")%></div>
+            <%
+        else
+            %>
+            <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
+            <%
+        end if
+        
         if scp()=1  then
             call quickField("datepicker", "sysDate", "Data", 1, sysDate, "input-mask-date", "", ""&dateReadonly)
             call quickField("text", "nroNFe", "N. Fiscal", 1, nroNFe, "text-right", "", "")

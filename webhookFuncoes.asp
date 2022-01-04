@@ -39,41 +39,62 @@ function addToQueue(eventId, body, EndPoint)
 end function
 
 'WEBHOOK QUE UTILIZA O SERVIÇO DE MENSAGERIA DESACOPLADO DO SAVE.ASP
-function webhookMessage(channel)
+function webhookMessage(channels)
 
-    'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
+if left(channels,1) = "," then
+    channels = right(channels, len(channels)-1)
+end if
 
-    validaEventosJoinSQL = ""
-    validaEventosWhereSQL = "WHERE ev.sysActive=1                                                                                   "&chr(13)&_                                                                                         
-                            "AND sSmsEma.sysActive=1                                                                                "&chr(13)&_                                                                                         
-                            "AND ev.Ativo=1                                                                                         "&chr(13)&_
-                            "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
-                            "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
-                            "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
-                            "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "
+channelsArray=Split(channels,",")
 
-    Select Case channel 
+If IsArray(channelsArray) Then
+    channelTotal = UBound(channelsArray)
+end if
 
-        Case "whatsapp" 
 
-            validaEventosJoinSQL  = "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID"
-            validaEventosWhereSQL = validaEventosWhereSQL&" AND ev.WhatsApp=1"
 
-        Case "email" 
+validaEventosJoinSQL = ""
+validaEventosWhereSQL = "WHERE ev.sysActive=1                                                                                   "&chr(13)&_                                                                                         
+                        "AND ev.Ativo=1                                                                                         "&chr(13)&_
+                        "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
+                        "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
+                        "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
+                        "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "&chr(13)&_
+                        "AND ("
 
-            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoEmail = 'on' AND ev.Whatsapp=0"
+'ADICIONA FILTROS DE ACORDO COM O SERVIÇO
+for channel = 0 to channelTotal
 
-        Case "sms"
+    channelName = channelsArray(channel)
 
-            validaEventosWhereSQL = validaEventosWhereSQL&" AND sSmsEma.AtivoSMS = 'on' AND ev.Whatsapp=0"
+    if channelName = "whatsapp" then
+        validaEventosJoinSQL  = "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.id = sSmsEma.EventosWhatsappID"&chr(13)
+        whereWhatsApp = "(sSmsEma.AtivoWhatsApp='on' AND ev.WhatsApp=1) "&chr(13)
 
-    End Select
+        validaEventosWhereSQL = validaEventosWhereSQL&whereWhatsApp
+    end if
 
-    validaEventosSQL =  "SELECT ev.id, ev.Status                                        "&chr(13)&_
-                        "FROM eventos_emailsms ev                                       "&chr(13)&_
-                        "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID  "&chr(13)&_
-                        validaEventosJoinSQL&chr(13)&_  
-                        validaEventosWhereSQL
+    if channelName = "sms" then
+        whereSMS = "(sSmsEma.AtivoSMS = 'on' AND sSmsEma.sysActive=1)"&chr(13)
+        validaEventosWhereSQL = validaEventosWhereSQL&whereSMS
+    end if
+
+    if channelName = "email" then
+        whereEmail = "(sSmsEma.AtivoEmail = 'on' AND sSmsEma.sysActive=1)"&chr(13)
+        if whereWhatsApp&""<>"" or whereSMS&""<>"" then
+            whereEmail = " OR "&whereEmail
+        end if
+        validaEventosWhereSQL = validaEventosWhereSQL&whereEmail
+    end if
+
+next
+validaEventosWhereSQL = validaEventosWhereSQL&")"
+
+validaEventosSQL =  "SELECT ev.id, ev.Status, sSmsEma.AtivoEmail, sSmsEma.AtivoSMS, sSmsEma.AtivoWhatsApp   "&chr(13)&_
+                    "FROM eventos_emailsms ev                                                               "&chr(13)&_
+                    "LEFT JOIN sys_smsemail AS sSmsEma ON sSmsEma.id = ev.ModeloID                          "&chr(13)&_
+                    validaEventosJoinSQL&chr(13)&_  
+                    validaEventosWhereSQL
 
     set validaEventos = db.execute(validaEventosSQL)
     if not validaEventos.eof then

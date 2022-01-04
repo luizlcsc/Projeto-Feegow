@@ -682,7 +682,7 @@ end if
                         end if
                     end if 
 
-                    VariosProcedimentos = comps("Procedimentos")
+                    VariosProcedimentos = procedimentosGasto
 
                     'soma o tempo dos procedimentos anexos
                     if VariosProcedimentos<>"" and instr(VariosProcedimentos, ",") then

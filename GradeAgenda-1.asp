@@ -673,7 +673,7 @@ end if
                     procedimentosGasto = comps("Procedimentos")
 
 
-					NomeProcedimento = replace(comps("NomeProcedimento"), "`", "")
+					NomeProcedimento = replace(comps("NomeProcedimento")&"", "`", "")
                     if procedimentosGasto&"" <>"" then
                         NomeProcedimento = replace(procedimentosGasto, "`", "")
                         if cint(Len(NomeProcedimento)) > 60 then

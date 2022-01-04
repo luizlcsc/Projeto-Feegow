@@ -181,6 +181,7 @@ end if
 
 NomeItens = ""
 splitInvoiceID = split(InvoiceID, ",")
+ValorTotalReciboRepasse = getConfig("ValorTotalReciboRepasse")
 
 for keySplit=0 to ubound(splitInvoiceID)
     InvoiceID = splitInvoiceID(keySplit)
@@ -541,7 +542,14 @@ if not inv.eof then
                                 pre = ""
                                 suf = "%"
                             end if
-                            TabelaRepasses = TabelaRepasses&"<tr><td>"&DataAtendimento&"</td><td>"&NomeProcedimento&"</td><td>"&NomePaciente&"</td><td>"&CPF&"</td><td>"&pre & fn(ValorTotal) & suf&"</td><td>"&fn(ValorFinal)&"</td></tr>"
+
+                            ColunaValorTotal = ""
+
+                            if ValorTotalReciboRepasse then
+                                ColunaValorTotal = "<td>"&pre & fn(ValorTotal) & suf&"</td>"
+                            end if
+                            
+                            TabelaRepasses = TabelaRepasses&"<tr><td>"&DataAtendimento&"</td><td>"&NomeProcedimento&"</td><td>"&NomePaciente&"</td><td>"&CPF&"</td>"&ColunaValorTotal&"<td>"&fn(ValorFinal)&"</td></tr>"
                         vcaRep.movenext
                         wend
                         vcaRep.close
@@ -972,7 +980,9 @@ if not inv.eof then
             <th>Procedimento</th>
             <th>Paciente</th>
             <th>CPF</th>
-            <th>Total</th>
+            <% if ValorTotalReciboRepasse then %>
+                <th>Total</th>
+            <% end if %>
             <th>Repasse</th>
         </tr>
         </thead>

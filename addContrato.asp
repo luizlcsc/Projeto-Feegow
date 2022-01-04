@@ -201,8 +201,7 @@ elseif ModeloID<>"" and ModeloID<>"0" then
 
 
         if AgruparExecutante="S" then
-            set exec = db.execute("select * from itensinvoice WHERE InvoiceID="&InvoiceID&" GROUP BY ProfissionalID")
-
+            set exec = db.execute("select ProfissionalID, Associacao, LEFT(MD5(id), 7) AS senha from itensinvoice WHERE InvoiceID="&InvoiceID&" GROUP BY ProfissionalID")
             ValorTotal = 0
             while not exec.eof
                 PreContrato = ModeloContrato
@@ -256,6 +255,12 @@ elseif ModeloID<>"" and ModeloID<>"0" then
                 end if
                 PreContrato = replacetags(PreContrato, replace(ContaID, "3_", ""), session("User"), pinv("CompanyUnitID"))
                 PreContrato = replacePagto(PreContrato, pinv("Value"))
+               
+                'CONVERSÃO DA SENHA ADD PARA POSSIBILITAR A CUSTOMIZAÇÃO DO CONTRATO 2022-01-04
+                'NÃO EXISTE CONSULTA DE ITENS NA FUNÇÃO TAGSCONVERTE.ASP
+                if instr(PreContrato, "[Itens.Senha]") then
+                    PreContrato = replace(PreContrato, "[Itens.Senha]", exec("senha"))
+                end if
                 if Contrato="" then
                     hr = ""
                 else

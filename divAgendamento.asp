@@ -674,7 +674,7 @@ end if
                             %><input type="text" name="ageEmail10" class="form-control hidden" autocomplete="off" />
                             <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), colMd, valorCampo, sqlOrClass, dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
                         <%end if
-
+                        
                     end if
                 end if
 			next
@@ -2098,6 +2098,73 @@ $("select[name^=ConvenioID]").change(function(){
         }
     });
 });
+
+//NOVO SERVIÇO DE MENSAGERIA (EMAIL) ↓
+$( document ).ready( () => {
+    $("#qfageemail1 .input-group-addon a").prop("href", "#")
+    $("#qfageemail1 .input-group-addon a .fa-envelope").remove()
+    $("#qfageemail1 .input-group-addon a").append("<span id='informativo' title='Verificar email'></span>")
+    $("#informativo").append("<i class='far fa-envelope bigger-110'></i>")
+});
+
+$("#qfageemail1 .input-group-addon a").on("click", () => {   
+
+    const email = $('#ageEmail1').val();
+    const nome = $('#PacienteID').text().replace(/\s+/g, '');
+
+    $.post(`https://messaging.feegow.com/api/email/send-confirmation?email=${email}&name=${nome}`)
+        .done( data => {
+            const sucesso = data.content.Messages.map( data => data.Status ).includes('success') || data.success === true ? true : false
+
+            if (sucesso) showMessageDialog("Email de confirmação enviado", 'success');
+
+            $.get(`https://messaging.feegow.com/api/email/contacts/${email}?stats=true`)
+                .done( data => {
+                    if(data.content.mailjet.stats.BouncedCount > 0) {
+
+                        const vaiEnviarEventoDeEmail = $("#ConfEmail").is(":checked");
+
+                        if(data.content.mailjet.stats.HardBouncedCount > 0) {
+                            //Se vaiEnviarEventoDeEmail = true então desabilita botão de salvar
+                            $("#btnSalvarAgenda").prop( "disabled", vaiEnviarEventoDeEmail );
+                            showMessageDialog("O email não recebeu a mensagem de verificação. O evento de email não será disparado", 'danger');
+                        }
+
+                        if(data.content.mailjet.stats.SoftBouncedCount > 0) {
+                            showMessageDialog("Talvez o email cadastrado não receba o evento de email. Verifique com o paciente se está tudo OK", 'warning');
+                        }
+                    }
+                })
+                .fail(function(err){ 
+                    if(err.success === false) { 
+                        showMessageDialog("Não foi possível verificar status desse email no momento", 'danger');
+                    }
+                })
+        })
+        .fail(function(err){
+            if(err.status === 422) {
+                switch (err.responseJSON.code) {
+                    //Sintaxe inválida
+                    case 4100:
+                        showMessageDialog(`${err.responseJSON.content}`, 'danger');
+                        break;
+                    //MX inválido
+                    case 4101:
+                        showMessageDialog(`${err.responseJSON.content}`, 'warning');
+                        break;
+                    //Email já confirmado
+                    case 4104:
+                        showMessageDialog(`${err.responseJSON.content}`, 'info');
+                        break;
+                
+                    default:
+                        showMessageDialog("Ocorreu um erro ao tentar verificar o email. Tente novamente mais tarde", 'danger');
+                        break;
+                }
+            }
+        });
+})
+//NOVO SERVIÇO DE MENSAGERIA (EMAIL) ↑
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

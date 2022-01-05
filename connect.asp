@@ -5833,6 +5833,7 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
     procedimentoValorOriginal = ValorProcedimentoSQL("valor")
     objDeTransferencia        = objDeTransferencia&"procedimento:'"&procedimentoNome&"',ProcedimentoID:'"&ProcedimentoID&"', valor:'"&procedimentoValorOriginal&"'"
     eVariacao                 = false
+    Valor2                    = ""
 
     if DataReferencia="" then
         DataReferencia = date()
@@ -5843,50 +5844,53 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
         obsLog = obsLog&" valor ("&procValor&")"
         sqlTabelaID = ""
 
-        sqlProcedimentoTabela = "SELECT p.NomeProcedimento, p.Valor as valorOriginal, ptv.id, ptv.Valor, Profissionais, TabelasParticulares, pt.NomeTabela as nomeTabela, pt.id as tabelaIdDoValor, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID /* left join tabelaparticular t2 on cliniccentral.overlap(pt.TabelasParticulares , concat('|',t2.id,'|')) */ join procedimentos p on p.id = ptv.ProcedimentoID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
-        "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&EspecialidadeID&"|%' ) AND "&_
-        "(Profissionais='' OR Profissionais IS NULL OR Profissionais LIKE '%|"&ProfissionalID&"|%' or '"&ProfissionalID&"'='' ) AND "&_
-        "(TabelasParticulares='' OR TabelasParticulares IS NULL OR TabelasParticulares LIKE '%|"&TabelaID&"|%' OR TabelasParticulares LIKE '%|ALL|%' ) AND "&_
-        "(pt.Unidades='' OR pt.Unidades IS NULL OR pt.Unidades LIKE '%|"&UnidadeID&"|%' ) AND "&_
-        "pt.Fim>="&mydatenull(DataReferencia)&" AND pt.Inicio<="&mydatenull(DataReferencia)&" AND pt.sysActive=1 AND pt.Tipo='V' "
-        ultimoPonto=0
+        if TabelaID&"" <> "" then
+            
+            sqlProcedimentoTabela = "SELECT p.NomeProcedimento, p.Valor as valorOriginal, ptv.id, ptv.Valor, Profissionais, TabelasParticulares, pt.NomeTabela as nomeTabela, pt.id as tabelaIdDoValor, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID /* left join tabelaparticular t2 on cliniccentral.overlap(pt.TabelasParticulares , concat('|',t2.id,'|')) */ join procedimentos p on p.id = ptv.ProcedimentoID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
+            "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&EspecialidadeID&"|%' ) AND "&_
+            "(Profissionais='' OR Profissionais IS NULL OR Profissionais LIKE '%|"&ProfissionalID&"|%' or '"&ProfissionalID&"'='' ) AND "&_
+            "(TabelasParticulares='' OR TabelasParticulares IS NULL OR TabelasParticulares LIKE '%|"&TabelaID&"|%' OR TabelasParticulares LIKE '%|ALL|%' ) AND "&_
+            "(pt.Unidades='' OR pt.Unidades IS NULL OR pt.Unidades LIKE '%|"&UnidadeID&"|%' ) AND "&_
+            "pt.Fim>="&mydatenull(DataReferencia)&" AND pt.Inicio<="&mydatenull(DataReferencia)&" AND pt.sysActive=1 AND pt.Tipo='V' "
+            ultimoPonto=0
 
-        set ProcedimentoVigenciaSQL = db_execute(sqlProcedimentoTabela)
+            set ProcedimentoVigenciaSQL = db_execute(sqlProcedimentoTabela)
 
-        if not ProcedimentoVigenciaSQL.eof then
+            if not ProcedimentoVigenciaSQL.eof then
 
 
-            tabelaIdDoValor = ProcedimentoVigenciaSQL("tabelaIdDoValor")
-            tabelaNomeDoValor = ProcedimentoVigenciaSQL("nomeTabela") &" #"&tabelaIdDoValor
-            eTabelaParticular = true
-            novoValor = procValor
+                tabelaIdDoValor = ProcedimentoVigenciaSQL("tabelaIdDoValor")
+                tabelaNomeDoValor = ProcedimentoVigenciaSQL("nomeTabela") &" #"&tabelaIdDoValor
+                eTabelaParticular = true
+                novoValor = procValor
 
-            while not ProcedimentoVigenciaSQL.eof
-                estePonto=0
+                while not ProcedimentoVigenciaSQL.eof
+                    estePonto=0
 
-                if instr(ProcedimentoVigenciaSQL("Profissionais"), "|"&ProfissionalID&"|")>0 then
-                    estePonto = estePonto + 1
-                end if
+                    if instr(ProcedimentoVigenciaSQL("Profissionais"), "|"&ProfissionalID&"|")>0 then
+                        estePonto = estePonto + 1
+                    end if
 
-                if instr(ProcedimentoVigenciaSQL("TabelasParticulares"), "|"&TabelaID&"|")>0 then
-                    estePonto = estePonto + 1
-                end if
+                    if instr(ProcedimentoVigenciaSQL("TabelasParticulares"), "|"&TabelaID&"|")>0 then
+                        estePonto = estePonto + 1
+                    end if
 
-                if instr(ProcedimentoVigenciaSQL("Especialidades"), "|"&EspecialidadeID&"|")>0 then
-                    estePonto = estePonto + 1
-                end if
+                    if instr(ProcedimentoVigenciaSQL("Especialidades"), "|"&EspecialidadeID&"|")>0 then
+                        estePonto = estePonto + 1
+                    end if
 
-                if estePonto>=ultimoPonto then
-                    ultimoPonto=estePonto
-                    ptvID = ProcedimentoVigenciaSQL("id")
-                    procValor = ProcedimentoVigenciaSQL("Valor")
-                end if
+                    if estePonto>=ultimoPonto then
+                        ultimoPonto=estePonto
+                        ptvID = ProcedimentoVigenciaSQL("id")
+                        procValor = ProcedimentoVigenciaSQL("Valor")
+                    end if
 
-            ProcedimentoVigenciaSQL.movenext
-            wend
-            ProcedimentoVigenciaSQL.close
-            set ProcedimentoVigenciaSQL=nothing
-            obsLog = obsLog&" novo valor ("&procValor&") referente a procedimentostabelasvalores (id:"&ptvID&")"
+                ProcedimentoVigenciaSQL.movenext
+                wend
+                ProcedimentoVigenciaSQL.close
+                set ProcedimentoVigenciaSQL=nothing
+                obsLog = obsLog&" novo valor ("&procValor&") referente a procedimentostabelasvalores (id:"&ptvID&")"
+            end if
         end if
     end if
 

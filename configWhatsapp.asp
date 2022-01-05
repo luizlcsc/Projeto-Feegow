@@ -96,16 +96,15 @@ if eventoID = "" then %>
         <div class="row" id="row1">
         
             <%= quickfield("multiple", "Status", "Status do agendamento", 2, "", "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "required") %>
-
+            
+            <%= quickfield("simpleSelect", "Envio", "Envio", 3, antesDepois, "SELECT 'A' id, 'Antes' Envio UNION ALL SELECT 'D' id, 'Depois' Envio UNION ALL SELECT 'I' id, 'Imediato' Envio", "Envio", "required") %>
+            
             <div class="col-md-2">
                 <label for="IntervaloHoras">
                     Intervalo (em horas)
                 </label>
                 <input type="text" value="" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" required />
             </div>
-
-            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, "", "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "required") %>
-
 
             <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 

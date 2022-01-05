@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 eventoID       = ref("eventoID")&""
+linkPers       = ref("linkPers")
 sysUser        = ref("sysUser")
 deleteEvento   = ref("deleteEvento")&""
 statusAgenda   = ref("statusAgenda")
@@ -38,18 +39,18 @@ if eventoID <> "" then
                     "   '"+antesDepois+"', eve.ApenasAgendamentoOnline = '"+paraApenas+"', eve.Ativo = '"+ativoCheckbox+"', "&chr(13)&_
                     "   eve.Profissionais ='"+profissionais+"', eve.Unidades = '"+unidades+"', eve.Especialidades =         "&chr(13)&_
                     "   '"+especialidades+"', eve.Procedimentos = '"+procedimentos+"', eve.EnviarPara = '"+enviarPara+"',   "&chr(13)&_
-                    "   eve.sysUser = '"+sysUser+"' WHERE eve.id = "+eventoID
+                    "   eve.sysUser = '"+sysUser+"', eve.LinkPersonalizado = '"+linkPers+"' WHERE eve.id = "+eventoID
 
     db.execute(updateEventoSQL)
 end if
 
 if eventoID = "" then
-    insertEventoSQL="   INSERT INTO eventos_emailsms                                                                           "&chr(13)&_
-                    "   (Descricao, ModeloID, `Status`, IntervaloHoras, AntesDepois, ApenasAgendamentoOnline, Ativo,           "&chr(13)&_
-                    "   `Profissionais`, Unidades, `Especialidades`, `Procedimentos`, EnviarPara, Whatsapp, sysUser, sysActive)"&chr(13)&_
-                    "   VALUES ('"+nomeEvento+"', '"+modeloID+"', '"+statusAgenda+"', '"+intervalo+"', '"+antesDepois+"',      "&chr(13)&_
-                    "   '"+paraApenas+"', '"+ativoCheckbox+"', '"+profissionais+"', '"+unidades+"', '"+especialidades+"',      "&chr(13)&_
-                    "   '"+procedimentos+"', '"+enviarPara+"', 1, '"+sysUser+"', 1)                                            "
+    insertEventoSQL="   INSERT INTO eventos_emailsms                                                                                        "&chr(13)&_
+                    "   (Descricao, ModeloID, `Status`, IntervaloHoras, AntesDepois, ApenasAgendamentoOnline, Ativo, LinkPersonalizado,     "&chr(13)&_
+                    "   `Profissionais`, Unidades, `Especialidades`, `Procedimentos`, EnviarPara, Whatsapp, sysUser, sysActive)             "&chr(13)&_
+                    "   VALUES ('"+nomeEvento+"', '"+modeloID+"', '"+statusAgenda+"', '"+intervalo+"', '"+antesDepois+"',                   "&chr(13)&_
+                    "   '"+paraApenas+"', '"+ativoCheckbox+"', '"+linkPers+"', '"+profissionais+"', '"+unidades+"', '"+especialidades+"',   "&chr(13)&_
+                    "   '"+procedimentos+"', '"+enviarPara+"', 1, '"+sysUser+"', 1)                                                         "
 
     db.execute(insertEventoSQL)
     

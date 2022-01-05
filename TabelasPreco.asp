@@ -91,7 +91,7 @@ end if
 
         <span class="panel-controls">
             <button type="button" class="btn btn-default " onclick="LimparFiltros()"><i class="fal fa-eraser"> </i> Limpar </button>
-            <button class="btn btn-primary " ><i class="fal fa-search"> </i> Buscar </button>
+            <button type="button" class="btn btn-primary " onclick="FiltroTabelaPreco()"><i class="fal fa-search"> </i> Buscar </button>
         </span>
     </div>
     <div class="panel-body">
@@ -161,7 +161,7 @@ end if
                     sqlFiltros = sqlFiltros & " AND pt.Tipo IN ("&tiposAutorizados&")"
                 end if
                 if TabelasParticulares<>"" then
-                    sqlFiltros = sqlFiltros & " OR pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
+                    sqlFiltros = sqlFiltros & " AND pt.TabelasParticulares LIKE '%|"&replace(TabelasParticulares, "|", "")&"|%'"
                 end if
                 
                 if Atuacao<>"" then
@@ -349,6 +349,9 @@ buscaFiltro = replace(replace(request.querystring()&"","'","''"),"&pagNumber="&r
     function LimparFiltros() {
         $("#ProcedimentoID, #Tipo, #Especialidades, #TabelasParticulares").val("").change();
 
+    }
+    function FiltroTabelaPreco(){
+        $("#form-filtro-tabela-de-preco").attr("action", "?P=TabelasPreco&Pers=1").submit();
     }
 </script>
 <% END IF %>

@@ -390,27 +390,24 @@ end if
 cProf = 0
 while not comGrade.eof
 
-    MostraGrade=True
+    set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")
+    NomeEspecialidade = ""
+    while not pesp.eof
+        NomeEspecialidade = NomeEspecialidade & left(pesp("especialidade")&"", 21) &"<br>"
+    pesp.movenext
+    wend
+    pesp.close
+    set pesp=nothing
 
-    if MostraGrade then
-        set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")
-        NomeEspecialidade = ""
-        while not pesp.eof
-            NomeEspecialidade = NomeEspecialidade & left(pesp("especialidade")&"", 21) &"<br>"
-        pesp.movenext
-        wend
-        pesp.close
-        set pesp=nothing
-
-        ObsAgenda = comGrade("ObsAgenda")
-        if len(ObsAgenda)>0 then
-            ObsAgenda = 1
-        else
-            ObsAgenda = 0
-        end if
-        
-        CorTitulo = comGrade("Cor")
-        'response.write(locaisUnidade)
+    ObsAgenda = comGrade("ObsAgenda")
+    if len(ObsAgenda)>0 then
+        ObsAgenda = 1
+    else
+        ObsAgenda = 0
+    end if
+    
+    CorTitulo = comGrade("Cor")
+    'response.write(locaisUnidade)
     %>
         <td valign="top" align="center" id="pf<%= comGrade("ProfissionalID") %>"><i class="fa fa-circle-o-notch fa-spin"></i></td>
 
@@ -434,13 +431,11 @@ while not comGrade.eof
                 let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
                 conteudo = conteudo.trim();
                 if(conteudo === ""){
-                    $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
+                    // $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
                 }
             }));
         </script>
     <%
-    end if
-
 comGrade.movenext
 wend
 comGrade.close

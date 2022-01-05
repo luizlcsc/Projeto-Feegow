@@ -381,7 +381,7 @@ if Acao="" then
 					$(value).text('%');
 					$(value).closest('.input-group').find("input[name^='Desconto']").show();
 					$(value).closest('.input-group').find("input[name^='PercentDesconto']").hide();
-					$(value).closest('.input-group').find("input[name^='Desconto']").val(inputBRL(inputBRL(valueChange)));
+					$(value).closest('.input-group').find("input[name^='Desconto']").val(inputBRL(valueChange));
 					$(value).closest('.input-group').find("input[name^='PercentDesconto']").val(convertRealParaPorcentagem(valueChange, valorUnitario));
 				}
 			});
@@ -664,16 +664,20 @@ function convertRealParaPorcentagem(valorReal, valorUnitario){
 }
 
 function convertPorcentagemParaReal(valorPorcentagem, valorUnitario){
-    valorPorcentagem    = valorPorcentagem.replace(".","");
+	valorPorcentagem    = valorPorcentagem.replace(".","");
     valorUnitario       = valorUnitario.replace(".","");
     valorPorcentagem    = parseFloat(valorPorcentagem.replace(",","."));
     valorUnitario       = parseFloat(valorUnitario.replace(",","."));
     if(valorPorcentagem == "0.00" || valorUnitario == "0.00") return "0,00";
-    return inputBRL(valorPorcentagem * (valorUnitario/100));
+	
+	valoraDescontar = (valorPorcentagem * (valorUnitario/100));
+	valoraDescontar = String(valoraDescontar).replace(".",",");
+	
+	return inputBRL(valoraDescontar);
 }
 
 function inputBRL(value) {
-    let replacedValue    = value.toString().replace(".","").replace(",",".");
+	let replacedValue    = value.toString().replace(".","").replace(",",".");
     let inputBRLCurrency = parseFloat(replacedValue).toFixed(2).replace(".",",").replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
     return inputBRLCurrency;
 }

@@ -386,14 +386,14 @@ if somenteStatus&"" <> "" then
 	sqlSomentestatus = " and a.StaID not in("& replace(somenteStatus,"|","") &")"
 end if
 
-set comps=db.execute("select assf.id garadefixa, assp.id garadeperiodo, loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
+set comps=db.execute("select assf.id gradefixa, assp.id gradeperiodo, loc.UnidadeID, a.id, a.Data, a.Hora,coalesce(a.LocalID,0) AS LocalID, a.ProfissionalID, a.StaID, a.FormaPagto, a.Encaixe, a.Tempo, a.Procedimentos, p.NomePaciente, p.Nascimento, IF(pacPri.id>0 AND pacPri.sysActive=1,CONCAT(""<i class='"",pacPri.icone,""'></i>""),"""") AS PrioridadeIcone, p.corIdentificacao, pro.NomeProfissional, pro.Cor, proc.NomeProcedimento, proc.Cor CorProcedimento, a.Retorno from agendamentos a "&_
 "left join pacientes p on p.id=a.PacienteID " & joinLocaisUnidades &_
 "LEFT JOIN cliniccentral.pacientesprioridades pacPri ON pacPri.id=p.Prioridade "&_
 "left join profissionais pro on pro.id=a.ProfissionalID "&_ 
 "left join locais loc on loc.id=a.LocalID "&_
 "left join procedimentos proc on proc.id=a.TipoCompromissoID "&_
 "LEFT JOIN assfixalocalxprofissional assf ON assf.ProfissionalID = a.ProfissionalID AND assf.LocalID = a.LocalID "&_
-"LEFT JOIN assperiodolocalxprofissional assp ON assp.ProfissionalID = a.ProfissionalID AND assp.LocalID = a.LocalID "&_
+"LEFT JOIN assperiodolocalxprofissional assp ON assp.ProfissionalID = a.ProfissionalID AND assp.LocalID = a.LocalID AND (a.Hora >= assp.HoraDe AND a.Hora <= assp.HoraA)"&_
 "where a.ProfissionalID="&ProfissionalID&" and a.sysActive=1 and a.Data="&mydatenull(Data) & whereLocaisUnidades & sqlSomentestatus&" group by a.id order by Hora")
 
 while not comps.EOF
@@ -468,10 +468,10 @@ while not comps.EOF
 
 	'<-hora final
 
-    if comps("garadeperiodo")&"" <> "" then
-        GradeID = comps("garadeperiodo")
+    if comps("gradeperiodo")&"" <> "" then
+        GradeID = comps("gradeperiodo")*-1
     else
-        GradeID = comps("garadefixa")
+        GradeID = comps("gradefixa")
     end if
 
     if session("HVazios")="" then

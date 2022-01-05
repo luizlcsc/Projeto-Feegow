@@ -58,7 +58,7 @@ function numeroDisponivel(ConvenioID)
             if not GuiaDisponivelSQL.eof then
                 if cdbl(NGuiaPrestador)<1000000 then
                     if isnumeric(NGuiaPrestador) then
-                        NGuiaPrestador = cint(NGuiaPrestador) + 1
+                        NGuiaPrestador = NGuiaPrestador + 1
                     end if
                 end if
             end if

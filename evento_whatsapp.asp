@@ -90,7 +90,15 @@
 
 <body>
     <% 
-        MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorUnitario FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
+
+    LicencaID = replace(session("Banco"), "clinic", "")
+
+    MensalidadeIndividualSQL =  "SELECT COALESCE(csa.ValorUnitario, sa.ValorUnitario) AS ValorUnitario  "&chr(13)&_
+                                "FROM cliniccentral.clientes_servicosadicionais csa                     "&chr(13)&_
+                                "LEFT JOIN cliniccentral.servicosadicionais sa ON sa.id = csa.ServicoID "&chr(13)&_
+                                "WHERE csa.LicencaID = "&LicencaID&"                                    "&chr(13)&_
+                                "AND csa.ServicoID = 43                                                 "
+
         SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
 
         if  MensalidadeIndividual.eof then

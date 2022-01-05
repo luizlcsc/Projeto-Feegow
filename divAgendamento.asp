@@ -504,7 +504,9 @@ end if
 
             <div class="col-md-1"><br>
 
-            	<div class="checkbox-custom checkbox-alert"<%if EncaixesExibe=0 then%> style="display:none"  <%end if %>><input type="checkbox" name="Encaixe" id="Encaixe" value="1" <%if Encaixe=1 then%> disabled checked<%end if%>><label for="Encaixe" class="checkbox"> Encaixe</label></div>
+            	<div class="checkbox-custom checkbox-alert"<%if EncaixesExibe=0 or aut("agendamentoencaixe")=0 then%> style="display:none"  <%end if %>>
+                    <input type="checkbox" name="Encaixe" id="Encaixe" value="1" <%if Encaixe=1 then%> disabled checked<%end if%>><label for="Encaixe" class="checkbox"> Encaixe</label>
+                </div>
             	<%
                 if Encaixe=1 then
                 %>

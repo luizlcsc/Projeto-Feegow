@@ -1420,6 +1420,9 @@ function validaProcedimento(id,value){
 
             json = json[0];
 
+            $("#EquipamentoID").val(json.EquipamentoPadrao).change();
+            $("#EquipamentoID").select2();
+            
             if(json.NaoParticular == "1"){
                 $("#rdValorPlanoV").parent().addClass("radio-disabled");
                 $("#rdValorPlanoV").attr("disabled","disabled");

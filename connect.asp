@@ -5833,7 +5833,6 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
     procedimentoValorOriginal = ValorProcedimentoSQL("valor")
     objDeTransferencia        = objDeTransferencia&"procedimento:'"&procedimentoNome&"',ProcedimentoID:'"&ProcedimentoID&"', valor:'"&procedimentoValorOriginal&"'"
     eVariacao                 = false
-    Valor2                    = ""
 
     if DataReferencia="" then
         DataReferencia = date()
@@ -5844,7 +5843,6 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
         obsLog = obsLog&" valor ("&procValor&")"
         sqlTabelaID = ""
 
-        if TabelaID&"" <> "" then
             
             sqlProcedimentoTabela = "SELECT p.NomeProcedimento, p.Valor as valorOriginal, ptv.id, ptv.Valor, Profissionais, TabelasParticulares, pt.NomeTabela as nomeTabela, pt.id as tabelaIdDoValor, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID /* left join tabelaparticular t2 on cliniccentral.overlap(pt.TabelasParticulares , concat('|',t2.id,'|')) */ join procedimentos p on p.id = ptv.ProcedimentoID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
             "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&EspecialidadeID&"|%' ) AND "&_
@@ -5891,7 +5889,6 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
                 set ProcedimentoVigenciaSQL=nothing
                 obsLog = obsLog&" novo valor ("&procValor&") referente a procedimentostabelasvalores (id:"&ptvID&")"
             end if
-        end if
     end if
 
     valorCusto = 0

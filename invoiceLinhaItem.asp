@@ -376,8 +376,10 @@ if req("T")="C" then
 
             
             TotalGeral = 0
-            if TipoGuia<>"guiaconsulta" then
+            if TipoGuia<>"guiaconsulta" and TipoGuia<>"guiahonorarios" then
                 TotalGeral = g("TotalGeral")
+            elseif TipoGuia="guiahonorarios" then
+                TotalGeral = g("Procedimentos")
             else
                 TotalGeral = g("ValorProcedimento")
             end if

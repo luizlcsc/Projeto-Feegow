@@ -197,7 +197,6 @@ end if
                 "from procedimentostabelas pt "&_
                 " LEFT JOIN solicitacao_tabela_preco tp ON tp.TabelaPrecoID=pt.id AND Status='PENDENTE' "&_
                 "where "&franquiaUnidade(" ( Unidades LIKE '%|"&session("UnidadeID")&"|%' OR Unidades = '' OR Unidades IS NULL) AND ")&" pt.sysActive=1  "&sqlFiltros&" ORDER BY IF(Fim>curdate(),1,0) DESC,NomeTabela limit "&((pagNumber-1)*10)&",10"
-
                 set t = db.execute(sql)
                 'response.write (sql)
                 if t.eof then
@@ -218,14 +217,16 @@ end if
                         prefixoPermissao = "tabelasprecoscusto"
                     end if
 
-                    TabelasParticulares = t("TabelasParticulares")&""
-                    if TabelasParticulares<>"" then
-                        set tp = db.execute("select group_concat(NomeTabela separator ', ') tps from tabelaparticular where id in("& replace(TabelasParticulares, "|", "") &")")
+                    TabelasParticularesIds = t("TabelasParticulares")&""
+                    if TabelasParticularesIds<>"" then
+                        set tp = db.execute("select group_concat(NomeTabela separator ', ') tps from tabelaparticular where id in("& replace(TabelasParticularesIds, "|", "") &")")
+                        
+                        if not tp.eof then
+                            TabelasParticularesNomes = tp("tps")&""
 
-                        if len(tp("tps")&"")>100 then
-                            TabelasParticulares = left(tp("tps"),100)&"<a href='#' data-toggle='tooltip' data-placement='right' data-original-title='"&tp("tps")&"' > <strong>...</strong></a>"
-                        else
-                            TabelasParticulares = tp("tps")&""
+                            if len(TabelasParticularesNomes)>60 then
+                                TabelasParticularesNomes = left(TabelasParticularesNomes,60)&"<a href='#' data-toggle='tooltip' data-placement='right' data-original-title='"&TabelasParticularesNomes&"' > <strong>...</strong></a>"
+                            end if
                         end if
                     end if
 
@@ -248,7 +249,7 @@ end if
                     <tr>
                         <td><%=LabelTabela%></td>
                         <td><%= t("NomeTabela") %></td>
-                        <td><%= TabelasParticulares %></td>
+                        <td><%= TabelasParticularesNomes%></td>
                         <td><%= t("Tipo") %></td>
                         <td><%= t("Inicio") &" a "& t("Fim") %></td>
                         <td style="width: 30%"><%= t("Unidades") %></td>

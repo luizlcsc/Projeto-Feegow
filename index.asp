@@ -2744,7 +2744,9 @@ end if
  gtag('config', 'UA-54670639-4');
 </script>
 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
 function chatNotificacao(titulo, mensagem) {
     let options = {
       body: mensagem,

@@ -59,10 +59,197 @@ if req("Checkin")="1" then
     staPagto = "danger"
     %>
 <input id="AccountID" type="hidden" name="AccountID" value="<%= "3_"& PacienteID %>" />
-<div id="divLanctoCheckin"><!--#include file="invoiceEstilo.asp"--></div>
-    <div id="checkinProcedimentosBaixar">
-    <% server.execute("checkinProcedimentosBaixar.asp") %>
-</div>
+<div id="divLanctoCheckin" class="mt5"><!--#include file="invoiceEstilo.asp"--></div>
+    <table class="table table-condensed table-hover">
+    <%
+    sql = "SELECT ii.desconto, proc.TipoProcedimentoID, t.*, if(conv.registroans='0' or conv.registroans='simplificado' ,'Simplificada', if(isnull(proc.TipoGuia) or proc.TipoGuia='', 'Consulta, SADT', proc.TipoGuia)) TipoGuia, IF(rdValorPlano='V', 'Particular', conv.NomeConvenio) NomeConvenio, COALESCE(tpvp.Valor, tpv.Valor) ValorConvenio, proc.id as ProcedimentoID, proc.Valor valorProcedimentoOriginal, COALESCE(conv.NaoPermitirGuiaDeConsulta, 0) NaoPermitirGuiaDeConsulta FROM ("&_
+    "SELECT '' id, a.rdValorPlano, a.ValorPlano, a.TipoCompromissoID, a.Tempo, a.LocalID, a.EquipamentoID,a.PlanoID from agendamentos a where id="& ConsultaID &_
+    " UNION ALL "&_
+    " SELECT ap.id, ap.rdValorPlano, ap.ValorPlano, ap.TipoCompromissoID, ap.Tempo, ap.LocalID, ap.EquipamentoID,ap.PlanoID FROM agendamentosprocedimentos ap "&_
+    " WHERE AgendamentoID="& ConsultaID &_
+    ") t "&_
+    " LEFT JOIN procedimentos proc ON proc.id=t.TipoCompromissoID "&_
+    " LEFT JOIN tissprocedimentosvalores tpv ON tpv.ProcedimentoId = t.TipoCompromissoID AND (tpv.ConvenioID=t.ValorPlano AND t.rdValorPlano='P')  "&_
+    " LEFT JOIN tissprocedimentosvaloresplanos tpvp ON tpvp.AssociacaoID=tpv.id AND tpvp.PlanoID=t.PlanoID  "&_
+    " LEFT JOIN convenios conv ON (conv.id=t.ValorPlano AND t.rdValorPlano='P') "&_
+    " LEFT JOIN itensinvoice ii ON ii.agendamentoid = "&ConsultaID&_
+    " GROUP BY t.id ORDER BY t.rdValorPlano DESC, t.ValorPlano, proc.TipoGuia"
+
+    'response.write(sql)
+    set agp = db.execute( sql )
+    'UrdValorPlano = agp("rdValorPlano")
+    blocoPend = 0
+    blocoPendParcial = 0
+    Bloco = 0
+    ValorConvenio = ""
+    TipoProcedimentoID = 0
+
+    while not agp.eof
+        TipoProcedimentoID=agp("TipoProcedimentoID")
+
+        procedimentos = ""
+        PermitirFaturamentoContaZerada = getConfig("PermitirFaturamentoContaZerada")
+
+
+        if agp("rdValorPlano")="V" then
+
+            if PermitirFaturamentoContaZerada="0" and agp("ValorPlano")=0 then
+                staPagto = "success"
+            else
+            ItemInvoiceID = "null"  
+            FormaIDSelecionado = ""
+            TipoCompromissoIDSe = agp("TipoCompromissoID")
+                sqlQuitacao = "select mov.id MovementID, i.FormaID, ii.InvoiceID as InvoiceID, (ii.Quantidade*(ii.ValorUnitario+ii.Acrescimo-ii.Desconto)) ValorItem, ifnull((select sum(Valor) from itensdescontados where ItemID=ii.id), 0) TotalQuitado from itensinvoice ii "&_
+                                              " INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
+                                              " INNER JOIN sys_financialmovement mov ON mov.InvoiceID=i.id "&_
+                                              " WHERE i.AccountID="& PacienteID &" and AssociationAccountID=3 "&_
+                                              " AND ii.ItemID="& TipoCompromissoIDSe &" "&_
+                                              " AND (ISNULL(DataExecucao) OR DataExecucao=CURDATE() OR Executado='') "&_
+                                              " AND (ISNULL(ProfissionalID) or ProfissionalID=0 OR ProfissionalID="& treatvalnull(ProfissionalID) &") and ii.Executado!='C' order by 2"
+                set vcaIIPaga = db.execute(sqlQuitacao)
+                if not vcaIIPaga.eof then
+                    ItemInvoiceID = vcaIIPaga("InvoiceID")    
+                    FormaIDSelecionado = vcaIIPaga("FormaID")
+
+                    calcValorPlano=round(agp("ValorPlano"),2)
+                    desconto = agp("desconto")
+
+                    if desconto&""="" then
+                        desconto=0
+                    end if
+
+                    if desconto>0 then
+                        if round(desconto,2) > 0 then
+                            calcValorPlano = calcValorPlano-round(desconto,2)
+                        end if
+                    end if
+
+                    if calcValorPlano <= round(vcaIIPaga("TotalQuitado"),2) then
+                        staPagto = "success"
+
+                    else
+                        if round(vcaIIPaga("TotalQuitado"),2) > 1 then
+                            staPagto = "warning"
+                            MovementID=vcaIIPaga("MovementID")
+
+                        else
+                            staPagto = "danger"
+                        end if
+                    end if
+                else
+                    staPagto = "danger"
+                end if
+
+            end if
+            
+        else
+            staPagto = "danger"'verifica as guias antes de dar DANGER
+
+            'libera guia de retorno
+            if TipoProcedimentoID&""="9" then
+                staPagto = "success"
+            end if
+
+            set sqlGuiaGerada = db.execute("SELECT * FROM  "&_
+                                       "(SELECT ValorProcedimento, DataAtendimento, ProcedimentoID, PacienteID, ProfissionalID, AgendamentoID "&_
+                                       "FROM tissguiaconsulta "&_
+                                       "UNION ALL "&_
+                                       "SELECT tps.ValorTotal ValorProcedimento, tps.`Data` DataAtendimento, tps.ProcedimentoID, tgs.PacienteID, tps.ProfissionalID, tps.AgendamentoID "&_
+                                       "FROM tissprocedimentossadt tps "&_
+                                       "LEFT JOIN tissguiasadt tgs ON tgs.id=tps.GuiaID) t "&_
+                                       "WHERE t.PacienteID IS NOT NULL AND DataAtendimento = CURDATE() AND t.ProcedimentoID="&agp("TipoCompromissoID")&" AND (ISNULL(t.ProfissionalID) or t.ProfissionalID=0 OR t.ProfissionalID="& treatvalnull(ProfissionalID) &") AND t.PacienteID="&PacienteID&" LIMIT 1")
+            if not sqlGuiaGerada.eof then
+
+                ValorProcedimento = sqlGuiaGerada("ValorProcedimento")
+                if ValorProcedimento > 0 then
+                    staPagto = "success"
+                end if
+                if PermitirFaturamentoContaZerada = 1 and ValorProcedimento = 0 then
+                    staPagto = "success"
+                end if
+            end if
+
+        end if
+
+      '  response.write(FormaIDSelecionado)
+
+        if UTipoGuia<>"" and UTipoGuia<>agp("TipoGuia") and blocoPend=1 then
+            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano, "danger", "" )
+        end if
+        if UrdValorPlano<>agp("rdValorPlano") or (UrdValorPlano="P" and UValorPlano<>agp("ValorPlano")) then
+            Bloco = Bloco + 1
+
+            %>
+            <tr class="info" data-position="<%=Bloco%>" data-tipo="<%=UTipoGuia%>">
+                <th width="1%"></th>
+                <th width="30%"><%= agp("NomeConvenio") %></th>
+                <th width="5%">Tempo</th>
+                <th colspan="2" width="30%">Forma</th>
+                <th width="20%">Local</th>
+                <th width="20%">Equipamento</th>
+                <th></th>
+            </tr>
+            <%
+            blocoPend = 0
+        end if
+                'response.write( agp("TipoGuia") &" { "& UTipoGuia &" } [ "& UrdValorPlano &" ]<br>")
+        %>
+
+        <%idagp = agp("id")%>
+        <input type="hidden" class="linha-procedimento-id" value="<%=agp("ProcedimentoID")%>"> 
+        <input type="hidden" class="linha-procedimento-id-daPro" name="daPro" data-idPro="<%=idagp%>" value="<%=agp("valorProcedimentoOriginal")%>">
+        <%= linhaAgenda(idagp, agp("TipoCompromissoID"), agp("Tempo"), agp("rdValorPlano"), agp("ValorPlano"), agp("PlanoID"), agp("ValorPlano"), Convenios, agp("EquipamentoID"), agp("LocalID"), GradeApenasProcedimentos, GradeApenasConvenios, PermiteParticular) %>
+
+
+        <%
+        UrdValorPlano = agp("rdValorPlano")
+        UValorPlano = agp("ValorPlano")
+        ValorConvenio = agp("ValorConvenio")
+        UTipoGuia = agp("TipoGuia")
+
+        NaoPermitirGuiaDeConsulta = agp("NaoPermitirGuiaDeConsulta")
+        if NaoPermitirGuiaDeConsulta=1 then
+            UTipoGuia = "SADT"
+        end if
+
+
+        if staPagto="danger" then
+            blocoPend = 1
+        end if
+        if staPagto="warning" then
+            blocoPendParcial = 1
+        end if
+    agp.movenext
+    wend
+    agp.close
+    set agp = nothing
+
+    if blocoPend=1 then
+        if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then
+            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano , "danger", "" )
+        elseif (UrdValorPlano = "P" and (ValorConvenio&""="" or ValorConvenio&""="0")) then
+        %>
+        <tr class="danger">
+            <td class="default" colspan="10" style="border-top:none">
+                <i class="far fa-exclamation-circle"></i> Não possui valor cadastrado no convênio
+            </td>
+        </tr>
+        <%
+
+        end if
+    elseif blocoPendParcial=1 then
+        if UrdValorPlano = "V" or (UrdValorPlano = "P" and ValorConvenio&"" <> "") then
+            call linhaPagtoCheckin( UTipoGuia, UrdValorPlano , "warning", MovementID )
+        end if
+    else
+        %>
+<script >
+$("#btnSalvarAgenda").attr("disabled", false).removeClass("disabled")
+</script>
+        <%
+    end if
+    %>
+    </table>
 
     <script type="text/javascript">
 
@@ -178,44 +365,66 @@ if req("Checkin")="1" then
         }
 
         function lanctoCheckinNovoUpdate(Bloco) {
-            let ModoFranquia = '<%=ModoFranquia%>' ;
 
-            if(ModoFranquia){
-                let retorno = checkParticularTableFields()
-                if(!retorno){
-                    return false
-                }
+            let retorno = checkParticularTableFields()
+            if(!retorno){
+                return false
             }
-            
 
-            var valorTotal = 0;
-            valor = "";
-            procedimento = "";
-            AgendamentoID = "";
-            ProfissionalID =  $("#valuesearchindicacaoId").val();
+            let valor          = '';
+            let procedimento   = '';
+            let AgendamentoID  = '';
+            let ProfissionalID =  $("#valuesearchindicacaoId").val();
 
-            $(".linha-procedimento").each(function(index){
-                var valor1 = $(this).find(".valorprocedimento").val();
-                var procedimento1 = $(this).find("#ProcedimentoID").val();
-                var AgendamentoID1 = $(this).find("input[name='LanctoCheckin']").val();
+            const procedimentos = getProcedimentosCheckin();
 
-                if(typeof AgendamentoID1 !== "undefined"){
-                    valor += valor1 + "|";
-                    procedimento += procedimento1 + "|";
-                    AgendamentoID += AgendamentoID1 + "|";
-                }
+            if (procedimentos.length === 0) {
+                alert('Selecione os procedimentos para receber.');
+                return;
+            }
+
+            valorTotalSelecionado = 0;
+            procedimentos.map(function(p) {
+                valor         += p.valor + '|';
+                procedimento  += p.procedimentoId + '|';
+                AgendamentoID += p.agendamentoId;
+                valorTotalSelecionado += p.valor;
             });
 
-            
-            $.post('itensFatura.asp?tipoTela=checkin&InvoiceID=0', {
-                    valor : valor,
-                    procedimento : procedimento,
-                    AgendamentoID : AgendamentoID,
-                    ProfissionalID : ProfissionalID
-                }
-                , function(data) {
-                    $('#modal-table').modal('show');
-                    $("#modal").html(data);
+            $.post('checkinLanctoUpdate.asp', {
+                valor : valor,
+                procedimento : procedimento,
+                AgendamentoID : AgendamentoID,
+                ProfissionalID : ProfissionalID
+            }, function(val1) {
+                // Verifica se o usuário tem permissão para dar desconto
+                // Se sim, o usuário pode imputar o desconto / acréscimo
+                $("#acrescimoForma, #descontoForma").prop('disabled', 'disabled');
+                temRegraCadastradaProUsuario = false;
+
+                verificaMaximoDescontoCheckin().then(function(result) {
+                    if (result.temRegraCadastradaProUsuario) {
+                        temRegraCadastradaProUsuario = true;
+                    }
+
+                    formaRectoCheckin(null, null);
+
+                     $.post("saveAgenda.asp?PreSalvarCheckin=1", $("#formAgenda").serialize(), function(data) {
+                        if(data.indexOf("Erro") !== -1) {
+                            eval(data);
+                            return;
+                        } else {
+                            const modalPagto = $('#modalFormaPagamento');
+                            modalPagto.modal('show');
+                            modalPagto.find('input,select').on('keypress', function(ev) {
+                                 if (ev.keyCode === 13) {
+                                    ev.preventDefault();
+                                }
+                            });
+                        }
+                    });
+
+                });
 
             });
         }

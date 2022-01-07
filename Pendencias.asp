@@ -90,13 +90,17 @@ end function
                 <input type="hidden" name="hiddenGrupoID" id="hiddenGrupoID" value="">
                 <input type="hidden" name="hiddenStatusID" id="hiddenStatusID" value="">
 
-                <%=quickField("simpleSelect", "PacienteID", "Buscar por paciente", 3, PacienteID, "SELECT id, NomePaciente FROM pacientes WHERE id IN (select PacienteID FROM pendencias WHERE sysActive = 1 AND StatusID NOT IN (5,6,0)) ORDER BY NomePaciente", "NomePaciente", "")%>
-                <%=quickField("select", "UnidadeID", "Unidade da pendência", 3, UnidadeID, "SELECT '0' AS id, NomeEmpresa FROM empresa  WHERE ExibirAgendamentoOnline =1 UNION ( SELECT id, NomeFantasia AS NomeEmpresa FROM sys_financialcompanyunits WHERE NOT ISNULL(UnitName) AND sysActive=1 AND ExibirAgendamentoOnline =1)", "NomeEmpresa", " empty ")%>
-                <%=quickField("simpleSelect", "GrupoID", "Buscar por grupo de procedimento", 3, GrupoID, "SELECT id, NomeGrupo FROM procedimentosgrupos ORDER BY 2 ", "NomeGrupo", "")%>
+                <%=quickField("simpleSelect", "PacienteID", "Paciente", 3, PacienteID, "SELECT id, NomePaciente FROM pacientes WHERE id IN (select PacienteID FROM pendencias WHERE sysActive = 1 AND StatusID NOT IN (5,6,0)) ORDER BY NomePaciente", "NomePaciente", "")%>
+                <%=quickField("select", "UnidadeID", "Unidade da pendência", 2, UnidadeID, "SELECT '0' AS id, NomeEmpresa FROM empresa  WHERE ExibirAgendamentoOnline =1 UNION ( SELECT id, NomeFantasia AS NomeEmpresa FROM sys_financialcompanyunits WHERE NOT ISNULL(UnitName) AND sysActive=1 AND ExibirAgendamentoOnline =1)", "NomeEmpresa", " empty ")%>
+                <%=quickField("simpleSelect", "GrupoID", "Grupo de procedimento", 2, GrupoID, "SELECT id, NomeGrupo FROM procedimentosgrupos ORDER BY 2 ", "NomeGrupo", "")%>
                 <%=quickfield("select", "StatusID", "Status", 2, StatusID, "SELECT id, NomeStatus FROM cliniccentral.pendencia_executante_status", "NomeStatus", "") %>
-                <div class="col-md-1">
+                <div class="col-md-2">
                     <label>&nbsp;</label><br/>
                     <button id="btnBuscar" class="btn btn-sm btn-primary btn-block"><i class="far fa-search"></i> Buscar</button>
+                </div>
+                <div class="col-md-1">
+                    <label>&nbsp;</label><br/>
+                    <a href="?P=PendenciaLogs&Pers=1" class="btn btn-sm btn-default btn-block"><i class="far fa-history"></i> Logs</a>
                 </div>
             </form>
         </div>

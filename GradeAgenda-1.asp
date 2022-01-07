@@ -40,12 +40,17 @@ NaoExibirOutrasAgendas = getConfig("NaoExibirOutrasAgendas")
 AumentarAlturaLinhaAgendamento = getConfig("AumentarAlturaLinhaAgendamento")
 ColorirLinhaAgendamento = getConfig("ColorirLinhaAgendamento")
 OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
-
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
+LiberarHorarioNaoCompareceu = getConfig("LiberarHorarioNaoCompareceu")
+
 statusCancelados = "22,11, 16, 117"
 
 if LiberarHorarioRemarcado then
     statusCancelados=statusCancelados&",15"
+end if
+
+if LiberarHorarioNaoCompareceu then
+    statusCancelados=statusCancelados&",6"
 end if
 
 'verifica se há agendamento aberto e bloqueia o id concatenado
@@ -859,6 +864,9 @@ end if
 					end if
 					if LiberarHorarioRemarcado=1 then
 					    StatusRemarcado = " && Status !== '15'"
+					end if
+                    if LiberarHorarioNaoCompareceu=1 then
+					    StatusRemarcado = " && Status !== '6'"
 					end if
                 %>
                 var classe = "<%=classeL%>";

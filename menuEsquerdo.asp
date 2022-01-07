@@ -94,6 +94,12 @@ select case lcase(req("P"))
             if LiberarHorarioRemarcado then
                 statusCancelados=statusCancelados&",15"
             end if
+
+            LiberarHorarioNaoCompareceu = getConfig("LiberarHorarioNaoCompareceu")
+            if LiberarHorarioNaoCompareceu then
+                statusCancelados=statusCancelados&",6"
+            end if
+
             set pacDia = db.execute("select a.StaID, a.Hora, a.PacienteID, p.NomePaciente, ifnull(p.Foto, '') Foto from agendamentos a left join pacientes p on a.PacienteID=p.id where a.Data=curdate() and a.ProfissionalID="&session("idInTable")&" AND a.sysActive=1 AND StaID NOT IN ("&statusCancelados&") order by Hora")
 
             if not pacDia.eof then

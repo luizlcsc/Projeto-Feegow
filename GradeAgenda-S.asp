@@ -34,7 +34,7 @@ if lcase(session("Table"))="funcionarios" then
 	session("UltimaAgenda") = ProfissionalID
 end if
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
-
+LiberarHorarioNaoCompareceu = getConfig("LiberarHorarioNaoCompareceu")
 
 set prof = db.execute("select Cor, NomeProfissional, Foto, ObsAgenda from profissionais where id="&ProfissionalID)
 if not prof.eof then
@@ -553,6 +553,11 @@ while diaS<n
         if LiberarHorarioRemarcado=1 then
             StatusRemarcado = " && Status !== '15'"
         end if
+
+        if LiberarHorarioNaoCompareceu=1 then
+            StatusRemarcado = " && Status !== '6'"
+        end if
+
         %>
         var classe = "<%=classeL%>";
 

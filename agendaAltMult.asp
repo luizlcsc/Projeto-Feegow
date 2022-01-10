@@ -44,7 +44,7 @@ if Data<>"" then
                     set ProfissionaisComGradeSQL = db.execute("SELECT GROUP_CONCAT(DISTINCT ProfissionalID) profissionaisComGrade FROM ( "&_
                                                               "SELECT ProfissionalID FROM assfixalocalxprofissional WHERE DiaSemana = "&DiaSemana&" AND CURDATE() BETWEEN COALESCE(InicioVigencia,CURDATE())AND COALESCE(FimVigencia,CURDATE()) "&_
                                                               "UNION ALL "&_
-                                                              "SELECT ProfissionalID FROM assperiodolocalxprofissional WHERE DataDe BETWEEN "&mydate(NovaData)&" AND "&mydate(NovaData)&" "&_
+                                                              "SELECT ProfissionalID FROM assperiodolocalxprofissional WHERE DataDe BETWEEN "&mydatenull(NovaData)&" AND "&mydatenull(NovaData)&" "&_
                                                               ")t")
 
                     profissionaisComGrade = ProfissionaisComGradeSQL("profissionaisComGrade")

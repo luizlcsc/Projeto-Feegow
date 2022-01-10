@@ -38,15 +38,22 @@
         }
         memedTipo = type;
 
-        // abre diretamente se for prescrição clássica
-        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam || memedTipo === 'encaminhamento' && memedClassicEncaminhamento ) {
-            openClassicPrescription();
-            return;
+        //  2021-11-09 - permite abrir a prescrição Memed por aqui
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+             // openClassicPrescription();
+             // return;
         }
 
         // se já estiver inicializando, exibe mensagem e seta para abrir após a inicialização
         if (memedLoading) {
-     
+            new PNotify({
+                title: 'Aguarde',
+                text: 'Inicializando...',
+                type: 'info',
+                delay: 500
+            });
+            memedOpenAfterInit = newPrescricaoMemed;
+            return;
         }
 
         // se não estiver inicializado, inicia o precesso de inicialização
@@ -57,20 +64,6 @@
 
         // abre a prescrição
         newPrescricaoMemed();
-    }
-
-    function notify(param){
-        new PNotify({
-            title: 'Aguarde',
-            text: 'Inicializando...',
-            type: 'info',
-            delay: 3000
-        });
-
-        if(param){
-        memedOpenAfterInit = newPrescricaoMemed;
-        return;
-        }
     }
 
     function openClassicPrescription() {
@@ -229,10 +222,6 @@
                 }
             }
         });
-        window.addEventListener("beforeunload", function (event) {
-            MdHub.command.send('plataforma.sdk', 'logout');
-        });
-
     }
 
     function updateMemedPrintTemplate() {
@@ -284,7 +273,7 @@
         });
     }
 
-    function getPacienteMemed(){
+    function setPacienteMemed() {
         const nome         = $("#NomePaciente").val();
         const endereco     = $("#Endereco").val();
         const numero       = $("#Numero").val() ? " "+$("#Numero").val() : "";
@@ -294,36 +283,43 @@
         const fullEndereco = endereco+numero;
         const peso         = $('#Peso').val()   ? parseFloat($('#Peso').val().replace('.', '').replace(',', '.')) : null;
         const altura       = $('#Altura').val() ? parseFloat($('#Altura').val().replace('.', '').replace(',', '.')) : null;
-        const cpf          = $('#CPF').val() || null;
+        const cpf          = $('#CPF').val().replace(/\D/g,'');
 
         const dadosPaciente = {
+            idExterno: MEMED_NUMERO_PRONTUARIO,
             nome: nome,
-            telefone: telefone,
+            cpf: cpf,
             endereco: fullEndereco,
             cidade: cidade,
+            telefone: telefone,
             peso: peso,
-            altura: altura,
-            idExterno: MEMED_NUMERO_PRONTUARIO
+            altura: altura
         };
 
-        return dadosPaciente;
-    }
+        // não envia dados vazios
+        Object.keys(dadosPaciente).forEach((k) => {
+            !dadosPaciente[k] && delete dadosPaciente[k]
+        });
 
-    function setPacienteMemed() {
-        const dadosPaciente = getPacienteMemed();
         return MdHub.command.send('plataforma.prescricao', 'setPaciente', dadosPaciente);
     }
 
     async function newPrescricaoMemed() {
+        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
+            // openClassicPrescription();
+            // return;
+        }
+
+    async function newPrescricaoMemed() {
         if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam || memedTipo === 'encaminhamento' && memedClassicEncaminhamento) {
-            openClassicPrescription();
-            return;
+            // openClassicPrescription();
+            // return;
         }
 
         if (memedTipo === 'encaminhamento'){
             encaminhamentoMemed();
         } else {
-            setMemedLoading(true);
+             setMemedLoading(true);
             await setFeaturesMemed();
             await setPacienteMemed();
             await setAdditionalDataMemed();
@@ -348,21 +344,27 @@
         }
 
         notify();
-
+        setMemedLoading(true);
         getUrl('prescription/memedv2/get-memed-models', {
             modeloId: modeloId,
             pacienteId: MEMED_PACIENTE_ID,
             profisionalId: MEMED_PROFESSIONAL_ID
         },
-            function (response) {
-                Promise.all([setFeaturesMemed("encaminhamento"),setAdditionalDataMemed(especialidadeId), setPacienteMemed()]).then(function() {
-                    MdHub.module.show('plataforma.prescricao');
-                    MdHub.command.send('plataforma.prescricao', 'newPrescription');
-                    MdHub.command.send('plataforma.prescricao', 'addItem', {
-                        nome: 'Encaminhamento',
-                        posologia: response.results,
-                    })
-                });
+            async function (response) {
+                await setFeaturesMemed("encaminhamento");
+                await setPacienteMemed();
+                await setAdditionalDataMemed(especialidadeId);
+
+
+                            MdHub.module.show('plataforma.prescricao');
+                            MdHub.command.send('plataforma.prescricao', 'newPrescription');
+                            MdHub.command.send('plataforma.prescricao', 'addItem', {
+                                nome: 'Encaminhamento',
+                                posologia: response.results,
+                            })
+                            setMemedLoading(false);
+                            memedOpenAfterInit = null;
+
             }
         );
 

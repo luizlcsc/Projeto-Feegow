@@ -7,7 +7,7 @@ function verificaSevicoIntegracaoLaboratorial(unidade)
     if not rs1.eof then
         if rs1("id") = 24 then 
            if unidade <> "" then
-               set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(unidade))
+               set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade))
                if labAutenticacao.eof then
                     verificaSevicoIntegracaoLaboratorial = "0|0"
                else
@@ -18,11 +18,15 @@ function verificaSevicoIntegracaoLaboratorial(unidade)
             end if 
         else 
             if unidade <> "" then
-               set labAutenticacao = db.execute("SELECT * FROM slabs_autenticacao WHERE UnidadeID="&treatvalzero(unidade))
+               set labAutenticacao = db.execute("SELECT versao FROM slabs_autenticacao WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade))
                if labAutenticacao.eof then
                     verificaSevicoIntegracaoLaboratorial = "0|0"
                else
-                    verificaSevicoIntegracaoLaboratorial = "1|2"
+                    versao = labAutenticacao("versao")
+                    if versao&"" = "" THEN  
+                        versao = "2"
+                    end if 
+                    verificaSevicoIntegracaoLaboratorial = "1|"&versao
                end if 
             else 
                verificaSevicoIntegracaoLaboratorial = "1|2"

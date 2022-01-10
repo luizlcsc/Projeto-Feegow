@@ -273,7 +273,7 @@ EliminaNotificacao=0
                 </div>
         </div>
         </form>
-        <div id="verificacaoIntegracaoLaboratorial" style="float: right;"> xxxx </div>
+        <div id="verificacaoIntegracaoLaboratorial" style="float: right;">  </div>
 
 <%'="{"& creditosII &"}"%>
 <%'"{"& GuiasEmitidas &"}"%>

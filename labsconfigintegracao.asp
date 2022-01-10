@@ -15,4 +15,3 @@
 <script type="text/javascript">
     <% response.write(retornaChamadaIntegracaoLaboratorial("config-integracao")) %>
 </script>
-<% end if %>

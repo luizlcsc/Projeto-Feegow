@@ -27,15 +27,15 @@
                 end if
 
                 checado = "<i class=""far fa-check green""></i>  "
-                set exec = db.execute("select * from profissionais where id="&treatvalzero(ProfissionalID))
-                if not exec.eof then
+                'set exec = db.execute("select * from profissionais where id="&treatvalzero(ProfissionalID))
+                'if not exec.eof then
                     if Associacao=0 or isnull(Associacao) then
                         Associacao = 5
                     end if
                     Executor = left(accountName(Associacao, ProfissionalID)&" ", 15) & " - " & DataExecucao
-                else
-                	Executor = "Excluído"
-                end if
+                'else
+                '	Executor = "Excluído"
+                'end if
             else
                 checado = ""
                 Executor = "Não executado"

@@ -6,18 +6,6 @@ ProfissionalID = req("ProfissionalID")
 Unidades = session("Unidades")
 
 Operacao= req("Operacao")
-set Prof = db.execute("SELECT Unidades FROM profissionais WHERE id="&ProfissionalID)
-if not Prof.eof then
-    UnidadesProfissional = Prof("Unidades")
-    if UnidadesProfissional&""<>"" then
-        UnidadesProfissional = replace(UnidadesProfissional&"", "|", "")
-
-        if UnidadesProfissional="" then
-            UnidadesProfissional = 0
-        end if
-        sqlUnidades = " and l.UnidadeID IN ("&UnidadesProfissional&")"
-    end if
-end if
 
 if Operacao="Remover" then
     sqlDel = "delete from assPeriodoLocalXProfissional where id = '"&ref("GradeID")&"'"
@@ -90,6 +78,18 @@ else
     <input type="hidden" name="ProfissionalID" id="ProfissionalID" value="<%=ProfissionalID %>" />
 
     <%
+    set Prof = db.execute("SELECT Unidades FROM profissionais WHERE id="&ProfissionalID)
+    if not Prof.eof then
+        UnidadesProfissional = Prof("Unidades")
+        if UnidadesProfissional&""<>"" then
+            UnidadesProfissional = replace(UnidadesProfissional&"", "|", "")
+
+            if UnidadesProfissional="" then
+                UnidadesProfissional = 0
+            end if
+            sqlUnidades = " and l.UnidadeID IN ("&UnidadesProfissional&")"
+        end if
+    end if
     response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('"&Unidades&"',''),'-999')),TRUE) AND  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", "required"))
 
     sqlProcedimentos = sqlProcedimentosPorProfissional(ProfissionalID)

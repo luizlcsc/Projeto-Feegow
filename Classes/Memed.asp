@@ -264,12 +264,13 @@
         }});
     }
 
-    function setAdditionalDataMemed(especialidade){
+    function setAdditionalDataMemed(especialidade,cid10Id){
         return MdHub.command.send('plataforma.prescricao', 'setAdditionalData', {
             licenseId: MEMED_LICENSE_ID,
             numeroProntuario: MEMED_NUMERO_PRONTUARIO,
             tipo: memedTipo,
-            especialidadeId: especialidade || null
+            especialidadeId: especialidade || null,
+            cid10Id: cid10Id || null
         });
     }
 
@@ -305,12 +306,6 @@
     }
 
     async function newPrescricaoMemed() {
-        if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
-            // openClassicPrescription();
-            // return;
-        }
-
-    async function newPrescricaoMemed() {
         if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam || memedTipo === 'encaminhamento' && memedClassicEncaminhamento) {
             // openClassicPrescription();
             // return;
@@ -334,6 +329,9 @@
         const especialidadeId = $("#EspecialidadeIDMemed").val();
         const modeloId = $("#modelosEncaminhamentos").val();
         const nomeEspecialidade = $("#EspecialidadeIDMemed option:selected").text();
+        const cid10Id = $("#Cid10Memed").val();
+        const nomeCid10 = $("#Cid10Memed option:selected").text();
+        const Cid10 = nomeCid10 == "Selecione" ? "" : nomeCid10
 
         if (especialidadeId == 0 || modeloId == 0){
             return new PNotify({
@@ -343,7 +341,6 @@
             });
         }
 
-        notify();
         setMemedLoading(true);
         getUrl('prescription/memedv2/get-memed-models', {
             modeloId: modeloId,
@@ -353,18 +350,16 @@
             async function (response) {
                 await setFeaturesMemed("encaminhamento");
                 await setPacienteMemed();
-                await setAdditionalDataMemed(especialidadeId);
+                await setAdditionalDataMemed(especialidadeId,cid10Id);
 
-
-                            MdHub.module.show('plataforma.prescricao');
-                            MdHub.command.send('plataforma.prescricao', 'newPrescription');
-                            MdHub.command.send('plataforma.prescricao', 'addItem', {
-                                nome: 'Encaminhamento',
-                                posologia: response.results,
-                            })
-                            setMemedLoading(false);
-                            memedOpenAfterInit = null;
-
+                MdHub.module.show('plataforma.prescricao');
+                MdHub.command.send('plataforma.prescricao', 'newPrescription');
+                MdHub.command.send('plataforma.prescricao', 'addItem', {
+                    nome: 'Encaminhamento para '+nomeEspecialidade,
+                    posologia: "Cid 10: "+Cid10+"</br></br>"+response.results,
+                })
+                setMemedLoading(false);
+                memedOpenAfterInit = null;
             }
         );
 

@@ -9,7 +9,7 @@ UnidadeID = req("UnidadeID")
 <table class="table table-striped">
     <%
 
-if LinhaID=6 or LinhaID=7 or LinhaID=5 then
+if LinhaID=6 or LinhaID=7 or LinhaID=5 or LinhaID=4 then
 
     %>
 <thead>
@@ -29,12 +29,14 @@ if LinhaID=6 then
     FormaPagamentoID="8"
 elseif LinhaID=5 then
     FormaPagamentoID="1"
+elseif LinhaID=4 then
+    FormaPagamentoID="15,7,5,6"
 elseif LinhaID=7 then
     FormaPagamentoID="9"
 end if
 
 sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.sysDate, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, pac.NomePaciente, pac.id PacienteID, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID   LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) INNER JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND i.CompanyUnitID="& UnidadeID &" AND ii.Executado='S' AND m.PaymentMethodID IN ("&FormaPagamentoID&") ORDER BY ii.DataExecucao"
-' response.write(sqlDebitoECredito)
+' dd(sqlDebitoECredito)
 set RecebimentosDebitoECreditoSQL= db.execute(sqlDebitoECredito)
 TotalCredito = 0
 TotalDebito = 0
@@ -307,7 +309,7 @@ set MovementsNaoPagasSQL=nothing
 <%
 
 
-elseif LinhaID=8 then
+elseif LinhaID="8.1" or LinhaID="8.2" then
 
 %>
 
@@ -321,8 +323,15 @@ elseif LinhaID=8 then
 </thead>
 <tbody>
 <%
+sqlAccount = ""
+if LinhaID="8.1" then
+    sqlAccount = " AND m.AccountAssociationIDDebit=5"
+else
+    sqlAccount = " AND m.AccountAssociationIDDebit!=5"
+end if
 
-sqlDespesas = "select m.sysUser, m.Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date FROM sys_financialmovement m WHERE m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &""
+sqlDespesas = "select m.sysUser, m.Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date FROM sys_financialmovement m "&_
+"WHERE m.AccountAssociationIDCredit=7 "&sqlAccount&"  AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &""
 
 set DespesasSQL = db.execute(sqlDespesas )
 

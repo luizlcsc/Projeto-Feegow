@@ -217,9 +217,15 @@ end if
 vl4 = vl2 - ValorFechamentoInformado
 
 'BLOCO 2
-set pDesp = db.execute("select sum(m.Value) Despesas FROM sys_financialmovement m WHERE m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &"")
-Despesas = pDesp("Despesas")
+set pDesp = db.execute("select sum(m.Value) Despesas FROM sys_financialmovement m "&_
+"WHERE m.AccountAssociationIDDebit = 5 AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+"")
+DespesasRepasse = pDesp("Despesas")
 
+set pDesp = db.execute("select sum(m.Value) Despesas FROM sys_financialmovement m "&_
+"WHERE m.AccountAssociationIDDebit != 5 AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+"")
+OutrasDespesas = pDesp("Despesas")
 
 sql = "SELECT sum(ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo)) Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE "& filtroData("i.sysDate") &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &" AND ii.Tipo='S' AND ii.Executado = ''"
 'response.write(sql)
@@ -277,18 +283,31 @@ wend
 RecebimentosDebitoECreditoSQL.close
 set RecebimentosDebitoECreditoSQL=nothing
 
+
+transferenciasBancarias = 0
+
+set TransferenciasBancariasSQL = db.execute("SELECT SUM(idesc.Valor)-SUM(rr.Valor) totalTransfer FROM sys_financialmovement m "&_
+"LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"LEFT JOIN rateiorateios rr ON rr.ItemInvoiceID = idesc.ItemID "&_
+"WHERE "&_
+"PaymentMethodID IN (7, 15) AND m.`Type`='Pay' AND m.CD='D' AND "&filtroData("m.Date")&";")
+
+if not TransferenciasBancariasSQL.eof then
+    transferenciasBancarias = TransferenciasBancariasSQL("totalTransfer")
+end if
+
 '    response.Write( RepasseCartao )
 
 '7 + 6 + 10 + 12 - 11 + 13
     'response.Write(TotalCredito)
 '3.1 + 6 + 7 + 9 + 10 - 11 + 12 - 13 + 14
 
-ResultadoFinal = ValorFechamentoInformado + TotalCredito + TotalDebito + RecebimentosNaoExecutados + ValorCreditosUtilizados - RepassesNaoPagos + RepasseDeOutrasDatas - servicosNaoExecutados + devolucoes
+ResultadoFinal = ValorFechamentoInformado + ( transferenciasBancarias + TotalCredito + TotalDebito) + RecebimentosNaoExecutados + ValorCreditosUtilizados - RepassesNaoPagos + RepasseDeOutrasDatas - servicosNaoExecutados + devolucoes + OutrasDespesas
 
 
 TotalDiferenca=  ValorCreditosUtilizados + RepasseDeOutrasDatas - RepassesNaoPagos - servicosNaoExecutados - RecebimentosNaoExecutados
 
-vl2 = (l1("Valor")+entCDeb+entCCred)  - Despesas - RepasseCartao + RepasseDeOutrasDatas + RecebimentosNaoExecutados - RepassesNaoPagos
+vl2 = (l1("Valor")+entCDeb+entCCred)  - DespesasRepasse - OutrasDespesas - RepasseCartao + RepasseDeOutrasDatas + RecebimentosNaoExecutados - RepassesNaoPagos
 
 if true then
     'producao p grupo
@@ -359,6 +378,10 @@ ResultadoFinal= ResultadoFinal - vl2
         </tr>
     </thead>
     <tbody>
+        <tr class="linha-fechamento" data-id="4">
+            <td>4. Transferências bancárias</td>
+            <td class="text-right"><%= fn(transferenciasBancarias) %></td>
+        </tr>
         <tr class="linha-fechamento" data-id="5">
             <td>5. Entradas em dinheiro menos saídas</td>
             <td class="text-right"><%= fn(ValorFechamentoInformado) %></td>
@@ -371,9 +394,13 @@ ResultadoFinal= ResultadoFinal - vl2
             <td>7. Entradas em cartão de débito</td>
             <td class="text-right"><%= fn(TotalDebito) %></td>
         </tr>
-        <tr class="linha-fechamento" data-id="8">
-            <td>8. Despesas</td>
-            <td class="text-right"><%= fn(Despesas) %></td>
+        <tr class="linha-fechamento" data-id="8.1">
+            <td>8.1. Despesa de repasse</td>
+            <td class="text-right"><%= fn(DespesasRepasse) %></td>
+        </tr>
+        <tr class="linha-fechamento" data-id="8.2">
+            <td>8.2. Outras despesas</td>
+            <td class="text-right"><%= fn(OutrasDespesas) %></td>
         </tr>
         <tr class="linha-fechamento" data-id="9">
             <td>9. Atendimentos não pagos</td>
@@ -399,8 +426,8 @@ ResultadoFinal= ResultadoFinal - vl2
             <td>14. Devoluções</td>
             <td class="text-right"><%= fn(devolucoes) %></td>
         </tr>
-        <tr class="linha-fechamento" data-id="15" style="display: none;">
-            <td>15. [Diferenca.Descricao]</td>
+        <tr class="linha-fechamento" data-id="16" style="display: none;">
+            <td>16. [Diferenca.Descricao]</td>
             <td class="text-right">NaN</td>
         </tr>
     </tbody>
@@ -415,7 +442,7 @@ ResultadoFinal= ResultadoFinal - vl2
         </tr>
         <tr>
             <th></th>
-            <th class="text-right">(3.1 + (6 + 7) + 9 + 10 - 11 + 12 - 13 + 14) - 2</th>
+            <th class="text-right">(3.1 + (4 + 6 + 7) + 9 + 10 - 11 + 12 - 13 + 14) - 2</th>
         </tr>
     </tfoot>
 </table>

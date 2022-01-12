@@ -1,5 +1,11 @@
 <!--#include file="connect.asp"-->
 <%
+
+IF req("reload") <> "" THEN
+    response.write(simpleSelectCurrentAccountsFilterOption("ProfissionalLinhaID"&req("id"), "5, 8, 2", ProfissionalExecutanteID, "",req("reload")))
+    response.end
+END IF
+
 PacoteID=0
 if req("PropostaID")<>"" then
 	PropostaID=req("PropostaID")
@@ -17,18 +23,20 @@ Row = req("Row")
 if Row<>"" then
 	Row=ccur(Row)
 end if
+retornoTeste = "false"
 
-set rsProposta = db.execute("select id, TabelaID from propostas where id = " & PropostaID)
+set rsProposta = db_execute("select id, TabelaID from propostas where id = " & PropostaID)
 if not rsProposta.eof then 
 	TabelaID = rsProposta("TabelaID")
 end if
 
 TemRegrasDeDesconto=False
 
-set TemRegrasDeDescontoSQL = db.execute("SELECT id FROM regrasdescontos LIMIT 1")
+set TemRegrasDeDescontoSQL = db_execute("SELECT id FROM regrasdescontos LIMIT 1")
 if not TemRegrasDeDescontoSQL.eof then
     TemRegrasDeDesconto=True
 end if
+			
 
 if Acao="" then
 
@@ -65,13 +73,13 @@ if Acao="" then
 				    <th width="1%"></th>
 				    <th width="1%"></th>
 				<% END IF %>
-				<th width="1%">Quant.</th>
-				<th width="35%" colspan="2">Item</th>
-				<th width="20%">Valor Unit.</th>
-				<th width="20%">Desconto</th>
-				<th width="10%">Acr&eacute;scimo</th>
-				<th width="10%">Total</th>
-				<th width="1%"></th>
+				<th width="5%">Quant.</th>
+				<th width="25%" colspan="2">Item</th>
+				<th width="20%" class="<%= hiddenValor %>">Valor Unit.</th>
+				<th width="20%" class="<%= hiddenValor %>">Desconto</th>
+				<th width="10%" class="<%= hiddenValor %>">Acr&eacute;scimo</th>
+				<th width="10%" class="<%= hiddenValor %>">Total</th>
+				<th width="10%" class="text-center">Ações</th>
 			</tr>
 		</thead>
 		<script>
@@ -180,6 +188,9 @@ if Acao="" then
 			ProfissionalID = itens("ProfissionalID")
 			DataExecucao = itens("DataExecucao")
 			HoraExecucao = itens("HoraExecucao")
+			AccontAssociationID = itens("AccontAssociationID")&""
+			AccontID = itens("AccontID")&""
+			HoraExecucao = itens("HoraExecucao")
 			Valor = ValorUnitario
 			if not isnull(HoraExecucao) and isdate(HoraExecucao) then
 				HoraExecucao = formatdatetime(HoraExecucao, 4)
@@ -192,6 +203,12 @@ if Acao="" then
             if session("Odonto")=1 then
                 OdontogramaObj = itens("OdontogramaObj")
             end if
+
+            ProfissionalExecutanteID = ""
+            IF AccontID <> "" and AccontAssociationID <> "" THEN
+                ProfissionalExecutanteID = AccontAssociationID&"_"&AccontID
+            END IF
+
 			%>
             <!--#include file="propostaLinhaItem.asp"-->
 			<%
@@ -202,26 +219,33 @@ if Acao="" then
 
         
 		%>
+        <%
+              IF not aut("PodeDescontoV") = "1"  THEN
+                  displayDesconto = "display:none"
+              END IF
+              IF not  aut("PodeAcrescimoV")  = "1"  THEN
+                  displayAcrescimo = "display:none"
+              END IF
+          %>
 		<tr id="footItens">
 		</tr>
 		</tbody>
 		<tfoot>
-			<tr>
-				<th colspan="4">
-				    <td class="<%=hiddenValor%>">
-				    	<label for="DescontoTotal">Desconto total (%)</label>
-				    	<input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>" <%=desabilitarProposta%>>
+		    <tr>
+					<th colspan="4">
+						<button type="button" class="btn btn-warning btn-block" id="preparoResultados" style="margin-top:22px" onclick="modalPreparo()">Preparo e Resultados</button>
+					</th>
+					<td class="<%=hiddenValor%>">
+						<label for="DescontoTotal">Desconto total (%)</label>
+						<input type="number" class="form-control" id="DescontoTotal" name="DescontoTotal" max="100" min="0" value="<%=PropostaSQL("Desconto")%>" <%=desabilitarProposta%>>
 					</td>
-				</th>
-				<th>
-					<td id="total" class="text-right <%=hiddenValor%>" <%=desabilitarProposta%> nowrap>R$ <%=formatnumber(Total,2)%></td>
-				</th>
-				<th>
-					<td><input type="hidden" class="dadoProposta <%=hiddenValor%>" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></td>
-				</th>
-			</tr>
+					<th colspan="2" id="total" class="text-right <%=hiddenValor%>" <%=desabilitarProposta%> nowrap>R$ <%=formatnumber(Total,2)%></th>
+					<th><input type="hidden" class="dadoProposta <%=hiddenValor%>" name="Valor" id="Valor" value="<%=formatnumber(Total,2)%>" /></th>
+				</tr>
+      
 		</tfoot>
 	</table>
+
 <%
 elseif Acao="I" then
 
@@ -230,6 +254,7 @@ elseif Acao="I" then
         if not ProcedimentoSQL.eof then
 %>
 <script >
+($('#PacienteID').val() != '') ? $("#ProcedimentoID, #selecaoRapida").prop('disabled', false) : false;
 showMessageDialog("Procedimento já adicionado.");
 </script>
 <%
@@ -248,9 +273,8 @@ showMessageDialog("Procedimento já adicionado.");
     Tipo = ref("T")
     Descricao = ""
     TabelaID = ref("TabelaID")
-
     'if PacienteID<>"" then
-    '    set pac=db.execute("SELECT tabela FROM pacientes WHERE id="&PacienteID)
+    '    set pac=db_execute("SELECT tabela FROM pacientes WHERE id="&PacienteID)
     '    if not pac.eof then
     '        TabelaID = pac("tabela")
     '    end if
@@ -260,7 +284,7 @@ showMessageDialog("Procedimento já adicionado.");
 		ItemID = II'id do procedimento
 		ValorUnitario = 0
 		if ItemID<>"0" and ItemID<>"" and isnumeric(ItemID)  then
-			set proc = db.execute("select Valor, GrupoID, AvisoAgenda from procedimentos where id="&ItemID)
+			set proc = db_execute("select Valor, GrupoID, AvisoAgenda from procedimentos where id="&ItemID)
 			if not proc.EOF then
 			    ProcedimentoID=ItemID
 			    GrupoID=proc("GrupoID")
@@ -274,7 +298,11 @@ showMessageDialog("Procedimento já adicionado.");
 			end if
 			if TabelaID&""<>"" AND TabelaID&""<>"0" AND PacienteID<>"" then
 
-			    valorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, session("UnidadeID"), "", "", GrupoID, 0)
+			    IF pID = "0" THEN
+			        pID = ""
+			    END IF
+
+			    valorTabela = calcValorProcedimento(ProcedimentoID, TabelaID, session("UnidadeID"), pID, "", GrupoID,retornoTeste)
 			    if valorTabela < ValorUnitario then
 			        Desconto = ValorUnitario - valorTabela
 			        TipoDesconto="V"
@@ -295,6 +323,7 @@ showMessageDialog("Procedimento já adicionado.");
 		<%
 	elseif Tipo="P" then
 		set pct = db.execute("select pi.ProcedimentoID, pi.ValorUnitario from pacotesitens pi where pi.sysActive=1 AND pi.PacoteID="&II)
+		contador = 0
 		while not pct.EOF
 			ItemID = pct("ProcedimentoID")'id do procedimento
 			PacoteID = II
@@ -308,12 +337,14 @@ showMessageDialog("Procedimento já adicionado.");
 			<%
 			id = id-1
 		pct.movenext
+		contador = contador+1
 		wend
 		pct.close
 		set pct=nothing
 	end if
 	%>
 	<script>
+	($('#PacienteID').val() != '') ? $("#ProcedimentoID, #selecaoRapida").prop('disabled', false) : false;
 	recalc();
     <!--#include file="jQueryFunctions.asp"-->
     </script>
@@ -326,3 +357,6 @@ elseif Acao="X" then
 end if
 %>
 <!--#include file="disconnect.asp"-->
+
+
+

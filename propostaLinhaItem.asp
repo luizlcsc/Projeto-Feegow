@@ -1,5 +1,7 @@
 <%
 hiddenValor = ""
+
+
 if (session("Banco")="clinic4456" and lcase(session("Table"))="profissionais" and not session("Admin")=1) or aut("valordoprocedimentoV")<>1 then
     hiddenValor = " hidden "
 end if
@@ -7,7 +9,18 @@ end if
 IF NOT (Prioridade > 0) THEN
     Prioridade = 1
 END IF
-
+agendamentoBtnDisabled = "disabled"
+if ItemID&""<>"" then
+    procedimentosConfigsSQL = "select NaoNecessitaAgendamento from procedimentos where id="&ItemID
+    set procedimentosConfigs =  db.execute(procedimentosConfigsSQL)
+    if not procedimentosConfigs.eof then
+        if procedimentosConfigs("NaoNecessitaAgendamento") = "S" then
+            agendamentoBtnDisabled=""
+        end if
+    end if
+    procedimentosConfigs.close
+    set procedimentosConfigs = nothing  
+end if
 %>
 
 <tr id="row<%=id%>"<%if id<0 then%> data-val="<%=id*(-1)%>"<%end if%> Ordem="<%=Ordem%>" class="proposta-item-procedimentos">
@@ -32,13 +45,33 @@ END IF
         <%
         if Tipo="S" or Tipo="P" then
             %>
-            <td colspan="2"><%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange=""parametros("&id&", this.value);"""&desabilitarProposta, " required", "") %></td>
-                    <%if session("Odonto")=1 then
-                    %>
-                    <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
-                    <%
-                  end if %>
+            <td colspan="2" style="max-width: 330px">
+                <div class='dflex'>
+                    <div style="width: 100%">
+                        <%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" """&desabilitarProposta, " required", "") %>
+                    </div>
+                    <div class='dflex colunflex executantes'>
+                        <label>Executante</label>
+                        
+                        <input type='checkbox' onClick='toggleLine(<%=id%>)' <% IF ProfissionalExecutanteID <> "" THEN%> checked <% END IF %>/>
+                    </div>
+                </div>
+                <div class="profi<%=id%> openAllProfissional" <% IF ProfissionalExecutanteID = "" THEN%>style="display:none" <% END IF %>>
+                    <% ExecucaoRequired = " required empty " %>
+                    <label class='mt5'>Profissional Executante</label>
+                    <div>
+                        <%=simpleSelectCurrentAccountsFilterOption("ProfissionalLinhaID"&id, "5, 8, 2", ProfissionalExecutanteID, ExecucaoRequired&" "&onchangeProfissional&DisabledRepasse,ItemID) %>
+                    </div>
+
+                </div>
+            </td>
+
             <%
+            if session("Odonto")=1 then
+            %>
+                <textarea class="hidden" name="OdontogramaObj<%=id %>" id="OdontogramaObj<%=id %>"><%=OdontogramaObj %></textarea>
+            <%
+            end if 
         elseif Tipo="O" then
 			set data = db.execute("select * from propostas where id="&PropostaID)
 			if not data.eof then
@@ -72,16 +105,49 @@ END IF
         <td>
             <div class="text-right <%=hiddenValor%>" id="sub<%=id%>" nowrap>R$ <%= formatnumber( Subtotal ,2) %></div>
         </td>
-        <td><button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove "></i></button></td>
+        <td class="text-center">
+        <button onclick="agendar(<%=ItemID%>, <%=id%>)" class="btn btn-xs btn-success" <%=agendamentoBtnDisabled%>> <i class="fa fa-calendar"></i> </button>
+        <button type="button" class="btn btn-xs btn-danger disable <%=escondeProposta%>" onClick="itens('<%=Tipo%>', 'X', '<%=id%>')"><i class="far fa-remove "></i></button></td>
     </td>
 </tr>
-<%
-if AvisoAgenda&""<>"" then
-    %>
 <script >
-
-showMessageDialog('<%=replace(replace(AvisoAgenda, chr(10), "\n"), chr(13), "")%>', "warning");
-</script>
     <%
-end if
-%>
+    if AvisoAgenda&""<>"" then
+    %>
+
+    showMessageDialog('<%=replace(replace(AvisoAgenda, chr(10), "\n"), chr(13), "")%>', "warning");
+
+    <%
+    end if
+    %>
+    function agendar(ItemID, LinhaID) {
+        
+        var ProfissionalID = document.getElementById("ProfissionalLinhaID"+LinhaID).value;
+        var PacienteID     = document.getElementById("PacienteID").value;
+        if (ItemID && ProfissionalID && PacienteID) {
+            ProfissionalID = ProfissionalID.replace("5_", '');
+            // SALVA PROPOSTA
+            addEventListener("click",propostaSave(true));
+            // REDIRECIONA PARA AGENDA
+            setTimeout(function () {
+            window.location.href = `?P=Agenda-1&Pers=1&ProfissionalID=${ProfissionalID}&ProcedimentoID=${ItemID}&PacienteID=${PacienteID}`; 
+            }, 2000);
+        }else{
+            var msg = "";
+             if (!ProfissionalID) {
+                var msg = "Profissional";
+                
+            }
+             if (!PacienteID) {
+                msg = empty(msg) ? "Paciente" : msg+" e Paciente"
+             }
+
+            msg = "Preencha o(s) campo(s) \n" + msg + ".";
+            // showMessageDialog(msg, 'danger');
+
+            showMessageDialog(msg, 'warning');
+            
+        }
+        
+    }
+</script>

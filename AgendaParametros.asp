@@ -156,7 +156,7 @@ if tipo="PacienteID" then
 
 			    if splCamposPedir(i)<>"IndicadoPorSelecao" then
 				%>
-				$("#age<%=splCamposPedir(i)%>").val("<%=pac(""&splCamposPedir(i)&"")%>");
+				$("#age<%=splCamposPedir(i)%>").val("<%=fix_string_chars(pac(""&splCamposPedir(i)&""))%>");
 				<%
 				end if
 			end if

@@ -7,7 +7,7 @@ localid = req("localid")
 ano = req("ano")
 mes = req("mes")
 
-for dia=1 to 31 
+for dia=1 to 31
     dataalvo = ano&"-"&mes&"-"&dia
     dataDMA = dia&"/"&mes&"/"&ano
     if isdate(dataalvo) then
@@ -25,7 +25,7 @@ for dia=1 to 31
                         " AND DiasSemana LIKE CONCAT('%', (if(DATE_FORMAT('"&dataalvo&"','%w')+1 = 8, 1, DATE_FORMAT('"&dataalvo&"','%w')+1)),'%') "&_
                         " AND (iniciovigencia <= '"&dataalvo&"' OR iniciovigencia IS NULL) AND (fimvigencia >='"&dataalvo&"' OR fimvigencia IS NULL) "
 
-        sqlhoraslivres = "SELECT (TIMESTAMPDIFF(HOUR,horade, horaa)*60/intervalo) + 1 "&_
+        sqlhoraslivres = "SELECT SUM((TIMESTAMPDIFF(HOUR,horade, horaa)*60/intervalo) + 1) "&_
                          " FROM assfixalocalxprofissional WHERE (iniciovigencia <= '"&dataalvo&"' OR iniciovigencia IS NULL) "&_
                          " AND (fimvigencia >='"&dataalvo&"' OR fimvigencia IS NULL)  "&_ 
                          " AND profissionalid = "&profisionalid&"  AND diasemana = if(DATE_FORMAT('"&dataalvo&"','%w')+1 = 8 , 1,DATE_FORMAT('"&dataalvo&"','%w')+1)"
@@ -36,8 +36,6 @@ for dia=1 to 31
         sql  =  " INSERT INTO agendaocupacoes (`Data`, ProfissionalID, EspecialidadeID, LocalID, HLivres, HAgendados, HBloqueados) "&_
                 " VALUES ('"&dataalvo&"',"&profisionalid&",NULL,"&localid&", "&_
                 " COALESCE(("&sqlhoraslivres&"),0), COALESCE(("&sqlagendamentos&"),0), COALESCE(("&sqlbloqueios&"),0));"
-        'response.write(sql&"<BR>")
-
         db.execute(sql)
         ' Eliminar ocupacoes sem grade
         if localid="" then

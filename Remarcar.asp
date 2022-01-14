@@ -87,11 +87,11 @@ if Acao="Remarcar" then
     Tempo = AgendamentoSQL("Tempo")
     if Tempo&"" <> "" then
         HoraSolFin = dateadd("n", Tempo,HoraSolIni)
-    end if
 
-    set ve1=db.execute("select * from agendamentos where sysActive=1 AND ProfissionalID = '"&ProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(Data)&"' and not id = '"&AgendamentoID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
-    if not ve1.eof then
-        erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
+        set ve1=db.execute("select * from agendamentos where sysActive=1 AND ProfissionalID = '"&ProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(Data)&"' and not id = '"&AgendamentoID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
+        if not ve1.eof then
+            erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
+        end if
     end if
 
     if Hora="00:00" or Hora=""  then

@@ -7,7 +7,7 @@ localid = req("localid")
 ano = req("ano")
 mes = req("mes")
 
-for dia=13 to 13
+for dia=1 to 31
     dataalvo = ano&"-"&mes&"-"&dia
     dataDMA = dia&"/"&mes&"/"&ano
     if isdate(dataalvo) then

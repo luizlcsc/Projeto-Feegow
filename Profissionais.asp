@@ -421,7 +421,7 @@ function desbloquear(status,tabela){
 }
 
 $(document).ready(function(e) {
-	<%call formSave("frm", "save", "")%>
+	<%call formSave("frm", "save", "desbloquear(true,'profissionais')")%>
 
  let novoProfissional = "<%=novoProfissional%>"
 

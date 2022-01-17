@@ -2356,6 +2356,7 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
 		  if(data.toLowerCase().indexOf("erro") <= 0){
             <%=AcaoSeguinte%>
           }
+          let sucesso = true
         }).fail(function(data) {
             $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
             $("#<%=btnSaveID%>").removeAttr('disabled');

@@ -1341,7 +1341,7 @@ end if
 		    end if
 		    if (session("Admin")=1) or (lcase(req("P"))=lcase(session("Table")) and session("idInTable")=ccur(req("I")) and aut("senhapA")=1) or (aut("usuariosA")=1) then
 		    %>
-            <li>
+            <li id="dadosAcesso">
                 <a  class="menu-aba-meu-perfil-dados-acesso" data-toggle="tab" href="#divAcesso" onclick="ajxContent('DadosAcesso&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divAcesso');">
             	    <span class="far fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
             </li>
@@ -1398,7 +1398,7 @@ end if
 
 		    if session("Admin")=1 then
 		    %>
-            <li>
+            <li id="permissoes">
                 <a  class="menu-aba-meu-perfil-permissoes" data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('Permissoes&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
             	    <span class="far fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
             </li>
@@ -1471,7 +1471,7 @@ end if
             <%
 		    if (session("Admin")=1) or (lcase(req("P"))=lcase(session("Table")) and session("idInTable")=ccur(req("I")) and aut("senhapA")=1) or (aut("usuariosA")=1) then
 		    %>
-            <li>
+            <li id="dadosAcesso">
                 <a data-toggle="tab" href="#divAcesso" onclick="ajxContent('DadosAcesso&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divAcesso');">
                     <span class="far fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
             </li>
@@ -1479,7 +1479,7 @@ end if
 		    end if
 		    if session("Admin")=1 then
 		    %>
-            <li>
+            <li id="permissoes">
                 <a data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('Permissoes&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
                     <span class="far fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
             </li>

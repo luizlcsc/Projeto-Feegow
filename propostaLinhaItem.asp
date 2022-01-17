@@ -50,13 +50,13 @@ end if
                     <div style="width: 100%">
                         <%= selectInsert("", "ItemID"&id, ItemID, "procedimentos", "NomeProcedimento", " onchange="" """&desabilitarProposta, " required", "") %>
                     </div>
-                    <div class='dflex colunflex executantes'>
+                    <div class='dflex colunflex executantes' <% IF not moduloCallCenter THEN%> style="display:none" <% END IF %>>
                         <label>Executante</label>
                         
                         <input type='checkbox' onClick='toggleLine(<%=id%>)' <% IF ProfissionalExecutanteID <> "" THEN%> checked <% END IF %>/>
                     </div>
                 </div>
-                <div class="profi<%=id%> openAllProfissional" <% IF ProfissionalExecutanteID = "" THEN%>style="display:none" <% END IF %>>
+                <div class="profi<%=id%> openAllProfissional" <% IF not moduloCallCenter or ProfissionalExecutanteID = "" THEN%>style="display:none" <% END IF %>>
                     <% ExecucaoRequired = " required empty " %>
                     <label class='mt5'>Profissional Executante</label>
                     <div>

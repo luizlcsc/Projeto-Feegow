@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <%
+moduloCallCenter = recursoAdicional(41)&""="4"
 
 IF req("reload") <> "" THEN
     response.write(simpleSelectCurrentAccountsFilterOption("ProfissionalLinhaID"&req("id"), "5, 8, 2", ProfissionalExecutanteID, "",req("reload")))
@@ -188,8 +189,10 @@ if Acao="" then
 			ProfissionalID = itens("ProfissionalID")
 			DataExecucao = itens("DataExecucao")
 			HoraExecucao = itens("HoraExecucao")
-			AccontAssociationID = itens("AccontAssociationID")&""
-			AccontID = itens("AccontID")&""
+			if moduloCallCenter then
+				AccountAssociationID = itens("AccountAssociationID")&""
+				AccountID = itens("AccountID")&""
+			end if
 			HoraExecucao = itens("HoraExecucao")
 			Valor = ValorUnitario
 			if not isnull(HoraExecucao) and isdate(HoraExecucao) then
@@ -205,8 +208,8 @@ if Acao="" then
             end if
 
             ProfissionalExecutanteID = ""
-            IF AccontID <> "" and AccontAssociationID <> "" THEN
-                ProfissionalExecutanteID = AccontAssociationID&"_"&AccontID
+            IF AccountID <> "" and AccountAssociationID <> "" and moduloCallCenter THEN
+                ProfissionalExecutanteID = AccountAssociationID&"_"&AccountID
             END IF
 
 			%>
@@ -233,7 +236,13 @@ if Acao="" then
 		<tfoot>
 		    <tr>
 					<th colspan="4">
+						<%
+						if moduloCallCenter then
+						%>
 						<button type="button" class="btn btn-warning btn-block" id="preparoResultados" style="margin-top:22px" onclick="modalPreparo()">Preparo e Resultados</button>
+						<%
+						end if
+						%>
 					</th>
 					<td class="<%=hiddenValor%>">
 						<label for="DescontoTotal">Desconto total (%)</label>

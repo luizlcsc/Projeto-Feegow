@@ -98,12 +98,12 @@ if erro="" then
 			acrInv = ref("Acrescimo"&splInv(i))
 
 			profissionalLinha = ref("ProfissionalLinhaID"&splInv(i))
-			AccontAssociationID = ""
-			AccontID = ""
+			AccountAssociationID = ""
+			AccountID = ""
 			if ref("ProfissionalLinhaID"&splInv(i)) <> "" then
 				profissionalLinha = Split(profissionalLinha,"_")
-				AccontAssociationID = profissionalLinha(0)
-				AccontID = profissionalLinha(1)
+				AccountAssociationID = profissionalLinha(0)
+				AccountID = profissionalLinha(1)
 			end if
 			if isnumeric(valInv) and valInv<>"" then valInv=ccur(valInv) else valInv=0 end if
 			if isnumeric(quaInv) and quaInv<>"" then quaInv=ccur(quaInv) else quaInv=1 end if
@@ -211,9 +211,9 @@ if erro="" then
 			totalProposta = totalProposta - ValorDescontoFinal
 
 			if session("Odonto")=1 then
-				sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID ,Ordem, Prioridade, Tipo, Quantidade, CategoriaID, AccontAssociationID, AccontID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, OdontogramaObj) values ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", NULLIF('"&AccontAssociationID&"',''),NULLIF('"&AccontID&"',''), "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto)  &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"')"
+				sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID ,Ordem, Prioridade, Tipo, Quantidade, CategoriaID, AccountAssociationID, AccountID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID, OdontogramaObj) values ("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&", NULLIF('"&AccountAssociationID&"',''),NULLIF('"&AccountID&"',''), "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto)  &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&", '"&replace(request.form("OdontogramaObj"&ii), "\", "\\")&"')"
 			else
-				sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID , Ordem, Prioridade, Tipo, Quantidade, CategoriaID, AccontAssociationID, AccontID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID) values("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&",  NULLIF('"&AccontAssociationID&"',''),NULLIF('"&AccontID&"',''), "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto) &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&")"
+				sqlInsert = "insert into itensproposta ("&camID&" PropostaID,PacoteID , Ordem, Prioridade, Tipo, Quantidade, CategoriaID, AccountAssociationID, AccountID, ItemID, ValorUnitario, Desconto,TipoDesconto, Descricao, Executado, DataExecucao, HoraExecucao, AgendamentoID, sysUser, ProfissionalID, HoraFim, Acrescimo, AtendimentoID) values("&valID&" "&PropostaID&", "&pacoteInv&", "&ordemInv&","&prioridadeInv&",'"&Tipo&"', "&quaInv&", "&treatvalzero(ref("CategoriaID"&ii))&",  NULLIF('"&AccountAssociationID&"',''),NULLIF('"&AccountID&"',''), "&treatvalzero(ref("ItemID"&ii))&", "& valorUnitarioDB &", "& treatvalzero(ValorDesconto) &", '"&desTipoInv&"', '"&ref("Descricao"&ii)&"', '"&ref("Executado"&ii)&"', "&mydatenull(ref("DataExecucao"&ii))&", "&mytime(ref("HoraExecucao"&ii))&", "&treatvalzero(ref("AgendamentoID"&ii))&", "&session("User")&", "&treatvalzero(ProfissionalID)&", "&mytime(ref("HoraFim"&ii))&", "&treatvalzero(ref("Acrescimo"&ii))&", "&treatvalnull(ref("AtendimentoID"&ii))&")"
 			end if
 			db_execute(sqlInsert)
 

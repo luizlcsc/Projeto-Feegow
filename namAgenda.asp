@@ -26,6 +26,7 @@ end if
 
 '    response.write("{{"& sqlUnidadesHorarios &"}}")
 LiberarHorarioRemarcado = getConfig("LiberarHorarioRemarcado")
+LiberarHorarioNaoCompareceu = getConfig("LiberarHorarioNaoCompareceu")
 
 if ProcedimentoID<>"" then
     set EspecialidadesPermitidasNoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
@@ -493,6 +494,11 @@ while not comps.EOF
 if LiberarHorarioRemarcado=1 then
     StatusRemarcado = " && Status !== '15'"
 end if
+
+if LiberarHorarioNaoCompareceu=1 then
+    StatusRemarcado = " && Status !== '6'"
+end if
+
 %>
 var Status = '<%=comps("StaID")%>';
 var $agendamentoSlot = $( ".p<%=ProfissionalID%>.l<%=LocalID%>" );

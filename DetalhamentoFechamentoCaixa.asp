@@ -280,7 +280,7 @@ elseif LinhaID=9 then
 <%
 sqlNaoPago="SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
 "LEFT JOIN sys_financialinvoices i ON i.id=mov.InvoiceID LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
-"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.CaixaID IN ("&Caixas&") AND mov.CD='C' AND mov.Type='Bill' "
+"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&" AND mov.CaixaID IN ("&Caixas&") AND mov.CD='C' AND mov.Type='Bill' "
 
 sqlNaoPago= sqlNaoPago&" UNION ALL SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
 "LEFT JOIN sys_financialinvoices i ON i.id=mov.InvoiceID LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
@@ -325,12 +325,15 @@ elseif LinhaID="8.1" or LinhaID="8.2" then
 <%
 sqlAccount = ""
 if LinhaID="8.1" then
-    sqlAccount = " AND m.AccountAssociationIDDebit=5"
+    sqlAccount = " AND exp.Name='Repasses'"
 else
-    sqlAccount = " AND m.AccountAssociationIDDebit!=5"
+    sqlAccount = " AND exp.Name!='Repasses'"
 end if
 
 sqlDespesas = "select m.sysUser, m.Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date FROM sys_financialmovement m "&_
+"INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
 "WHERE m.AccountAssociationIDCredit=7 "&sqlAccount&"  AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &""
 
 set DespesasSQL = db.execute(sqlDespesas )

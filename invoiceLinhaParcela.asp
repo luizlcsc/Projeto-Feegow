@@ -126,9 +126,6 @@ function geraBoleto(ParcelaID, type = 'default') {
             <a href="#" title="Atualizar fatura" class="btn btn-default btn-sm " onClick="geraDetalhamento(<%=ParcelaID%>)"><i class="far fa-calculator"></i></a>
             <%
             end if
-            %>
-            <a href="#" title="Gerar boleto" class="btn btn-primary btn-sm ml5" onClick="geraBoletoFeegow(<%=ParcelaID%>)"><i class="far fa-barcode"></i></a>
-            <%
             if SistemaNovo=1 then
             %>
             <a href="#" title="Enviar fatura via e-mail" class="btn btn-system btn-sm ml5" onClick="if(confirm('Deseja enviar a fatura?'))EnviaEmailFatura(<%=ParcelaID%>)" target="_blank"><i class="far fa-envelope"></i></a>
@@ -153,12 +150,6 @@ function geraBoleto(ParcelaID, type = 'default') {
                     var Vecto = $("#Date<%=ParcelaID %>").val();
 
                     window.open("../feegow_components/api/FechaFatura?Fecha=S&Detalhamento=1&MovementID=<%=ParcelaID%>&Vencimento="+Vecto+"&ReceitaID=<%=req("I")%>&redirectTo=<%=req("Div")%>");
-                }
-
-                function geraBoletoFeegow(ParcelaID) {
-                    var Vecto = $("#Date<%=ParcelaID %>").val();
-
-                    window.open("../feegow_components/api/FechaFatura?Fecha=S&Boleto=1&MovementID=<%=ParcelaID%>&Vencimento="+Vecto+"&ReceitaID=<%=req("I")%>&redirectTo=<%=req("Div")%>");
                 }
 
                 function EnviaEmailFatura(ParcelaID) {

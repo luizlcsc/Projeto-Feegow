@@ -434,7 +434,7 @@ if req("T")="C" then
 end if
 
 
-if req("T")<>"D" and Tipo="S"  then
+if req("T")<>"D" then
 
 ExecucaoRequired = " required"
 if Executado<>"S" then

@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="modal.asp"-->
 
 <%
 sqlData = ""
@@ -86,6 +87,7 @@ end if
                     <th width="1%"></th>
                     <th width="1%"></th>
                     <th width="1%"></th>
+                    <th width="1%"></th>
                 </tr>
             </thead>
             <tbody>
@@ -114,6 +116,9 @@ end if
                     <td><%= ac("Cirurgiao") %></td>
                     <td width="1%" nowrap>
                         <a class="btn btn-xs btn-primary" href="./?P=AgendaCirurgica&I=<%= ac("id") %>&Pers=1"><i class="far fa-edit"></i></a>
+                    </td>
+                    <td width="1%" nowrap>
+                        <a class='btn btn-xs btn-system <% if isnull(ac("IDFaturamento")) then %> disabled <% end if %>' style='float:right' href="javascript:modalInsuranceAttachments('<%= ac("IDFaturamento") %>','GuiaHonorarios');" title='Anexar laudo à guia'> <i class="far fa-paperclip bigger-140 white"></i></a>
                     </td>
                     <td width="1%">
                         <%
@@ -155,3 +160,14 @@ end if
             %>                
             </tbody>
         </table>
+<script>
+    function modalInsuranceAttachments(guiaID, tipoGuia){
+    $.post("modalInsuranceAttachments.asp",{
+		   guiaID:guiaID,
+		   tipoGuia:tipoGuia
+		   },function(data){
+        $("#modal").html(data);
+        $("#modal-table").modal("show");
+    });
+}
+</script>

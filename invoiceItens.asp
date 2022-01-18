@@ -21,6 +21,8 @@ if Row<>"" then
 	Row=ccur(Row)
 end if
 desabilitarExclusaoItem = ""
+ObrigarPlanoDeContas = getConfig("ObrigarPlanoDeContas")
+
 
 titleNotaFiscal = ""
 if recursoAdicional(34) = 4 then

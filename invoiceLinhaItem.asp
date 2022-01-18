@@ -238,7 +238,7 @@
     <td>
         <%
         PodeExcluirItem = True
-        if ItemInvoiceID&""<>"" then
+        if ItemInvoiceID&""<>"" and Tipo="S" then
             set vcaRep = db.execute("select rr.id from rateiorateios rr where rr.ItemInvoiceID="& ItemInvoiceID &" AND NOT ISNULL(rr.ItemContaAPagar)")
             if not vcaRep.eof then
                 PodeExcluirItem = False
@@ -281,7 +281,7 @@
     <%end if%>
     </td>
 </tr>
-<% IF getConfig("ObrigarPlanoDeContas") THEN %>
+<% IF ObrigarPlanoDeContas THEN %>
 <script>
     $("[name^=CategoriaID]").attr("required","required")
 </script>
@@ -440,6 +440,7 @@ ExecucaoRequired = " required"
 if Executado<>"S" then
     ExecucaoRequired=""
 end if
+
 %>
 <tr id="row2_<%=id%>"<%if Executado<>"S" then%> class="hidden div-execucao"<%else %> class="div-execucao"<%end if%> data-id="<%=id%>">
 	<td></td>

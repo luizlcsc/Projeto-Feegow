@@ -436,7 +436,7 @@ select case Tipo
         <div class="panel timeline-add">
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %> </span>
-                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and lcase(session("table"))="profissionais" then %>
+                <% if aut("prescricoesI") and getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPrescricaoClassica")<>1 and lcase(session("table"))="profissionais" then %>
                     <span class="panel-controls">
                         <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                             <i class="far fa-cog"></i>
@@ -457,7 +457,7 @@ select case Tipo
             <%
 
             prescricaoDefault = "memed"
-            memedHabilitada = getConfig("MemedHabilitada")=1
+            memedHabilitada = getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPrescricaoClassica")<>1
 
             if lcase(session("Table"))<>"profissionais" then
                 memedHabilitada = False
@@ -568,14 +568,6 @@ setMemedError("Prescrição clássica ativa.")
                             <span class="error-badge">&nbsp;</span>
                         </button>
                     </span>
-                    <script>
-                        if (memedError) {
-                            $('#btn-config-prescricao').addClass('error');
-                        }
-                        if (memedLoading) {
-                            $('#btn-config-prescricao').addClass('loading');
-                        }
-                    </script>
                 <% end if %>
             </div>
             <%
@@ -596,10 +588,14 @@ setMemedError("Prescrição clássica ativa.")
                     <%
                     qModelosSQL = "select *, IFNULL(TipoID, 99999999) as TipoID from encaminhamentostextos as pt left join prontuariosfavoritos as pf on pf.TipoID = pt.id and pf.Tipo = 'A' and pf.sysUser = "&session("User")&"  where sysActive=1 and (profissionais is null or profissionais='' or profissionais like '%|"&session("idInTable")&"|%' or "&session("Admin")&"=1) and (especialidades is null or especialidades='' or "&session("Admin")&"=1) order by TipoID"
 
-                    if session("Table")="profissionais" then
-                        valorCheck = session("idInTable")
-                    end if
                     response.write(quickfield("select", "modelosEncaminhamentos", "Modelo", "", "", qModelosSQL, "nomeModelo", ""))
+                    %>
+                </div>
+                <div class="col-md-3">
+                    <%
+                    qCid10SQL = "SELECT id,codigo,CONCAT(codigo, ' - ', Descricao) as Descricao FROM cliniccentral.cid10"
+
+                    response.write(quickfield("select", "Cid10Memed", "CID 10", "", "", qCid10SQL, "Descricao", ""))
                     %>
                 </div>
                 <br>
@@ -810,7 +806,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
             <div class="panel-heading">
                 <span class="panel-title"> <%=subTitulo %>
                 </span>
-                <% if aut("pedidosexamesI")=1 and getConfig("MemedHabilitada")=1 then %>
+                <% if aut("pedidosexamesI")=1 and getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
                 <span class="panel-controls">
                     <button id="btn-config-prescricao" class="btn btn-default" onclick="openConfigMemed()">
                         <i class="far fa-cog"></i>
@@ -851,7 +847,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
-                                <% if getConfig("MemedHabilitada")=1 then %>
+                                <% if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
                                 <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
                                 <% end if %>
                                 <%
@@ -1229,6 +1225,40 @@ LocalStorageRestoreHabilitar();
     <%
     ELSE
     %>
+        function JustificativaTimeline(t, p, m, i, a, FormID, CampoID) {
+            $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            if(t=='AE'||t=='L'){
+                try{
+                    $.magnificPopup.open({
+                            removalDelay: 500,
+                            closeOnBgClick:false,
+                            modal: true,
+                            items: {
+                                src: '#modal-form'
+                            },
+                            // overflowY: 'hidden', //
+                            callbacks: {
+                                beforeOpen: function(e) {
+                                    this.st.mainClass = "mfp-zoomIn";
+                                }
+                            }
+                        });
+                }catch (e) {
+                    alert(e)
+
+                }
+            }else{
+                mfp('#modal-form');
+            }
+            var pl = $("#ProfissionalLaudadorID").val();
+            $.get("listaJustificativaTimeline.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+                $("#modal-form .panel").html(data);
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID);
+                $("#modal-form").magnificPopup("close");
+            });
+        }
+
         function iPront(t, p, m, i, a, FormID, CampoID) {
             $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){

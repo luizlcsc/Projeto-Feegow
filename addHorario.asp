@@ -37,6 +37,7 @@ if HorarioID<>"" then
         MarcarOrdem = gh("MarcarOrdem")
         GradeEncaixe = gh("GradeEncaixe")
         MarcarEmOrdemHoraA = mytime(gh("MarcarEmOrdemHoraA"))
+        MarcarOrdemLimit = gh("MarcarOrdemLimit")
         TipoLimiteHorario = gh("TipoLimiteHorario")
     end if
 end if
@@ -123,12 +124,12 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
         diaSemanaArray = split(ref("diaSemanaArray[]"),",")
         numberArray = UBound(diaSemanaArray)
             For i = 0 To numberArray
-              sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios, Programas, Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor, ValorHonorario, MarcarOrdem, MarcarEmOrdemHoraA, TipoLimiteHorario, GradeEncaixe) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"', "& treatvalnull(ref("ValorHonorario")) &", '"& ref("MarcarOrdem") &"', '"& ref("MarcarEmOrdemHoraA") &"', '"& ref("TipoLimiteHorario") &"', '"& ref("GradeEncaixe)") &"')"
+              sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios, Programas, Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor, ValorHonorario, MarcarOrdem, MarcarEmOrdemHoraA, TipoLimiteHorario, GradeEncaixe, MarcarOrdemLimit) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"', "& treatvalnull(ref("ValorHonorario")) &", '"& ref("MarcarOrdem") &"', '"& ref("MarcarEmOrdemHoraA") &"', '"& ref("TipoLimiteHorario") &"', '"& ref("GradeEncaixe)") &"', '"& ref("MarcarOrdemLimit)") &"')"
                call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
                db_execute(sqlGrade)
             Next
         else
-            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"', ValorHonorario="& treatvalnull(ref("ValorHonorario")) &", MarcarOrdem='"& ref("MarcarOrdem") &"', MarcarEmOrdemHoraA='"& ref("MarcarEmOrdemHoraA") &"', TipoLimiteHorario='"& ref("TipoLimiteHorario") &"',GradeEncaixe='"& ref("GradeEncaixe") &"' WHERE id="&req("H")
+            sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"', ValorHonorario="& treatvalnull(ref("ValorHonorario")) &", MarcarOrdem='"& ref("MarcarOrdem") &"', MarcarEmOrdemHoraA='"& ref("MarcarEmOrdemHoraA") &"', TipoLimiteHorario='"& ref("TipoLimiteHorario") &"',GradeEncaixe='"& ref("GradeEncaixe") &"' ,MarcarOrdemLimit='"& ref("MarcarOrdemLimit") &"' WHERE id="&req("H")
             call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
             db_execute(sqlGrade)
         end if
@@ -348,7 +349,8 @@ end if
             <div class="col-md-6"></div>
             <div class="col-md-6" id="marcarOrdemConfig" style="background:#e6e6e6; border:1px dotted #ebebeb; padding: 10px;">
                 <%=quickField("text", "MarcarEmOrdemHoraA", "Horário Inicial", 6, MarcarEmOrdemHoraA, " input-mask-l-time", "", " ")%>
-                <div class="col-md-6">
+                <%=quickField("number", "MarcarOrdemLimit", "Horários disponíveis", 6, MarcarOrdemLimit, "", "", " ")%>
+                <div class="col-md-12">
                 <label>Liberação dos horários </label>
                 <br>
                 <label>

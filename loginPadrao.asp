@@ -188,7 +188,7 @@ if not tryLogin.EOF then
                 forcar_login = Session("Deslogar_user")
             end if
 
-			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
+			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login and AppEnv="production" then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
 				errorCode = "user_connected"

@@ -91,10 +91,10 @@ end if
             </div>
         <%
         end if
-        if StatusEmissaoBoleto=4 and session("Banco")<>"clinic5459" then
+        if StatusEmissaoBoleto=4 then
             %>
             <div>
-                <button type="button" title="Gerar boleto" class="btn btn-primary btn-sm ml5 geraBoleto" onclick="geraBoleto(<%=ParcelaID%>)" >
+                <button type="button" title="Gerar boleto" class="btn btn-primary btn-sm ml5 geraBoleto" onclick="geraBoleto(<%=ParcelaID%>, '<% if session("Banco")="clinic5459" then response.write("legacy") else response.write("default") end if %>')" >
                 <i class="far fa-barcode"></i>
                 <% IF BoletosDaParcela("totalboletos") THEN %>
                 <span class="badge badge-danger" style=""><%=BoletosDaParcela("totalboletos")%></span>
@@ -103,12 +103,10 @@ end if
             </div>
 
 <script >
-function geraBoleto(ParcelaID) {
+function geraBoleto(ParcelaID, type = 'default') {
     var Vecto = $("#Date" + ParcelaID).val();
 
-    console.log(Vecto);
-
-    openComponentsModal("emissaoboleto/invoice/movement", {"billId": ParcelaID}, "Gerenciar boletos", true, false);
+    openComponentsModal("emissaoboleto/invoice/movement", {"billId": ParcelaID, 'billMode': type, 'expiresAt': Vecto, 'invoiceId': '<%=req("I")%>'}, "Gerenciar boletos", true, false);
 }
 </script>
             <%

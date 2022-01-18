@@ -115,7 +115,7 @@ if not l3.eof then
         'ValorFechamento = ValorFechamento + l3("Valor")
         ValorFechamentoInformado = ValorFechamentoInformado + l3("DinheiroInformado")
 
-        sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL) AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
+        sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
         if session("User")=81920 then
             response.Write("<br>"& sqlNaoPago &"<br>")
         end if
@@ -217,13 +217,19 @@ end if
 vl4 = vl2 - ValorFechamentoInformado
 
 'BLOCO 2
-set pDesp = db.execute("select sum(m.Value) Despesas FROM sys_financialmovement m "&_
-"WHERE m.AccountAssociationIDDebit = 5 AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+set pDesp = db.execute("select sum(idesc.Valor) Despesas FROM sys_financialmovement m "&_
+"INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
+"WHERE exp.Name='Repasses' AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
 "")
 DespesasRepasse = pDesp("Despesas")
 
 set pDesp = db.execute("select sum(m.Value) Despesas FROM sys_financialmovement m "&_
-"WHERE m.AccountAssociationIDDebit != 5 AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+"INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+"INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
+"WHERE exp.Name!='Repasses' AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
 "")
 OutrasDespesas = pDesp("Despesas")
 

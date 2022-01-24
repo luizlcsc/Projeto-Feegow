@@ -9,7 +9,7 @@ UnidadeID = req("UnidadeID")
 <table class="table table-striped">
     <%
 
-if LinhaID=6 or LinhaID=7 or LinhaID=5 or LinhaID=4 then
+if LinhaID=6 or LinhaID=7 or LinhaID=5 or LinhaID=4  or LinhaID=15 then
 
     %>
 <thead>
@@ -35,11 +35,25 @@ elseif LinhaID=7 then
     FormaPagamentoID="9"
 end if
 
-sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.sysDate, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, pac.NomePaciente, pac.id PacienteID, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID   LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) INNER JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID WHERE ii.DataExecucao = "& mydatenull(Data) &" AND i.CompanyUnitID="& UnidadeID &" AND ii.Executado='S' AND m.PaymentMethodID IN ("&FormaPagamentoID&") ORDER BY ii.DataExecucao"
+if LinhaID=15 then
+    sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.sysDate, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, pac.NomePaciente, pac.id PacienteID, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii "&_
+    "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID   "&_
+    "LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) "&_
+    "INNER JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID "&_
+    "WHERE ii.DataExecucao = "& mydatenull(Data) &"  AND ii.DataExecucao!=i.sysDate AND i.CompanyUnitID="& UnidadeID &" AND ii.Executado='S' ORDER BY ii.DataExecucao"
+else
+    sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.sysDate, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, pac.NomePaciente, pac.id PacienteID, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii "&_
+    "INNER JOIN sys_financialinvoices i ON i.id=ii.InvoiceID   "&_
+    "LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) "&_
+    "INNER JOIN procedimentos proc ON proc.id=ii.ItemID LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id LEFT JOIN sys_financialmovement m ON m.id=idesc.PagamentoID "&_
+    "WHERE ii.DataExecucao = "& mydatenull(Data) &"  AND ii.DataExecucao=i.sysDate AND i.CompanyUnitID="& UnidadeID &" AND ii.Executado='S' AND m.PaymentMethodID IN ("&FormaPagamentoID&") ORDER BY ii.DataExecucao"
+end if
+
 ' dd(sqlDebitoECredito)
 set RecebimentosDebitoECreditoSQL= db.execute(sqlDebitoECredito)
 TotalCredito = 0
 TotalDebito = 0
+TotalDinheiro = 0
 ValorTotal = 0
 ValorTotalLiquido=0
 
@@ -65,6 +79,8 @@ while not RecebimentosDebitoECreditoSQL.eof
         TotalCredito= TotalCredito +ValorLiquido
     elseif RecebimentosDebitoECreditoSQL("PaymentMethodID")=9 then
         TotalDebito= TotalDebito +ValorLiquido
+    elseif RecebimentosDebitoECreditoSQL("PaymentMethodID")=1 then
+        TotalDinheiro= TotalDinheiro +ValorLiquido
     end if
     %>
 <tr>
@@ -93,11 +109,16 @@ set RecebimentosDebitoECreditoSQL=nothing
 </tr>
 </tfoot>
     <%
-elseif LinhaID=13 then
+elseif LinhaID="13.1" or LinhaID="13.2" then
 
       '  SELECT ii.id, ii.InvoiceID,(ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo)) Valor FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID WHERE (DATE(i.sysDate)='2018-12-19') AND i.CD='C' AND i.CompanyUnitID=7 AND ii.Tipo='S' AND ii.Executado = ''
 
-sql = "SELECT ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo) Valor, pac.NomePaciente, ii.InvoiceID, proc.NomeProcedimento, i.sysDate FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE i.sysDate = "& mydatenull(Data) &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &" AND ii.Tipo='S' AND ii.Executado = ''"
+if LinhaID="13.1" then
+    sql = "SELECT ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo) Valor, pac.NomePaciente, ii.InvoiceID, proc.NomeProcedimento, i.sysDate FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE i.sysDate = "& mydatenull(Data) &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &" AND ii.Tipo='S' AND ii.Executado = ''"
+elseif LinhaID="13.2" then
+    sql = "SELECT ii.Quantidade * (ii.ValorUnitario - ii.Desconto + ii.Acrescimo) Valor, pac.NomePaciente, ii.InvoiceID, proc.NomeProcedimento, i.sysDate FROM itensinvoice ii LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID WHERE i.sysDate = "& mydatenull(Data) &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &" AND ii.Tipo='S' AND ii.DataExecucao != i.sysDate"
+end if
+
 set ServicosNaoExecutadosSQL = db.execute(sql)
 
     %>

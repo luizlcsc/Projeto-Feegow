@@ -999,16 +999,16 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </a>
                   </li>
                   <%
-								%>
-
-								<li class="list-group-item">
-									<a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
-										<i class="far fa-calendar"></i>
-										Confirmação Geral
-									</a>
-								</li>
-								<%
 							end if
+              %>
+
+              <li class="list-group-item">
+                <a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
+                  <i class="far fa-calendar"></i>
+                  Confirmação Geral
+                </a>
+              </li>
+              <%
           end if 
 
 

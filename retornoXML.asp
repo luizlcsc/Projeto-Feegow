@@ -9,7 +9,117 @@ function updateTabelaProcedimentos(tabelaGuia, tabelaId, codigo, valor, GuiaId, 
                             "motivoGlosa='"&motivoGlosa&"', CodigoGlosa="&treatvalnull(codigoGlosa)&" "&_
                             "WHERE  CodigoProcedimento = '"&codigo&"' and Quantidade=1 AND GuiaID = "&GuiaID
 
-        db_execute(sqlUpdateTabela)
+        db.execute(sqlUpdateTabela)
+    end if
+end function
+
+function updateGuiaSemGlosa(GuiaId, tabelaGuia)
+    if GuiaID&"" <> "" and tabelaGuia&"" <> "" then
+        'atualiza procedimento
+        set procedimentos = db.execute("SELECT id, ValorTotal FROM "&pguias("TabelaProcedimentos")&" WHERE GuiaID = "&pguias("id")&"")
+        while not procedimentos.eof
+            valorTotalProc = treatvalzero(procedimentos("ValorTotal"))
+
+            sqlProcSemGlosa = "UPDATE "&pguias("TabelaProcedimentos")&" SET ValorPago = NULLIF("&valorTotalProc&",'') WHERE id = "&procedimentos("id")
+
+            set UpdateProcSemGlosa = db.execute(sqlProcSemGlosa)
+        procedimentos.movenext
+        wend
+        procedimentos.close
+        set procedimentos = nothing
+
+        'atualiza despesas anexas
+        set despesas = db.execute("SELECT * FROM tissguiaanexa WHERE GuiaID = "&pguias("id")&"")
+        while not despesas.eof
+            valorTotal = treatvalzero(despesas("ValorTotal"))
+
+            SqlSemGlosa = "UPDATE tissguiaanexa SET ValorPago=NULLIF("&valorTotal&",'') WHERE id = "&despesas("id")
+
+            set UpdateSemGlosa = db.execute(SqlSemGlosa)
+        despesas.movenext
+        wend
+        despesas.close
+        set despesas = nothing
+    end if
+end function
+
+function UpdateGuiaComGlosa(codigoItem, tipoTabela, valorProcessado, valorLiberado, tipoGlosa, GuiaID)
+    if codigoItem&"" <> "" then
+        'pega o id e o motivo da glosa
+        idGlosa = ""
+        motivoGlosa = ""
+        if tipoGlosa <> "" then
+            set infoGlosa = db.execute("SELECT * FROM cliniccentral.tabelaglosas WHERE Codigo = "&tipoGlosa)
+            if not infoGlosa.eof then
+                idGlosa = infoGlosa("id")
+                motivoGlosa = infoGlosa("Descricao")
+            end if
+        end if
+        'verifica o tipo da tabela e realiza o update de acordo
+        if tipoTabela = 22 then
+            sqlUpdateTabela = "UPDATE `tissprocedimentossadt` SET ValorPago= COALESCE(ValorPago,IFNULL("&treatvalzero(valorLiberado)&" * IFNULL(CAST(Quantidade AS UNSIGNED),1),0)), "&_
+                            "motivoGlosa='"&tipoGlosa&"', CodigoGlosa='|"&idGlosa&"|' "&_
+                            "WHERE  CodigoProcedimento = '"&codigoItem&"' AND GuiaID = "&GuiaID
+            db.execute(sqlUpdateTabela)
+        else
+            sqlUpdateTabela = "UPDATE tissguiaanexa SET ValorPago=NULLIF("&treatvalzero(valorLiberado)&",''), motivoGlosa="&idGlosa&" WHERE GuiaID = "&GuiaID&" AND CodigoProduto = "&codigoItem
+            db.execute(sqlUpdateTabela)
+        end if
+    end if
+end function
+
+function updateGuiaSemGlosa(GuiaId, tabelaGuia)
+    if GuiaID&"" <> "" and tabelaGuia&"" <> "" then
+        'atualiza procedimento
+        set procedimentos = db.execute("SELECT id, ValorTotal FROM "&pguias("TabelaProcedimentos")&" WHERE GuiaID = "&pguias("id")&"")
+        while not procedimentos.eof
+            valorTotalProc = replace(procedimentos("ValorTotal"),",",".")
+
+            sqlProcSemGlosa = "UPDATE "&pguias("TabelaProcedimentos")&" SET ValorPago = NULLIF('"&valorTotalProc&"','') WHERE id = "&procedimentos("id")
+
+            set UpdateProcSemGlosa = db.execute(sqlProcSemGlosa)
+        procedimentos.movenext
+        wend
+        procedimentos.close
+        set procedimentos = nothing
+
+        'atualiza despesas anexas
+        set despesas = db.execute("SELECT * FROM tissguiaanexa WHERE GuiaID = "&pguias("id")&"")
+        while not despesas.eof
+            valorTotal = replace(despesas("ValorTotal"),",",".")
+
+            SqlSemGlosa = "UPDATE tissguiaanexa SET ValorPago=NULLIF('"&valorTotal&"','') WHERE id = "&despesas("id")
+
+            set UpdateSemGlosa = db.execute(SqlSemGlosa)
+        despesas.movenext
+        wend
+        despesas.close
+        set despesas = nothing
+    end if
+end function
+
+function UpdateGuiaComGlosa(codigoItem, tipoTabela, valorProcessado, valorLiberado, tipoGlosa, GuiaID)
+    if codigoItem&"" <> "" then
+        'pega o id e o motivo da glosa
+        idGlosa = ""
+        motivoGlosa = ""
+        if tipoGlosa <> "" then
+            set infoGlosa = db.execute("SELECT * FROM cliniccentral.tabelaglosas WHERE Codigo = "&tipoGlosa)
+            if not infoGlosa.eof then
+                idGlosa = infoGlosa("id")
+                motivoGlosa = infoGlosa("Descricao")
+            end if
+        end if
+        'verifica o tipo da tabela e realiza o update de acordo
+        if tipoTabela = 22 then
+            sqlUpdateTabela = "UPDATE `tissprocedimentossadt` SET ValorPago= COALESCE(ValorPago,IFNULL('"&valorLiberado&"' * IFNULL(CAST(Quantidade AS UNSIGNED),1),0)), "&_
+                            "motivoGlosa='"&tipoGlosa&"', CodigoGlosa='|"&idGlosa&"|' "&_
+                            "WHERE  CodigoProcedimento = '"&codigoItem&"' AND GuiaID = "&GuiaID
+            db.execute(sqlUpdateTabela)
+        else
+            sqlUpdateTabela = "UPDATE tissguiaanexa SET ValorPago=NULLIF('"&valorLiberado&"',''), CodigoGlosa='|"&idGlosa&"|', motivoGlosa="&tipoGlosa&" WHERE GuiaID = "&GuiaID&" AND CodigoProduto = "&codigoItem
+            db.execute(sqlUpdateTabela)
+        end if
     end if
 end function
 %>
@@ -160,7 +270,7 @@ end function
                 end if
 
                 if update then
-                    db_execute("update "& pguia("Tabela") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &", GuiaStatus="& statusGuia &" where id="& pguia("id"))
+                    db.execute("update "& pguia("Tabela") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &", GuiaStatus="& statusGuia &", Glosado ="&treatvalzero(valorGlosaGuia)&" where id="& pguia("id"))
                     if not isnull(pguia("TabelaProcedimentos")) then
                         'atualiza o procedimento sadt
                         'db_execute("update "& pguia("TabelaProcedimentos") &" set ValorPago="& treatvalzero(valorLiberadoGuia) &" where GuiaID="& pguia("id"))
@@ -602,28 +712,36 @@ end function
                             'response.Write("---> valorLiberadoGuia: "& valorLiberadoGuia &"<br>")
                             'response.Write("---> valorGlosaGuia: "& valorGlosaGuia &"<br>")
 
-                            sql = "select * from (select id, 'tissguiaconsulta' Tabela, ifnull(ValorPago, 0) ValorPago from tissguiaconsulta where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                                  " UNION ALL select id, 'tissguiasadt', ifnull(ValorPago, 0) from tissguiasadt where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
-                                  " UNION ALL select id, 'tissguiahonorarios', ifnull(ValorPago, 0) from tissguiahonorarios where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                            sql = "select * from (select id, 'tissguiaconsulta' Tabela, NULL TabelaProcedimentos,ifnull(ValorPago, 0) ValorPago from tissguiaconsulta where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                                  " UNION ALL select id, 'tissguiasadt', 'tissprocedimentossadt' TabelaProcedimentos, ifnull(ValorPago, 0) from tissguiasadt where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
+                                  " UNION ALL select id, 'tissguiahonorarios', 'tissprocedimentoshonorarios' TabelaProcedimentos, ifnull(ValorPago, 0) from tissguiahonorarios where ConvenioID IN ("& ConvenioID &") and NGuiaPrestador='"& NumeroGuiaPrestador &"' "&_
                                   " ) t"
                             set pguias = db.execute( sql )
+                            'atualiza os valores cheios caso não haja glosa
                             set procs = guia.getElementsByTagName("ans:detalhesGuia")
-                            for each proc in procs
-                                codigo = proc.getElementsByTagName("ans:codigoProcedimento")(0).text
-                                tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
-                                valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
-                                valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
-                                tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
-                                IF NOT pguias.eof THEN
-                                    IF pguias("Tabela") = "tissguiasadt" THEN
-                                        call updateTabelaProcedimentos("tissprocedimentossadt", tipoTabela, codigo, valorLiberado, pguias("id"), tipoGlosa, codigoGlosa)
-
-                                        'sqlProcedimento = "UPDATE tissprocedimentossadt SET ValorPago=COALESCE(ValorPago,NULLIF('"&valorLiberado&"','')),motivoGlosa=NULLIF('"&tipoGlosa&"','')  WHERE TabelaID = "&tipoTabela&" AND CodigoProcedimento = "&codigo&" AND GuiaID = "&pguias("id")
-                                        'db.execute(sqlProcedimento)
-                                    END IF
-
+                            IF NOT pguias.eof THEN
+                                'atualiza procedimentos e anexos de guias que não tiveram glosa
+                                IF procs.length = 0 AND valorGlosaGuia = 0 THEN
+                                    call updateGuiaSemGlosa(pguias("id"), pguias("TabelaProcedimentos"))
+                                ELSE
+                                    'atualiza valores que tiveram glosa
+                                    for each proc in procs
+                                        codigoItem = proc.getElementsByTagName("ans:codigoProcedimento")(0).text
+                                        tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
+                                        valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
+                                        valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
+                                        tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
+                                        'Verificar tipo da tabela
+                                        IF pguias("Tabela") = "tissguiasadt" THEN
+                                            call UpdateGuiaComGlosa(codigoItem, tipoTabela, valorProcessado, valorLiberado, tipoGlosa, pguias("id"))
+                                        END IF
+                                    next
+                                    'atualiza os procedimentos que não tiveram alteração com o valor total
+                                    db.execute("UPDATE tissprocedimentossadt SET ValorPago = ValorTotal WHERE GuiaID="&pguias("id")&" AND ISNULL(ValorPago)")
+                                    'atualiza os anexos que não tiveram alteração com o valor total
+                                    db.execute("UPDATE tissguiaanexa SET ValorPago = ValorTotal WHERE GuiaID="&pguias("id")&" AND ISNULL(ValorPago)")
                                 END IF
-                            next
+                            END IF
                         Next
                     Next
                 next

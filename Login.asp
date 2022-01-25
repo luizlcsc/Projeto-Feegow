@@ -1,4 +1,5 @@
 <!--#include file="Classes/LogService.asp"-->
+<!--#include file="functions.asp"-->
 <%
 if request("Log")="Off" then
 	if session("Partner")="" then
@@ -681,7 +682,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <input id="authtoken" type="hidden">
-        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(req("qs"))%>">
+        <input id="qs" type="hidden" name="qs" value="<%= clear_ref_req(URLDecode(req("qs")) )%>">
     </form>
 
     <!-- BEGIN: PAGE SCRIPTS -->

@@ -10,6 +10,8 @@ function clear_ref_req (val)
         tentativa = false
     
         val = replace(val, "'", "''")
+        val = replace(val, """""", """")
+        val = replace(val, """", """""")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
         val = replace(val,"</script>", "")

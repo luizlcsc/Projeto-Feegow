@@ -149,7 +149,8 @@ else
                 ExcecaoIDAnterior = procedimentosExcecaoPadrao("ExcecaoID")
                 exibeCabecalho = false 
                 
-                sqlResposta = "SELECT RespostaMarcada, Resposta, Observacao FROM restricoes_respostas WHERE PacienteID = "&PacientedIdq&" AND RestricaoID = "&procedimentosExcecaoPadrao("RestricaoID") 
+                sqlResposta = "SELECT RespostaMarcada, Resposta, Observacao FROM restricoes_respostas WHERE "&chr(13)&_ 
+                "PacienteID = "&PacientedIdq&" AND RestricaoID = "&procedimentosExcecaoPadrao("RestricaoID")  & " AND (AgendamentoID = '' AND AgendamentoID IS NOT NULL)"  
 
                 set respostas = db.execute(sqlResposta)
 

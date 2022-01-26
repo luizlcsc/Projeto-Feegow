@@ -416,16 +416,16 @@ end if
             	<div class="col-md-8">
                     <div class="row">
                         <span style="font-size: 9px; width: 8px; position: absolute; left: 50px; min-width: 80px; z-index: 5;top: 5px" ><a href="http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm" target="_blank">Não sei o CEP</a></span>
-                        <%= quickField("text", "Cep", "Cep", 3, reg("cep"), "input-mask-cep", "", " autocomplete='cep' ") %>
-                        <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "", "", " autocomplete='endereco' ") %>
-                        <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "", "", "") %>
-                        <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "", "", " autocomplete='complemento' ") %>
+                        <%= quickField("text", "Cep", "Cep", 3, reg("cep"), "input-mask-cep Ipt-Cep", "", " autocomplete='cep' ") %>
+                        <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "Ipt-Endereco", "", " autocomplete='endereco' ") %>
+                        <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "Ipt-Numero", "", "") %>
+                        <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "Ipt-Complemento", "", " autocomplete='complemento' ") %>
                     </div>
                     <div class="row">
-                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "", "", " autocomplete='bairro' ") %>
-                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "", "", " autocomplete='cidade' ") %>
-                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", " autocomplete='estado-uf' ") %>
-                        <div class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
+                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "Ipt-Bairro", "", " autocomplete='bairro' ") %>
+                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "Ipt-Cidade", "", " autocomplete='cidade' ") %>
+                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "Ipt-Estado", "", " autocomplete='estado-uf' ") %>
+                        <div id="ficha_Paises" class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
 	                        <%= selectInsert("Pa&iacute;s", "Pais", reg("Pais"), "paises", "NomePais", "", "", "") %>
                         </div>
                     </div>
@@ -956,6 +956,34 @@ function liberar(Usuario , senha , id, Nometable){
         });
     }
 
+$( document ).ready(function() {
+    $(".Ipt-Cep").keyup(function(){      
+        getEndereco();
+    });
+    //var resultadoCEP = {"logradouro":"Estrada do Guanumbi","bairro":"Freguesia (Jacarepagua)","cidade":"Rio de Janeiro","uf":"RJ","cep":"22745-200","pais":1}
+    var resultadoCEP
+    function getEndereco() {        
+            //alert($(".Ipt-Cep").val());
+            var temUnder = /_/i.test($(".Ipt-Cep").val())
+            if(temUnder == false){
+                $.getScript("webservice-cep/cep.php?cep="+$(".Ipt-Cep").val(), function(){
+                   
+                    if(resultadoCEP["logradouro"]!=""){
+                        $(".Ipt-Endereco").val(unescape(resultadoCEP["logradouro"]));
+                        $(".Ipt-Bairro").val(unescape(resultadoCEP["bairro"]));
+                        $(".Ipt-Cidade").val(unescape(resultadoCEP["cidade"]));
+                        $(".Ipt-Estado").val(unescape(resultadoCEP["uf"]));
+                        if(resultadoCEP["pais"]==1){
+                            $('select[id=Pais]').html("<option value='1'>Brasil</option>").val(1).change();                           
+                        }
+                        $(".Ipt-Numero").focus();
+                    }else{
+                        $(".Ipt-Endereco").focus();
+                    }
 
+                });				
+            }			
+    }
+});
 
 </script>

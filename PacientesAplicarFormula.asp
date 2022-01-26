@@ -110,50 +110,6 @@ elseif req("Tipo")="E" then
 '	var PedidoExame = "<p><strong>"+$("#TituloPedido"+id).html()+"</strong><br /><br />";
 '	PedidoExame = PedidoExame + $("#TextoPedido"+id).html()+"</p>";
 '	$("#pedidoexame").val($("#pedidoexame").val()+PedidoExame);
-elseif req("Tipo")="Enc" then
-
-	if ref("CidId") <> "" then
-		set cidSQL = db.execute("SELECT CONCAT(Codigo,' - ',Descricao) descricao FROM cliniccentral.cid10 WHERE id="&ref("CidId"))
-	
-		Descricao = ""	
-		if not cidSQL.eof then
-			Descricao = cidSQL("Descricao")&""
-		end if
-		DescricaoCid = "<p>Cid 10: "&Descricao&"</p>"
-	else
-		DescricaoCid = "<p>Cid 10: </p>"
-	end if
-
-	set listaEncaminhamentos= db.execute("select * from encaminhamentostextos where id="&ref("id"))
-	if not listaEncaminhamentos.eof then
-		TituloEncaminhamento= listaEncaminhamentos("TituloTexto")
-		if TituloEncaminhamento <> "" then
-			Encaminhamento = "<p><strong>"&TituloEncaminhamento&"</strong><br /><br />"
-		end if
-
-		Encaminhamento = Encaminhamento &DescricaoCid&listaEncaminhamentos("conteudoTexto")&"</p>"
-		TextoFinal = Encaminhamento
-
-		PacienteID = req("PacienteID")
-		if session("Table")="profissionais" then
-			ProfissionalID = session("idInTable")
-			qAtendimentosSQL = 	" SELECT a.id                               "														&chr(13)&_
-													" FROM atendimentos AS a                    "														&chr(13)&_
-													" WHERE PacienteID="&PacienteID&" AND a.ProfissionalID="&ProfissionalID	&chr(13)&_
-													" ORDER BY a.id DESC                        "														&chr(13)&_
-													" LIMIT 1                                   "
-			SET AtendimentoSQL = db.execute(qAtendimentosSQL)
-				if not AtendimentoSQL.eof then
-					AtendimentoID = AtendimentoSQL("id")
-					TextoFinal = tagsConverte(TextoFinal,"AtendimentoID_"&AtendimentoID,"")
-				end if
-			AtendimentoSQL.close
-			set AtendimentoSQL = nothing
-		else
-			ProfissionalID=0
-		end if
-		
-	end if
 end if
 
 'CONVERTER ALGUNS BUGS DE TAGS DE PACIENTE QUE NÃO CONVERTEM

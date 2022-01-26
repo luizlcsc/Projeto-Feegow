@@ -59,7 +59,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
                 </label>
 
                 <label>
-                    <input <% if ref("ControleEspecial")<>"true" then %> checked="checked" <% end if %> onclick="window.frames['ImpressaoPrescricao'].Timbrado(this.checked);" type="checkbox" id="Timbrado" name="Timbrado" class="ace" />
+                    <input <% if ref("ControleEspecial")<>"true" then %> checked="checked" <% end if %> type="checkbox" id="Timbrado" name="Timbrado" class="ace" />
                     <span class="lbl"> Papel Timbrado</span>
                 </label>
         	<%
@@ -106,13 +106,6 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
     console.log(url);
     $("#ImpressaoPrescricao").prop("data", url);
-    <%
-    else 
-    %>
-    var timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-    var imprimeData = 0;
-    var impressaoTermica = 0;
-    var carimbo = 0;
     <%
     end if
     %>

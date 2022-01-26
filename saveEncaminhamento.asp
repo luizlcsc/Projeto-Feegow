@@ -7,8 +7,7 @@ set reg = db.execute("select * from encaminhamentos where descricao like '"&rece
 
 if reg.EOF then
     if cbool(save) then
-            db_execute("insert into encaminhamentos (pacienteid, especialidadeid, codigocid, profissionalemissorid, descricao, sysactive, UnidadeID) values ("&ref("PacienteID")&","&ref("EspecialidadeID")&",'"&ref("CidID")&"',"&session("User")&",'"&receituario&"', 1, "&session("UnidadeID")&")")
-
+            db_execute("insert into encaminhamentos (pacienteid, especialidadeid, profissionalemissorid, descricao) values ("&ref("PacienteID")&","&ref("EspecialidadeID")&","&session("User")&",'"&receituario&"')")
         set reg = db.execute("select * from encaminhamentos where PacienteID="&ref("PacienteID")&" order by id desc LIMIT 1")
     else
         EncaminhamentoId = ref("EncaminhamentoId")
@@ -23,29 +22,41 @@ end if
 		if ControleEspecial="checked" then
 			src="ControleEspecial.asp?PrescricaoID="&reg("id")
 		else
-			src="printEncaminhamento.asp?TipoEncaminhamento=Encaminhamento&PacienteID="&ref("PacienteID")&"&EncaminhamentoID="&reg("id")&"&EspecialidadeId="&ref("EspecialidadeID")
+			src="Receituario.asp?PrescricaoID="&reg("id")
 		end if
-        if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
 		%>
 
-        <object style="width:100%; height: 600px;" id="ImpressaoEncaminhamento" width="800" data="" type="text/html"></object>
+        <object style="width:100%; height: 600px;" id="ImpressaoPrescricao" width="800" data="" type="text/html"></object>
         <%
         else
         %>
-        <iframe width="100%" height="600px" src="<%=src%>" id="ImpressaoEncaminhamento" name="ImpressaoEncaminhamento" frameborder="0"></iframe>
+        <iframe width="100%" height="600px" src="<%=src%>" id="ImpressaoPrescricao" name="ImpressaoPrescricao" frameborder="0"></iframe>
         <%
         end if
         %>
         </div>
         <div class="col-md-2">
-    	    	<label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace" checked="checked" onclick="window.frames['ImpressaoEncaminhamento'].Carimbo(this.checked);" />
+    	    	<label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace" checked="checked" onclick="window.frames['ImpressaoPrescricao'].Carimbo(this.checked);" />
                 	<span class="lbl"> Carimbar</span>
                 </label>
 
                 <label>
-                    <input type="checkbox" id="Timbrado" name="Timbrado" class="ace" checked="checked" onclick="window.frames['ImpressaoEncaminhamento'].Timbrado(this.checked);" />
+                    <input <% if ref("ControleEspecial")<>"true" then %> checked="checked" <% end if %> type="checkbox" id="Timbrado" name="Timbrado" class="ace" />
                     <span class="lbl"> Papel Timbrado</span>
                 </label>
+        	<%
+			if ref("ControleEspecial")="true" then
+				%>
+    	    	<label><input type="checkbox" id="Datar" name="Datar" class="ace" checked="checked" onclick="window.frames['ImpressaoPrescricao'].Datar(this.checked);" />
+                	<span class="lbl"> Imprimir data</span>
+                </label>
+
+                <label><input type="checkbox" id="Termica" name="Termica" class="ace"  onclick="window.frames['ImpressaoPrescricao'].Vertical(this.checked);" />
+                    <span class="lbl"> Imp. Térmica</span>
+                </label>
+                <%
+			end if
+			%>
                 <hr />
             <button class="btn btn-sm btn-success btn-block" data-dismiss="modal">
                 <i class="fa fa-remove"></i>

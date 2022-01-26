@@ -164,9 +164,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 PermissaoArquivo=true
             end if
             
-            if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
-                PermissaoArquivo = true
-            end if 
+            if preen then
+                if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                    PermissaoArquivo = true
+                end if 
+            end if
 
             if not PermissaoArquivo then
     

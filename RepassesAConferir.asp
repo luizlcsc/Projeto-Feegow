@@ -59,6 +59,13 @@ end if
         <input type="hidden" name="Pers" value="1" />
         <br />
         <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title"><i class="fal fa-filter"></i> Filtrar</span>
+
+                <span class="panel-controls">
+                    <button id="BtnBuscar" class="btn btn-primary btn-buscar  "><i class="far fa-search"></i> Buscar</button>
+                </span>
+            </div>
             <div class="panel-body hidden-print">
                 <div class="row">
                     <%= quickfield("multiple", "Forma", "Convênio", 2, reqf("Forma"), "select '0' id, '   PARTICULAR' Forma UNION ALL select id, NomeConvenio from (select c.id, c.NomeConvenio from convenios c where c.sysActive=1 and c.NomeConvenio!='' and Ativo='on' order by c.NomeConvenio) t ORDER BY Forma", "Forma", " required ") %>
@@ -107,9 +114,7 @@ end if
                     end if
                     %>
                     <%= quickfield("simpleSelect", "ProcedimentoID", "Limitar procedimento", 2, reqf("ProcedimentoID"), "select distinct(concat('G', pg.id)) id, concat('&raquo; ', trim(NomeGrupo)) NomeProcedimento from procedimentosgrupos pg  WHERE sysActive=1    UNION ALL       select id, NomeProcedimento from procedimentos where ativo='on' and sysActive=1 order by NomeProcedimento limit 1000", "NomeProcedimento", "") %>
-                    <div class="col-md-2">
-                        <button id="BtnBuscar" class="btn btn-primary btn-buscar btn-block mt25"><i class="far fa-search"></i>Buscar</button>
-                    </div>
+                    
                 </div>
                <% if reqf("Forma")<>"" or reqf("AC")="1" then %>
                <hr class="short alt" />

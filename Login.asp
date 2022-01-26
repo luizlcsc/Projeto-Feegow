@@ -682,7 +682,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <input id="authtoken" type="hidden">
-        <input id="qs" type="hidden" name="qs" value="<%= clear_ref_req(URLDecode(req("qs")), True ) %>">
+        <input id="qs" type="hidden" name="qs" value="<%= clear_ref_req(URLDecode(req("qs")), 1) %>">
     </form>
 
     <!-- BEGIN: PAGE SCRIPTS -->

@@ -82,12 +82,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     if instr(Tipo, "|Arquivos|")>0 then
         sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
+
+    if instr(Tipo, "|Encaminhamentos|")>0 then
+         sqlEncaminhamentos = "union all(select 0, pe.id, '', pe.profissionalemissorid, 'Encaminhamentos', IF(pe.MemedID IS NULL, 'Encaminhamento', 'Encaminhamento Memed'), 'fa-file-archive-o', 'success', `dataHora`, pe.descricao, s.id, pe.sysactive, pe.MemedID from encaminhamentos AS pe LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pe.id AND s.tipo = 'ENCAMINHAMENTOS' LEFT JOIN especialidades esp ON esp.id=pe.especialidadeid WHERE PacienteID="&PacienteID&" AND pe.sysactive = 1) "
+    end if
                  cont=0
 
     sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
-                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
+                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos & sqlEncaminhamentos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-    'response.write(sql)
+    ' response.write(sql)
              set ti = db.execute( sql )
              while not ti.eof
                  Ano = year(ti("DataHora"))
@@ -167,6 +171,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
                 PermissaoArquivo = true
             end if 
+
+            if ti("Tipo")="AE" or ti("Tipo")="L" then
+                if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                    PermissaoArquivo = true
+                end if
+            end if
 
             if not PermissaoArquivo then
     
@@ -286,7 +296,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
 
                             ' Botões Prescrição Memed
-                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido") then
+                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido" or ti("Tipo")="Encaminhamentos") then
                                 sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
                                 set rsMemed = db.execute(sqlMemed)
                             %>
@@ -636,12 +646,17 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             <%
                             response.Write("<small>" & ti("Conteudo") & "</small>")
                         end if
-                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
+                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas", "Encaminhamentos"
                             if ti("MemedID")<>"" then
+                                if ti("Tipo") = "Encaminhamentos" then
+                                    tipoMemed = "encaminhamento"
+                                else
+                                    tipoMemed = "prescricao"
+                                end if
                                 sqlPrescricaoMemed = "SELECT pm.tipo, pm.nome, pm.descricao, pm.posologia, pm.quantidade, pm.unit, pm.composicao " &_
                                                      "FROM memedv2_prescricoes p " &_
                                                      "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
-                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'prescricao'"
+                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo ='"&tipoMemed&"'"
                                 set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
                                 memedCount = 1
                                 %>

@@ -222,6 +222,17 @@ function Carimbo(checked){
 	}
 }
 
+
+function Timbrado(checked){
+    if(checked==true){
+        $('.cabecalho').css("display",'');
+        $('.rodape').css("display",'');
+    }else{
+        $('.cabecalho').css("display",'none');
+        $('.rodape').css("display",'none');
+    }
+}
+
 function TimbradoAtestado(checked){
 	if(checked==true){
 		document.getElementById('footer').style.display='block';
@@ -230,6 +241,7 @@ function TimbradoAtestado(checked){
 		document.getElementById('footer').style.display='none';
         document.getElementById('CabecalhoTimbrado').style.display='none';
 	}
+
 }
 </script>
 <table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0">

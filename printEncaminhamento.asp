@@ -50,85 +50,122 @@ end if
 
 TipoEncaminhamento = req("TipoEncaminhamento")
 EncaminhamentoID = req("EncaminhamentoID")
+EspecialidadeID = req("EspecialidadeID")
 
-set getImpressos = db.execute("select * from encaminhamentosmodelos WHERE Tipo like '|"&TipoEncaminhamento&"|' ORDER BY id DESC")
-if not getImpressos.EOF then
-    ConteudoEncaminhamento = replaceTags(getImpressos("Conteudo")&"", req("PacienteID"), session("User"), session("UnidadeID"))
-    PapelTimbradoID = getImpressos("PapelTimbradoID")
-    set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND pt.id="&PapelTimbradoID)
-    if not timb.eof then
-        Cabecalho = timb("Cabecalho")
-        Margens = "padding-left:"&timb("mLeft")&"px;padding-top:"&timb("mTop")&"px;padding-bottom:"&timb("mBottom")&"px;padding-right:"&timb("mRight")&"px;"
-        Cabecalho = replaceTags(timb("Cabecalho"), 0, session("UserID"), session("UnidadeID"))
-        Rodape = replaceTags(timb("Rodape"), 0, session("UserID"), session("UnidadeID"))
+        set getImpressos = db.execute("select * from Impressos")
+        if not getImpressos.EOF then
+            Cabecalho = getImpressos("Cabecalho")
+            Rodape = getImpressos("Rodape")
+            Atestados = getImpressos("Atestados")
+            Unidade = session("UnidadeID")
+            set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND (pt.profissionais like '%|ALL|%' OR pt.profissionais like '%|"&session("idInTable")&"|%')  AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
+            if not timb.eof then
+                Cabecalho = timb("Cabecalho")
+                Margens = "padding-left:"&timb("mLeft")&"px;padding-top:"&timb("mTop")&"px;padding-bottom:"&timb("mBottom")&"px;padding-right:"&timb("mRight")&"px;"
+                if session("Banco") = "clinic1805" or session("Banco") = "clinic100000" or session("Banco") = "clinic2410" or session("Banco") = "clinic5445" or session("Banco") = "clinic6017" or session("Banco") = "clinic5873" or session("Banco") = "clinic5958" or session("Banco") = "clinic6081" then
+                'if timb("MarcaDagua")<>"" or not isnull(timb("MarcaDagua"))  then
+                    MarcaDagua = "background-image: url('https://clinic.feegow.com.br/uploads/"&replace(session("Banco"), "clinic", "")&"/Arquivos/"&timb("MarcaDagua")&"')"
+                end if
+                   Cabecalho = timb("Cabecalho")
+                   Rodape = timb("Rodape")
 
-        if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
-        if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
-        if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
-        if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
+                    if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
+                    if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
+                    if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
+                    if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
 
-    end if
-end if
+            end if
+            if lcase(session("table"))="profissionais" then
+                set timb = db.execute("select pt.*, ff.`font-family` from papeltimbrado pt LEFT JOIN cliniccentral.`font-family` ff ON ff.id=pt.`font-family` where pt.sysActive=1 AND pt.profissionais like '%|"&session("idInTable")&"|%'  AND (UnidadeId = '' OR UnidadeID is null OR UnidadeID like '%|ALL|%' OR UnidadeID like '%|"&Unidade&"|%') ORDER BY IF(UnidadeID LIKE '%|ALL|%',1,0)")
+                if not timb.eof then
+                   Cabecalho = timb("Cabecalho")
+                   Rodape = timb("Rodape")
+
+                    if not isnull(timb("font-family")) then fontFamily = "font-family: "& timb("font-family") &"!important; " end if
+                    if not isnull(timb("font-size")) then fontSize = "font-size: "& timb("font-size") &"px!important; " end if
+                    if not isnull(timb("color")) then fontColor = "color: "& timb("color") &"!important; " end if
+                    if not isnull(timb("line-height")) then lineHeight = "line-height: "& timb("line-height") &"px!important; " end if
+
+                end if
+            end if
+        end if
 
 '-----> Substituindo as tags do conteudo
-set getEncaminhamento = db.execute("select * from protocolosencaminhamentos where sysActive=1 AND id="&EncaminhamentoID)
-if not getEncaminhamento.eof then
-    Motivo = getEncaminhamento("Motivo")&""
-    Obs = getEncaminhamento("Obs")&""
-    FormID = getEncaminhamento("FormID")
-    ProfissionalID = getEncaminhamento("ProfissionalID")
-    EspecialidadeID = getEncaminhamento("EspecialidadeID")
-    LicencaID = getEncaminhamento("LicencaID")
-    ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Motivo]", Motivo)
-    ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Obs]", Obs)
+if EspecialidadeID = "" then
+    set getEncaminhamento = db.execute("select * from protocolosencaminhamentos where sysActive=1 AND id="&EncaminhamentoID)
+    if not getEncaminhamento.eof then
+        Motivo = getEncaminhamento("Motivo")&""
+        Obs = getEncaminhamento("Obs")&""
+        FormID = getEncaminhamento("FormID")
+        ProfissionalID = getEncaminhamento("ProfissionalID")
+        EspecialidadeID = getEncaminhamento("EspecialidadeID")
+        LicencaID = getEncaminhamento("LicencaID")
+        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Motivo]", Motivo)
+        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Obs]", Obs)
 
-    if EspecialidadeID<>0 then
-        set getEspecialidadeEncaminhada = db.execute("SELECT COALESCE(especialidade, nomeEspecialidade) especialidade FROM cliniccentral.especialidades_correcao WHERE id="&EspecialidadeID)
-        if not getEspecialidadeEncaminhada.eof then
-            NomeEspecialidade = "Especialidade: "&getEspecialidadeEncaminhada("especialidade")
-        end if
-    end if
-
-    if LicencaID<>0 then
-        set getProfissionalEncaminhado = db.execute("SELECT NomeProfissional FROM clinic"&LicencaID&".profissionais WHERE id="&ProfissionalID)
-        if not getProfissionalEncaminhado.eof then
-            NomeProfissional = "<br>Profissional: " & getProfissionalEncaminhado("NomeProfissional")
-        end if
-        set getDadosEmpresa = db.execute("SELECT Endereco, Cep, Numero, Complemento, Bairro, Tel1 FROM clinic"&LicencaID&".empresa WHERE id=1")
-        if not getDadosEmpresa.eof then
-            if getDadosEmpresa("Endereco")&""<>"" then
-                Endereco = "<br>Endereço: "& getDadosEmpresa("Endereco")  &" "& getDadosEmpresa("Numero")  &" "& getDadosEmpresa("Complemento")  &" "& getDadosEmpresa("Bairro")  &" -  "&  getDadosEmpresa("Cep")
-            end if
-            if getDadosEmpresa("Tel1")&""<>"" then
-                TelefoneContato = "<br>Telefone: "&getDadosEmpresa("Tel1")
+        if EspecialidadeID<>0 then
+            set getEspecialidadeEncaminhada = db.execute("SELECT COALESCE(especialidade, nomeEspecialidade) especialidade FROM cliniccentral.especialidades_correcao WHERE id="&EspecialidadeID)
+            if not getEspecialidadeEncaminhada.eof then
+                NomeEspecialidade = "Especialidade: "&getEspecialidadeEncaminhada("especialidade")
             end if
         end if
-        TextoEncaminhamento = NomeEspecialidade & NomeProfissional & TelefoneContato & Endereco
-        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Encaminhado]", TextoEncaminhamento)
 
+        if LicencaID<>0 then
+            set getProfissionalEncaminhado = db.execute("SELECT NomeProfissional FROM clinic"&LicencaID&".profissionais WHERE id="&ProfissionalID)
+            if not getProfissionalEncaminhado.eof then
+                NomeProfissional = "<br>Profissional: " & getProfissionalEncaminhado("NomeProfissional")
+            end if
+            set getDadosEmpresa = db.execute("SELECT Endereco, Cep, Numero, Complemento, Bairro, Tel1 FROM clinic"&LicencaID&".empresa WHERE id=1")
+            if not getDadosEmpresa.eof then
+                if getDadosEmpresa("Endereco")&""<>"" then
+                    Endereco = "<br>Endereço: "& getDadosEmpresa("Endereco")  &" "& getDadosEmpresa("Numero")  &" "& getDadosEmpresa("Complemento")  &" "& getDadosEmpresa("Bairro")  &" -  "&  getDadosEmpresa("Cep")
+                end if
+                if getDadosEmpresa("Tel1")&""<>"" then
+                    TelefoneContato = "<br>Telefone: "&getDadosEmpresa("Tel1")
+                end if
+            end if
+            TextoEncaminhamento = NomeEspecialidade & NomeProfissional & TelefoneContato & Endereco
+            ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Encaminhado]", TextoEncaminhamento)
+
+        end if
+        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Encaminhado]", NomeEspecialidade)
+
+
+
+        set getDiagnostico = db.execute("select pc.id, GROUP_CONCAT(CONCAT(t.CID10_Cd1, ' - ' , t.termo) SEPARATOR '<br>') Diagnosticos from pacientesciap pc "&_
+                                        "LEFT JOIN buicamposforms cf ON cf.id=pc.CampoID "&_
+                                        "LEFT JOIN cliniccentral.tesauro t ON t.id=pc.CiapID "&_
+                                        "WHERE cf.Estruturacao like '%|Diagnóstico|%' AND pc.FormID="&FormID)
+        if not getDiagnostico.eof then
+            Diagnosticos = getDiagnostico("Diagnosticos")&""
+            ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Paciente.ProntuarioDiagnosticos]", Diagnosticos)
+            ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Paciente.ProntuarioDiagnosticoAtual]", Diagnosticos)
+        end if
+
+        set getPrescricoes = db.execute("SELECT GROUP_CONCAT(med.NomeMedicamento SEPARATOR '<br>') Medicamentos FROM memed_prescricoes pp "&_
+                                        "LEFT JOIN cliniccentral.medicamentos2 med ON med.id=pp.MedicamentoID "&_
+                                        "WHERE sysActive=1 AND FormID="&FormID)
+        if not getPrescricoes.eof then
+            Prescricoes = getPrescricoes("Medicamentos")&""
+            ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Paciente.ProntuarioPrescricoes]", Prescricoes)
+        end if
     end if
-    ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Encaminhado]", NomeEspecialidade)
+else
+set getEncaminhamento = db.execute("select id, pacienteid, especialidadeid, profissionalemissorid, codigocid, atendimentoid, descricao, datahora from encaminhamentos where id="&EncaminhamentoID)
+    if not getEncaminhamento.eof then
+        ConteudoEncaminhamento = getEncaminhamento("descricao")&""
+        ProfissionalID = getEncaminhamento("profissionalemissorid")
+        EspecialidadeID = getEncaminhamento("especialidadeid")
 
+        if EspecialidadeID<>0 then
+            set getEspecialidadeEncaminhada = db.execute("SELECT COALESCE(especialidade, nomeEspecialidade) especialidade FROM especialidades WHERE id="&EspecialidadeID)
+            if not getEspecialidadeEncaminhada.eof then
+                NomeEspecialidade = "especialidade: "&getEspecialidadeEncaminhada("especialidade")
+            end if
+        end if
 
-
-    set getDiagnostico = db.execute("select pc.id, GROUP_CONCAT(CONCAT(t.CID10_Cd1, ' - ' , t.termo) SEPARATOR '<br>') Diagnosticos from pacientesciap pc "&_
-                                    "LEFT JOIN buicamposforms cf ON cf.id=pc.CampoID "&_
-                                    "LEFT JOIN cliniccentral.tesauro t ON t.id=pc.CiapID "&_
-                                    "WHERE cf.Estruturacao like '%|Diagnóstico|%' AND pc.FormID="&FormID)
-    if not getDiagnostico.eof then
-        Diagnosticos = getDiagnostico("Diagnosticos")&""
-        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Paciente.ProntuarioDiagnosticos]", Diagnosticos)
-        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Paciente.ProntuarioDiagnosticoAtual]", Diagnosticos)
+        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Encaminhamento.Especialidade]", NomeEspecialidade)
     end if
-
-    set getPrescricoes = db.execute("SELECT GROUP_CONCAT(med.NomeMedicamento SEPARATOR '<br>') Medicamentos FROM memed_prescricoes pp "&_
-                                    "LEFT JOIN cliniccentral.medicamentos2 med ON med.id=pp.MedicamentoID "&_
-                                    "WHERE sysActive=1 AND FormID="&FormID)
-    if not getPrescricoes.eof then
-        Prescricoes = getPrescricoes("Medicamentos")&""
-        ConteudoEncaminhamento = replace(ConteudoEncaminhamento, "[Paciente.ProntuarioPrescricoes]", Prescricoes)
-    end if
-
 end if
 
 %>
@@ -211,6 +248,16 @@ function Carimbo(checked){
 		document.getElementById('Carimbo').style.display='block';
 	}else{
 		document.getElementById('Carimbo').style.display='none';
+	}
+}
+
+function Timbrado(checked){
+	if(checked==true){
+		$('.cabecalho').css("display",'');
+		$('.rodape').css("display",'');
+	}else{
+		$('.cabecalho').css("display",'none');
+		$('.rodape').css("display",'none');
 	}
 }
 </script>

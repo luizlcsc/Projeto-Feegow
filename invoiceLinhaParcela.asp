@@ -168,6 +168,9 @@ function geraBoleto(ParcelaID, type = 'default') {
         %>
     </td>
     <% 
+        sqlVerificaInvoice = "SELECT id FROM sys_financialinvoices WHERE id = '" & req("I") & "'"
+        set rsVerificaInvoice = db.execute(sqlVerificaInvoice)
+
         sqlDataPrev = "SELECT tl.dataprevisao FROM itensinvoice ii " &_
                       "INNER JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID = ii.id " &_
                       "INNER JOIN tissguiasadt tgs ON tgs.id = tgi.GuiaID " &_
@@ -175,11 +178,19 @@ function geraBoleto(ParcelaID, type = 'default') {
                       "WHERE ii.InvoiceID = '" & req("I") & "' LIMIT 1 "
         set rsDataPrev = db.execute(sqlDataPrev)
 
-        if rsDataPrev.eof then
-            dataprev = ParcelaData
+        if rsVerificaInvoice.eof then
+            if rsDataPrev.eof then
+                dataprev = ParcelaData
+            else
+                dataprev = rsDataPrev("dataprevisao")
+            end if   
         else
-            dataprev = rsDataPrev("dataprevisao")
+            dataprev = ParcelaData
         end if
+
+        rsVerificaInvoice.close
+        set rsVerificaInvoice = Nothing
+        
         %>
     <td><%=quickField("datepicker", "Date"&ParcelaID, "", 3, dataprev, " text-right disable", "", " required"&primParc)%></td>
     <td><%=quickField("text", "Name"&ParcelaID, "", 3, Name, " text-right disable ", "", "  placeholder='Opcional'  "&primParc)%></td>
@@ -199,3 +210,24 @@ function geraBoleto(ParcelaID, type = 'default') {
     <a class="btn btn-xs btn-info hidden" href="#modal-table" role="button" data-toggle="modal" onclick="modalPaymentDetails('<%=ParcelaID%>');"><i class="far fa-search-plus"></i></a>
     <td class="hidden"><button type="button" class="btn btn-xs btn-danger" onClick="parcelas('<%=ParcelaID%>', 'X', '<%=ParcelaID%>')"><i class="far fa-remove"></i></button></td>
 </tr>
+<%
+
+'verificar se a página que requisitou o formulário tem 'tissbuscaguias' (Veio de LOTE)
+if InStr(Request.ServerVariables ("HTTP_REFERER"),"tissbuscaguias") > 0 then
+    if getConfig("permitirAlterarDataVencimento") <> 1 then %>
+        <script>     
+            alert("<%=InStr(Request.ServerVariables ("HTTP_REFERER"),"tissbuscaguias")%>")  ;
+            
+            $("#Date<%=ParcelaID%>").css({"color":"rgb(184,184,184)", "pointer-events":"none"});  //Desativar click DATAPICKER
+            $("span#iconeCalendar").hide(); // Esconder o ícone datapicker
+        </script>
+    <%
+    else%>
+        <script>
+            $("#Date<%=ParcelaID%>").css({"color": "rgb(85, 85, 85)", "pointer-events":""});              
+            $("span#iconeCalendar").show();
+        </script>
+    <%end if 
+end if
+    %>
+

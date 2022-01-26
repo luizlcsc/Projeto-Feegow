@@ -1429,7 +1429,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 %>
                 <input id="<%= fieldName %>" class="form-control <%=sqlOrClass%>" type="date" value="<%= mydate(fieldValue) %>" name="<%= fieldName %>" data-date-format="dd/MM/yyyy"<%=additionalTags%>>
             <%end if %>
-            <span class="input-group-addon<%if instr(sqlOrClass, "input-sm")>0 then%> input-sm<%end if%>">
+            <span id="iconeCalendar" class="input-group-addon<%if instr(sqlOrClass, "input-sm")>0 then%> input-sm<%end if%>">
             <i class="far fa-calendar bigger-110"></i>
             </span>
             </div>

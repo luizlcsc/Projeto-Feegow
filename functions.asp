@@ -7,13 +7,18 @@ Function strip_tags(text_to_strip)
 End Function
 
 function clear_ref_req (val, removeQuotes)
+        '1- remove all
+        '2- escape
+        '3- keep 
+
         tentativa = false
     
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
-        if removeQuotes then
+        if removeQuotes=1 then
             val = replace(val, """", "")
-        else
+        elseif removeQuotes=2 then
+            val = replace(val, "\""", """")
             val = replace(val, """", "\""")
         end if
         val = replace(val,"<script>", "")
@@ -32,22 +37,22 @@ function ref(ColVal)
     val = request.Form(ColVal)
     val = strip_tags(val)
 
-    ref = clear_ref_req(val, False)
+    ref = clear_ref_req(val, 2)
 end function
 
 function refHTML(ColVal)
     val = request.Form(ColVal)
-    refHTML = clear_ref_req(val, False)
+    refHTML = clear_ref_req(val, 3)
 end function
 
 function req(ColVal)
     val = request.QueryString(ColVal)
     val = strip_tags(val)
-    req = clear_ref_req(val, True)
+    req = clear_ref_req(val, 1)
 end function
 
 function reqHTML(ColVal)
-    reqHTML = clear_ref_req(request.QueryString(ColVal), False)
+    reqHTML = clear_ref_req(request.QueryString(ColVal), 3)
 end function
 
 function refNull(ColVal)

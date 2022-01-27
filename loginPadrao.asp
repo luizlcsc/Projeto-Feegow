@@ -698,7 +698,7 @@ else
         set tentativasLogin = dbc.execute("SELECT COUNT(ll.id)>="&MaximoTentativasLogin&" AS Bloquear FROM licencaslogins ll WHERE (email='"&User&"' or UserID="&UserID&") AND DATE(dataHora)=CURDATE()")
 
         if tentativasLogin("Bloquear") then
-            dbc.execute("INSERT INTO login_desafio (UsuarioID,Email,IP) VALUES ("&treatvalnull(logErrorLicenseId)&", '"&User&"', '"&IP&"')")
+            dbc.execute("INSERT INTO login_desafio (UsuarioID,Email,IP) VALUES ("&treatvalnull(UserID)&", '"&User&"', '"&IP&"')")
 
             SolicitaDesafio = True
             'cookie; variavel post; post check

@@ -1,12 +1,14 @@
 <%
 Function strip_tags(text_to_strip)
     Set Regex = New RegExp
-    Regex.Pattern = "<(.|\n)+?>"
+    Regex.Pattern = "<(.|\n)/?>"
     Regex.Global = True
     strip_tags = Regex.Replace(Trim(text_to_strip),"")
+    strip_tags = replace(strip_tags, "<", "")
+    strip_tags = replace(strip_tags, ">", "")
 End Function
 
-function clear_ref_req (val, removeQuotes)
+function clear_ref_req (val, escapeQuotes)
         '1- remove all
         '2- escape
         '3- keep 
@@ -15,12 +17,6 @@ function clear_ref_req (val, removeQuotes)
     
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
-        if removeQuotes=1 then
-            val = replace(val, """", "")
-        elseif removeQuotes=2 then
-            val = replace(val, "\""", """")
-            val = replace(val, """", "\""")
-        end if
         val = replace(val,"<script>", "")
         val = replace(val,"</script>", "")
         ' val = replace(val,"&lt;", "")
@@ -29,7 +25,13 @@ function clear_ref_req (val, removeQuotes)
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
         val = replace(val,"&#x7c;", "")
-        
+
+        'if escapeQuotes=1 then
+        '    val = replace(val, """", "")
+        'elseif escapeQuotes=2 or escapeQuotes=3 then
+        'end if
+        val = replace(val, """", "&quot;")
+
         clear_ref_req = val
 end function 
 

@@ -681,7 +681,7 @@ if not tryLogin.EOF then
 else
     set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&User &"' LIMIT 1")
     SolicitaDesafio = False
-    MaximoTentativasLogin=2
+    MaximoTentativasLogin=4
     UserID = 0
 
     if not licenca.eof then

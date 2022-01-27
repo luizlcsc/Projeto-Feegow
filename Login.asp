@@ -49,6 +49,7 @@ end if
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
 
     <script src="js/components.js?a=2"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="/docs/4.0/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
@@ -309,7 +310,8 @@ end if
             }
 
             .botao:disabled {
-
+                opacity: 0.5;
+                cursor: not-allowed;
             }
 
             .botao {
@@ -336,7 +338,7 @@ end if
             }
 
             .botao:hover {
-              color: white;
+                color: white;
                 background: rgba(9,197,210,1);
                 letter-spacing: 0.4px;
             }
@@ -892,5 +894,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
 
         });
+
+        
+        var captchaToken = null;
+
+        function recaptchaSuccess(token){
+            $("#Entrar").attr("disabled",false);
+        }
     </script>
 </body>

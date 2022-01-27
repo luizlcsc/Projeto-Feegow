@@ -1,7 +1,7 @@
 <%
 Function strip_tags(text_to_strip)
     Set Regex = New RegExp
-    Regex.Pattern = "<(.|\n)/?>"
+    Regex.Pattern = "<(.|\n)+?>"
     Regex.Global = True
     strip_tags = Regex.Replace(Trim(text_to_strip),"")
     strip_tags = replace(strip_tags, "<", "")

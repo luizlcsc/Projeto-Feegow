@@ -10,6 +10,7 @@
     <meta name="author" content="Feegow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex">
+    <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
 
     <!-- Font CSS (Via CDN) -->
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700'>
@@ -35,16 +36,146 @@
    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
    <![endif]-->
    <style type="text/css">
-       body.external-page #main{
-               background: linear-gradient(
-           52deg, #00b4fc, #17df93, #00b4fc, #17df93);
-               background-size: 800% 800%;
-               -webkit-animation: AnimationName 180s ease infinite;
-               -moz-animation: AnimationName 190s ease infinite;
-               animation: AnimationName 180s ease infinite;
-           }
+    .cta-entrar a{
+            color: #052B3B!important;
+            text-align: center;
+            border-radius: 10px;
+            font-size: 13px;
+            }
+            .cta-entrar a i{
+            font-size: 11px;
+            color: #17DF93;
+            }
+            body.external-page #content .panel {
+            box-shadow:
+                0px 3.2px 3.1px rgba(0, 0, 0, 0.008),
+                0px 7.6px 7.5px rgba(0, 0, 0, 0.012),
+                0px 14.3px 14.1px rgba(0, 0, 0, 0.015),
+                0px 25.5px 25.2px rgba(0, 0, 0, 0.018),
+                0px 47.6px 47.2px rgba(0, 0, 0, 0.022),
+                0px 114px 113px rgba(0, 0, 0, 0.03);
+                border-radius: 20px;
+            }
+            body.external-page #content .panel-heading {
+            padding: 50px 70px 20px 70px!important;
+            }
+            body.external-page #main{
+            background-color: #f5f5f5!important;
+            background-image: url(https://www.feegowclinic.com.br/wp-content/uploads/2021/10/bg-materiais.jpg)!important;
+            background-size: cover!important;
+            background-position: center center!important;
+            }
+            #content {
+            padding: 40px 0px 0px 20px;
+            }
+            .mb15 {
+            margin-bottom: 20px !important;
+            }
+            .admin-form .panel-footer {
+                padding: 16px 13px;
+                border: 0;
+                border-top: 1px solid #f5f5f5;
+                background: #f5f5f5;
+                border-radius: 0 0 20px 20px;
+                padding: 20px 70px 20px 0!important;
+            }
+            .cta-iniciar-teste{
+            padding: 12px 30px;
+            border-radius: 10px;
+            background-color: #052B3B!important;
+            color: #fff!important;
+            font-family: 'Open Sans', sans-serif!important;
+            font-size: 14px!important;
+            width: 160px;
+            transition: all 0.2s;
+            }
+            .cta-iniciar-teste:hover{
+            background-color: transparent!important;
+            color: #17DF93!important;
+            border: solid 1px #052B3B!important;
+            }
+            .admin-form .panel-info.heading-border:before, .admin-form .panel-info .heading-border:before {
+            background-image: linear-gradient( 
+            90deg, #17DF93 0%, #00B4FC 40%);
+            }
+            .pre-titulo-form{
+                color: #052B3B;font-size: 28px;font-weight: 400;font-family: 'Open Sans', sans-serif!important;
+                display: block;    
+                padding:0!important;
+                margin: 0!important;
+                line-height: normal!important;
+            }
+            .titulo-form{
+                color: #052B3B;font-size: 38px;font-weight: 500;font-family: 'Open Sans', sans-serif!important;
+                display: block;    
+                padding:0 0 20px 0!important;
+                margin: 0!important;
+                line-height: 0.8!important;
+            }
+            .titulo-form span{
+            font-weight: 300;font-family: 'Open Sans', sans-serif!important;
+            font-weight: 700;
+            color: #17DF93;
+            
+            }
+            .texto-form{
+            font-family: 'Open Sans',sans-serif!important;
+            line-height: 1.6em;
+            color: #052B3B!important;
+            font-weight: 300;
+            font-size: 15px;
+            }
+            .texto-form span{
+            font-family: 'Open Sans', sans-serif!important;
+            font-weight: 700;
+            }
+            .bg-light {
+            background-color: #ffffff;
+            color: #313131;
+            }
+            .p30 {
+            padding: 0 70px 30px 70px !important;
+            }
+            .admin-form .heading-border:before {
+            height: 5px!important;
+            }
+            .admin-form .gui-input {
+            height: 40px !important;
+            font-size: 13px !important;
+            border-radius: 10px;
+            background: #eaf0f7;
+            }
+            .admin-form .panel-heading {
+            overflow: hidden;
+            position: relative;
+            height: auto;
+            border-radius: 0;
+            border:0;
+            background-color: #ffffff;
+            }
+        body, .admin-form .panel-heading, .admin-form .panel-heading{
+            color: #052B3B;
+        }
+        .admin-form .append-icon .field-icon i, .admin-form .prepend-icon .field-icon i {
+            bottom: 3px;   
+        }
+
+        .admin-form .prepend-icon > input{
+            border-radius: 8px;
+        }
+   
+
+       body.external-page #content .panel{
+            box-shadow: 0 3px 18px rgb(0 0 0 / 10%);
+            border-radius: 20px;
        }
 
+
+       body.external-page #main{
+               background: #fff;
+           }
+       }
+       
         @font-face {
              font-family: rubidBold;
              src: url('assets/recurso-indisponivel/Fonte/Rubik-Bold.ttf');
@@ -52,6 +183,26 @@
         @font-face {
              font-family: rubid;
              src: url('assets/recurso-indisponivel/Fonte/Rubik-Regular.ttf');
+        }
+        @media screen and (max-width: 994px) {
+            body {
+            background-color: #ffffff;
+                background-image: none;
+            }
+
+            .content-login {
+                box-shadow: none!important;
+                border-radius: 0!important;
+            }
+
+            .formloginCol1{
+                padding: 10px!important;
+                padding-top: 20px!important;
+            }
+
+            .copyright{
+                display: none;
+            }
         }
 
        .top-text *{
@@ -79,7 +230,7 @@
 
                 <div class="admin-form theme-info" id="login1" style="margin-top: 0">
 
-                    <div class="row mb15 table-layout">
+                    <div class="row mb10 table-layout">
 
                         <div class="col-xs-6 va-m pln">
                             <a href="./?P=Login" title="Logo">
@@ -87,7 +238,7 @@
 										if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
 											if req("Partner")="" then
                                 %>
-                                <img src="assets/img/logo_white.png" border="0">
+                                <img src="assets/img/login_logo.svg" border="0" style="width: 150px">
                                 <%
 											else
                                 %>
@@ -102,68 +253,81 @@
                         </div>
 
                         <div class="col-xs-6 text-right va-b pr5">
-                            <div class="login-links">
-                                <a href="./?P=Login" class="active" title="Entrar">Entrar</a>
+                            <div class="login-links cta-entrar">
+                                <a href="./?P=Login" class="active" title="Entrar"><i class="far fa-user" aria-hidden="true"></i> entrar</a>
                             </div>
                         </div>
                     </div>
 
                     <div class="panel panel-info br-n">
-                        <div class="panel-heading p10 heading-border  top-text">
+                        <div class="panel-heading heading-border p10 pb10 top-text">
 
-                            <div style="margin: 30px 50px">
+                            <div style="">
                                 <div>
-                                    <span style="color: #00b4fc;font-size: 42px; font-family: rubidBold">Versão FREE</span>&nbsp;
-                                    <span style="color: #CCCCCC;font-size: 22px; font-family: rubidBold">Software Feegow clinic</span>
+                                    <h2 class="pre-titulo-form">Bem-vindo à <br></h2>
+                                    <h1 class="titulo-form">gestão clínica do <span>futuro</span>!</h1>
                                 </div>
-                                <div>
-                                    <strong style="color: #666666;font-size: 22px; font-family: rubidBold">Olá! ;)</strong>
-
-                                </div>
-                                <div style="line-height: initial; text-align: justify; font-size: 14px;color: #666666">
-                                    Você está prestes a ter acesso a versão <strong> free </strong> do software de gestão clínica mais amigável e completo do mercado.
-                                    <br/><br/>
-                                    Durante os primeiros 7 dias você terá disponível a versão na íntegra e poderá solicitar uma apresentação do nosso time.
-                                    Quando o prazo do trial expirar, você terá somente o acesso à versão que permite o uso da agenda diária e semanal,
-                                    além de utilização do prontuário, onde é posssível incluir anamneses e evoluções do paciente.
-
-                                    <br/><br/>
-                                    <strong>Insira os seus melhores canais de contato,</strong> pois a licença será ativada pelo telefone, ok?
-                                    <br/><br/>
-                                    Entendemos que para um melhor aproveitamento da fase de teste, a apresentação é necessária.
-                                    <br/><br/>
-                                    <span style="color:#00b4fc;font-size: 18px; font-family: 'Arial Black'"><strong>Está pronto para ter a melhor experiência em software clínico?</strong></span>
+                                <div style="line-height: initial; text-align: justify; font-size: 14px;">
+                                    Faça o teste gratuito do software de gestão mais completo do mercado por <strong>7 dias</strong>. 
+                                    <br> Após esse período, você tem <strong>acesso automático ao Feegow Free</strong>.
                                 </div>
                             </div>
 
 <!--                            <span class="text-primary"><i class="far fa-stethoscope"></i>-->
 <!--                                                        Teste agora o Feegow Clinic!</span>-->
                         </div>
+                        <%
+                        ShortVersion = Request.QueryString("short")="1"
+                        Cupom = req("Cupom")
+
+                        if Cupom = "" then
+                            Cupom = Request.QueryString("source")
+                        end if
+                        
+
+                        if ShortVersion then    
+                        %>
+<style>
+    .secondary-field{
+        display: none;
+    }
+</style>
+                        <%
+                        end if
+                        %>
                         <form method="post" autocomplete="off" id="trial" action="">
-                            <div class="panel-body bg-light p30">
+                            <div class="panel-body p30 pt10" style="">
                                 <% IF req("T") = "FULL" THEN %>
                                     <input type="hidden" name="Teste" value="FULL">
                                 <% ELSE %>
                                     <input type="hidden" name="Teste" value="FREE">
                                 <% END IF %>
-                                <div class="row">
+                                <div class="row mt20">
                                                 <div class="col-md-12">
                                                     <div style="color:red" id="alert_submit">
 
 													</div>
 
-                                                    <div class="row mt10">
+                                                    <div class="row">
 
-                                                        <div class="col-md-12">
+                                                        <div class="col-md-6">
                                                             <label for="NomeContato" class="field prepend-icon">
-                                                              <input type="text" name="NomeContato" id="NomeContato" class="gui-input" placeholder="Nome completo..." required autofocus>
+                                                              <input type="text" name="NomeContato" id="NomeContato" class="gui-input" placeholder="Nome completo" required autofocus>
                                                               <label for="NomeContato" class="field-icon">
                                                                 <i class="far fa-user"></i>
                                                               </label>
                                                             </label>
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <label for="Email" class="field prepend-icon">
+                                                                <input type="text" name="Email" id="Email" class="gui-input" placeholder="E-mail" required>
+                                                                <label for="Email" class="field-icon">
+                                                                <i class="far fa-envelope"></i>
+                                                                </label>
+                                                            </label>
+                                                        </div>
                                                     </div>
-                                                    <div class="row mt20">
+                                                    <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="Telefone" class="field prepend-icon">
                                                                 <input type="text" name="Telefone" id="Telefone" class="gui-input input-mask-phone" placeholder="Telefone...">
@@ -174,28 +338,18 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="Celular" class="field prepend-icon">
-                                                                <input type="text" name="Celular" id="Celular" class="gui-input input-mask-phone" placeholder="Celular..." required>
+                                                                <input type="text" name="Celular" id="Celular" class="gui-input input-mask-phone" placeholder="Celular...">
                                                                 <label for="Celular" class="field-icon">
                                                                 <i class="far fa-mobile-phone"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div class="row mt20">
-                                                        <div class="col-md-12">
-                                                                    <label for="Email" class="field prepend-icon">
-                                                                      <input type="text" name="Email" id="Email" class="gui-input" placeholder="E-mail..." required>
-                                                                      <label for="Email" class="field-icon">
-                                                                        <i class="far fa-envelope"></i>
-                                                                      </label>
-                                                                    </label>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="row mt20">
+                                                    <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="Cupom" class="field prepend-icon">
-                                                                <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=req("Cupom")%>">
+                                                                <input type="text" name="Cupom" id="Cupom" class="gui-input" placeholder="Cupom desconto, caso possua..." value="<%=Cupom%>">
                                                                 <label for="Cupom" class="field-icon">
                                                                 <i class="far fa-ticket"></i>
                                                                 </label>
@@ -203,7 +357,7 @@
 
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <select name="ComoConheceu" class="gui-input" required>
+                                                            <select name="ComoConheceu" class="gui-input">
                                                                 <option value="">Como nos Conheceu?</option>
                                                                 <option>Hospitalar</option>
                                                                 <option value="Evento">Evento / Congresso</option>
@@ -214,10 +368,10 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="row mt20">
+                                                    <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="NomeEmpresa" class="field prepend-icon">
-                                                                <input type="text" required name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
+                                                                <input type="text" name="NomeEmpresa" id="NomeEmpresa" class="gui-input" placeholder="Nome da Clínica" >
                                                                 <label for="NomeEmpresa" class="field-icon">
                                                                 <i class="far fa-hospital-o"></i>
                                                                 </label>
@@ -225,17 +379,17 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="UsuariosPretendidos" class="field prepend-icon">
-                                                                <input type="text" required name="UsuariosPretendidos" id="UsuariosPretendidos" class="gui-input" placeholder="Quantidade de Profissionais da Clínica" >
+                                                                <input type="text" name="UsuariosPretendidos" id="UsuariosPretendidos" class="gui-input" placeholder="Quantidade de Profissionais da Clínica" >
                                                                 <label for="UsuariosPretendidos" class="field-icon">
                                                                 <i class="far fa-group"></i>
                                                                 </label>
                                                             </label>
                                                         </div>
                                                     </div>
-                                                    <div class="row mt20">
+                                                    <div class="row mt20 secondary-field">
                                                         <div class="col-md-6">
                                                             <label for="Cargo" class="field prepend-icon">
-                                                                <input type="text" required name="Cargo" id="Cargo" class="gui-input" placeholder="Cargo" >
+                                                                <input type="text" name="Cargo" id="Cargo" class="gui-input" placeholder="Cargo" >
                                                                 <label for="Cargo" class="field-icon">
                                                                 <i class="far fa-suitcase"></i>
                                                                 </label>
@@ -253,7 +407,7 @@
                                                     <div class="row mt20">
                                                         <div class="col-md-6">
                                                             <label for="senha1" class="field prepend-icon">
-                                                                <input type="password" name="senha1" id="senha1" class="gui-input" placeholder="Defina uma Senha..." required>
+                                                                <input type="password" name="senha1" id="senha1" class="gui-input" placeholder="Defina sua senha" required>
                                                                 <label for="senha1" class="field-icon">
                                                                 <i class="far fa-lock"></i>
                                                                 </label>
@@ -263,7 +417,7 @@
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label for="senha2" class="field prepend-icon">
-                                                                <input type="password" name="senha2" id="senha2" class="gui-input" placeholder="Confirme sua senha..." required>
+                                                                <input type="password" name="senha2" id="senha2" class="gui-input" placeholder="Confirme sua senha" required>
                                                                 <label for="senha2" class="field-icon">
                                                                 <i class="far fa-lock"></i>
                                                                 </label>
@@ -323,7 +477,7 @@
                             </div>
                             <!-- end .form-body section -->
                             <div class="panel-footer clearfix p10 ph15" >
-                                    <button class="btn btn-primary" style="float: right" id="btnGenerate"><i class="far fa-ok"></i>INICIAR TESTE</button>
+                                    <button class="btn btn-primary btn-lg cta-iniciar-teste" style="float: right" id="btnGenerate"><i class="far fa-ok"></i>Iniciar teste</button>
                             </div>
                             <!-- end .form-footer section -->
                         </form>

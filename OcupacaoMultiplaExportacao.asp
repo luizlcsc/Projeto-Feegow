@@ -127,7 +127,7 @@ else
         splU = split(ref("Locais"), ", ")
 
         for j=0 to Ubound(splU)
-            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j))
+            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), False)
             UnidadeID = replace(replace(splU(j), "UNIDADE_ID", ""),"|","")
 
         sqlAll = "SELECT *, "&_

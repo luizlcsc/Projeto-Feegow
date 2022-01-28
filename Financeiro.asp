@@ -24,7 +24,7 @@
     font-size: 16px;
 }
 
-.view-balance.balance-loaded{
+.view-balance.balance-loaded, .view-total-balance.balance-loaded{
     background-color: transparent;
     text-align: left;
     padding-left: 0;
@@ -41,8 +41,24 @@
     float: left;
 }
 
+.view-total-balance{
+    min-width: 40px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+    text-align: center;
+    float: left;
+    font-weight: 600;
+    font-size: 16px;
+    min-width: 90px;
+}
 .img-thumbnail{
     margin-top: 5px;
+}
+
+.title-saldo-geral{
+    font-weight: 600;
+    font-size: 16px;
 }
 
 </style>
@@ -63,7 +79,12 @@ end if
 	<div class="panel">
         <div class="panel-body">
             <div class="col-md-12">
-                <h4>Saldo Geral</h4>
+                    
+                    <div class="col-md-12 mt20 mb20">
+                        <span class="title-saldo-geral pull-left mr20">Saldo Geral: </span>
+                        <div id="SaldoGeral" data-current-account-id="0" onclick="loadBalance('0', '<%=DataReferencia%>')" class="view-total-balance"><i class="far fa-eye-slash"></i></div>
+                    </div>
+
                 <form action="" id="form-saldo">
                     <input type="hidden" name="P" value="Financeiro">
                     <input type="hidden" name="Pers" value="1">
@@ -72,60 +93,8 @@ end if
                     </div>
                 </form>
                 <h2 id="SaldoGeral" class="hidden">Carregando...</h2><br>
-                <div class="row">
-                <%
-				set unidadesSql = db.execute("select unidades from "&session("Table")&" where id="&session("idInTable"))
-				if not unidadesSql.EOF then
-					unidades = unidadesSql("unidades")
-					if unidadesSql("unidades")&""<>"" then
-						whereUnidades = "AND empresa in("&replace(unidades,"|","")&")"
-					end if
-				end if
-				Data=date()
-
-				SaldoGeral = 0
-				
-				set contas = db.execute("select * from sys_financialcurrentaccounts where AccountType in(1, 2) and sysActive=1 "&whereUnidades)
-
-				CalcularSaldosAuto = False
-
-				while not contas.EOF
-					response.flush()
-
-					if CalcularSaldosAuto then
-                        Saldo = accountBalancePerDate("1_"&contas("id"), 0, DataReferencia)
-                        SaldoGeral = SaldoGeral+Saldo
-                    end if
-					%>
-                    <div class="col-xs-3">
-                        <div class=" img-thumbnail" style="padding-left:15px; width: 100%">
-                            <div class="icon-current-account"><i class="fal fa-university"></i></div>
-
-                            <div style="width: 100%">
-                                <a href="?P=Extrato&Pers=1&T=1_<%=contas("id") %>">
-                                    <strong><%=left(contas("AccountName"),23)%></strong>
-                                </a>
-                                <br>
-                                <%
-                                if not CalcularSaldosAuto then
-                                %>
-                                <div data-current-account-id="<%="1_"&contas("id")%>" onclick="loadBalance('<%="1_"&contas("id")%>', '<%=DataReferencia%>')" class="view-balance"><i class="far fa-eye-slash"></i></div>
-                                <%
-                                else
-                                %>
-                                <div class="saldo-conta">R$ <%=formatnumber(Saldo, 2)%></div>
-                                <%
-                                end if
-                                %>
-                            </div>
-                        </div>
-                    </div>
-                <%
-				contas.movenext
-				wend
-				contas.close
-				set contas=nothing
-				%>
+                <div class="row" id="conteudo-saldo-contas">
+                <!--#include file="FinanceiroSaldo.asp"-->
                 </div>
             </div>
             <div class="col-md-6">
@@ -150,12 +119,19 @@ end if
 <script>
 
 function loadBalance(conta, data){
-    $.get("SaldoConta.asp",{Conta: conta, DataReferencia: data}, function (data){
-        $(`.view-balance[data-current-account-id=${conta}]`).html(data).addClass("balance-loaded");
-    })
+    if(conta==0){
+
+        $.get("FinanceiroSaldo.asp",{CalculaSaldoTotal: 1, DataReferencia: data}, function (data){
+            $(`#conteudo-saldo-contas`).html(data);
+        });
+    }else{
+        $.get("SaldoConta.asp",{Conta: conta, DataReferencia: data}, function (data){
+            $(`.view-balance[data-current-account-id=${conta}]`).html(data).addClass("balance-loaded");
+        });
+    }
+    
 }
 
-$("#SaldoGeral").html('R$ <%=formatnumber(SaldoGeral, 2)%>');
 
 $("#DataReferencia").change(function() {
     $("#form-saldo").submit()

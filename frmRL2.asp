@@ -75,16 +75,19 @@ end if
         end if
         strFormas = strFormas & Convenios
 
-        Profissionais = replace(dom("Profissionais")&"", "|", "")
+        Profissionais = replace(Profissionais&"", "|", "")
         strEspecialidades = ""
         strProfissionais = ""
 
         if Profissionais<>"" then
             Profissionais = replace(Profissionais, "ESP","")
             Profissionais = replace(Profissionais&"","8_" , "")
+            Profissionais = fix_array_comma(Profissionais&"")
+            
 
             set sqlEsps = db.execute("select group_concat(Especialidade separator ', ') especialidades from especialidades where sysActive=1 and id*(-1) in("& Profissionais &")")
-            strEspecialidades = sqlEsps("Especialidades") '& "("& Profissionais &")"
+
+            strEspecialidades = sqlEsps("Especialidades")&""  '& "("& Profissionais &")"
 
             set sqlProfs = db.execute("select group_concat(NomeProfissional separator ', ') profissionais from profissionais where sysActive=1 and ativo='on' and id in("& Profissionais &")")
             strProfissionais = sqlProfs("Profissionais")

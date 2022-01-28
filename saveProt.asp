@@ -30,7 +30,7 @@ if T="0" then
     while not c.eof
         select case c("TipoCampoID")
             case 1, 2, 4, 5, 8
-                db.execute("update `_"& ModeloID &"` set `"& c("id") &"`='"& ref("Campo"& c("id")) &"' WHERE id="& FormID)
+                db.execute("update `_"& ModeloID &"` set `"& c("id") &"`='"& refHTML("Campo"& c("id")) &"' WHERE id="& FormID)
         end select
     c.movenext
     wend

@@ -256,7 +256,6 @@ if existePagto="" then
 			totParc = totParc+valPar
 		end if
 	next
-
 	if totInvo<=(totParc-0.05) or totInvo>=(totParc+0.05) then
 		erro = "O valor total n&atilde;o coincide com a soma das parcelas."
 	end if
@@ -394,7 +393,7 @@ if erro="" then
 			desInv = ref("Desconto"&splInv(i))
 			acrInv = ref("Acrescimo"&splInv(i))
 			if isnumeric(valInv) and valInv<>"" then valInv=ccur(valInv) else valInv=0 end if
-			if isnumeric(quaInv) and quaInv<>"" then quaInv=ccur(quaInv) else quaInv=1 end if
+			if isnumeric(quaInv) and quaInv<>"" then quaInv=replace(ccur(quaInv),",",".") else quaInv=1 end if
 			if isnumeric(desInv) and desInv<>"" then desInv=ccur(desInv) else desInv=0 end if
 			if isnumeric(acrInv) and acrInv<>"" then acrInv=ccur(acrInv) else acrInv=0 end if
 			if Row>0 then
@@ -616,8 +615,7 @@ if erro="" then
 					end if
 				end if
 
-				
-                Description = ref("Name"&ii)
+				Description = ref("Name"&ii)
 				sqlFM = "insert into sys_financialmovement ("&camID&" AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID, CodigoDeBarras, Name) values ("&valID&"  "&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(valorInserido)&", "&mydatenull(ref("Date"&ii))&", '"&inv("CD")&"', 'Bill', 'BRL', "&treatvalnull(ii)&", "&InvoiceID&", "&c&", "&session("User")&", "&treatvalnull(CaixaID)&", "&treatvalzero(ref("CompanyUnitID"))&", '"&CodigoDeBarras&"', '"&Description&"')"
 				'response.Write("//|||||||||||||||||||||| sqlFM: "&sqlFM & "--"& Description)
 				db.execute(sqlFM)
@@ -703,7 +701,22 @@ if erro="" then
             if TemRepasseConsolidadeSQL.eof then
                 call saveIIO (InvoiceID, NewItemID, Row)
             end if
+
 		next
+
+		splPar = split(ref("ParcelasID"), ", ")
+		for i=0 to ubound(splPar)
+			ii = splPar(i)
+			'PERMITE ATUALIZAR A DATA DE VENCIMENTO DA PARCELA, DESDE QUE A PARCELA NÃO ESTEJA PAGA
+			SqlParcPaga = "SELECT ValorPago FROM sys_financialmovement WHERE InvoiceID= " & InvoiceID & " AND ID= " & ii
+			set rs = db.execute(SqlParcPaga)
+			if not rs.EOF then
+				if ISNULL(rs("ValorPago")) then
+					sqlUpdateVcto = "UPDATE sys_financialmovement SET DATE = " & mydatenull(ref("Date"&ii)) & " WHERE InvoiceID= " & InvoiceID & " AND ID= " & ii & " AND ISNULL(ValorPago)"
+					db.execute(sqlUpdateVcto)
+				end if 
+			end if 			
+		next	
 		'<-
 
 	end if

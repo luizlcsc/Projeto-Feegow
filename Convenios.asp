@@ -294,13 +294,7 @@ end function
                             <%=quickField("text", "RegistroANS", "Reg. na ANS", 2, reg("RegistroANS"), "", "", "")%>
                             <%'=quickField("text", "NumeroContrato", "C&oacute;digo na Operadora", 3, reg("NumeroContrato"), "", "", "")%>
                             <%= quickField("number", "RetornoConsulta", "Retorno Consulta", 2, reg("RetornoConsulta"), "", "", " placeholder='Dias'") %>
-                            <div class="col-md-2 qf">
-                                <label>Tipo Recebimento</label>
-                                <select class="form-control" id="DiasReceb" name="DiasReceb">
-                                    <option value="1">Dias corridos</option>
-                                    <option value="2">Dia do Mês Fixos</option>
-                                </select>
-                            </div>
+                            <%= quickField("simpleSelect", "TipoRecebimento", "Tipo Recebimento", 2, reg("TipoRecebimento"), "select * from cliniccentral.convenios_tiposrecebimentos", "TipoRecebimento", "") %>
                             <%= quickField("number", "DiasRecebimento", "Dias para Recebimento", 3, reg("DiasRecebimento"), "", "", " placeholder='Dias'") %>
                             <%= quickfield("number", "DataRecebimentoEspecifico", "Dia do Recebimento", 3, reg("DataRecebimentoEspecifico"), "", "", "") %>
                             <%'= quickField("text", "FaturaAtual", "Fatura Atual", 2, reg("FaturaAtual"), "", "", " placeholder='N&uacute;mero'") %>

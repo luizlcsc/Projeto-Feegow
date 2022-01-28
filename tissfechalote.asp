@@ -12,9 +12,7 @@ Planos = req("Planos")
 Contratados = replace(req("Contratados"),"''","'")
 Procedimentos =  req("Procedimentos")
 Executantes =  req("Executantes")
-Pais =  req("PaisID")
-Estado =  req("EstadoID")
-Cidade =  req("CidadeID")
+CriaInvoice = req("CriaInvoice")
 
 if Unidades="" then
 	Unidades = session("Unidades")
@@ -30,7 +28,7 @@ end if
     	<div class="row">
             <div class="col-md-2">
                 <label>Tipo de Guia</label><br />
-                <select name="T" id="T" class="form-control" required onchange="return onChangeGuiaTipo();">
+                <select name="T" id="T" class="form-control" required>
                     <option value="">Selecione</option>
                     <option value="GuiaConsulta"<%if req("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
                     <option value="GuiaSADT"<%if req("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
@@ -40,7 +38,7 @@ end if
             <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
             <%= quickField("datepicker", "DataDe", "Data do Preenchimento", 2, req("DataDe"), "", "", " placeholder='De'") %>
             <%= quickField("datepicker", "DataAte", "&nbsp;", 2, req("DataAte"), "", "", " placeholder='At&eacute;'") %>
-            <div class="col-md-1">
+            <div class="col-md-3">
                 <label>&nbsp;</label><br />
                 <button class="btn btn-md btn-primary"><i class="far fa-search"></i> Buscar</button>
             </div>
@@ -86,98 +84,10 @@ end if
                 </select>
             </div>
             <%=quickfield("simpleSelect", "Executantes", "Executantes", 3, Executantes, "select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " empty")%>
-        </div>
-        <br>
-        <div class="row" style="display: flex; align-items: flex-end;">
-            <div class="col-md-2">
-                <label>País</label><br />
-                <select id="PaisID" name="PaisID" onchange="$('#EstadoID').val(0).change();" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
-                    <option selected value="">Todos</option>
-                    <option value="1">Brasil</option>
-                    <option value="0">Outros</option>
-                </select>
-                <script>
-                    $(document).ready(() => {
-                        const paisId = '<%=Pais%>';
-                        $('#PaisID').val(paisId).change();
-                    })
-                </script>
-            </div>
-            <div class="col-md-2">
-                <label>Estado</label><br/>
-                <select id="EstadoID" name="EstadoID" onchange="$('#CidadeID').val(0).change(); setCitiesSelect();" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
-                    <option selected value="">Todos</option>
-                    <option value="1" >AC</option>
-                    <option value="2" >AL</option>
-                    <option value="3" >AM</option>
-                    <option value="4" >AP</option>
-                    <option value="5" >BA</option>
-                    <option value="6" >CE</option>
-                    <option value="7" >DF</option>
-                    <option value="8" >ES</option>
-                    <option value="9" >GO</option>
-                    <option value="10" >MA</option>
-                    <option value="11" >MG</option>
-                    <option value="12" >MS</option>
-                    <option value="13" >MT</option>
-                    <option value="14" >PA</option>
-                    <option value="15" >PB</option>
-                    <option value="16" >PE</option>
-                    <option value="17" >PI</option>
-                    <option value="18" >PR</option>
-                    <option value="19" >RJ</option>
-                    <option value="20" >RN</option>
-                    <option value="21" >RO</option>
-                    <option value="22" >RR</option>
-                    <option value="23" >RS</option>
-                    <option value="24" >SC</option>
-                    <option value="25" >SE</option>
-                    <option value="26" >SP</option>
-                    <option value="27" >TO</option>
-                </select>
-                <script>
-                    $(document).ready(() => {
-                        const estadoId = '<%=Estado%>';
-                        $('#EstadoID').val(estadoId).change();
-                    })
-                </script>
-            </div>
-            <div class="col-md-2">
-                <label>Cidade</label><br/>
-                <select id="CidadeID" name="CidadeID" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
-                    <option selected value="">Todas</option>
-                </select>
-                <script>
-                    $(document).ready(() => {
-                        const cidadeId = '<%=Cidade%>';
-                        setTimeout(() => $('#CidadeID').val(cidadeId).change(), 1000);
-                    })
-                </script>
-            </div>
-            <div class="col-md-3">
-                <!-- empty for spacing -->
-            </div>
-            <div class="col-md-3" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong>Guias encontradas:</strong> <span id="encontradas">0</span><br>
-                    <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>
-                </div>
-                <button type="button" class="btn btn-md btn-success" onClick="fechalote()"><i class="fa fa-archive"></i> Fechar Lote</button>
+
+            <div class="col-md-2"><br>
+                <strong>Guias encontradas:</strong> <span id="encontradas">0</span>.<br>
+                <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>.
             </div>
         </div>
 
@@ -287,23 +197,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" then
         sqlExecutantes = " and g.ProfissionalID IN ("&Executantes&") "
     end if
 
-    if Pais<>"" then
-        if Pais = 1 then
-            sqlPais = " and p.PaisID = 1"
-        else
-            sqlPais = " and p.PaisID <> 1"
-        end if
-    end if
-
-    if Estado<>"" then
-        sqlEstado = " and p.EstadoID = "&Estado
-    end if
-
-    if Cidade<>"" then
-        sqlCidade = " and p.CidadeID = "&Cidade
-    end if
-
-    sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&sqlExecutantes&sqlPais&sqlEstado&sqlCidade&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
+    sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&sqlExecutantes&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
 
 	set guias = db.execute(sqlGuia)
 	while not guias.EOF
@@ -565,26 +459,8 @@ elseif req("ConvenioID")<>"" and req("T")="GuiaSADT" then
         sqlExecutantes = " and tps.ProfissionalID IN ("&Executantes&") "
     end if
 
-    if Pais<>"" then
-        if Pais = 1 then
-            sqlPais = " and p.PaisID = 1"
-        else
-            sqlPais = " and p.PaisID <> 1"
-        end if
-    end if
 
-    if Estado<>"" then
-        sqlEstado = " and p.EstadoID = "&Estado
-    end if
-
-    if Cidade<>"" then
-        sqlCidade = " and p.CidadeID = "&Cidade
-    end if
-
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes&sqlPais&sqlEstado&sqlCidade&" GROUP BY g.id "& orderBy
-
-    %><script>console.log('<%=sqlGuias%>')</script><%
-
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes& " GROUP BY g.id "& orderBy
 	set guias = db.execute(sqlGuias)
 
 	while not guias.EOF
@@ -773,7 +649,7 @@ function geraInvoice(T, V, Incrementar){
 // Fecha o lote
     $.ajax({
 		   type:"POST",
-		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
+		   url:"saveLote.asp?Acao=Inserir&CriaInvoice=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
 		   data:$("#frmModal, #guias").serialize(),
 		   success:function(data){
 			   eval(data);
@@ -810,57 +686,4 @@ jQuery(function() {
       searching: false
   });
 });
-</script>
-
-<!-- CAL-514 Adição de filtro de país, estado e cidade no fechamento de lote de guias TISS -->
-<script>
-
-    $(document).ready(() => {
-        onChangeGuiaTipo();
-    });
-
-    function onChangeGuiaTipo() {
-        if ($('#T').val() == 'GuiaHonorarios') {
-            $('#PaisID').prop('disabled', true);
-            $('#EstadoID').prop('disabled', true);
-            $('#CidadeID').prop('disabled', true);
-        } else {
-            $('#PaisID').prop('disabled', false);
-            $('#EstadoID').prop('disabled', false);
-            $('#CidadeID').prop('disabled', false);
-        }
-    }
-
-    function getCitiesFromEstado(estadoSigla) {
-        return new Promise((resolve, _reject) => {
-            getUrl(`ibge/get-cities-from-estado-by-sigla/${estadoSigla}`, {}, (cidades) => resolve(cidades));
-        });
-    }
-
-    function setCitiesSelect(estadoSigla) {
-        if (!estadoSigla)
-            estadoSigla = $('#EstadoID option:selected').html();
-        if (!estadoSigla || estadoSigla == '')
-            return;
-        estadoSigla = estadoSigla.toUpperCase();
-        
-        $('#Estado').val(estadoSigla);
-        getCitiesFromEstado(estadoSigla).then((cidades) => {
-            const cidadesSelect = $(
-                `<select id="CidadeID" name="CidadeID" style="
-                        background-color: #fff;
-                        border: 1px solid rgba(0, 0, 0, 0.1);
-                        border-radius: 4px;
-                        height: 38px;
-                        width: -webkit-fill-available;">
-                    <option selected value="">Todas</option>
-                </select>`);
-            for (const cidade of cidades) {
-                const nome = cidade['Cidade'];
-                const feegowId = cidade['id'];
-                cidadesSelect.append(`<option value="${feegowId}">${nome}</option>`);
-            }
-            $('#CidadeID').replaceWith(cidadesSelect[0].outerHTML)
-        });
-    }
 </script>

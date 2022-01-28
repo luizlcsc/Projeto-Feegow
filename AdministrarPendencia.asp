@@ -283,10 +283,21 @@
                                   end if
                   
                                   NomeLocal = AgendamentoSQL("NomeLocal")
-                                  Data = AgendamentoSQL("Data")
-                                  Hora = formatdatetime(AgendamentoSQL("Hora"),4)
+                                  Data = AgendamentoSQL("Data")&""
+                                  Hora = AgendamentoSQL("Hora")
+
                                   Endereco = AgendamentoSQL("Enderecos")
                   
+                                  if Data="" then
+                                    Data = "Indefinido"
+                                  end if
+                                  if Hora<>"" then
+                                    Hora = formatdatetime(Hora, 4)
+                                  else
+                                    Hora = "Indefinido"
+                                  end if
+
+                                  
                               end if
                           end if
                   

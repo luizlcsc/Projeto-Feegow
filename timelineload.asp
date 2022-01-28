@@ -2,6 +2,10 @@
 <%
 'variaveis estão no arquivo timeline.asp
 CareTeam = getConfig("ExibirCareTeam")
+sysActiveRecords = "1"
+if showInactive="1" then
+    sysActiveRecords = "1,-1"
+end if
 
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
@@ -21,16 +25,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN(1,-1) OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN(1,-1) OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
     end if
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
-            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&") "
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
         end if
     end if
 
@@ -48,12 +52,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
                          "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
-                         "   WHERE PacienteID="&PacienteID&" and d.sysActive in (1,-1)) "
+                         "   WHERE PacienteID="&PacienteID&" and d.sysActive in ("&sysActiveRecords&")) "
 
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
     end if
 
      if instr(Tipo, "|Tarefas|")>0 then
@@ -63,12 +67,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive in (1,-1) AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in (1,-1) and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then
-        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in (1,-1) AND po.PacienteID="&PacienteID&") "
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in ("&sysActiveRecords&") AND po.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
@@ -110,7 +114,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 		                sqlTipo = " and (buiforms.Tipo=1 or buiforms.Tipo=2)"
 	                end if
 
-                    set preen = db.execute("select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc")
+                    sqlPreen = "select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc"
+
+                    set preen = db.execute(sqlPreen)
 
 
                     if not preen.eof then
@@ -121,7 +127,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 			                    icone = "lock"
 		                    end if
 
-                            if autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User") then
+                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
                                 exibe = 1
                             else
                                 exibe = 0
@@ -134,7 +140,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             <%
             PermissaoArquivo = true
 
-            if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" then
+            if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" and ti("sysUser")&""<>"0" then
                 'logica de compartilhamento de prontuario, e arquivos
                 'verifica permissão para acesso dos arquivos
                 permissao = VerificaProntuarioCompartilhamento(session("User"), ti("Tipo"), ti("id"))
@@ -157,6 +163,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
                 PermissaoArquivo=true
             end if
+            
+            if preen.eof then
+                if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                    PermissaoArquivo = true
+                end if 
+            end if
 
             if not PermissaoArquivo then
     
@@ -165,6 +177,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 if SinalizarFormulariosSemPermissao&""<>"1" then
                     hiddenRegistro = " hidden "
                 end if
+
 
                 %>
             <div class="timeline-item <%=hiddenRegistro%>">
@@ -243,6 +256,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             'and aut("prescricoesX")>0 and (ti("Tipo")<>"AE" and ti("Tipo")<>"L")
                             if cstr(session("User"))=ti("sysUser")&""  then
                             %>
+
+                                <a title="Ver mais" href="javascript:JustificativaTimeline('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                   <i class="far fa-list "></i>
+                                </a>
+
                                 <a title="Compartilhamento" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
                                     <i class="far fa-share-alt "></i>
                                 </a>
@@ -283,16 +301,10 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 if not rsMemed.eof then
                                     if rsMemed("link_pdf_completo") <> "" then
                                 %>
-                                    <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank">
+                                    <a href="<%=rsMemed("link_pdf_completo")%>" target="_blank" class="btn-sensitive-action">
                                         <i class="far fa-print"></i>
                                     </a>
                                     <%
-                                    end if
-                                    if getConfig("MemedHabilitada")=1 and cstr(session("User"))=ti("sysUser")&"" and aut("prescricoesX")>0  then %>
-                                        <a href="javascript:deletePrescricaoMemed(<%=ti("id") %>, '<%=rsMemed("tipo")%>')">
-                                            <i class="far fa-remove"></i>
-                                        </a>
-                                <%
                                     end if
                                 end if
                                 rsMemed.close
@@ -323,7 +335,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                     end if
                                     if ti("Tipo")<>"AE" and ti("Tipo")<>"L" and ti("Tipo")<>"Imagens" then
                                     %>
-                                        <a title="Imprimit" href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
+                                        <a title="Imprimir" class="btn-sensitive-action" href="javascript:prontPrint('<%=ti("Tipo") %>', <%=ti("id") %>);">
                                             <i class="far fa-print"></i>
                                         </a>
                                     <%
@@ -334,7 +346,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                         ArquivosSQL.close
                                         set ArquivosSQL = nothing
                                         %>
-                                            <a title="Imprimir" href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
+                                            <a title="Imprimir" class="btn-sensitive-action" href="./timelinePrint.asp?Tipo=I&IDs=<%=arquivosID%>" target="_blank">
                                                 <i class="far fa-print"></i>
                                             </a>
                                     <%
@@ -349,7 +361,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 var_permissoes = ""
                             end if
 
-                            if (ti("Tipo") = "AE" or ti("Tipo") = "L") or (ti("Tipo") = "Atestado" and aut("|atestadoX|")) or (ti("Tipo") = "Prescricao" and aut("|prescricaoX|"))  or ( ( ti("Tipo") = "Pedido" or ti("Tipo") ="PedidosSADT") and aut("|pedidosexamesX|")) or (ti("Tipo") = "Diagnostico" and aut("|diagnosticosX|"))  then
+                            if (ti("Tipo") = "AE" or ti("Tipo") = "L") or (ti("Tipo") = "Atestado" and aut("|atestadoX|")) or (ti("Tipo") = "Prescricao" and aut("|prescricoesX|"))  or ( ( ti("Tipo") = "Pedido" or ti("Tipo") ="PedidosSADT") and aut("|pedidosexamesX|")) or (ti("Tipo") = "Diagnostico" and aut("|diagnosticosX|"))  then
                                 if True then
                             %>
                                 <div title="Inativar" class="switch switch-sm switch-system switch-inline" style="position:relative;top: 6px;">
@@ -501,29 +513,45 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
-
-                                                    IF urlbmj <> "" and pcampos("enviardadoscid") = 1 THEN
-                                                        sqlBmj = " (SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'"" target=""_blank"" class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
-                                                                " FROM cliniccentral.cid10_bmj bmj" &_
-                                                                " WHERE bmj.cid10ID = cliniccentral.cid10.id)"
+                                                    IF pcampos("enviardadoscid") = 1 THEN
+                                                        sqlBmj = montaSubqueryBMJ("bmj.cid10ID = cliniccentral.cid10.id")
                                                     ELSE
                                                         sqlBmj = "''"
                                                     END IF
-                                                    sqlBmj = "COALESCE("&sqlBmj&",'') as bmj_link "
+                                                    sqlBmj = sqlBmj & " as bmj_link "
                                                     set pcid = db.execute("select *, "&sqlBmj&" from cliniccentral.cid10 where id = '"&Valor&"'")
                                                     if not pcid.eof then
-                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao") &" "& replace(pcid("bmj_link")&"","[linkbmj]",urlbmj)
+                                                        NomeCid = pcid("Codigo") &" - "& pcid("Descricao") &" "& pcid("bmj_link")
                                                     end if
                                                     response.Write( Rotulo &"<br>"& NomeCid &"<br>" )
                                                 case else
+
                                                     if Valor<>"" and Valor<>"<p><br></p>" then
-                                                    if left(Valor, 5)="{\rtf" then
-                                                            'problema de conversao de RTF com problema critico
-                                                            'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
+                                                        if left(Valor, 5)="{\rtf" then
+                                                                'problema de conversao de RTF com problema critico
+                                                                'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
+
+                                                        end if
+                                                        response.Write( Rotulo &"<br>"& Valor  &"<br>" )
+                                                    end if
+
+                                                    'CID e BMJ de campos de formulários Estruturados
+                                                    if instr(pcampos("Estruturacao"), "|CID|") > 0 then
+                                                        sqlBmj = montaSubqueryBMJ("bmj.codcid10 = t.CID10_Cd1")
+                                                        sqlCiap = "SELECT t.CID10_Cd1 as Codigo, t.Termo, " & sqlBmj & " as bmj_link " &_
+                                                                  "FROM pacientesciap pc " &_
+                                                                  "INNER JOIN cliniccentral.tesauro t ON t.id=pc.CiapID " &_
+                                                                  "WHERE pc.FormID='" & ti("id") & "' AND pc.CampoID='" & pcampos("id") & "'"
+                                                        set rsCiap = db.execute(sqlCiap)
+                                                        while not rsCiap.eof
+                                                            response.write( rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            rsCiap.movenext
+                                                        wend
+                                                        rsCiap.close
+                                                        set rsCiap = nothing
 
                                                     end if
-                                                    response.Write( Rotulo &"<br>"& Valor  &"<br>" )
-                                                    end if
+
                                             end select
                                             'response.Write( Rotulo & Valor  &"<br>[["& pcampos("TipoCampoID") &"]]" )
                                         pcampos.movenext

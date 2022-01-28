@@ -58,7 +58,7 @@ else
 
     <%
     if device()="" then
-            if Aut("|agenda")=1 or session("Table")="profissionais" then%>
+            if Aut("|agenda")=1 or (session("Table")="profissionais" and aut("agendapropriaV")=1) then%>
     <li class="<%=classMenu %>">
         <a href="#" class="dropdown-toggle menu-click-agenda" onclick="return false;" data-toggle="dropdown">
             <%=abreSpanTitulo %> <i class="far fa-calendar hidden"></i> <span class=""> Agenda </span> <span class="caret ml5"></span> <%= fechaSpanTitulo %>
@@ -159,6 +159,7 @@ else
         </ul>
     </li>
     <%
+    end if
         if aut("salaesperaV")=1 or aut("esperaoutrosprofissionaisV")=1 then 
     %>
     <li class="<%=classMenu %>"><a href="./?P=ListaEspera&Pers=1" class="menu-click-espera">
@@ -171,7 +172,6 @@ else
     end if
     %>
     <%
-    end if
     if aut("pacientesV")=1 or aut("pacientesI")=1 or aut("pacientesA")=1 then
     %>
     <li class="<%=classMenu %>"><a href="#" class="dropdown-toggle menu-click-pacientes" data-toggle="dropdown">
@@ -187,7 +187,7 @@ else
                   <a class="sub-menu-click-paciente-incluir" href="./?P=Pacientes&I=N&Pers=1"><i class="far fa-plus"></i> Inserir</a>
                   </li>
             <%end if
-			      if (aut("pacientesV")=1 or aut("pacientesA")=1) and PorteClinica <= 3 then%>
+			      if (aut("pacientesV")=1 or aut("pacientesA")=1) then%>
                   <li>
                   <a class="sub-menu-click-paciente-listar" href="?P=Pacientes&Pers=Follow"><i class="far fa-list"></i> Listar</a>
                   </li>

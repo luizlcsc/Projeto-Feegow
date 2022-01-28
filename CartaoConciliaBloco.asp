@@ -3,6 +3,7 @@
         ConciliacaoID = l("id")
         AdquirenteID = l("AdquirenteID")
         Autorizacao = l("Autorizacao")
+        Transacao = l("Transacao")
         CredDeb = l("CredDeb")
         Bandeira = l("Bandeira")
         CodigoMaquina = l("CodigoMaquina")
@@ -33,6 +34,7 @@
                     Número do Cartão: <%= NumeroCartao %><br>
                     Natureza: <%= CredDeb &"&nbsp;-&nbsp;"& Bandeira %><br> 
                     Código da Autorização: <%= Autorizacao %><br>
+                    Código da Transação: <%= Transacao %><br>
                     Data do Pagamento: <%= DataPagto %>
                     <%
                     if ContaBancaria>0 then

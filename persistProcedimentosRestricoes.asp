@@ -16,12 +16,18 @@ restricaoInicioFimObsProfissional = ref("restricao_inicio_fim_obs_profissional")
 
 restricaoTextoLivre = ref("restricao_texto_livre")&""
 
-db.execute("delete from restricoes_respostas where PacienteID ="&pacienteId)  
+'NÃO REMOVE MAIS AS RESPOSTAS ANTIGAS 18/01/2022 - ALINHAMENTO LEON CENTRAL DE CONSULTAS
+'db.execute("delete from restricoes_respostas where PacienteID ="&pacienteId)  
+set pAgendamento = db.execute("select id from agendamentos where PacienteID ="&pacienteId&" order by id desc limit 1")
+    AgendamentoID = pAgendamento("id")
+pAgendamento.close
+set pAgendamento = nothing
+
 
 restricaoTextoLivreArray = split(restricaoTextoLivre, ",")
 for key=0 to ubound(restricaoTextoLivreArray)
     restricaoTextoLivreArrayValores = split(restricaoTextoLivreArray(key), "||")       
-    db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoTextoLivreArrayValores(0)&"', '"&restricaoTextoLivreArrayValores(1)&"', null, '',"&session("User")&", 1)")   
+    db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoTextoLivreArrayValores(0)&"', '"&restricaoTextoLivreArrayValores(1)&"', null, '',"&session("User")&", 1)")   
 next
 
 restricaoInicioFimArray = split(restricaoInicioFim, ",")
@@ -29,7 +35,7 @@ restricaoInicioFimObsArray = split(restricaoInicioFimObs, ",")
 for key=0 to ubound(restricaoInicioFimArray)
     restricaoInicioFimArrayValores = split(restricaoInicioFimArray(key), "||")   
     restricaoInicioFimObsArrayValores = split(restricaoInicioFimObsArray(key), "||")    
-    db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoInicioFimArrayValores(0)&"', '"&restricaoInicioFimArrayValores(1)&"', '"&restricaoInicioFimObsArrayValores(1)&"', '"&restricaoInicioFimObsArrayValores(1)&"', "&session("User")&", 1)")   
+    db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoInicioFimArrayValores(0)&"', '"&restricaoInicioFimArrayValores(1)&"', '"&restricaoInicioFimObsArrayValores(1)&"', '"&restricaoInicioFimObsArrayValores(1)&"', "&session("User")&", 1)")   
 next
 
 restricaoCheckArray = split(restricaoCheck, ",")
@@ -42,12 +48,12 @@ if ubound(restricaoCheckArray) > 0 then
             restricaoCheckObsArrayValores1 = split(restricaoCheckObsArray(key), "||")
             restricaoCheckObsArrayValores2 = restricaoCheckObsArrayValores1(1)
         end if
-        db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoCheckArrayValores(0)&"', '"&restricaoCheckArrayValores(1)&"', '"&restricaoCheckObsArrayValores2&"', '', "&session("User")&", 1)")   
+        db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoCheckArrayValores(0)&"', '"&restricaoCheckArrayValores(1)&"', '"&restricaoCheckObsArrayValores2&"', '', "&session("User")&", 1)")   
     next
 elseif restricaoCheck <> "" then
     restricaoCheckArrayValores = split(restricaoCheck, "||")
     restricaoCheckObsValores = split(restricaoCheckObs,"||")
-    db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoCheckArrayValores(0)&"', '"&restricaoCheckArrayValores(1)&"', '"&restricaoCheckObsValores(1)&"', '', "&session("User")&", 1)")   
+    db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoCheckArrayValores(0)&"', '"&restricaoCheckArrayValores(1)&"', '"&restricaoCheckObsValores(1)&"', '', "&session("User")&", 1)")   
 
 end if
 
@@ -55,11 +61,11 @@ restricaoCheckArrayTexto = split(restricaoCheckTexto, ",")
 if ubound(restricaoCheckArrayTexto) > 0 then
     for key=0 to ubound(restricaoCheckArrayTexto)
         restricaoCheckArrayTextoValores = split(restricaoCheckArrayTexto(key), "||")
-        db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoCheckArrayTextoValores(0)&"', '"&restricaoCheckArrayTextoValores(1)&"', '', '', "&session("User")&", 1)")
+        db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoCheckArrayTextoValores(0)&"', '"&restricaoCheckArrayTextoValores(1)&"', '', '', "&session("User")&", 1)")
     next
 elseif restricaoCheckTexto <> "" then
     restricaoCheckArrayTextoValores = split(restricaoCheckTexto, "||")
-    db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoCheckArrayTextoValores(0)&"', '"&restricaoCheckArrayTextoValores(1)&"', '', '', "&session("User")&", 1)")
+    db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoCheckArrayTextoValores(0)&"', '"&restricaoCheckArrayTextoValores(1)&"', '', '', "&session("User")&", 1)")
 end if
 
 restricaoCheckZeroArray = split(restricaoCheckZero, ",")
@@ -67,7 +73,7 @@ restricaoCheckZeroArray = split(restricaoCheckZero, ",")
 if ubound(restricaoCheckZeroArray) > 0 then
     for key=0 to ubound(restricaoCheckZeroArray)
         restricaoCheckArrayValores = split(restricaoCheckZeroArray(key), "||") 
-        db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoCheckZeroArrayValores(0)&"', '"&restricaoCheckZeroArrayValores(1)&"', '', '', "&session("User")&", 1)")   
+        db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoCheckZeroArrayValores(0)&"', '"&restricaoCheckZeroArrayValores(1)&"', '', '', "&session("User")&", 1)")   
     next
 end if 
 
@@ -76,7 +82,7 @@ restricaoInicioFimObsProfissionalArray = split(restricaoInicioFimObsProfissional
 for key=0 to ubound(restricaoInicioFimProfissionalArray)
     restricaoInicioFimProfissionalArrayValores = split(restricaoInicioFimProfissionalArray(key), "||")   
     restricaoInicioFimObsProfissionalArrayValores = split(restricaoInicioFimObsProfissionalArray(key), "||")    
-    db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoInicioFimProfissionalArrayValores(0)&"', '"&restricaoInicioFimProfissionalArrayValores(1)&"', '"&restricaoInicioFimObsProfissionalArrayValores(1)&"', '', "&session("User")&", 1)")   
+    db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoInicioFimProfissionalArrayValores(0)&"', '"&restricaoInicioFimProfissionalArrayValores(1)&"', '"&restricaoInicioFimObsProfissionalArrayValores(1)&"', '', "&session("User")&", 1)")   
 next
 
 restricaoCheckProfissionalArray = split(restricaoCheckProfissional, ",")
@@ -84,7 +90,7 @@ restricaoCheckObsProfissionalArray = split(restricaoCheckObsProfissional, ",")
 for key=0 to ubound(restricaoCheckProfissionalArray)
     restricaoCheckProfissionalArrayValores = split(restricaoCheckProfissionalArray(key), "||")   
     restricaoCheckObsProfissionalArrayValores = split(restricaoCheckObsProfissionalArray(key), "||")    
-    db.execute("insert into restricoes_respostas (PacienteID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", '"&restricaoCheckProfissionalArrayValores(0)&"', '"&restricaoCheckProfissionalArrayValores(1)&"', '"&restricaoCheckObsProfissionalArrayValores(1)&"', '', "&session("User")&", 1)")   
+    db.execute("insert into restricoes_respostas (PacienteID, AgendamentoID, RestricaoID, RespostaMarcada, Resposta, Observacao, sysUser, sysActive) values ("&pacienteId&", "&AgendamentoID&", '"&restricaoCheckProfissionalArrayValores(0)&"', '"&restricaoCheckProfissionalArrayValores(1)&"', '"&restricaoCheckObsProfissionalArrayValores(1)&"', '', "&session("User")&", 1)")   
 next
 
 If Err.Number <> 0 Then

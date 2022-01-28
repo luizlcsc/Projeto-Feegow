@@ -69,7 +69,7 @@ while not u.eof
                     isonline = "0"
 
 						%>
-                        <i class="fab fa-circle text-success"></i>
+                        <i class="fas fa-circle text-success"></i>
                         <%
 					end if
 					%>

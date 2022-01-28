@@ -393,29 +393,36 @@ function SaveAndPrint(salvarPedido){
 }
 
 
+var timeoutBusca;
 
 $("#FiltroP").keyup(function(){
-    if($(this).val()==''){
-        $("#ListaTextosPedidos").html("");
-        $.post("ListaTextosPedidos.asp",{
-             Filtro:'',
-             X: '',
-             Aplicar: ''
-             },function(data,status){
-        $("#ListaTextosPedidos").html(data);
-        Core.init();
-         });
-    }else{
-        $("#ListaTextosPedidos").html("");
-        $.post("ListaTextosPedidos.asp",{
-             Filtro:$(this).val(),
-             X: '',
-             Aplicar: ''
-             },function(data,status){
-        $("#ListaTextosPedidos").html(data);
-        Core.init();
-         });
-    }
+    clearTimeout(timeoutBusca);
+    var that = this;
+
+    timeoutBusca = setTimeout(function(){
+            
+        if($(that).val()==''){
+            $("#ListaTextosPedidos").html("");
+            $.post("ListaTextosPedidos.asp",{
+                Filtro:'',
+                X: '',
+                Aplicar: ''
+                },function(data,status){
+            $("#ListaTextosPedidos").html(data);
+            Core.init();
+            });
+        }else{
+            $("#ListaTextosPedidos").html("");
+            $.post("ListaTextosPedidos.asp",{
+                Filtro:$(that).val(),
+                X: '',
+                Aplicar: ''
+                },function(data,status){
+            $("#ListaTextosPedidos").html(data);
+            Core.init();
+            });
+        }
+    }, 400);
 });
 
 

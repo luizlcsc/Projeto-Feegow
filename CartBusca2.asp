@@ -35,6 +35,7 @@
     <div class="col-md-3">
         <button onclick="buscarDias('Manha')" type="button" class="btn btn-default btn-sm btnturno btnmanha"> Manhã </button>
         <button onclick="buscarDias('Tarde')" type="button" class="btn btn-default btn-sm btnturno btntarde"> Tarde </button>
+        <button onclick="buscarDias('')" type="button" class="btn btn-default btn-sm btnturno"> Todos </button>
     </div>
     <div class="col-md-2"></div>
     <div class="col-md-3">
@@ -374,7 +375,7 @@ if not relatorio.eof then
                 " AND ro.UnidadeID = " & treatvalzero(relatorio("UnidadeID")) & " " &_
                 " AND ro.Encaixe = '1' " &_
                 " GROUP BY UnidadeID, DATA " 
-        'response.write("<hr>"&sqlTotal)
+        
         set totais = db.execute(sqlTotal)
         set temEncaixe = db.execute(sqlTemEncaixe)
         dia = ""

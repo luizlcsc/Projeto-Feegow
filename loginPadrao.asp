@@ -1,8 +1,8 @@
 <!--#include file="Classes/Connection.asp"-->
 <!--#include file="Classes/IPUtil.asp"-->
 <!--#include file="Classes/Environment.asp"-->
+<!--#include file="Classes/reCaptcha.asp"-->
 <!--#include file="functions.asp"-->
-
 <%
 if IP<>"::1" then
    'on error resume next
@@ -20,7 +20,29 @@ User = ref("User")
 Password = ref("Password")
 masterLogin = false
 masterLoginErro = false
+LoginAutorizado = True
 
+
+set DesafioPendenteSQL = dbc.execute("SELECT id FROM login_desafio WHERE Email='"&User&"' AND date(dataHora)=curdate() AND DesafioResolvido='N'")
+
+if not DesafioPendenteSQL.eof then
+    if ref("g-recaptcha-response") <> "" then
+        captchaResult = validateCaptcha(ref("g-recaptcha-response"), IP)
+    end if
+
+    if captchaResult="VALID" then
+        dbc.execute("UPDATE login_desafio SET DesafioResolvido='Y', DataHoraSolucaoDesafio=NOW() WHERE Email='"&User&"' AND date(dataHora)=curdate() AND DesafioResolvido='N'")
+    else
+        LoginAutorizado = False
+        SolicitaDesafio = True
+        
+        ErroLoginMsg = "Acesso não autorizado. Tente novamente mais tarde."
+        ErrorCode = "unauthorized"
+        ErroLogin=True
+    end if
+end if
+
+if LoginAutorizado then
 %>
 	<!--#include file="LoginMaster.asp"-->
 <%
@@ -142,29 +164,33 @@ if not tryLogin.EOF then
 
 	if erro="" then
 
-	set dbProvi = newConnection("cliniccentral", Servidor)
+        set dbProvi = newConnection("cliniccentral", Servidor)
 
-    'if tryLogin("Bloqueado") = 1 then
-    '    erro = "Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entrar em contato conosco."
-    'end if
-		'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
-	IPsAcesso = tryLogin("IPsAcesso")
-	if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
-		erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
-		errorCode = "ip_restriction"
-	end if
-	if not isnull(tryLogin("FimTeste")) then
-		if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"I" and tryLogin("Status")<>"B" then
-			session("Bloqueado")="FimTeste"
-		'	erro = "Seu período de testes expirou. Por favor, entre em contato com nossa central de atendimento para renovar o período ou para adquirir sua licença definitiva.\nCentral de atendimento: 0800-729-6103"
-		elseif tryLogin("Status")="T" then
-			session("DiasTeste") = datediff("d", date(), formatdatetime(tryLogin("FimTeste"), 2))
-		end if
-	end if
-	if tryLogin("Status")="B" then
-		erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
-		errorCode = "license_status"
-	end if
+        'if tryLogin("Bloqueado") = 1 then
+        '    erro = "Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entrar em contato conosco."
+        'end if
+            'response.Write("if "&tryLogin("Cliente")&"=0 and "&formatdatetime(tryLogin("DataHora"),2)&" < "&dateadd("d", -15, date())&" then")
+        IPsAcesso = tryLogin("IPsAcesso")
+        if tryLogin("LocaisAcesso")="Limitado" and instr(IPsAcesso, IP)=0 and tryLogin("Admin")=0 and not permiteMasterLogin then
+            erro = "ACESSO NÃO AUTORIZADO: Para acessar o sistema deste local, solicite ao administrador a liberação do IP "&IP
+            errorCode = "ip_restriction"
+        end if
+        if not isnull(tryLogin("FimTeste")) then
+            if cdate(formatdatetime(tryLogin("FimTeste"),2))<cdate(date()) and tryLogin("Status")<>"C" and tryLogin("Status")<>"I" and tryLogin("Status")<>"B" then
+                session("Bloqueado")="FimTeste"
+            '	erro = "Seu período de testes expirou. Por favor, entre em contato com nossa central de atendimento para renovar o período ou para adquirir sua licença definitiva.\nCentral de atendimento: 0800-729-6103"
+            elseif tryLogin("Status")="T" then
+                session("DiasTeste") = datediff("d", date(), formatdatetime(tryLogin("FimTeste"), 2))
+            end if
+        end if
+        if tryLogin("Status")="B" then
+            erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
+            errorCode = "license_status"
+        end if
+        if tryLogin("Status")="X" then
+            erro = "ACESSO NÃO AUTORIZADO: Por favor, entre em contato conosco."
+            errorCode = "expired"
+        end if
 	end if
 
 
@@ -185,7 +211,7 @@ if not tryLogin.EOF then
                 forcar_login = Session("Deslogar_user")
             end if
 
-			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login  then
+			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login and AppEnv="production" then
                 deslogarUsuario = true
 				erro = "Este usuário já está conectado em outra máquina."
 				errorCode = "user_connected"
@@ -643,6 +669,8 @@ if not tryLogin.EOF then
 
             call odonto()
 
+            call sendLogLoginSuccess()
+
             if QueryStringParameters<>"" then
                 response.Redirect("./?"&QueryStringParameters)
             else
@@ -652,23 +680,34 @@ if not tryLogin.EOF then
 	end if
 else
     set licenca = dbc.execute("SELECT * FROM licencasusuarios WHERE Email = '"&User &"' LIMIT 1")
+    SolicitaDesafio = False
+    MaximoTentativasLogin=4
+    UserID = 0
 
     if not licenca.eof then
+        logErrorLicenseId = licenca("LicencaID")
+        UserID= licenca("id")
 '                                if licenca("Bloqueado") = 0 then
-            dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&licenca("LicencaID")&", "&licenca("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
-
-'                                    set tentativasLogin = dbc.execute("SELECT IF(COUNT(Sucesso > 0), 0,1)Bloquear FROM (SELECT Sucesso FROM licencaslogins WHERE LicencaID = "&licenca("LicencaID")&" AND UserID = "&licenca("id")&" AND DataHora LIKE CONCAT(CURDATE(),'%') ORDER BY DataHora DESC LIMIT 10) t WHERE t.Sucesso = 1")
-
-'                                    if tentativasLogin("Bloquear") = "1" then
-                'dbc.execute("UPDATE licencasusuarios SET Bloqueado = 1 WHERE id = "&licenca("id"))
-'                                    end if
-'                                else
-            %>
-            <script >//alert("Usuário bloqueado por múltiplas tentativas inválidas de login. Favor entre em contato conosco.");</script>
-            <%
+        dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&logErrorLicenseId&", "&UserID&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
     else
+        logErrorLicenseId=null
         dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
     end if
+
+    if DesafioPendenteSQL.eof then
+        set tentativasLogin = dbc.execute("SELECT COUNT(ll.id)>="&MaximoTentativasLogin&" AS Bloquear FROM licencaslogins ll WHERE (email='"&User&"' or UserID="&UserID&") AND DATE(dataHora)=CURDATE()")
+
+        if tentativasLogin("Bloquear") then
+            dbc.execute("INSERT INTO login_desafio (UsuarioID,Email,IP) VALUES ("&treatvalzero(UserID)&", '"&User&"', '"&IP&"')")
+
+            SolicitaDesafio = True
+            'cookie; variavel post; post check
+        end if
+    else
+        SolicitaDesafio = True
+    end if
+
+
     session.Abandon()
 
 	If masterLoginErro Then
@@ -678,5 +717,26 @@ else
 	    ErroLogin = True
         ErroLoginMsg = "E-mail de acesso ou senha não conferem."
 	end if
+end if
+end if
+
+if SolicitaDesafio then
+    errorCode = "too_many_attempts"
+    ErroLogin = True
+    ErroLoginMsg = "Limite de tentativas atingido. Conclua o desafio para prosseguir."
+end if
+
+' loga a tentativa de login
+if ErroLogin then
+    if logErrorLicenseId&"" = "" then
+        if instr(Dominio, "dasa")>0 then
+            logErrorLicenseId = 9021
+        elseif instr(Dominio, "amor-saude")>0 then
+            logErrorLicenseId = 7211
+        end if
+    end if
+    if logErrorLicenseId <> "" then
+        call sendLogLoginError(logErrorLicenseId, ErroLoginMsg, User, permiteMasterLogin)
+    end if
 end if
 %>

@@ -4,6 +4,18 @@ I = req("I")
 TipoCampoID = cint(req("TipoCampoID"))
 GrupoID = req("GrupoID")
 
+
+
+
+conferir = confereTabela("_"&I)
+
+if conferir = 0 then
+	createTable_(I)
+end if 
+
+
+
+
 numeroNovoCampo=0
 while numeroNovoCampo<>"Feito"
 	numeroNovoCampo=numeroNovoCampo+1

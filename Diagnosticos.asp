@@ -66,7 +66,7 @@ Diagn&oacute;sticos
     </div>
 </div>
 <div class="panel-footer text-right">
-        <button class="btn btn-primary btn-fechar-diagnostico" type="button"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+        <button class="btn btn-primary btn-fechar-diagnostico" type="button"><i class="far fa-save"></i> <span class="btn-save-form-text"> Fechar e salvar </span></button>
 </div>
 
 <div class="row">
@@ -76,6 +76,10 @@ Diagn&oacute;sticos
 <script type="text/javascript">
  $(".btn-fechar-diagnostico").click("click", function () {
     $(".mfp-close").click();
+    $("#tabDiagnosticos").click();
+});
+
+$(".mfp-close").click(function(){
     $("#tabDiagnosticos").click();
 });
 

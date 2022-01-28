@@ -572,6 +572,7 @@ end if
 		c=0
 		set procs = db.execute("select * from tissprocedimentossadt where GuiaID="& treatvalzero(req("I")) &" order by id")
 		while not procs.eof
+      if procs("ProfissionalID") <> 0 then
 			c=c+1
 			HoraInicio = procs("HoraInicio")
 			if not isnull(HoraInicio) and isdate(HoraInicio) then HoraInicio=formatdatetime(HoraInicio,4) end if
@@ -609,7 +610,8 @@ end if
                     <td class="linha"><% if OmitirValorGuia="" then response.write(formatnumber(procs("ValorUnitario"),2)) end if%></td>
                     <td class="linha"><% if OmitirValorGuia="" then response.write(formatnumber(procs("ValorTotal"),2)) end if%></td>
                 </tr>
-                <%
+      <%
+      end if
 			procs.movenext
 			wend
 			procs.close

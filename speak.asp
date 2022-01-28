@@ -114,7 +114,7 @@ for u=0 to ubound(list)
                     body: "<%=Texto%>"
                 });
                 notification.onclick = function() {
-                    window.open("https://clinic.feegow.com.br");
+                    window.open("https://app.feegow.com/main/");
                 }
             });
         }

@@ -93,6 +93,8 @@ RepassesNaoPagos = 0
 servicosNaoExecutados = 0
 servicosExecutadosEmOutraData = 0
 vl4 = 0
+devolucoes = 0
+OutrasDespesas = 0
 
 Caixas = ""
 
@@ -218,7 +220,7 @@ end if
 vl4 = vl2 - ValorFechamentoInformado
 
 'BLOCO 2
-set pDesp = db.execute("select sum(idesc.Valor) Despesas FROM sys_financialmovement m "&_
+set pDesp = db.execute("select COALESCE(sum(idesc.Valor),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
@@ -226,7 +228,7 @@ set pDesp = db.execute("select sum(idesc.Valor) Despesas FROM sys_financialmovem
 "")
 DespesasRepasse = pDesp("Despesas")
 
-set pDesp = db.execute("select sum(m.Value) Despesas FROM sys_financialmovement m "&_
+set pDesp = db.execute("select COALESCE(sum(m.Value),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
@@ -352,11 +354,11 @@ set RecebimentoLiquidoDeOutrasDatasSQL=nothing
 
 transferenciasBancarias = 0
 
-set TransferenciasBancariasSQL = db.execute("SELECT SUM(idesc.Valor)-SUM(rr.Valor) totalTransfer FROM sys_financialmovement m "&_
+set TransferenciasBancariasSQL = db.execute("SELECT COALESCE(SUM(idesc.Valor),0)-COALESCE(SUM(rr.Valor),0) totalTransfer FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN rateiorateios rr ON rr.ItemInvoiceID = idesc.ItemID "&_
 "WHERE "&_
-"PaymentMethodID IN (7, 15) AND m.`Type`='Pay' AND m.CD='D' AND "&filtroData("m.Date")&";")
+"PaymentMethodID IN (7, 15) AND m.UnidadeID="& UnidadeID &"  AND m.`Type`='Pay' AND m.CD='D' AND "&filtroData("m.Date")&";")
 
 if not TransferenciasBancariasSQL.eof then
     transferenciasBancarias = TransferenciasBancariasSQL("totalTransfer")
@@ -370,6 +372,9 @@ end if
 
 ResultadoFinal = ValorFechamentoInformado + ( transferenciasBancarias + TotalCredito + TotalDebito) + RecebimentosNaoExecutados + ValorCreditosUtilizados - RepassesNaoPagos + RepasseDeOutrasDatas - servicosExecutadosEmOutraData - servicosNaoExecutados + devolucoes + OutrasDespesas + RecebimentoLiquidoDeOutrasDatas
 
+'response.write("ValorFechamentoInformado + ( transferenciasBancarias + TotalCredito + TotalDebito) + RecebimentosNaoExecutados + ValorCreditosUtilizados - RepassesNaoPagos + RepasseDeOutrasDatas - servicosExecutadosEmOutraData - servicosNaoExecutados + devolucoes + OutrasDespesas + RecebimentoLiquidoDeOutrasDatas")
+'response.write("<Br>")
+'response.write(ValorFechamentoInformado &"+ ("& transferenciasBancarias &"+"& TotalCredito &"+"& TotalDebito&") +"& RecebimentosNaoExecutados &"+"& ValorCreditosUtilizados &"-"& RepassesNaoPagos &"+"& RepasseDeOutrasDatas &"-"& servicosExecutadosEmOutraData &"-"& servicosNaoExecutados &"+"& devolucoes &"+"& OutrasDespesas &"+"& RecebimentoLiquidoDeOutrasDatas )
 
 TotalDiferenca=  ValorCreditosUtilizados + RepasseDeOutrasDatas - RepassesNaoPagos - servicosExecutadosEmOutraData - servicosNaoExecutados - RecebimentosNaoExecutados + RecebimentoLiquidoDeOutrasDatas
 

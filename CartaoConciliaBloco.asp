@@ -85,7 +85,7 @@
                         " ((100-parc.Fee)/100)*parc.Value ValorLiquidoPrevisto, "&_ 
                         " m.AccountAssociationIDCredit, m.AccountIDCredit, "&_ 
                         " parc.DateToReceive PrevisaoPagto "&_ 
-                        " from sys_financialcreditcardtransaction t INNER JOIN sys_financialmovement m ON m.id=t.MovementID INNER JOIN sys_financialcreditcardreceiptinstallments parc ON parc.TransactionID=t.id where ( ifnull(AuthorizationNumber,'')='"& Autorizacao &"' OR ifnull(TransactionNumber,'')='"& Transacao &"') AND m.Date="& mydatenull(DataVenda) &" AND Parc.Parcela="& Parcela &" AND ROUND(parc.Value)=ROUND("& treatvalzero(ValorBruto) &") ORDER BY AuthorizationNumber DESC, TransactionNumber DESC"
+                        " from sys_financialcreditcardtransaction t INNER JOIN sys_financialmovement m ON m.id=t.MovementID INNER JOIN sys_financialcreditcardreceiptinstallments parc ON parc.TransactionID=t.id where ( ifnull(AuthorizationNumber,'')='"& Autorizacao &"' OR ifnull(TransactionNumber,'')='"& Transacao &"' or ifnull(TransactionNumber,'')='') AND m.Date="& mydatenull(DataVenda) &" AND Parc.Parcela="& Parcela &" AND ROUND(parc.Value)=ROUND("& treatvalzero(ValorBruto) &") ORDER BY AuthorizationNumber DESC, TransactionNumber DESC"
                     'response.write( sql &"<br>")
                     set tran = db.execute( sql )
                     if not tran.eof then

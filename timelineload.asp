@@ -127,7 +127,13 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 			                    icone = "lock"
 		                    end if
 
-                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                            if preen("preenchedor")&""="" or preen("preenchedor")&""="0" then
+                                CompartilhamentoOk = True
+                            else
+                                CompartilhamentoOk = compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1
+                            end if
+
+                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or CompartilhamentoOk then
                                 exibe = 1
                             else
                                 exibe = 0

@@ -2068,8 +2068,8 @@ function callSta(callID, StaID){
 'or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 
     if session("OtherCurrencies")="phone" then
 	    %>
-	    setTimeout(function(){constante()}, 1500);
-	    setInterval(function(){constante()}, 7000);
+	    setTimeout(function(){constante()}, 5500);
+	    setInterval(function(){constante()}, 27000);
 	    <%
     else
 	    %>

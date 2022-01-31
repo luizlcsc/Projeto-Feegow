@@ -396,13 +396,13 @@ function verificaServicoIntegracaoLaboratorial()
         error: function(data){
             setTimeout(function(){
                 $("#verificacaoIntegracaoLaboratorial").html(integracaooff);
-               
+                $('button[id^="btn-abrir-integracao-"]').prop('disabled', true);
             }, 500);
         },
         success: function(data){
             setTimeout(function(){
                 $("#verificacaoIntegracaoLaboratorial").html(integracaook);
-               
+                $('button[id^="btn-abrir-integracao-"]').prop('disabled', false); 
             }, 500);
         }
     });

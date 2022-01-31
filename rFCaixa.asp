@@ -118,15 +118,18 @@ if not l3.eof then
         'ValorFechamento = ValorFechamento + l3("Valor")
         ValorFechamentoInformado = ValorFechamentoInformado + l3("DinheiroInformado")
 
-        sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
-        if session("User")=81920 then
-            response.Write("<br>"& sqlNaoPago &"<br>")
-        end if
+        'bloco passado para baixo sem considerar caixaId :-0
+        if false then
+            sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
+            if session("User")=81920 then
+                response.Write("<br>"& sqlNaoPago &"<br>")
+            end if
 
-        set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
-        if not MovementsNaoPagasSQL.eof then
-            if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
-                RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+            set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
+            if not MovementsNaoPagasSQL.eof then
+                if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
+                    RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+                end if
             end if
         end if
 
@@ -149,6 +152,14 @@ if not l3.eof then
 
 end if
 
+sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND "&filtroData("Date")&" AND CD='C' AND Type='Bill'"
+
+set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
+if not MovementsNaoPagasSQL.eof then
+    if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
+        RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+    end if
+end if
 
 sqlRepasseOutrosDias="SELECT idesc.PagamentoID, mov.AccountIDDebit,mov.Value ValorPagamento,  mov.Date DataPagamento, "&_
                       "SUM(rat.Valor) ValorRepasse, ii.DataExecucao, rat.ContaCredito, (CASE "&_
@@ -358,7 +369,7 @@ set TransferenciasBancariasSQL = db.execute("SELECT COALESCE(SUM(idesc.Valor),0)
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN rateiorateios rr ON rr.ItemInvoiceID = idesc.ItemID "&_
 "WHERE "&_
-"PaymentMethodID IN (7, 15) AND m.UnidadeID="& UnidadeID &"  AND m.`Type`='Pay' AND m.CD='D' AND "&filtroData("m.Date")&";")
+"PaymentMethodID IN (3, 7, 15) AND m.UnidadeID="& UnidadeID &"  AND m.`Type` IN ('Pay','Transfer') AND m.CD IN ('D','') AND "&filtroData("m.Date")&";")
 
 if not TransferenciasBancariasSQL.eof then
     transferenciasBancarias = TransferenciasBancariasSQL("totalTransfer")

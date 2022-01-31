@@ -11,15 +11,7 @@
 		<meta name="description" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<!-- basic styles -->
-
-		<!--link rel="stylesheet" href="assets/css/animate.css" />-->
-
-		<!--[if IE 7]>
-		  <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
-		<![endif]-->
-
-		<!-- page specific plugin styles -->
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="assets/fonts/icomoon/icomoon.css">
   <link rel="stylesheet" type="text/css" href="vendor/plugins/magnific/magnific-popup.css">
   <link rel="stylesheet" type="text/css" href="vendor/plugins/footable/css/footable.core.min.css">

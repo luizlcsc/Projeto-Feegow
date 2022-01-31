@@ -55,13 +55,7 @@
 
 							response.Redirect("./?P=Home&Pers=1")
                         else
-                            %>
-                            <div id="divError" class="step-pane active">
-                            	<div class="alert alert-danger"><button class="close" data-dismiss="alert" type="button"><i class="far fa-remove"></i></button>
-                                	<i class="far fa-remove"></i>
-                                    <strong>E-mail de acesso ou senha não confere.</strong>
-                                </div>
-                            </div>
-                            <%
+							ErroLogin = True
+	    					ErroLoginMsg = "E-mail de acesso ou senha não confere."
                         end if
 %>

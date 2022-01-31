@@ -780,13 +780,13 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                                 <%
 
                             end if
+                            if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
+                            <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                            <% end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
-                                <% if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
-                                <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
-                                <% end if %>
                                 <%
                             end if
                             %>
@@ -1156,6 +1156,40 @@ LocalStorageRestoreHabilitar();
     <%
     ELSE
     %>
+        function JustificativaTimeline(t, p, m, i, a, FormID, CampoID) {
+            $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
+            if(t=='AE'||t=='L'){
+                try{
+                    $.magnificPopup.open({
+                            removalDelay: 500,
+                            closeOnBgClick:false,
+                            modal: true,
+                            items: {
+                                src: '#modal-form'
+                            },
+                            // overflowY: 'hidden', //
+                            callbacks: {
+                                beforeOpen: function(e) {
+                                    this.st.mainClass = "mfp-zoomIn";
+                                }
+                            }
+                        });
+                }catch (e) {
+                    alert(e)
+
+                }
+            }else{
+                mfp('#modal-form');
+            }
+            var pl = $("#ProfissionalLaudadorID").val();
+            $.get("listaJustificativaTimeline.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+                $("#modal-form .panel").html(data);
+            }).fail(function (data){
+                handleFormOpenError(t, p, m, i, a, FormID, CampoID);
+                $("#modal-form").magnificPopup("close");
+            });
+        }
+
         function iPront(t, p, m, i, a, FormID, CampoID) {
             $("#modal-form .panel").html("<center class='modal-pre-loading'><i class='far fa-2x fa-circle-o-notch fa-spin'></i></center>");
             if(t=='AE'||t=='L'){

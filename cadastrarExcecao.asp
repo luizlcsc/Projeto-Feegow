@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="sqls/sqlUtils.asp"-->
 <%
 ProfissionalID = req("ProfissionalID")
 Unidades = session("Unidades")
@@ -77,10 +78,24 @@ else
     <input type="hidden" name="ProfissionalID" id="ProfissionalID" value="<%=ProfissionalID %>" />
 
     <%
+    set Prof = db.execute("SELECT Unidades FROM profissionais WHERE id="&ProfissionalID)
+    if not Prof.eof then
+        UnidadesProfissional = Prof("Unidades")
+        if UnidadesProfissional&""<>"" then
+            UnidadesProfissional = replace(UnidadesProfissional&"", "|", "")
+
+            if UnidadesProfissional="" then
+                UnidadesProfissional = 0
+            end if
+            sqlUnidades = " and l.UnidadeID IN ("&UnidadesProfissional&")"
+        end if
+    end if
     response.write(quickField("simpleSelect", "LocalID", "Local", 6, LocalID, "select l.*, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where COALESCE(cliniccentral.overlap(CONCAT('|',l.UnidadeID,'|'),COALESCE(NULLIF('"&Unidades&"',''),'-999')),TRUE) AND  l.sysActive=1 "&sqlUnidades&" order by l.NomeLocal", "NomeLocal", "required"))
+
+    sqlProcedimentos = sqlProcedimentosPorProfissional(ProfissionalID)
     %>
 
-    <%=quickField("multiple", "Procedimentos", "Procedimentos", 4, Procedimentos, "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&req("ProfissionalID")&"|%',TRUE) ELSE TRUE END")&"  and OpcoesAgenda not in (3) order by OpcoesAgenda desc, NomeProcedimento", "NomeProcedimento", "")%>
+    <%=quickField("multiple", "Procedimentos", "Procedimentos", 4, Procedimentos, sqlProcedimentos, "NomeProcedimento", "")%>
 
     <%=quickField("multiple", "Especialidades", "Especialidades", 4, Especialidades, "select id, especialidade from especialidades where sysActive=1 and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&") order by especialidade", "especialidade", "")%>
     <%

@@ -53,7 +53,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
                 sqlNascimento = " AND Nascimento="&mydatenull(ref("nascimento"))
             end if
 
-            if PorteClinica <= 3 then
+            if PorteClinica <= 3 or PorteClinica&""="" then
                 'sqlNomeDaMae = " id IN ( (select PacienteID from pacientesrelativos where ((TRIM(Nome) like '%"&ref("q")&"%' ) and sysActive=1 and parentesco = 2 ) ) )"
                 sqlTelefone = " OR replace(replace(replace(replace(Tel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Tel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel1,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' or replace(replace(replace(replace(Cel2,'(',''),')',''),'-',''),' ', '') like '%"&ref("q")&"%' "
             else
@@ -88,7 +88,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
                     '    sqlparentesco = "IF( ( " & sqlNomeDaMae & ") , CONCAT('<b>Mae: ',NomePaciente,'</b>'), NomePaciente) NomePaciente,"
                     'end if
 
-                    sql = "select id,"&sqlparentesco&"  Nascimento from pacientes where (((NomePaciente) like '%"&ref("q")&"%' ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" or ((false "&sqlNomeDaMae&" " &sqlTelefone&") and sysActive=1) limit "& page*30 &", 30"
+                    sql = "select id,"&sqlparentesco&"  Nascimento from pacientes where sysActive=1 AND (((NomePaciente) like '%"&ref("q")&"%') "&sqlProfissionalPaciente&") "&sqlNascimento&" or ((false "&sqlNomeDaMae&" " &sqlTelefone&") ) limit "& page*30 &", 30"
                 end if
                 'sql = "select id, NomePaciente, Nascimento from pacientes where (((NomePaciente) like '"&ref("q")&"%' ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
                 sqlAlternativo = "select id, NomePaciente, Nascimento from pacientes where ((SOUNDEX(LEFT(NomePaciente, LENGTH('"&ref("q")&"'))) = SOUNDEX('"&ref("q")&"') ) and sysActive=1 "&sqlProfissionalPaciente&") "&sqlNascimento&" order by (case when NomePaciente like '"&ref("q")&"%' then 1 else 2 end) , NomePaciente limit "& page*30 &", 30"
@@ -330,7 +330,6 @@ else
     "ins": false,
     <%
 end if
-
 
 %>
   "items": [

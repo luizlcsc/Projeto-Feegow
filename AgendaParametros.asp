@@ -156,7 +156,7 @@ if tipo="PacienteID" then
 
 			    if splCamposPedir(i)<>"IndicadoPorSelecao" then
 				%>
-				$("#age<%=splCamposPedir(i)%>").val("<%=pac(""&splCamposPedir(i)&"")%>");
+				$("#age<%=splCamposPedir(i)%>").val("<%=fix_string_chars(pac(""&splCamposPedir(i)&""))%>");
 				<%
 				end if
 			end if
@@ -279,21 +279,24 @@ if tipo="PacienteID" then
    	        s2aj("ConvenioID", 'convenios', 'NomeConvenio', '', '');
 			<%
 			if not isnull(conv("RetornoConsulta")) and conv("RetornoConsulta")<>"" and isnumeric(conv("RetornoConsulta")) then
-				RetornoConsulta=ccur(conv("RetornoConsulta"))
+				RetornoConsulta=conv("RetornoConsulta")
 				if RetornoConsulta>0 then
 					'pega o ultimo atendido deste paciente antes de hoje, se houve, ve quantos dias de retorno deste convenio e avisa
 					set agendAnt = db.execute("select Data from agendamentos where PacienteID="&PacienteID&" and Data<"&mydatenull(ref("Data"))&" and ProfissionalID="&treatvalzero(ProfissionalID)&" and StaID=3 order by Data desc limit 1")
 					if not agendAnt.EOF then
-						TempoUltima = datediff("d", agendAnt("Data"), ref("Data"))
-						if TempoUltima<=RetornoConsulta then
-							%>
+                DataAgendamento = replace(mydatenull(ref("Data")), "'", "")
+                DataAgendamentoAnterior = replace(mydatenull(agendAnt("Data")), "'", "")
+                TempoUltima = datediff("d", DataAgendamentoAnterior, DataAgendamento)
+                MelhorData = dateadd("d", Cint(RetornoConsulta)+1, DataAgendamentoAnterior)
 
-                            new PNotify({
-                                title: 'ALERTA!',
-                                text: 'Atenção: Este paciente teve um atendimento com este profissional há <%=TempoUltima%> dia(s). \n A melhor data para retorno de consulta é a partir do dia <%=dateadd("d", RetornoConsulta+1, agendAnt("Data"))%>.',
-                                type: 'warning',
-                                delay: 10000
-                            });
+                if Cint(TempoUltima)<=Cint(RetornoConsulta) then
+							%>
+                  new PNotify({
+                      title: 'ALERTA!',
+                      text: 'Atenção: Este paciente teve um atendimento com este profissional há <%=TempoUltima%> dia(s). \n A melhor data para retorno de consulta é a partir do dia <%=MelhorData%>.',
+                      type: 'warning',
+                      delay: 10000
+                  });
 							<%
 						end if
 					end if

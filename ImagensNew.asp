@@ -353,9 +353,9 @@ end if
                                        </div>
                                     </small>
 
-                                    <button class="btn btn-xs btn-alert btn-sensitive-action" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
+                                    <a class="btn btn-xs btn-alert btn-sensitive-action" title="Copiar link" onclick="CopyToClipboard('${item.ArquivoLink}')">
                                         <i class="far fa-copy"></i>
-                                    </button>
+                                    </a>
                                     <a class="btn btn-xs btn-alert btn-sensitive-action" href="javascript:modalTipo(${item.id})" title="Cadastrar tipo de imagem">
                                                               <i class="far fa-cog"></i>
                                     </a>

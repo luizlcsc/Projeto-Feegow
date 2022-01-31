@@ -75,7 +75,8 @@ end if
 <div class="panel" <%=DisabledBotao%> >
 
     <%
-set campo = db.execute("select * from buicamposforms where FormID="& ModeloID &" ORDER BY pTop")
+' set campo = db.execute("select * from buicamposforms where FormID="& ModeloID &" ORDER BY pTop")
+set campo = db.execute("select c.*, f.LadoALado from buicamposforms c LEFT JOIN buiforms f on f.id=c.FormID where c.FormID="&ModeloID&" and c.GrupoID=0 and c.TipoCampoID not in(7) order by pTop")
 set reg = db.execute("select * from `_"& ModeloID &"` WHERE id="& FormID)
 while not campo.eof
     Rotulo = campo("RotuloCampo")
@@ -83,6 +84,8 @@ while not campo.eof
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
     Obrigatorio = trim(campo("Obrigatorio")&"")
+    ValorPadrao = campo("ValorPadrao")&""
+    LadoALado = campo("LadoALado")
     Valor = ""
     Texto = campo("Texto")&""
     if campo("MaxCarac")&"" <> "" then
@@ -201,7 +204,7 @@ while not campo.eof
                 </span>
             </div>
             <%
-        case 8,16'MEMORANDO
+        case 8'MEMORANDO
 '            Valor = reg(""& campo("id") &"")
             if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
                 cols = 6
@@ -346,6 +349,44 @@ while not campo.eof
                 <% end if %>
 
             <%
+        case 16'CID-10 - usar a lógica do campo que auto-sugere
+            %>
+            <div class="panel-body">
+                <div class="col-md-12">
+            <%
+                    NomeCid = ""
+                    if ValorPadrao<>"" and isnumeric(ValorPadrao) and not isnull(ValorPadrao) then
+                        set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorPadrao&"'")
+                        if not pcid.eof then
+                            NomeCid = pcid("Codigo") &" - "& pcid("Descricao")
+                        end if
+                    end if
+                    if LadoALado="S" then
+                        %><table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td width="1%" class="cel_label" nowrap>
+                                    <label class="campoLabel"><%=Rotulo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>                        </td>
+                                <td width="99%" class="cel_input">
+                                    <input tabindex="<%=Ordem%>"  data-name="<%=Rotulo%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text" <% if Obrigatorio = "S" then %>required <%end if%>>
+                                </td>
+                            </tr>
+                        </table><%
+                    else
+                        %>
+                        <label class="campoLabel"><%=Rotulo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label>
+                        <select id="input_<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=Rotulo%>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput">
+                            <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
+                        </select>
+                        <script type="text/javascript">
+                            s2aj('input_<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
+                        </script>
+
+                    <%
+                    end if
+                    %>
+                </div>
+            </div>
+        <%
 
         case 19'PRESCRIÇÃO
             %>

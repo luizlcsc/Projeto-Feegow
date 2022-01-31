@@ -174,9 +174,9 @@ end if
 
 if req("id")<>"" and isNumeric(req("id")) then
 	AgendamentoID = req("id")
-	set buscaAgendamentos = db.execute("select * from agendamentos where id="&req("id"))
+	set buscaAgendamentos = db.execute("select a.*, s.StaConsulta from agendamentos a LEFT JOIN staconsulta s ON s.id = a.StaID where a.id="&req("id"))
 else
-	set buscaAgendamentos = db.execute("select * from agendamentos where ProfissionalID="&ProfissionalID&" and Hora='"&Hora&"' and Data='"&mydate(Data)&"'")
+	set buscaAgendamentos = db.execute("select a.*, s.StaConsulta from agendamentos a LEFT JOIN staconsulta s ON s.id = a.StaID where a.ProfissionalID="&ProfissionalID&" and a.Hora='"&Hora&"' and a.Data='"&mydate(Data)&"'")
 	'VERIFICAR -> esse este der mais de um registro no horaio/profissional criar consulta em grupo
 end if
 
@@ -184,6 +184,7 @@ if buscaAgendamentos.EOF then
 	ConsultaID = 0
 	StaID = 1
     ProgramaID = ""
+    statusDescricao= ""
 else
     'Validar a permissão
     if aut("alterarcheckinpagoA") = 1 then
@@ -244,6 +245,7 @@ else
 
     indicadoId = buscaAgendamentos("IndicadoPor")
     ProgramaID = buscaAgendamentos("ProgramaID")
+    statusDescricao = buscaAgendamentos("StaConsulta")
 end if
 
 if PacienteID<>"" then
@@ -502,7 +504,9 @@ end if
 
             <div class="col-md-1"><br>
 
-            	<div class="checkbox-custom checkbox-alert"<%if EncaixesExibe=0 then%> style="display:none"  <%end if %>><input type="checkbox" name="Encaixe" id="Encaixe" value="1" <%if Encaixe=1 then%> disabled checked<%end if%>><label for="Encaixe" class="checkbox"> Encaixe</label></div>
+            	<div class="checkbox-custom checkbox-alert"<%if EncaixesExibe=0 or aut("agendamentoencaixe")=0 then%> style="display:none"  <%end if %>>
+                    <input type="checkbox" name="Encaixe" id="Encaixe" value="1" <%if Encaixe=1 then%> disabled checked<%end if%>><label for="Encaixe" class="checkbox"> Encaixe</label>
+                </div>
             	<%
                 if Encaixe=1 then
                 %>
@@ -670,7 +674,7 @@ end if
                             %><input type="text" name="ageEmail10" class="form-control hidden" autocomplete="off" />
                             <%= quickField(dField("typeName"), "age"&splCamposPedir(i), dField("label"), colMd, valorCampo, sqlOrClass, dField("selectColumnToShow"), " autocomplete='campo-agenda' no-select2 datepicker-vazio "&camposRequired&" "&fieldReadonly) %>
                         <%end if
-
+                        
                     end if
                 end if
 			next
@@ -829,16 +833,18 @@ end if
                         response.write("    </div>")
                         end if
 
-                        if recursoAdicional(31)=4 then
+                        if recursoAdicional(31)=4 or recursoAdicional(43)=4 or recursoAdicional(49)=4 then
                             LabelSmsZap = "WhatsApp"
+                            idSmsZap = "ConfWhatsapp"
                         else
                             LabelSmsZap = "SMS"
+                            idSmsZap = "ConfSMS"
                         end if
 						%>
 
                             <div class="col-md-4">
-                            <%if ServicoSMS="S" then%>
-                                <div class="checkbox-custom checkbox-primary"><input name="ConfSMS"  id="ConfSMS" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" then%> checked="checked"<%end if%> /><label for="ConfSMS"> Enviar <%=LabelSmsZap%></label></div>
+                            <%if ServicoSMS="S" or ServicoWhatsapp="S" then%>
+                                <div class="checkbox-custom checkbox-primary"><input name="<%=idSmsZap%>"  id="<%=idSmsZap%>" value="S" <% if getConfig("SMSEmailSend") = 1 then %> onclick="return false;" <% end if %> type="checkbox"<%if ConfSMS="S" and SMSEnviado<> "S" or ConfWhatsapp="S" then%> checked="checked"<%end if%> /><label for="<%=idSmsZap%>"> Enviar <%=LabelSmsZap%></label></div>
                             <%end if%>
                                 <%
 								'response.Write("select EnviadoEm, WhatsApp from cliniccentral.smshistorico where AgendamentoID="&ConsultaID&" and LicencaID="&replace( session("banco"), "clinic", "" ))
@@ -995,6 +1001,9 @@ end if
                                         <tr>
                                             <td>Termina:</td>
                                             <td>
+                                                <div class="row col-xs-12">
+                                                    <label><input type="radio" class="ace" name="TerminaRepeticao" value="N" checked /><span class="lbl"> Nunca </span></label>
+                                                </div>
                                                 <div class="row">
                                                     <div class="col-xs-3">
                                                         <label><input type="radio" class="ace" name="TerminaRepeticao" value="O" /><span class="lbl"> Após </span></label>
@@ -1610,15 +1619,32 @@ async function submitAgendamento(check) {
 }
 
 function excluiAgendamento(ConsultaID, Confirma){
+    let StaAgendamento = '<%=StaID%>';
+    let descricaoStatus = '<%=statusDescricao%>'
+    let permissaoExcluir = '<%=aut("|agestafinX|")%>';
+    let permiteExcluir = true;
 
-	$.ajax({
-		type:"POST",
-		url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma+"&token=98b4d9bbfdfe2170003fcb23b8c13e6b",
-		data:$("#formExcluiAgendamento").serialize(),
-		success:function(data){
-			$("#div-agendamento").html(data);
-		}
-	});
+    if((StaAgendamento == "2" ||StaAgendamento == "3" || StaAgendamento == "4" ||StaAgendamento == "6" ) && permissaoExcluir == "0"){
+        permiteExcluir = false;
+    }
+
+    if(permiteExcluir){
+        $.ajax({
+            type:"POST",
+            url:"excluiAgendamento.asp?ConsultaID="+ConsultaID+"&Confirma="+Confirma+"&token=98b4d9bbfdfe2170003fcb23b8c13e6b",
+            data:$("#formExcluiAgendamento").serialize(),
+            success:function(data){
+                $("#div-agendamento").html(data);
+            }
+        });
+    }else{
+        new PNotify({
+        title: 'Não excluído!',
+        text: 'Você não possui permissão para excluir este agendamento com status de '+descricaoStatus+'.',
+        type: 'danger',
+        delay: 3000
+    });
+    }
 }
 function repeteAgendamento(ConsultaID){
 	$.ajax({
@@ -1633,7 +1659,12 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
+    //let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
+    var data    = new Date();
+    var hora    = data.getHours();          // 0-23
+    var min     = data.getMinutes();        // 0-59
+    let horaAtual = ("00"+ hora).slice(-2) + ':' + ("00"+ min).slice(-2) ;
+    
     $("#Chegada").val(horaAtual);
 }
 
@@ -2067,6 +2098,73 @@ $("select[name^=ConvenioID]").change(function(){
         }
     });
 });
+
+//NOVO SERVIÇO DE MENSAGERIA (EMAIL) ↓
+$( document ).ready( () => {
+    $("#qfageemail1 .input-group-addon a").prop("href", "#")
+    $("#qfageemail1 .input-group-addon a .fa-envelope").remove()
+    $("#qfageemail1 .input-group-addon a").append("<span id='informativo' title='Verificar email'></span>")
+    $("#informativo").append("<i class='far fa-envelope bigger-110'></i>")
+});
+
+$("#qfageemail1 .input-group-addon a").on("click", () => {   
+
+    const email = $('#ageEmail1').val();
+    const nome = $('#PacienteID').text().replace(/\s+/g, '');
+
+    $.post(`https://messaging.feegow.com/api/email/send-confirmation?email=${email}&name=${nome}`)
+        .done( data => {
+            const sucesso = data.content.Messages.map( data => data.Status ).includes('success') || data.success === true ? true : false
+
+            if (sucesso) showMessageDialog("Email de confirmação enviado", 'success');
+
+            $.get(`https://messaging.feegow.com/api/email/contacts/${email}?stats=true`)
+                .done( data => {
+                    if(data.content.mailjet.stats.BouncedCount > 0) {
+
+                        const vaiEnviarEventoDeEmail = $("#ConfEmail").is(":checked");
+
+                        if(data.content.mailjet.stats.HardBouncedCount > 0) {
+                            //Se vaiEnviarEventoDeEmail = true então desabilita botão de salvar
+                            $("#btnSalvarAgenda").prop( "disabled", vaiEnviarEventoDeEmail );
+                            showMessageDialog("O email não recebeu a mensagem de verificação. O evento de email não será disparado", 'danger');
+                        }
+
+                        if(data.content.mailjet.stats.SoftBouncedCount > 0) {
+                            showMessageDialog("Talvez o email cadastrado não receba o evento de email. Verifique com o paciente se está tudo OK", 'warning');
+                        }
+                    }
+                })
+                .fail(function(err){ 
+                    if(err.success === false) { 
+                        showMessageDialog("Não foi possível verificar status desse email no momento", 'danger');
+                    }
+                })
+        })
+        .fail(function(err){
+            if(err.status === 422) {
+                switch (err.responseJSON.code) {
+                    //Sintaxe inválida
+                    case 4100:
+                        showMessageDialog(`${err.responseJSON.content}`, 'danger');
+                        break;
+                    //MX inválido
+                    case 4101:
+                        showMessageDialog(`${err.responseJSON.content}`, 'warning');
+                        break;
+                    //Email já confirmado
+                    case 4104:
+                        showMessageDialog(`${err.responseJSON.content}`, 'info');
+                        break;
+                
+                    default:
+                        showMessageDialog("Ocorreu um erro ao tentar verificar o email. Tente novamente mais tarde", 'danger');
+                        break;
+                }
+            }
+        });
+})
+//NOVO SERVIÇO DE MENSAGERIA (EMAIL) ↑
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>

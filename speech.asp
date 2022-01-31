@@ -83,10 +83,19 @@
                   recognizing = false;
                   $speeBtn.removeClass("btn-recording");
                   $speeBtn.find("i").removeClass("fa-stop").addClass("fa-microphone");
+
+                  if (document.getElementById($("#speeFLD").val() +"mem") != null){ //se usa div
+                    $("#"+$("#speeFLD").val()).val($("#"+$("#speeFLD").val()+"mem").html());
+                  }
           }
 
           function iniciaEscuta(cid){
-                   $("#speeFLD").val(cid);
+                 
+                  $("#speeFLD").val(cid);
+
+                  //limpa campo
+                  //$("#"+$("#speeFLD").val()+"mem").text("");
+                  //$("#"+$("#speeFLD").val()).val("");  
 
                   recognition.start();
                   recognizing = true;
@@ -126,6 +135,8 @@ var ignore_onend;
 var start_timestamp;
 var interim_span
 var original_innerText;
+var ultimaFrase = '';
+var penultimaFrase = '';
 if (!('webkitSpeechRecognition' in window)) {
   upgrade();
 } else {
@@ -140,7 +151,9 @@ if (!('webkitSpeechRecognition' in window)) {
     //showInfo('info_speak_now');
     //start_img.src = 'assets/img/speak.gif';
     let $input  = $("#"+$("#speeFLD").val());
-    original_innerText = $input.val().trim() == ""? "" : $input.val() +" ";
+    original_innerText1 = $input.val().trim() == ""? "" : $input.val() +" ";
+    original_innerText2 = $input.val().trim() == ""? "" : $input.val() +" ";
+    original_innerText3 = $input.val().trim() == ""? "" : $input.val() +" ";
 
   };
 
@@ -183,26 +196,64 @@ if (!('webkitSpeechRecognition' in window)) {
       window.getSelection().addRange(range);
     }
 */
-    paraEscuta($("#speeFLD").val());
+    //paraEscuta($("#speeFLD").val());
   };
 
   recognition.onresult = function(event) {
+    
     let $input  = $("#"+$("#speeFLD").val());
-    // let inputmen  = document.getElementById($("#speeFLD").val() +"mem");
-    var final = "";
-    let interim = "";
-    for (var i = event.resultIndex; i < event.results.length; ++i) {
+    let inputmen1  = document.getElementById($("#speeFLD").val());
+    let inputmen2  = document.getElementById($("#speeFLD").val() +"mem");
 
-      if (event.results[i].isFinal) {
-          final += event.results[i][0].transcript;
-        // inputmen.innerText = original_innerText + final;
-        // original_innerText = inputmen.innerText;
-        $input.val(original_innerText + final);
-      }else{
-        interim += event.results[i][0].transcript;
-        $input.val(original_innerText + interim);
-      }
+    if (inputmen2 != null){  //campo que utiliza DIV com caixa de formatação de texto
+        var final = "";
+        let interim = "";
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+
+          if (event.results[i].isFinal) {
+              final += event.results[i][0].transcript;                 
+              final = pontuacao(final); // (Vírgula e ponto final)
+              final = PrimeiraMaiuscula(final);
+              if(ultimaFrase.indexOf('apagar') != -1 || ultimaFrase.indexOf('Apagar') != -1 ){ // (ao falar APAGAR, exclui a frase anterior)
+                original_innerText2 = apagar(original_innerText2);
+                inputmen2.innerHTML = original_innerText2; 
+              }else{
+                inputmen2.innerHTML = original_innerText2 + final; 
+              }
+              penultimaFrase = ultimaFrase;             
+              original_innerText2 = inputmen2.innerHTML;         
+          }else{
+            interim += event.results[i][0].transcript;    
+            //$("#"+$("#speeFLD").val()).val($("#"+$("#speeFLD").val()+"mem").html());       
+           // inputmen2.innerHTML = original_innerText2 + interim;
+            ultimaFrase = interim;
+            
+          }
+        }
+        inputmen2.innerHTML = original_innerText2 + interim;
+        $input.val(original_innerText2);
+
+    }else{ //campo textarea simples
+
+      var final = "";
+        let interim = "";
+        for (var i = event.resultIndex; i < event.results.length; ++i) {
+
+          if (event.results[i].isFinal) {
+              final += event.results[i][0].transcript; 
+              final = pontuacao(final);
+              inputmen1.val = original_innerText1 + final; 
+              original_innerText1 = inputmen1.val;  
+                     
+          }else{
+            interim += event.results[i][0].transcript;
+            $input.val(original_innerText1 + interim);
+          }
+        }        
+        $input.val(original_innerText1);
     }
+
+
     /*
     var interim_transcript = '';
     if (typeof(event.results) == 'undefined') {
@@ -249,7 +300,43 @@ function linebreak(s) {
 
 var first_char = /\S/;
 function capitalize(s) {
+  s = s.replace(/(?<!^)([A-Z])/, " $1");
   return s.replace(first_char, function(m) { return m.toUpperCase(); });
+}
+
+function pontuacao(p) {
+  p = p.replace(' vírgula', ', ');
+  p = p.replace(' Vírgula', ', ');
+  p = p.replace(' ponto final', '. ');
+  p = p.replace(' Ponto Final', '. ');
+  return p
+}
+
+function apagar(a) {     
+  penultimaFrase = penultimaFrase.replace(' vírgula', ',');
+  penultimaFrase = penultimaFrase.replace(' ponto final', '.');
+  penultimaFrase = penultimaFrase.replace(' Ponto Final', '.');
+   
+
+      let index1 = a.lastIndexOf(penultimaFrase);
+      let index2 = a.lastIndexOf(capitalize(penultimaFrase));
+
+      // se encontrou a letra
+      if (index1 >= 0) {
+          a = a.substring(0, index1) + "" + a.substring(index1 + penultimaFrase.length);
+      }else if (index2 >= 0){
+          a = a.substring(0, index2) + "" + a.substring(index2 + penultimaFrase.length);
+      }
+
+  //a = a.replace(penultimaFrase, '');    
+  return a
+}
+
+function PrimeiraMaiuscula(m) {   
+  if (penultimaFrase.slice(-11) == 'ponto final' || penultimaFrase == ''){  
+    m = capitalize(m);    
+  }    
+  return m
 }
 
 var campoValorPadrao="";

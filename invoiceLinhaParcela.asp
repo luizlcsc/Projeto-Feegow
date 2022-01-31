@@ -91,10 +91,10 @@ end if
             </div>
         <%
         end if
-        if StatusEmissaoBoleto=4 and session("Banco")<>"clinic5459" then
+        if StatusEmissaoBoleto=4 then
             %>
             <div>
-                <button type="button" title="Gerar boleto" class="btn btn-primary btn-sm ml5 geraBoleto" onclick="geraBoleto(<%=ParcelaID%>)" >
+                <button type="button" title="Gerar boleto" class="btn btn-primary btn-sm ml5 geraBoleto" onclick="geraBoleto(<%=ParcelaID%>, '<% if session("Banco")="clinic5459" then response.write("legacy") else response.write("default") end if %>')" >
                 <i class="far fa-barcode"></i>
                 <% IF BoletosDaParcela("totalboletos") THEN %>
                 <span class="badge badge-danger" style=""><%=BoletosDaParcela("totalboletos")%></span>
@@ -103,12 +103,10 @@ end if
             </div>
 
 <script >
-function geraBoleto(ParcelaID) {
+function geraBoleto(ParcelaID, type = 'default') {
     var Vecto = $("#Date" + ParcelaID).val();
 
-    console.log(Vecto);
-
-    openComponentsModal("emissaoboleto/invoice/movement", {"billId": ParcelaID}, "Gerenciar boletos", true, false);
+    openComponentsModal("emissaoboleto/invoice/movement", {"billId": ParcelaID, 'billMode': type, 'expiresAt': Vecto, 'invoiceId': '<%=req("I")%>'}, "Gerenciar boletos", true, false);
 }
 </script>
             <%
@@ -128,9 +126,6 @@ function geraBoleto(ParcelaID) {
             <a href="#" title="Atualizar fatura" class="btn btn-default btn-sm " onClick="geraDetalhamento(<%=ParcelaID%>)"><i class="far fa-calculator"></i></a>
             <%
             end if
-            %>
-            <a href="#" title="Gerar boleto" class="btn btn-primary btn-sm ml5" onClick="geraBoletoFeegow(<%=ParcelaID%>)"><i class="far fa-barcode"></i></a>
-            <%
             if SistemaNovo=1 then
             %>
             <a href="#" title="Enviar fatura via e-mail" class="btn btn-system btn-sm ml5" onClick="if(confirm('Deseja enviar a fatura?'))EnviaEmailFatura(<%=ParcelaID%>)" target="_blank"><i class="far fa-envelope"></i></a>
@@ -157,12 +152,6 @@ function geraBoleto(ParcelaID) {
                     window.open("../feegow_components/api/FechaFatura?Fecha=S&Detalhamento=1&MovementID=<%=ParcelaID%>&Vencimento="+Vecto+"&ReceitaID=<%=req("I")%>&redirectTo=<%=req("Div")%>");
                 }
 
-                function geraBoletoFeegow(ParcelaID) {
-                    var Vecto = $("#Date<%=ParcelaID %>").val();
-
-                    window.open("../feegow_components/api/FechaFatura?Fecha=S&Boleto=1&MovementID=<%=ParcelaID%>&Vencimento="+Vecto+"&ReceitaID=<%=req("I")%>&redirectTo=<%=req("Div")%>");
-                }
-
                 function EnviaEmailFatura(ParcelaID) {
                     var Vecto = $("#Date<%=ParcelaID %>").val();
 
@@ -179,6 +168,9 @@ function geraBoleto(ParcelaID) {
         %>
     </td>
     <% 
+        sqlVerificaInvoice = "SELECT id FROM sys_financialinvoices WHERE id = '" & req("I") & "'"
+        set rsVerificaInvoice = db.execute(sqlVerificaInvoice)
+
         sqlDataPrev = "SELECT tl.dataprevisao FROM itensinvoice ii " &_
                       "INNER JOIN tissguiasinvoice tgi ON tgi.ItemInvoiceID = ii.id " &_
                       "INNER JOIN tissguiasadt tgs ON tgs.id = tgi.GuiaID " &_
@@ -186,11 +178,19 @@ function geraBoleto(ParcelaID) {
                       "WHERE ii.InvoiceID = '" & req("I") & "' LIMIT 1 "
         set rsDataPrev = db.execute(sqlDataPrev)
 
-        if rsDataPrev.eof then
-            dataprev = ParcelaData
+        if rsVerificaInvoice.eof then
+            if rsDataPrev.eof then
+                dataprev = ParcelaData
+            else
+                dataprev = rsDataPrev("dataprevisao")
+            end if   
         else
-            dataprev = rsDataPrev("dataprevisao")
+            dataprev = ParcelaData
         end if
+
+        rsVerificaInvoice.close
+        set rsVerificaInvoice = Nothing
+        
         %>
     <td><%=quickField("datepicker", "Date"&ParcelaID, "", 3, dataprev, " text-right disable", "", " required"&primParc)%></td>
     <td><%=quickField("text", "Name"&ParcelaID, "", 3, Name, " text-right disable ", "", "  placeholder='Opcional'  "&primParc)%></td>
@@ -210,3 +210,24 @@ function geraBoleto(ParcelaID) {
     <a class="btn btn-xs btn-info hidden" href="#modal-table" role="button" data-toggle="modal" onclick="modalPaymentDetails('<%=ParcelaID%>');"><i class="far fa-search-plus"></i></a>
     <td class="hidden"><button type="button" class="btn btn-xs btn-danger" onClick="parcelas('<%=ParcelaID%>', 'X', '<%=ParcelaID%>')"><i class="far fa-remove"></i></button></td>
 </tr>
+<%
+
+'verificar se a página que requisitou o formulário tem 'tissbuscaguias' (Veio de LOTE)
+if InStr(Request.ServerVariables ("HTTP_REFERER"),"tissbuscaguias") > 0 then
+    if getConfig("permitirAlterarDataVencimento") <> 1 then %>
+        <script>     
+            alert("<%=InStr(Request.ServerVariables ("HTTP_REFERER"),"tissbuscaguias")%>")  ;
+            
+            $("#Date<%=ParcelaID%>").css({"color":"rgb(184,184,184)", "pointer-events":"none"});  //Desativar click DATAPICKER
+            $("span#iconeCalendar").hide(); // Esconder o ícone datapicker
+        </script>
+    <%
+    else%>
+        <script>
+            $("#Date<%=ParcelaID%>").css({"color": "rgb(85, 85, 85)", "pointer-events":""});              
+            $("span#iconeCalendar").show();
+        </script>
+    <%end if 
+end if
+    %>
+

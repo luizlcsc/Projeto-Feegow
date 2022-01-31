@@ -999,16 +999,16 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </a>
                   </li>
                   <%
-								%>
-
-								<li class="list-group-item">
-									<a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
-										<i class="far fa-calendar"></i>
-										Confirmação Geral
-									</a>
-								</li>
-								<%
 							end if
+              %>
+
+              <li class="list-group-item">
+                <a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
+                  <i class="far fa-calendar"></i>
+                  Confirmação Geral
+                </a>
+              </li>
+              <%
           end if 
 
 
@@ -1338,7 +1338,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 
 								IF FileName = "Home.asp" THEN
-                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 then
+                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 or AppEnv<>"production" then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF
@@ -2068,8 +2068,8 @@ function callSta(callID, StaID){
 'or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 
     if session("OtherCurrencies")="phone" then
 	    %>
-	    setTimeout(function(){constante()}, 1500);
-	    setInterval(function(){constante()}, 7000);
+	    setTimeout(function(){constante()}, 5500);
+	    setInterval(function(){constante()}, 27000);
 	    <%
     else
 	    %>
@@ -2744,7 +2744,9 @@ end if
  gtag('config', 'UA-54670639-4');
 </script>
 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
 function chatNotificacao(titulo, mensagem) {
     let options = {
       body: mensagem,

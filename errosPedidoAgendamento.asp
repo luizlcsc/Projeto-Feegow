@@ -95,9 +95,22 @@ end if
 '    erro = "Erro: Selecione a origem."
 'end if
 
+'Verificando se o usuário tem permissão para inserir ou alterar agendamento para esses status
 if aut("|agestafinA|")=0 and ref("Checkin")<>"1" then
     if rfStaID="3" or rfStaID="4" or rfStaID="6" or rfStaID="2" then
-        erro = "Você não possui permissão para alterar para este status."
+        erro = "Você não possui permissão de alterar para este status."
+    end if
+end if
+AgendamentoAlterado = ref("ConsultaID")
+
+' Verificando se o usuário tempermissão para alterar ou excluir agendamentos com esses status
+if aut("|agestafinA|")=0 AND ref("Checkin")<>"1" AND AgendamentoAlterado <> "" then
+
+    set StaAgendamentoSQL = db_execute("SELECT a.StaID, s.StaConsulta FROM agendamentos a LEFT JOIN staconsulta s ON s.id = a.StaID WHERE a.id="&AgendamentoAlterado)
+    if not StaAgendamentoSQL.eof then
+        if StaAgendamentoSQL("StaID")="3" or StaAgendamentoSQL("StaID")="4" or StaAgendamentoSQL("StaID")="6" or StaAgendamentoSQL("StaID")="2" then
+            erro = "Você não possui permissão para alterar o status "&StaAgendamentoSQL("StaConsulta")&" desse agendamento."
+        end if
     end if
 end if
 

@@ -93,7 +93,7 @@ end if
 if req("Agrupada")="1" then
     itensSql = "SELECT T.*, Quantidade*ValorUnitario+(Quantidade*Acrescimo)-(Quantidade*Desconto) AS total "&_
         " FROM ( "&_
-        " SELECT MAX(ii.Prioridade) AS Prioridade, group_concat(proc.NomeProcedimento SEPARATOR ', ') AS NomeProcedimento, sum(ii.ValorUnitario) AS ValorUnitario, 1 AS Quantidade, sum(ii.Acrescimo) AS Acrescimo, sum(ii.Desconto) AS Desconto,ii.TipoDesconto AS TipoDesconto,proc.DiasLaudo AS DiasLaudo,prop.TabelaID AS Tabela "&_
+        " SELECT ii.ItemID, prop.UnidadeID, MAX(ii.Prioridade) AS Prioridade, group_concat(proc.NomeProcedimento SEPARATOR ', ') AS NomeProcedimento, sum(ii.ValorUnitario) AS ValorUnitario, 1 AS Quantidade, sum(ii.Acrescimo) AS Acrescimo, sum(ii.Desconto) AS Desconto,ii.TipoDesconto AS TipoDesconto,proc.DiasLaudo AS DiasLaudo,prop.TabelaID AS Tabela "&_
         " FROM itensproposta ii "&_
         " LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
         " LEFT JOIN propostas prop ON prop.id=ii.PropostaID "&_
@@ -106,6 +106,8 @@ else
         "         MAX(ii.Prioridade)    AS Prioridade"&_
         "        ,proc.NomeProcedimento AS NomeProcedimento"&_
         "        ,ii.ValorUnitario      AS ValorUnitario"&_
+        "        ,ii.ItemID             AS ItemID"&_
+        "        ,prop.UnidadeID        AS UnidadeID"&_
         "        ,SUM(ii.Quantidade)    AS Quantidade"&_
         "        ,ii.Acrescimo          AS Acrescimo"&_
         "        ,ii.Desconto           AS Desconto"&_
@@ -222,47 +224,82 @@ body{
                             nometabela = "<br>("&tabelaPrivadaSQL("nometabela")&")"
                         end if
                     end if
+
+                    Qtd = 0
+                    TotalTotal = 0
+                    TotalDesconto = 0
+
+                    ExibirValorTotal=getConfig("ExibirValorTotal")
+                    ExibirDesconto=getConfig("ExibirDesconto")
+                    ExibirValorUnitario=getConfig("ExibirValorUnitario")
+                    ExibirPrioridadeDePropostas=getConfig("ExibirPrioridadeDePropostas")
+                    TabelasPrecoProposta=getConfig("TabelasPrecoProposta")&""
+
+                    ExibirValoresDeTabela = TabelasPrecoProposta<>"" and TabelasPrecoProposta<>"0" 
+                    ColspanFoot = 2
+
+                    IF ExibirPrioridadeDePropostas THEN 
+                        ColspanFoot = ColspanFoot+1
+                    END IF
+        
+                    if ExibirValoresDeTabela then
+                        TabelasPrecoProposta = replace(TabelasPrecoProposta, "|", "")
+                        sqlTabelasValores = "SELECT id,NomeTabela FROM tabelaparticular WHERE id IN ("&TabelasPrecoProposta&") order by NomeTabela"
+                    end if
     				%>
     				<h3><%=reg("TituloItens")%></h3>
 
                     <table style="text-align: center" width="100%" class="table table-striped table-condensed">
                     	<thead>
                         	<tr>
-                        	    <% IF getConfig("ExibirPrioridadeDePropostas") THEN %>
+                        	    <% IF ExibirPrioridadeDePropostas THEN %>
                                     <th class="<%=hiddenValor%>">Prioridade</th>
                                 <% END IF%>
                                 <th style="text-align: center">Qtd</th>
                                 <th style="text-align: center">Descrição</th>
+                                <%
+                                
+
+                                if ExibirValoresDeTabela then
+                                    set TabelasSQL = db.execute(sqlTabelasValores)
+
+                                    while not TabelasSQL.eof
+                                        
+                                        ColspanFoot = ColspanFoot+1
+                                        %>
+                                        <th style="text-align: center"><%=TabelasSQL("NomeTabela")%></th>
+                                        <%
+                                    TabelasSQL.movenext
+                                    wend
+                                    TabelasSQL.close
+                                    set TabelasSQL=nothing
+                                else
+                                    ColspanFoot = ColspanFoot+1
+                                %>
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>"><% IF getConfig("ExibirValorUnitario") = "1" THEN %>Valor Unitário<% END IF %></th>
 
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
-                                    <% IF getConfig("ExibirDesconto") = "1" THEN %>
+                                    <% IF ExibirDesconto = "1" THEN %>
                                         Desconto Unitário <%=nometabela%>
                                     <% END IF %>
                                 </th>
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
-                                    <% IF getConfig("ExibirDesconto") = "1" THEN %>
+                                    <% IF ExibirDesconto = "1" THEN %>
                                         Desconto Total <%=nometabela%>
                                     <% END IF %>
                                 </th>
                                 <th style="text-align: right" align="right" class="<%=hiddenValor%>">
-                                <% IF getConfig("ExibirValorTotal") = "1" THEN %>
+                                <% IF ExibirValorTotal = "1" THEN %>
                                     Valor Total
                                 <% END IF %>
                                 </th>
+                                <%
+                                end if
+                                %>
                             </tr>
                         </thead>
                         <tbody>
                         <%
-    					Qtd = 0
-    					TotalTotal = 0
-    					TotalDesconto = 0
-
-    					ExibirValorTotal=getConfig("ExibirValorTotal")
-    					ExibirDesconto=getConfig("ExibirDesconto")
-    					ExibirValorUnitario=getConfig("ExibirValorUnitario")
-    					ExibirPrioridadeDePropostas=getConfig("ExibirPrioridadeDePropostas")
-
     					while not itens.EOF
                             TabelaID = itens("Tabela")&""
     					    Desconto = itens("Desconto")
@@ -289,11 +326,31 @@ body{
                                 <% END IF%>
                             	<td><%=itens("Quantidade")%></td>
                             	<td><%=itens("NomeProcedimento")%></td>
+                                <%
+                                if ExibirValoresDeTabela then
+                                    set TabelasSQL = db.execute(sqlTabelasValores)
+
+                                    while not TabelasSQL.eof
+                                        
+
+                                        ValorAgendamentoTabela = calcValorProcedimento(itens("ItemID"), TabelasSQL("id"), itens("UnidadeID"), "", "", "", "")
+                                        %>
+                                        <td style="text-align: center"><%=fn(ValorAgendamentoTabela)%></td>
+                                        <%
+                                    TabelasSQL.movenext
+                                    wend
+                                    TabelasSQL.close
+                                    set TabelasSQL=nothing
+                                else
+                                %>
     							<td class="<%=hiddenValor%>" align="right"><% IF ExibirValorUnitario = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>
 
                                 <td class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %>R$ <%=formatnumber(Desconto,2)%><% END IF %></td>
                                 <td class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %>R$ <%=formatnumber(DescontoQtd,2)%><% END IF %></td>
                             	<td class="<%=hiddenValor%>" align="right"><% IF ExibirValorTotal = "1" THEN %>R$ <%=formatnumber(Total,2)%><% END IF %></td>
+                                <%
+                                end if
+                                %>
                             </tr>
     						<%
     						itensPrazoEntrega = itens("DiasLaudo")
@@ -313,11 +370,16 @@ body{
                         </tbody>
                         <tfoot>
                         	<tr>
-                            	<th align="left" colspan="<% IF ExibirPrioridadeDePropostas=0 THEN %>3<%else%>4<%end if%>"><%=Qtd%> ite<%if Qtd>1 then%>ns<%else%>m<%end if%></th>
-                     
+                            	<th align="left" colspan="<%=ColspanFoot%>"><%=Qtd%> ite<%if Qtd>1 then%>ns<%else%>m<%end if%></th>
+                                <%
+                                if not ExibirValoresDeTabela then
+                                %>
                             	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %> <% END IF %></th>
                             	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF ExibirDesconto = "1" THEN %>R$ <%=formatnumber(TotalDesconto,2)%><% END IF %></th>
                             	<th style="text-align: right" class="<%=hiddenValor%>" align="right"><% IF ExibirValorTotal = "1" THEN %>R$ <%=formatnumber(TotalTotal,2)%><% END IF %></th>
+                                <%
+                                end if
+                                %>
                             </tr>
                         </tfoot>
                     </table>

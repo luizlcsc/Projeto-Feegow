@@ -60,6 +60,7 @@ set feriados=nothing
 		padding:3px 4px!important
 	}
 </style>
+
 <table width="100%" class="panel pn bs-component table table-condensed hidden-print" id="tblCalendario">
 <thead>
       <tr class="active">
@@ -139,7 +140,7 @@ end if
 		
 		IF getConfig("ExibirProgressoAgendamentosAgendas") THEN
 		%>
-			<div class="progress progress-small  active" style="margin:10px 0 0 0!important; height:3px!important" id="prog<%=replace(DataClick, "/", "")%>"></div>
+			<div id="prog<%=replace(DataClick, "/", "")%>"></div>
 		<%
 		END IF
 
@@ -185,9 +186,24 @@ $('.dia-calendario').click(function(){
 	af('f');
 });
 
-<%if req("Data")<>"" and req("ProfissionalID")<>"" then
+<%if req("Data")<>"" and req("ProfissionalID")<>"" and getConfig("ExibirProgressoAgendamentosAgendas") then
     call agendaOcupacoes(req("ProfissionalID"), req("Data"))
 end if%>
+
+function atualizaCalendario()
+{
+	botao = '<a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:atualizaCalendario();" title="Atualiza vagas ocupadas no calendário">';
+    botao += '<span class="fas fa-sync"></span>';
+    botao += '<span class="sidebar-title">Atualizar Calendário</span>';
+    botao += '<span class="sidebar-title-tray"></span></a>';
+
+	spinner = '<i class="far fa-2x fa-circle-o-notch fa-spin"></i>'  
+	profissionalid = $('#ProfissionalID').val();           
+	$("#btnAtualizarCalendario").html(spinner);	
+	$.post("AtualizaCalendario.asp?ProfissionalID="+profissionalid+"&mes=<%=month(Data) %>&ano=<%=year(Data) %>&localid=<%=session("UnidadeID") %>", '', function(data){ eval(data); $("#btnAtualizarCalendario").html(botao); });
+}
+
+
 
  </script>
  <!--#include file="disconnect.asp"-->

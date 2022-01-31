@@ -23,6 +23,7 @@ if eventoID <> "" then
     enviarPara     = ref("enviarPara")
     modeloID       = ref("modeloID")
     nomeEvento     = ref("nomeEvento")
+    linkPers       = ref("linkPers")
 
     checked = ""
     if ativoCheckbox = 1 then
@@ -37,14 +38,9 @@ if eventoID <> "" then
 
             <%= quickfield("simpleSelect", "Envio", "Envio", 3, antesDepois, "SELECT 'A' id, 'Antes' Envio UNION ALL SELECT 'D' id, 'Depois' Envio UNION ALL SELECT 'I' id, 'Imediato' Envio", "Envio", "required") %>
             
-            <div class="col-md-2">
-                <label for="IntervaloHoras">
-                    Intervalo (em horas)
-                </label>
-                <input type="text" value="<%=intervalo%>" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" required />
-            </div>
+            <%= quickfield("text", "IntervaloHoras", "Intervalo (em horas)", 2, intervalo, "", "", "required") %>
 
-            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
+            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '1' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '2' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
             <div class="col-md-1 switch switch-info switch-inline">
                 <b>Ativo</b>
@@ -74,14 +70,11 @@ if eventoID <> "" then
 
         <div class="row" id="row3">
 
-            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, modeloID, "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
+            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 4, modeloID, "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
+            
+            <%= quickfield("text", "LinkPersonalizado", "Link Personalizado", 4, linkPers, "", "", "required") %>
 
-            <div class="col-md-6">
-                <label for="Tipo">
-                    Nome do Evento (Tipo)
-                </label>
-                <input type="text" value="<%=nomeEvento%>" id="NomeEvento" name="NomeEvento" placeholder="" class="form-control search-query" required />
-            </div>
+            <%= quickfield("text", "NomeEvento", "Nome do Evento (Tipo)", 4, nomeEvento, "", "", "required") %>
 
         </div>
 
@@ -97,17 +90,11 @@ if eventoID = "" then %>
         
             <%= quickfield("multiple", "Status", "Status do agendamento", 2, "", "SELECT StaConsulta,id FROM staconsulta UNION SELECT 'Excluído',-1 as id FROM staconsulta", "StaConsulta", "required") %>
 
-            <div class="col-md-2">
-                <label for="IntervaloHoras">
-                    Intervalo (em horas)
-                </label>
-                <input type="text" value="" id="IntervaloHoras" name="IntervaloHoras" placeholder="" class="form-control search-query" required />
-            </div>
+            <%= quickfield("text", "IntervaloHoras", "Intervalo (em horas)", 2, "", "", "", "required") %>
+            
+            <%= quickfield("simpleSelect", "Envio", "Envio", 3, antesDepois, "SELECT 'A' id, 'Antes' Envio UNION ALL SELECT 'D' id, 'Depois' Envio UNION ALL SELECT 'I' id, 'Imediato' Envio", "Envio", "required") %>
 
-            <%= quickfield("simpleSelect", "AntesDepois", "Antes ou depois do agendamento", 3, "", "select 'A' id, 'Antes' AntesDepois UNION ALL select 'D' id, 'Depois' AntesDepois", "AntesDepois", "required") %>
-
-
-            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '0' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '1' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
+            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '1' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '2' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
             <div class="col-md-1 switch switch-info switch-inline">
                 <b>Ativo</b>
@@ -137,14 +124,11 @@ if eventoID = "" then %>
 
         <div class="row" id="row3">
 
-            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 6, "", "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
+            <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 4, "", "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
+            
+            <%= quickfield("text", "LinkPersonalizado", "Link Personalizado", 4, "", "", "", "required") %>
 
-            <div class="col-md-6">
-                <label for="Tipo">
-                    Nome do Evento (Tipo)
-                </label>
-                <input type="text" value="" id="NomeEvento" name="NomeEvento" placeholder="" class="form-control search-query" required />
-            </div>
+            <%= quickfield("text", "NomeEvento", "Nome do Evento (Tipo)", 4, "", "", "", "required") %>
 
         </div>
 
@@ -159,6 +143,7 @@ end if
 
     function salvarConfig(eventoWhatsappID) {
 
+        const linkPers       = $("#LinkPersonalizado").val()
         const sysUser        = $("#SysUser").val()
         const statusAgenda   = $("#Status").val()
         const intervalo      = $("#IntervaloHoras").val()
@@ -173,13 +158,17 @@ end if
         const modeloID       = $("#ModeloID").val()
         const nomeEvento     = $("#NomeEvento").val()
 
-        if( $("#Status, #IntervaloHoras, #AntesDepois, #ApenasAgendamentoOnline, #Profissionais, #Unidades, #Especialidades, #Procedimentos, #EnviarPara, #ModeloID, #NomeEvento").val() === null ){
+        if ((linkPers == "") || (statusAgenda == null) || ((intervalo == "") && (antesDepois != 'I')) || (antesDepois == 0) || 
+            (paraApenas == 0) || (profissionais == null) || (unidades == null) || (especialidades == null) || 
+            (procedimentos == null) || (enviarPara == null) ||(modeloID == 0) || (nomeEvento == "") )
+        {
             showMessageDialog("Campos obrigatórios devem ser preenchidos", "danger");
         } else {
 
             $.post("updateWhatsappEvent.asp", 
                 {
                     statusAgenda:statusAgenda !== null ? statusAgenda.join() : null,
+                    linkPers:linkPers,
                     intervalo:intervalo,
                     antesDepois:antesDepois,
                     paraApenas:paraApenas,

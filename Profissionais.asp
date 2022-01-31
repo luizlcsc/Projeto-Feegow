@@ -18,6 +18,7 @@ sqlReg = "select * from Profissionais where id="&req("I")
 
 set reg = db.execute(sqlReg)
 RegUnidades = reg("Unidades")
+novoProfissional = reg("sysActive")
 
 if regUnidades&"" = "" then
     regUnidades = "|0|"
@@ -411,9 +412,23 @@ if session("Admin")=1 then
 end if
 %>
 <script type="text/javascript">
-$(document).ready(function(e) {
-	<%call formSave("frm", "save", "")%>
 
+function desbloquear(status,tabela){
+    if(status){
+        $("#dadosAcesso").css("display", "block")
+        $("#permissoes").css("display", "block")
+    }
+}
+
+$(document).ready(function(e) {
+	<%call formSave("frm", "save", "desbloquear(true,'profissionais')")%>
+
+ let novoProfissional = "<%=novoProfissional%>"
+
+    if (novoProfissional == 0){
+        $("#dadosAcesso").css("display", "none")
+        $("#permissoes").css("display", "none")
+    } 
     const $coordsInput = $('#Coordenadas');
 
     var coords = $coordsInput.val();

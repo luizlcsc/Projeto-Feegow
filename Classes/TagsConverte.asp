@@ -201,7 +201,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                   pacienteNomeSocial=PacientesSQL("NomePaciente")
                 end if
 
-                conteudo = replace(conteudo,"[Paciente.NomeSocial]",pacienteNomeSocial)
+                conteudo = replace(conteudo,"[Paciente.NomeSocial]",pacienteNomeSocial&"")
+                
                 conteudo = replace(conteudo,"[Paciente.Nome]",PacientesSQL("NomePaciente")&"")
                 conteudo = replace(conteudo,"[Paciente.Sexo]",PacientesSQL("Sexo")&"")
                 if isdate(PacientesSQL("Nascimento")) then

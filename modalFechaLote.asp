@@ -203,6 +203,19 @@ end function
     </div>
 
 <div class="modal-footer">
+<% 
+if getconfig("LancaContaPadrao")=1 then
+%>
+	<div class="btn-group">
+		<button id="LancaConta" class="btn btn-success btn-sm"><i class="far fa-save"></i> Fechar Lote e Lançar no Contas a Receber</button>
+		<button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+			<li><button id="NaoLancaConta" type="submit" onclick=""><i class="far fa-plus"></i> Fechar este Lote de Guias</button></li>
+<% 
+else 
+%>
 	<div class="btn-group">
 		<button class="btn btn-success btn-sm"><i class="far fa-save"></i> Fechar este Lote de Guias</button>
 		<button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -210,40 +223,44 @@ end function
 		</button>
 		<ul class="dropdown-menu" role="menu">
 			<li><a href="#" onclick="" id="LancaConta"><i class="far fa-plus"></i> Fechar Lote e Lançar no Contas a Receber</a></li>
-			<%
+<% 
+end if
 
-			if req("T") = "GuiaConsulta" then
-				coluna = "ValorProcedimento"
-			elseif req("T") = "GuiaHonorarios" then
-				coluna = "ValorPago"
-			else
-				coluna = "TotalGeral"
-			end if
 
-			set g = db.execute("select count(id) Qtd, sum("&coluna&") Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+    if req("T") = "GuiaConsulta" then
+      coluna = "ValorProcedimento"
+    elseif req("T") = "GuiaHonorarios" then
+      coluna = "ValorPago"
+    else
+      coluna = "TotalGeral"
+    end if
 
-			if not g.eof then
-				sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total, coalesce((select distinct imposto from itensinvoice where InvoiceID = conta.id and imposto = 1),0) temImposto "&_
-										" FROM sys_financialinvoices conta "&_
-										" LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
-										" WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
-				' response.write(sqlcontas)
-				set ContasSQL = db.execute(sqlcontas)
-			end if
-			while not ContasSQL.eof
-				if ContasSQL("temImposto") = 0 then 
-			%>
-					<li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="far fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
-			<%
-				end if
-				ContasSQL.movenext
-				wend
-				ContasSQL.close
-				set ContasSQL=nothing
-			%>
-		</ul>
+		set g = db.execute("select count(id) Qtd, sum("&coluna&") Total, ConvenioID from tiss"&req("T")&" where id in("&req("guia")&")")
+
+
+    if not g.eof then
+      sqlcontas = " SELECT distinct conta.id, itensinvoice.Descricao,'"&g("Total")&"' as Total, coalesce((select distinct imposto from itensinvoice where InvoiceID = conta.id and imposto = 1),0) temImposto "&_
+                  " FROM sys_financialinvoices conta "&_
+                  " LEFT JOIN itensinvoice ON itensinvoice.InvoiceID = conta.id "&_
+                  " WHERE conta.AccountID="&g("ConvenioID")&" AND conta.AssociationAccountID=6 AND conta.CD='C' AND itensinvoice.Tipo='O' AND itensinvoice.Descricao LIKE 'lote%' AND conta.sysDate > DATE_SUB(CURDATE(), INTERVAL 180 DAY)"
+      ' response.write(sqlcontas)
+      set ContasSQL = db.execute(sqlcontas)
+    end if
+    while not ContasSQL.eof
+      if ContasSQL("temImposto") = 0 then 
+    %>
+        <li><a href="#" onclick="javascript:geraInvoice('<%=req("T")%>', '<%=fn(g("Total"))%>', '<%=ContasSQL("id")%>')"><i class="far fa-plus"></i> Adicionar a conta: <%=ContasSQL("Descricao")%></a></li>
+    <%
+      end if
+      ContasSQL.movenext
+      wend
+      ContasSQL.close
+      set ContasSQL=nothing
+    %>
+  </ul>
+
 	
-	</div>
+</div>
     <button class="btn btn-sm btn-default" data-dismiss="modal">
     	Fechar
     </button>
@@ -275,3 +292,10 @@ $("#LancaConta").click(function(){
 	return false;
 });
 </script>
+<style>
+	#NaoLancaConta{
+		border: none;
+		background: none;
+		padding-left: 18px;
+	}
+</style>

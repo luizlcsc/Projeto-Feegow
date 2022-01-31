@@ -52,7 +52,7 @@ function abreAgenda(horario, id, data, LocalID,ProfissionalID,GradeID){
 	af('a');
     $.ajax({
     type:"POST",
-    url:"divAgendamento.asp?horario="+horario+"&id="+id+"&data="+data+"&profissionalID="+$("#ProfissionalID").val()+"&LocalID="+LocalID+"&GradeID="+GradeID,
+    url:"divAgendamento.asp?ProcedimentoID=<%=req("ProcedimentoID")%>&horario="+horario+"&id="+id+"&data="+data+"&profissionalID="+$("#ProfissionalID").val()+"&LocalID="+LocalID+"&GradeID="+GradeID,
     success:function(data){
         $("#div-agendamento").html(data);
         }

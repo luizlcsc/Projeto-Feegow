@@ -352,7 +352,7 @@ if not getResource.EOF then
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
 
-            valor = refhtml(getFields("columnName"))
+            valor = ref(getFields("columnName"))
 
             if instr(getFields("columnName"), "Nome")>0 then
                 valor = NomeNoPadrao(valor)

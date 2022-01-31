@@ -745,12 +745,14 @@ else
                 </thead>
                 <tbody id="bprocs">
                     <tr class="linha-procedimento" data-id="">
-                        <td><%= selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""validaProcedimento(this.id, this.value);parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID") %>
-                        <% if not isnull(PacienteID) and false then %>
-                            <br>
-                            <button class="btn btn-warning btn-xs" type="button" onclick="openComponentsModal('procedimentosListagem.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Restrições', true, '')"><i class="far fa-caret-square-o-left"></i></button>
-                            <button class="btn btn-success btn-xs" type="button" onclick="openComponentsModal('procedimentosModalPreparo.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Preparo', true, '')"><i class="far fa-lock"></i></button>
-                        <% end if %>
+                        <td>
+                            <%
+                            response.write(selectInsert("", "ProcedimentoID", ProcedimentoID, "procedimentos", "NomeProcedimento", " onchange=""validaProcedimento(this.id, this.value);parametros(this.id, this.value); atualizarTempoProcedimentoProfissional(this)"" data-agenda="""" data-exibir="""&GradeApenasProcedimentos&"""", oti, "ConvenioID"))
+                            if not isnull(PacienteID) and false then %>
+                                <br>
+                                <button class="btn btn-warning btn-xs" type="button" onclick="openComponentsModal('procedimentosListagem.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Restrições', true, '')"><i class="far fa-caret-square-o-left"></i></button>
+                                <button class="btn btn-success btn-xs" type="button" onclick="openComponentsModal('procedimentosModalPreparo.asp?ProcedimentoId=<%=ProcedimentoID%>&PacientedId=<%=PacienteID%>', true, 'Preparo', true, '')"><i class="far fa-lock"></i></button>
+                            <%end if %>
                         </td>
                         
                         <td>
@@ -1420,6 +1422,9 @@ function validaProcedimento(id,value){
 
             json = json[0];
 
+            $("#EquipamentoID").val(json.EquipamentoPadrao).change();
+            $("#EquipamentoID").select2();
+            
             if(json.NaoParticular == "1"){
                 $("#rdValorPlanoV").parent().addClass("radio-disabled");
                 $("#rdValorPlanoV").attr("disabled","disabled");

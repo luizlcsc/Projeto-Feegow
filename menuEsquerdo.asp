@@ -94,6 +94,12 @@ select case lcase(req("P"))
             if LiberarHorarioRemarcado then
                 statusCancelados=statusCancelados&",15"
             end if
+
+            LiberarHorarioNaoCompareceu = getConfig("LiberarHorarioNaoCompareceu")
+            if LiberarHorarioNaoCompareceu then
+                statusCancelados=statusCancelados&",6"
+            end if
+
             set pacDia = db.execute("select a.StaID, a.Hora, a.PacienteID, p.NomePaciente, ifnull(p.Foto, '') Foto from agendamentos a left join pacientes p on a.PacienteID=p.id where a.Data=curdate() and a.ProfissionalID="&session("idInTable")&" AND a.sysActive=1 AND StaID NOT IN ("&statusCancelados&") order by Hora")
 
             if not pacDia.eof then
@@ -284,7 +290,7 @@ end if
                     </div>
 		        <%
 		        end if
-                if aut("|agendaI|")=1 then
+                if aut("|agendaI|")=1 And aut("agendamentoencaixe")=1 then               
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
@@ -468,7 +474,7 @@ end if
                     </div>
 		        <%
 		        end if
-                if aut("|agendaI|")=1 then
+                if aut("|agendaI|")=1 And aut("agendamentoencaixe")=1 then
                 %>
                     <div class="col-xs-6">
                         <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
@@ -507,7 +513,15 @@ end if
                     %>
             </li>
             <li class="row sidebar-stat">
+                <div class="col-xs-12" id="btnAtualizarCalendario" style="text-align: center;" >
+                    <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" href="javascript:atualizaCalendario();" title="Atualiza vagas ocupadas no calendário">
+                        <span class="fas fa-sync"></span>
+                        <span class="sidebar-title">Atualizar Calendário</span>
+                        <span class="sidebar-title-tray"></span>
+                    </a>
+                </div>
                 <div class="fs11 col-xs-12" id="divCalendario">
+                    
                     <div class="panel panel-body pn bs-component calendario-resumo-agenda-content">
                         <%server.Execute("AgendamentoCalendario.asp")%>
                     </div>
@@ -553,7 +567,7 @@ end if
     <li class="sidebar-label pt20"></li>
     <li class="row sidebar-stat">
     <%
-                    if aut("|agendaI|")=1 and (session("Banco")<>"clinic5760" and session("Banco")<>"clinic6118" and session("Banco")<>"clinic105") then
+                    if (aut("|agendaI|")=1 And aut("agendamentoencaixe")=1) and (session("Banco")<>"clinic5760" and session("Banco")<>"clinic6118" and session("Banco")<>"clinic105") then
                     %>
                         <div class="col-xs-6">
                             <a class="btn btn-primary btn-gradient btn-alt btn-block item-active" id="AbrirEncaixe" href="javascript:void(0);">
@@ -747,7 +761,7 @@ end if
                     <li class="checkStatus">
                         <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
                             <span class="far fa-heart bigger-110"></span>
-                            <span class="sidebar-title">Resumo Clínico</span>
+                            <span class="sidebar-title">Resultado de Exames</span>
                             <span class="sidebar-title-tray">
                             <span class="label label-xs bg-primary" id="totallf"></span>
                             </span>
@@ -1345,7 +1359,7 @@ end if
 		    end if
 		    if (session("Admin")=1) or (lcase(req("P"))=lcase(session("Table")) and session("idInTable")=ccur(req("I")) and aut("senhapA")=1) or (aut("usuariosA")=1) then
 		    %>
-            <li>
+            <li id="dadosAcesso">
                 <a  class="menu-aba-meu-perfil-dados-acesso" data-toggle="tab" href="#divAcesso" onclick="ajxContent('DadosAcesso&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divAcesso');">
             	    <span class="far fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
             </li>
@@ -1402,7 +1416,7 @@ end if
 
 		    if session("Admin")=1 then
 		    %>
-            <li>
+            <li id="permissoes">
                 <a  class="menu-aba-meu-perfil-permissoes" data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('Permissoes&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
             	    <span class="far fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
             </li>
@@ -1475,7 +1489,7 @@ end if
             <%
 		    if (session("Admin")=1) or (lcase(req("P"))=lcase(session("Table")) and session("idInTable")=ccur(req("I")) and aut("senhapA")=1) or (aut("usuariosA")=1) then
 		    %>
-            <li>
+            <li id="dadosAcesso">
                 <a data-toggle="tab" href="#divAcesso" onclick="ajxContent('DadosAcesso&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divAcesso');">
                     <span class="far fa-key"></span> <span class="sidebar-title">Dados de Acesso</span></a>
             </li>
@@ -1483,7 +1497,7 @@ end if
 		    end if
 		    if session("Admin")=1 then
 		    %>
-            <li>
+            <li id="permissoes">
                 <a data-toggle="tab" href="#divPermissoes" id="gtPermissoes" onclick="ajxContent('Permissoes&T=<%=req("P")%>', '<%=req("I")%>', 1, 'divPermissoes');">
                     <span class="far fa-lock"></span> <span class="sidebar-title">Permiss&otilde;es</span></a>
             </li>

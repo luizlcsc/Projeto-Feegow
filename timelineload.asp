@@ -702,10 +702,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 </ul>
                                 <%
                             else
+                                Conteudo = unscapeOutput(ti("Conteudo")&"")
+
                                 IF urlbmj <> "" THEN
-                                    response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
+                                    response.Write("<small>" & replace(Conteudo,"[linkbmj]",urlbmj) & "</small>")
                                 ELSE
-                                    response.Write("<small>" & ti("Conteudo") & "</small>")
+                                    response.Write("<small>" & Conteudo & "</small>")
                                 END IF
                             end if
                     case "PedidosSADT"

@@ -157,6 +157,8 @@ RodapeProposta = replace(RodapeProposta, "[Procedimento.Nome]", DescricaoPropost
 Cabecalho = replace(Cabecalho, "[Procedimento.Nome]", DescricaoProposta)
 CabecalhoProposta = replace(CabecalhoProposta, "[Procedimento.Nome]", DescricaoProposta)
 
+Cabecalho = unscapeOutput(Cabecalho)
+Rodape = unscapeOutput(Rodape)
 
 
 if MarcaDagua <> "" then

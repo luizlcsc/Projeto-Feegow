@@ -31,6 +31,10 @@ if not getImpressos.EOF then
     end if
 end if
 
+Cabecalho = unscapeOutput(Cabecalho)
+Rodape = unscapeOutput(Rodape)
+
+
 set pac = db.execute("select * from pacientes where id="&req("PacienteID"))
 
 if pac("Sexo")=1 then

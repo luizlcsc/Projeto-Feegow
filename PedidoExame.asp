@@ -138,6 +138,9 @@ response.Charset="utf-8"
                         Cabecalho= tagsConverte(Cabecalho,"PacienteID_"&reg("PacienteID"),"")
                         Rodape= tagsConverte(Rodape,"PacienteID_"&reg("PacienteID"),"")
 
+                        Cabecalho = unscapeOutput(Cabecalho)
+                        Rodape = unscapeOutput(Rodape)
+                        
                         strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
                         strValPac = NomePaciente&"|^"&NomeSocial&"|^"&IdadePaciente&"|^"&EnderecoPaciente&"|^"&BairroPaciente&"|^"&CidadePaciente&"|^"&EstadoPaciente&"|^"&EmailPaciente&"|^"&TelefonePaciente&"|^"&DDMMAAAA&"|^"&Extenso&"|^"&Hora
                         'response.write(strValPac)

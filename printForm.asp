@@ -226,6 +226,10 @@ else
         end if
 	end if
 end if
+
+
+Cabecalho = unscapeOutput(Cabecalho)
+Rodape = unscapeOutput(Rodape)
 	%>
 <style>
 @media print {

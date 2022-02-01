@@ -65,6 +65,9 @@ function refNull(ColVal)
 	end if
 end function
 
+function unscapeOutput(outputVal)
+    unscapeOutput = replace(outputVal&"","&quot;", """")
+end function
 
 function reqf(P)
 

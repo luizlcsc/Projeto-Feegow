@@ -116,6 +116,9 @@ end if
                 end if
             end if
         end if
+        
+        Cabecalho = unscapeOutput(Cabecalho)
+        Rodape = unscapeOutput(Rodape)
 
 
 'strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"

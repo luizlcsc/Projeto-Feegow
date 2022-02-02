@@ -9,9 +9,9 @@ Function VerificaProntuarioCompartilhamento(sysUser, tipoProtuario, documentoID)
     if not idProfissional.EOF then
         if lcase(idProfissional("Table"))="profissionais" then
 
-            CompartSql = "select * from prontuariocompartilhamento where ProfissionalID!="&idProfissional("idintable")&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&tipoProtuario&"')"
+            CompartSql = "select * from prontuariocompartilhamento where ProfissionalID="&idProfissional("idintable")&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&tipoProtuario&"')"
             set Compart = db.execute(CompartSql)
-            set ArquivoCompart = db.execute("select * from arquivocompartilhamento where ProfissionalID!="&idProfissional("idintable")&" and CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&tipoProtuario&"') and DocumentoID="&documentoID)
+            set ArquivoCompart = db.execute("select * from arquivocompartilhamento where CategoriaID=(select id from cliniccentral.tipoprontuario t where sysActive=1 and t.Tipo='"&tipoProtuario&"') and ProfissionalID!="&idUsuario&" and DocumentoID="&documentoID)
 
             if not Compart.EOF then
                 tipocompartilhamento = Compart("TipoCompartilhamentoID")

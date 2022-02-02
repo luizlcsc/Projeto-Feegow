@@ -3985,7 +3985,7 @@ function fSysActive(NomeCampo, psysActive, PacienteID)
 end function
 
 function podeExcluir(xCaixaID, xType, xCD, xAccountAssociationIDCredit)
-    if (xCaixaID=session("CaixaID") and aut("|aberturacaixinhaX|") and xType="Pay") or (aut("|contasareceberX|") and xCD="D" and xType="Pay") or (aut("|areceberpacienteX|") and xCD="D" and xAccountAssociationIDCredit=3 and xType="Pay") or (aut("|contasapagarA|") and xCD="C" and xType="Pay") or (aut("|lancamentosX|") and xType="Transfer") then
+    if (xCaixaID=session("CaixaID") and aut("|aberturacaixinhaX|") and xType="Pay") or (aut("|contasareceberX|") and xCD="D" and xType="Pay") or (aut("|areceberpacienteX|") and xCD="D" and xAccountAssociationIDCredit=3 and xType="Pay") or (aut("|contasapagarA|") and xCD="C" and xType="Pay") or (aut("|lancamentosX|") and xType="Transfer")  or (aut("|lancamentosX|") and aut("|movementX|") and xType="CCCred") then
         podeExcluir = true
     else
         podeExcluir = false

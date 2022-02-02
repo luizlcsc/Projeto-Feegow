@@ -146,7 +146,7 @@
                     DiasAvisoValidade = prod("DiasAvisoValidadeGeral")
                 end if
 
-                if prod("Validade")&"" <>"" then
+                if prod("Validade")&"" <>"" and DiasAvisoValidade then
                     'if prod("Validade") =< dateAdd("d", DiasAvisoValidade, date()) then
                     diferenca = dateDiff("d",date(),prod("Validade"))
                     if (diferenca >= 0 and diferenca <= DiasAvisoValidade) then

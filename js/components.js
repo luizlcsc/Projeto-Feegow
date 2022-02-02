@@ -28,12 +28,12 @@ switch (env){
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
-        labServiceURL = "https://labservice.feegow.com/"
+        labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
-        labServiceURL = "https://labservice.feegow.com/"
+        labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
 }

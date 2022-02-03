@@ -91,7 +91,6 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
              set ti = db.execute( sql )
              
              while not ti.eof
-                set preen=nothing
                 
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
@@ -173,10 +172,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 PermissaoArquivo=true
             end if
 
-            if not preen.eof then
-                if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
-                    PermissaoArquivo = true
-                end if 
+            if typename(preen)="Recordset" then
+                if not preen.eof then
+                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                        PermissaoArquivo = true
+                    end if 
+                end if
             end if
 
             if not PermissaoArquivo then

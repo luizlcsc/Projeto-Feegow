@@ -66,14 +66,17 @@ if temregradesconto=1 then
 			temdescontocadastrado=1
 		end if
 
-		'Pegar todos os descontos do usuário pelo perfil dele
-		set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
-											" from regrasdescontos rd  "&_
-											" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
-											" INNER JOIN sys_users suser on suser.RegraID = rd.RegraID "&_
-											" WHERE rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
+		if temdescontocadastrado then
+			'Pegar todos os descontos do usuário pelo perfil dele
+			set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
+												" from regrasdescontos rd  "&_
+												" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
+												" INNER JOIN sys_users suser on suser.RegraID = rd.RegraID "&_
+												" WHERE rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL"&_
+												" AND rd.DescontoMaximo > 0 ORDER by rd.DescontoMaximo DESC")
 
-		'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )
+			'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )
+		end if
 	end if
 end if
 
@@ -178,7 +181,6 @@ if existePagto="" then
 
 					if descontoIgual = False then
 					    if isnumeric(ref("Quantidade"&splInv(i))) and isnumeric(ref("Desconto"&splInv(i))) then
-
 
                             ValorDesconto = ref("Quantidade"&splInv(i)) * ref("Desconto"&splInv(i))
                             if not rsDescontosUsuario.eof then

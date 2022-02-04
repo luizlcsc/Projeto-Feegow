@@ -2302,43 +2302,46 @@ end function
 
 
 function compartilhamentoFormulario(idprofissional,tipoDeFormulario)
+    if idprofissional&""="0" then
+        compartilhamentoFormulario=0
+    else
+        idProfissional = accountUser(idProfissional)
+        idProfissionalspl = split(idProfissional,"_")
+        idProfissional = idProfissionalspl(1)
 
-    idProfissional = accountUser(idProfissional)
-    idProfissionalspl = split(idProfissional,"_")
-    idProfissional = idProfissionalspl(1)
 
+        select Case tipoDeFormulario
+            case "Prescricao"
+                categoria = 1
+            case "Diagnostico"
+                categoria = 2
+            case "Atestado"
+                categoria = 3
+            case "Pedido"
+                categoria = 4
+            case "I" ' não achei
+                categoria = 5
+            case "A" ' não achei
+                categoria = 6
+            case "PedidosSADT"
+                categoria = 7
+            case "L"
+                categoria = 8
+            case "AE"
+                categoria = 9
+        end select 
 
-    select Case tipoDeFormulario
-	    case "Prescricao"
-            categoria = 1
-	    case "Diagnostico"
-            categoria = 2
-	    case "Atestado"
-            categoria = 3
-	    case "Pedido"
-            categoria = 4
-	    case "I" ' não achei
-            categoria = 5
-	    case "A" ' não achei
-            categoria = 6
-	    case "PedidosSADT"
-            categoria = 7
-	    case "L"
-            categoria = 8
-	    case "AE"
-            categoria = 9
-    end select 
+        sqlPermissao = "select TipoCompartilhamentoID from prontuariocompartilhamento p where ProfissionalID = "&idprofissional&" AND CategoriaID ="&categoria
 
-    sqlPermissao = "select TipoCompartilhamentoID from prontuariocompartilhamento p where ProfissionalID = "&idprofissional&" AND CategoriaID ="&categoria
+        resultado = 0
 
-    resultado = 0
+        set compartilhamento = db_execute(sqlPermissao)
+        if not compartilhamento.eof then
+            resultado = compartilhamento("TipoCompartilhamentoID")
+        end if
 
-    set compartilhamento = db_execute(sqlPermissao)
-    if not compartilhamento.eof then
-        resultado = compartilhamento("TipoCompartilhamentoID")
+        compartilhamentoFormulario = resultado
     end if
-
-    compartilhamentoFormulario = resultado
 end function 
 
 

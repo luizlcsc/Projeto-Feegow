@@ -89,7 +89,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
     'response.write(sql)
              set ti = db.execute( sql )
+             
              while not ti.eof
+                
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
                     abreAno = "          <div class=""timeline-divider mtn hidden-xs"">            <div class=""divider-label"">"&Ano&"</div>          </div>          <div class=""row"">          <div class=""col-sm-6 right-column"">"
@@ -169,11 +171,13 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
                 PermissaoArquivo=true
             end if
-            
-            if preen then
-                if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
-                    PermissaoArquivo = true
-                end if 
+
+            if typename(preen)="Recordset" then
+                if not preen.eof then
+                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                        PermissaoArquivo = true
+                    end if 
+                end if
             end if
 
             if not PermissaoArquivo then

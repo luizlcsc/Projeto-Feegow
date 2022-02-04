@@ -903,7 +903,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
  %>
        <div class="galery-ajax"></div>
        <script>
-        fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+        fetch("ImagensNew.asp?ArquivoImagem=Imagens&PacienteID=<%=req("PacienteID")%>")
         .then(data => data.text())
         .then(data => {
            $(".galery-ajax").html(data);
@@ -997,7 +997,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
          %>
                <div class="galery-ajax"></div>
                <script>
-                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+                fetch("ImagensNew.asp?ArquivoImagem=Arquivos&PacienteID=<%=req("PacienteID")%>")
                 .then(data => data.text())
                 .then(data => {
                    $(".galery-ajax").html(data);

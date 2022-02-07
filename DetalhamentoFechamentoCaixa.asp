@@ -382,6 +382,7 @@ elseif LinhaID="8.1" or LinhaID="8.2" then
         <th>Data</th>
         <th>Usuário</th>
         <th>Valor Total</th>
+        <th>#</th>
     </tr>
 </thead>
 <tbody>
@@ -393,11 +394,13 @@ else
     sqlAccount = " AND exp.Name!='Repasses'"
 end if
 
-sqlDespesas = "select m.sysUser, m.Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date FROM sys_financialmovement m "&_
+sqlDespesas = "select ii.id, m.sysUser, SUM(r.Valor) Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date, ii.InvoiceID FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN rateiorateios r ON r.ItemContaAPagar=ii.id "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
-"WHERE m.AccountAssociationIDCredit=7 "&sqlAccount&"  AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &""
+"WHERE m.AccountAssociationIDCredit=7 "&sqlAccount&" AND r.DataServicoExecucao=m.Date AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" " &_
+"GROUP BY r.id"
 
 set DespesasSQL = db.execute(sqlDespesas )
 
@@ -414,6 +417,7 @@ while not DespesasSQL.eof
     <td><%=DespesasSQL("Date")%></td>
     <td><%=nameInTable(DespesasSQL("sysUser"))%></td>
     <td><%=fn(DespesasSQL("Value"))%></td>
+    <td><a href="./?P=invoice&I=<%=DespesasSQL("InvoiceID")%>&A=&Pers=1&T=D" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
 </tr>
     <%
 DespesasSQL.movenext

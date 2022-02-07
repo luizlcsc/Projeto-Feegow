@@ -231,13 +231,16 @@ end if
 vl4 = vl2 - ValorFechamentoInformado
 
 'BLOCO 2
-set pDesp = db.execute("select COALESCE(sum(idesc.Valor),0) Despesas FROM sys_financialmovement m "&_
+
+set pDesp = db.execute("select COALESCE(sum(r.Valor),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN rateiorateios r ON r.ItemContaAPagar=ii.id "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
-"WHERE exp.Name='Repasses' AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+"WHERE exp.Name='Repasses' AND m.AccountAssociationIDCredit=7 AND r.DataServicoExecucao=m.Date AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
 "")
 DespesasRepasse = pDesp("Despesas")
+
 
 set pDesp = db.execute("select COALESCE(sum(m.Value),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
@@ -298,6 +301,7 @@ TotalCredito = 0
 TotalDebito = 0
 TotalDinheiro = 0
 RepasseCartao = 0
+RecebimentoLiquidoDeOutrasDatas = 0 
 
 while not RecebimentosDebitoECreditoSQL.eof
 
@@ -329,7 +333,7 @@ RecebimentosDebitoECreditoSQL.close
 set RecebimentosDebitoECreditoSQL=nothing
 
 
-sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii "&_
+sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, coalesce(idesc.Valor,0) ValorDescontado FROM itensinvoice ii "&_
 "LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
 "LEFT JOIN procedimentos proc ON proc.id=ii.ItemID  "&_
 "LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id  "&_
@@ -344,10 +348,9 @@ while not RecebimentoLiquidoDeOutrasDatasSQL.eof
 
     TotalRepasse = 0
     ValorPago = 0
-    set rr = db.execute("select rr.Valor, (iip.Quantidade*(iip.ValorUnitario+iip.Acrescimo-iip.Desconto)) ValorItemAPagar, (select ifnull(sum(Valor), 0) from itensdescontados where ItemID=rr.ItemContaAPagar) ValorPagoItemP from rateiorateios rr LEFT JOIN itensinvoice iip ON iip.id=rr.ItemContaAPagar WHERE ContaCredito LIKE '%\_%' AND ItemInvoiceID="& RecebimentoLiquidoDeOutrasDatasSQL("ItemInvoiceID") &" "& sqlIDesc &" ")
+    set rr = db.execute("select COALESCE(rr.Valor,0) Valor from rateiorateios rr LEFT JOIN itensinvoice iip ON iip.id=rr.ItemContaAPagar WHERE ContaCredito LIKE '%\_%' AND ItemInvoiceID="& RecebimentoLiquidoDeOutrasDatasSQL("ItemInvoiceID") &" "& sqlIDesc &" ")
     while not rr.eof
         TotalRepasse = TotalRepasse+rr("Valor")
-        BalancoPagto = rr("ValorItemAPagar") - rr("ValorPagoItemP")
     rr.movenext
     wend
     rr.close
@@ -361,7 +364,6 @@ RecebimentoLiquidoDeOutrasDatasSQL.movenext
 wend
 RecebimentoLiquidoDeOutrasDatasSQL.close
 set RecebimentoLiquidoDeOutrasDatasSQL=nothing
-
 
 transferenciasBancarias = 0
 
@@ -389,7 +391,7 @@ ResultadoFinal = ValorFechamentoInformado + ( transferenciasBancarias + TotalCre
 
 TotalDiferenca=  ValorCreditosUtilizados + RepasseDeOutrasDatas - RepassesNaoPagos - servicosExecutadosEmOutraData - servicosNaoExecutados - RecebimentosNaoExecutados + RecebimentoLiquidoDeOutrasDatas
 
-vl2 = (l1("Valor")+entCDeb+entCCred)  - DespesasRepasse - OutrasDespesas - RepasseCartao + RepasseDeOutrasDatas + RecebimentosNaoExecutados - RepassesNaoPagos
+vl2 = (l1("Valor")+entCDeb+entCCred)  - DespesasRepasse - OutrasDespesas - RepasseCartao + RepasseDeOutrasDatas + RecebimentosNaoExecutados - RepassesNaoPagos - servicosNaoExecutados
 
 if true then
     'producao p grupo

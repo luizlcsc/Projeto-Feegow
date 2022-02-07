@@ -118,15 +118,18 @@ if not l3.eof then
         'ValorFechamento = ValorFechamento + l3("Valor")
         ValorFechamentoInformado = ValorFechamentoInformado + l3("DinheiroInformado")
 
-        sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
-        if session("User")=81920 then
-            response.Write("<br>"& sqlNaoPago &"<br>")
-        end if
+        'bloco passado para baixo sem considerar caixaId :-0
+        if false then
+            sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
+            if session("User")=81920 then
+                response.Write("<br>"& sqlNaoPago &"<br>")
+            end if
 
-        set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
-        if not MovementsNaoPagasSQL.eof then
-            if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
-                RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+            set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
+            if not MovementsNaoPagasSQL.eof then
+                if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
+                    RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+                end if
             end if
         end if
 
@@ -149,6 +152,14 @@ if not l3.eof then
 
 end if
 
+sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL)  AND UnidadeID="&UnidadeID&" AND "&filtroData("Date")&" AND CD='C' AND Type='Bill'"
+
+set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
+if not MovementsNaoPagasSQL.eof then
+    if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
+        RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+    end if
+end if
 
 sqlRepasseOutrosDias="SELECT idesc.PagamentoID, mov.AccountIDDebit,mov.Value ValorPagamento,  mov.Date DataPagamento, "&_
                       "SUM(rat.Valor) ValorRepasse, ii.DataExecucao, rat.ContaCredito, (CASE "&_
@@ -220,13 +231,16 @@ end if
 vl4 = vl2 - ValorFechamentoInformado
 
 'BLOCO 2
-set pDesp = db.execute("select COALESCE(sum(idesc.Valor),0) Despesas FROM sys_financialmovement m "&_
+
+set pDesp = db.execute("select COALESCE(sum(r.Valor),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN rateiorateios r ON r.ItemContaAPagar=ii.id "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
-"WHERE exp.Name='Repasses' AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+"WHERE exp.Name='Repasses' AND m.AccountAssociationIDCredit=7 AND r.DataServicoExecucao=m.Date AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
 "")
 DespesasRepasse = pDesp("Despesas")
+
 
 set pDesp = db.execute("select COALESCE(sum(m.Value),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
@@ -287,6 +301,7 @@ TotalCredito = 0
 TotalDebito = 0
 TotalDinheiro = 0
 RepasseCartao = 0
+RecebimentoLiquidoDeOutrasDatas = 0 
 
 while not RecebimentosDebitoECreditoSQL.eof
 
@@ -318,7 +333,7 @@ RecebimentosDebitoECreditoSQL.close
 set RecebimentosDebitoECreditoSQL=nothing
 
 
-sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, idesc.Valor ValorDescontado FROM itensinvoice ii "&_
+sqlDebitoECredito = "select idesc.id ItemDescontadoID, m.PaymentMethodID, ii.id ItemInvoiceID, ii.InvoiceID, ii.DataExecucao, i.AccountID, i.AssociationAccountID, proc.NomeProcedimento, ii.Quantidade, (ii.Quantidade*(ii.ValorUnitario-ii.Desconto+ii.Acrescimo)) ValorTotal, coalesce(idesc.Valor,0) ValorDescontado FROM itensinvoice ii "&_
 "LEFT JOIN sys_financialinvoices i ON i.id=ii.InvoiceID "&_
 "LEFT JOIN procedimentos proc ON proc.id=ii.ItemID  "&_
 "LEFT JOIN itensdescontados idesc ON idesc.ItemID=ii.id  "&_
@@ -333,10 +348,9 @@ while not RecebimentoLiquidoDeOutrasDatasSQL.eof
 
     TotalRepasse = 0
     ValorPago = 0
-    set rr = db.execute("select rr.Valor, (iip.Quantidade*(iip.ValorUnitario+iip.Acrescimo-iip.Desconto)) ValorItemAPagar, (select ifnull(sum(Valor), 0) from itensdescontados where ItemID=rr.ItemContaAPagar) ValorPagoItemP from rateiorateios rr LEFT JOIN itensinvoice iip ON iip.id=rr.ItemContaAPagar WHERE ContaCredito LIKE '%\_%' AND ItemInvoiceID="& RecebimentoLiquidoDeOutrasDatasSQL("ItemInvoiceID") &" "& sqlIDesc &" ")
+    set rr = db.execute("select COALESCE(rr.Valor,0) Valor from rateiorateios rr LEFT JOIN itensinvoice iip ON iip.id=rr.ItemContaAPagar WHERE ContaCredito LIKE '%\_%' AND ItemInvoiceID="& RecebimentoLiquidoDeOutrasDatasSQL("ItemInvoiceID") &" "& sqlIDesc &" ")
     while not rr.eof
         TotalRepasse = TotalRepasse+rr("Valor")
-        BalancoPagto = rr("ValorItemAPagar") - rr("ValorPagoItemP")
     rr.movenext
     wend
     rr.close
@@ -351,14 +365,13 @@ wend
 RecebimentoLiquidoDeOutrasDatasSQL.close
 set RecebimentoLiquidoDeOutrasDatasSQL=nothing
 
-
 transferenciasBancarias = 0
 
 set TransferenciasBancariasSQL = db.execute("SELECT COALESCE(SUM(idesc.Valor),0)-COALESCE(SUM(rr.Valor),0) totalTransfer FROM sys_financialmovement m "&_
 "LEFT JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "LEFT JOIN rateiorateios rr ON rr.ItemInvoiceID = idesc.ItemID "&_
 "WHERE "&_
-"PaymentMethodID IN (7, 15) AND m.UnidadeID="& UnidadeID &"  AND m.`Type`='Pay' AND m.CD='D' AND "&filtroData("m.Date")&";")
+"PaymentMethodID IN (3, 7, 15) AND m.UnidadeID="& UnidadeID &"  AND m.`Type` IN ('Pay','Transfer') AND m.CD IN ('D','') AND "&filtroData("m.Date")&";")
 
 if not TransferenciasBancariasSQL.eof then
     transferenciasBancarias = TransferenciasBancariasSQL("totalTransfer")
@@ -378,7 +391,7 @@ ResultadoFinal = ValorFechamentoInformado + ( transferenciasBancarias + TotalCre
 
 TotalDiferenca=  ValorCreditosUtilizados + RepasseDeOutrasDatas - RepassesNaoPagos - servicosExecutadosEmOutraData - servicosNaoExecutados - RecebimentosNaoExecutados + RecebimentoLiquidoDeOutrasDatas
 
-vl2 = (l1("Valor")+entCDeb+entCCred)  - DespesasRepasse - OutrasDespesas - RepasseCartao + RepasseDeOutrasDatas + RecebimentosNaoExecutados - RepassesNaoPagos
+vl2 = (l1("Valor")+entCDeb+entCCred)  - DespesasRepasse - OutrasDespesas - RepasseCartao + RepasseDeOutrasDatas + RecebimentosNaoExecutados - RepassesNaoPagos - servicosNaoExecutados
 
 if true then
     'producao p grupo

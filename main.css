@@ -1,1 +1,59 @@
-.corprimaria {color: #07c1dd}
+.corprimaria {background-color: #07c1dd}
+
+.container {
+width: 100vw;
+height: 100vh;
+background: #07c1dd;
+display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+
+}
+.center{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-top:10%;
+    
+}
+.content{
+    display:flex;
+    flex-direction: row;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    padding-top:10%;
+    
+}
+.content input{
+    width: 300px;
+}
+.content svg{
+    margin-right: 5px
+}
+.box {
+    width: 465px;
+    height: 465px;
+    
+    background: #FFFFFF;
+    border-radius: 39px;
+}
+body {
+margin: 0px;
+}
+.enviar{
+width: 260px;
+height: 38px;
+margin-top:30px;
+background: #07C1DD;
+border-radius: 4.8px;
+border:none;
+color:white
+
+}
+button:hover {
+    background-color: #08a2b9;
+    color:white;
+}

@@ -3524,7 +3524,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 	if Tempo="" or isnull(Tempo) or Tempo="0" or not isnumeric(Tempo) then
 		Tempo=15
 	end if
-	if Acao="I" and Email<>"vca" and NomePaciente<>"" then
+	if Acao="I" and Email<>"vca" and NomePaciente<>"" and Hora&""<>"" then
 		Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
 			Inicio = dataGoogle(Data, Hora)
 			HoraFinal = dateadd("n", Tempo, Hora)

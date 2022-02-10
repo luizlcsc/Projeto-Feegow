@@ -1,6 +1,7 @@
 <!--#include file="Classes/LogService.asp"-->
 <!--#include file="functions.asp"-->
 <%
+
 if request("Log")="Off" then
 	if session("Partner")="" then
 		urlRedir = "./?P=Login"
@@ -19,7 +20,20 @@ end if
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/URLDecode.asp"-->
 <!--#include file="Classes/Environment.asp"-->
-<% GTM_ID = getEnv("FC_GTM_ID", "")%>
+<% 
+mainVersion = "main"
+GTM_ID = getEnv("FC_GTM_ID", "")
+APP_ENV = getEnv("FC_APP_ENV", "")
+Version = Request.ServerVariables("URL")
+Version = replace(Version, "/", "")
+Version = replace(Version, "index.asp", "")
+
+if APP_ENV="production" and Version<>mainVersion then
+    urlRedir = "/"&mainVersion&"/?P=Login&U="&req("U")&"&Partner="&req("Partner")&"&qs="&Server.URLEncode(req("qs"))
+	response.Redirect(urlRedir)
+end if
+
+%>
 <!DOCTYPE html>
 <html>
 

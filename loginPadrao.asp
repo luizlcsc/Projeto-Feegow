@@ -496,7 +496,7 @@ if not tryLogin.EOF then
 
                 'verifica se o usuario ja se logou na data
                 if ubound(qtdUnidadesArray) > 0 then
-                    set PrimeiroLoginDoDiaSQL = dbc.execute("SELECT id FROM cliniccentral.licencaslogins WHERE UserID="&tryLogin("id")&" AND date(DataHora)=curdate()")
+                    set PrimeiroLoginDoDiaSQL = dbc.execute("SELECT id FROM cliniccentral.licencaslogins WHERE UserID="&tryLogin("id")&" AND Data=curdate() limit 1")
                     if PrimeiroLoginDoDiaSQL.eof then
                         UnidadeID = -1
                         UnidadeDefinida=True
@@ -622,7 +622,7 @@ if not tryLogin.EOF then
                 end if
 
                 if not permiteMasterLogin then
-                    dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+                    dbc.execute("insert into licencaslogins (LicencaID, UserID, IP, Agente, Data) values ("&tryLogin("LicencaID")&", "&tryLogin("id")&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"', CURDATE())")
                 end if
 
                 if session("ModoFranquia")&""<>"1" then
@@ -759,10 +759,10 @@ else
         logErrorLicenseId = licenca("LicencaID")
         UserID= licenca("id")
 '                                if licenca("Bloqueado") = 0 then
-        dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente) values (0,"&logErrorLicenseId&", "&UserID&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+        dbc.execute("insert into licencaslogins (Sucesso, LicencaID, UserID, IP, Agente, Data) values (0,"&logErrorLicenseId&", "&UserID&", '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"', CURDATE())")
     else
         logErrorLicenseId=null
-        dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente) values (0,'"&User&"',NULL, NULL, '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"')")
+        dbc.execute("insert into licencaslogins (Sucesso, Email, LicencaID, UserID, IP, Agente, Data) values (0,'"&User&"',NULL, NULL, '"&IP&"', '"&request.ServerVariables("HTTP_USER_AGENT")&"', CURDATE())")
     end if
 
     if DesafioPendenteSQL.eof then

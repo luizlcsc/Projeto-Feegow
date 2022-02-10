@@ -21,14 +21,15 @@ end if
 <!--#include file="Classes/URLDecode.asp"-->
 <!--#include file="Classes/Environment.asp"-->
 <% 
+mainVersion = "main"
 GTM_ID = getEnv("FC_GTM_ID", "")
 APP_ENV = getEnv("FC_APP_ENV", "")
 Version = Request.ServerVariables("URL")
 Version = replace(Version, "/", "")
 Version = replace(Version, "index.asp", "")
 
-if APP_ENV="production" and Version<>"main" then
-    urlRedir = "/main/?P=Login&U="&req("U")&"&Partner="&req("Partner")&"&q="&req("qs")
+if APP_ENV="production" and Version<>mainVersion then
+    urlRedir = "/"&mainVersion&"/?P=Login&U="&req("U")&"&Partner="&req("Partner")&"&qs="&Server.URLEncode(req("qs"))
 	response.Redirect(urlRedir)
 end if
 

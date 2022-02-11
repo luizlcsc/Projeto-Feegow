@@ -4,10 +4,13 @@
 <%
 Session.Timeout=600
 session.LCID=1046
-if session("Servidor")="" then
-    sServidor = "localhost"
-else
-    sServidor = session("Servidor")
+
+sServidor = session("Servidor")
+
+'Fila being accessed directly anauthorized
+if session("Banco")="" then
+    Response.Status = "403"
+    Response.End
 end if
 
 On Error Resume Next

@@ -389,7 +389,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
       
         initComponents({
-          apiUrl: '<%=getEnv("FC_API_URL","http://localhost:8000/")%>'
+          apiUrl: '<%=getEnv("FC_API_URL","")%>'
         });
 
         var sessionObj = {

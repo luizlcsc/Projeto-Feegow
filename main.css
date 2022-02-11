@@ -57,3 +57,13 @@ button:hover {
     background-color: #08a2b9;
     color:white;
 }
+
+header{
+    height:15rem;
+    background:red;
+    padding-left: 10%;
+    padding-top:1%
+}
+menus{
+    margin-left: 30px
+}

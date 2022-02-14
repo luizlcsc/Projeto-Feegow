@@ -260,13 +260,19 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
               $btnSave.attr("disabled", false);
               $btnPrint.attr("disabled", false);
               $btnSaveText.html("Salvar");
+              SaveOnLocal(FormID, formdata, true);
+
+              showMessageDialog("Ocorreu um erro ao tentar salvar.")
             });
     }
 
-    function SaveOnLocal(formID, dataForm)
+    function SaveOnLocal(formID, dataForm, errorForm = false)
     {
         let jsonForm = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serializeFormJSON();
-        let local = localStorage.getItem("logForms");
+        let localStorageKey = errorForm ? "logErrorForms" : "logForms";
+
+        let local = localStorage.getItem(localStorageKey);
+
         let data_hora = new Date();;
         let data = {
             formID:String(formID),
@@ -295,7 +301,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                 ret[element].dataHora = data.dataHora;
             }else
             {
-                if(ret.length >= 5)
+                if(ret.length >= 10)
                 {
                     ret.pop();
                     ret.push(data);
@@ -306,7 +312,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         {
             ret.push(data);
         }
-        localStorage.setItem("logForms", JSON.stringify(ret));
+        localStorage.setItem(localStorageKey, JSON.stringify(ret));
     }
 
     function DescartarLog(id){

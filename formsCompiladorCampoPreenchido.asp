@@ -325,9 +325,9 @@ $(function() {
                 ckrender = ckrender & "altura = $('#"& CampoID &"').innerHeight()-22 + 'px'; $('#input_"& CampoID &"mem').css('height', altura );"
 			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>
 
-            <textarea class="hidden campoInput" data-name="<%=RotuloCampo%>" id="input_<%=CampoID %>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <% end if %>><%=ValorPadrao %></textarea>
+            <textarea class="hidden campoInput" data-name="<%=RotuloCampo%>" id="input_<%=CampoID %>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <% end if %>><%=unscapeOutput(ValorPadrao) %></textarea>
 
-            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
+            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=unscapeOutput(ValorPadrao)%></div>
 
 
 			<script type="text/javascript">

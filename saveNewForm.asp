@@ -125,6 +125,7 @@ while not pcampos.eof
                 campoAlterado = false
                 if valorCampo = "" then
                     if not ValorOriginalSQL.eof then
+                        valorAtual = ValorOriginalSQL(pcampos("id")&"")
                         if stripHTML(valorAtual) <> stripHTML(valorCampo) then
                             campoAlterado = true
                         end if

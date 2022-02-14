@@ -542,7 +542,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                                 'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
 
                                                         end if
-                                                        response.Write( Rotulo &"<br>"& Valor  &"<br>" )
+                                                        response.Write( Rotulo &"<br>"& unscapeOutput(Valor)  &"<br>" )
                                                     end if
 
                                                     'CID e BMJ de campos de formulários Estruturados

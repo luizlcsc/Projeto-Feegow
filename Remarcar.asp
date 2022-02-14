@@ -265,7 +265,7 @@ if Acao="Remarcar" then
         
             ConsultaID = pultCon("id")
         else
-            sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
+            sql = "update agendamentos set sysActive='1',EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
             db_execute(sql)
             ConsultaID = session("RemSol")
         end if

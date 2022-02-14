@@ -84,9 +84,14 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
                  cont=0
 
-    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
+    sql = "select t.*, esp.Especialidade, lu.Nome UserName from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
-                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
+                ") t "&sqlProf&" "&_
+                " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUser "&_
+                " LEFT JOIN sys_users su ON su.id=lu.id "&_
+                " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
+                " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+                "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
     'response.write(sql)
              set ti = db.execute( sql )
              
@@ -198,7 +203,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                     <div class="panel-heading">
                         <span class="panel-title panel-warning">
                             <span class="far fa-align-justify"></span>
-                            <% if ti("sysUser")<>0 then response.write( nameInTable(ti("sysUser")) ) end if %>
+                            <% if ti("sysUser")<>0 then response.write( ti("UserName") ) end if %>
+                            <% if ti("especialidade")&""<>"" then response.write( "<small> &nbsp; ( <i class='far fa-stethoscope' ></i> "&ti("Especialidade") &" )</small> &nbsp;") end if %>
                             <code><%=ti("Titulo") %></code>
                         </span>
 
@@ -248,8 +254,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             <span class="far fa-align-justify"></span>
                             <%
                             if ti("sysUser")<>0 then
-                                response.write( nameInTable(ti("sysUser")) )
+                                response.write( ti("UserName") )
                             end if
+                            if ti("especialidade")&""<>"" then response.write( "<small> &nbsp; ( <i class='far fa-stethoscope' ></i> "&ti("Especialidade") &" )</small> &nbsp;") end if
                             titulo = ti("Titulo")
                             if len(titulo)>30 then
                                 titulo = left(titulo, 40)&"..."

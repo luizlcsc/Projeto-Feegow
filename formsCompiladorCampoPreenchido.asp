@@ -44,8 +44,11 @@ end if
 			set auxQuery1 = db.execute("SELECT * FROM buicamposforms WHERE id = "&CampoID)
 			IF auxQuery1("InformacaoCampo")&"" <> "" THEN
 				set auxQuery2 = db.execute("SELECT * FROM `cliniccentral`.`form_campos_padrao` WHERE id = "&auxQuery1("InformacaoCampo"))
-				set auxQuery3 = db.execute("SELECT * FROM `cliniccentral`.`sys_resourcesfieldtypes` WHERE id = "&auxQuery2("TipoCampoID"))
-				TipoCampoInfo = auxQuery3("id")
+				if not auxQuery2.eof then
+					set auxQuery3 = db.execute("SELECT * FROM `cliniccentral`.`sys_resourcesfieldtypes` WHERE id = "&auxQuery2("TipoCampoID"))
+					TipoCampoInfo = auxQuery3("id")
+				end if
+				
 			END IF
 			
 			CampoExtra = ""

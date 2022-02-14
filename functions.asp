@@ -15,7 +15,9 @@ function clear_ref_req (val, escapeQuotes)
 
         tentativa = false
     
+        'EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
         val = replace(val, "​", "")
+        
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")

@@ -133,9 +133,7 @@ while not pcampos.eof
                 end if
 
                 if valorCampo <> "" or habilitarVazio = "1" or campoAlterado = true then
-                    inputValor = refHTML("input_"&pcampos("id"))
-                    'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
-                    inputValor = replace(inputValor, "​", "")
+                    inputValor = valorCampo
                     sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
                     if pcampos("TipoCampoID")  = 16 and  pcampos("enviardadoscid") = 1 then
                         sqlIncluirCid = "INSERT INTO pacientesdiagnosticos ( PacienteID, CidID, Descricao, DataHora, sysUser, sysActive,  AtendimentoID) "&_

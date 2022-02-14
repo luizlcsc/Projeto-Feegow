@@ -15,6 +15,7 @@ function clear_ref_req (val, escapeQuotes)
 
         tentativa = false
     
+        val = replace(val, "​", "")
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")

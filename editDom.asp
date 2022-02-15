@@ -83,22 +83,32 @@ Dias = dom("Dias")
 
                         <%
                     else
-                        spl = split(forma("Contas"), ", ")
-                        for i=0 to ubound(spl)
-                            if spl(i)<>"" then
-                                conta = replace(spl(i), "|", "")
-                                if isnumeric(conta) then
-                                    set contas = db.execute("select * from sys_financialcurrentaccounts where id="&conta)
-                                    if not contas.eof then
-                                        %>
-                                        <div class="col-md-4 checkbox-custom checkbox-primary">
-                                            <input name="Formas" value="|P<%=forma("id")%>_<%=contas("id")%>|" id="part<%=forma("id")%>_<%=contas("id")%>" type="checkbox" <%if instr(Formas, "|P"&forma("id")&"_"&contas("id")&"|")>0 then%> checked<%end if%> /><label for="part<%=forma("id")%>_<%=contas("id")%>"><%=forma("PaymentMethod")%> - <%=contas("AccountName")%>: De <%=forma("ParcelasDe")%> a <%=forma("ParcelasAte")%> parcelas</label>
-                                        </div>
-                                        <%
+                        
+                        Contas = forma("Contas")&""
+
+                        if Contas="|ALL|" then
+                            %>
+                            <div class="col-md-4 checkbox-custom checkbox-primary">
+                                <input name="Formas" value="|P<%=forma("id")%>_0|" id="part<%=forma("id")%>_0" type="checkbox" <%if instr(Formas, "|P"&forma("id")&"_0|")>0 then%> checked<%end if%> /><label for="part<%=forma("id")%>_0"><%=forma("PaymentMethod")%> : De <%=forma("ParcelasDe")%> a <%=forma("ParcelasAte")%> parcelas</label>
+                            </div>
+                            <%
+                        else
+                            for i=0 to ubound(spl)
+                                if spl(i)<>"" then
+                                    conta = replace(spl(i), "|", "")
+                                    if isnumeric(conta) then
+                                        set contas = db.execute("select * from sys_financialcurrentaccounts where id="&conta)
+                                        if not contas.eof then
+                                            %>
+                                            <div class="col-md-4 checkbox-custom checkbox-primary">
+                                                <input name="Formas" value="|P<%=forma("id")%>_<%=contas("id")%>|" id="part<%=forma("id")%>_<%=contas("id")%>" type="checkbox" <%if instr(Formas, "|P"&forma("id")&"_"&contas("id")&"|")>0 then%> checked<%end if%> /><label for="part<%=forma("id")%>_<%=contas("id")%>"><%=forma("PaymentMethod")%> - <%=contas("AccountName")%>: De <%=forma("ParcelasDe")%> a <%=forma("ParcelasAte")%> parcelas</label>
+                                            </div>
+                                            <%
+                                        end if
                                     end if
                                 end if
-                            end if
-                        next
+                            next
+                        end if
                     end if
                 forma.movenext
                 wend

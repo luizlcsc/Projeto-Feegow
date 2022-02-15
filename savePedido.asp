@@ -57,7 +57,7 @@ if cbool(save) then
         end if
     end if
 
-    set reg = db.execute("select * from PacientesPedidos where PedidoExame like '"&ref("pedido")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+    set reg = db.execute("select * from PacientesPedidos where PedidoExame = '"&refHtml("pedido")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 
     exameNovo = FALSE
 

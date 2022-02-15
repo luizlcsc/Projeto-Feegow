@@ -1206,7 +1206,7 @@ $(".form-control").change(function(){
 
             gtag('event', 'erro_500', {
                 'event_category': 'erro_prontuario',
-                'event_label': "Erro ao abrir prontuário. "),
+                'event_label': "Erro ao abrir prontuário. ",
             });
     }
 

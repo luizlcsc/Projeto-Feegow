@@ -1175,8 +1175,8 @@ function saveInvoiceSubmit(cb){
 
 
             gtag('event', 'erro_500', {
-                'event_category': 'erro_agenda',
-                'event_label': "Erro ao salvar agendamento."
+                'event_category': 'erro_invoice',
+                'event_label': "Erro ao salvar invoice."
             });
     });
 }

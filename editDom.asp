@@ -93,6 +93,7 @@ Dias = dom("Dias")
                             </div>
                             <%
                         else
+                            spl = split(Contas, ", ")
                             for i=0 to ubound(spl)
                                 if spl(i)<>"" then
                                     conta = replace(spl(i), "|", "")

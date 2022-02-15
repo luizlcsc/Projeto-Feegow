@@ -1,6 +1,6 @@
 .corprimaria {background-color: #07c1dd}
 
-.container {
+.container1 {
 width: 100vw;
 height: 100vh;
 background: #07c1dd;
@@ -16,7 +16,7 @@ align-items: center;
     justify-content: center;
     align-items: center;
     padding-top:10%;
-    
+
 }
 .content{
     display:flex;
@@ -25,7 +25,7 @@ align-items: center;
     justify-content: center;
     align-items: center;
     padding-top:10%;
-    
+
 }
 .content input{
     width: 300px;
@@ -36,13 +36,11 @@ align-items: center;
 .box {
     width: 465px;
     height: 465px;
-    
+
     background: #FFFFFF;
     border-radius: 39px;
 }
-body {
-margin: 0px;
-}
+
 .enviar{
 width: 260px;
 height: 38px;
@@ -56,14 +54,27 @@ color:white
 button:hover {
     background-color: #08a2b9;
     color:white;
+} 
+
+.navfundo {
+width: 100%;
+height: 56px;
+background-color: #07C1DD;
+display:flex;
+color:white;
+margin-top:20px;
+
 }
 
-header{
-    height:15rem;
-    background:red;
-    padding-left: 10%;
-    padding-top:1%
+nav a {
+    color: white;
 }
-menus{
-    margin-left: 30px
+
+nav{
+    display:flex;
+    align-items: center;
+}
+nav ul {
+    display:flex;
+    flex-direction: row;
 }

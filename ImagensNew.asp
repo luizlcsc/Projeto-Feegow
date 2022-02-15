@@ -170,10 +170,10 @@ end if
 <%
 
 if ArquivoImagem="" then
-    ArquivoImagem="Imagem"
+    ArquivoImagem="Imagens"
 end if
 
-if ArquivoImagem="Imagem" then
+if ArquivoImagem="Imagens" then
 %>
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs" onclick="comparar()">

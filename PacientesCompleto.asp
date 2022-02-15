@@ -38,17 +38,15 @@ else
     set reg = db.execute("select p.*, "&_
     "(select count(id) from pacientesprescricoes where sysActive=1 AND PacienteID="&PacienteID&" ) as totalprescricoes, "&_
     "(select count(id) from pacientesatestados where sysActive=1 AND PacienteID="&PacienteID&" ) as totalatestados, "&_
-    "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as qtepedidos, "&_
-    "(select count(id) from pedidossadt where sysActive=1 AND PacienteID="&PacienteID&" ) as qtepedidossadt, "&_
+    "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalpedidos, "&_
     "(select count(id) from pacientesdiagnosticos where sysActive=1 AND PacienteID="&PacienteID&" ) as totaldiagnosticos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='I' ) as totalimagens, "&_
-    "(select count(id) from recibos where (Texto is not null and Texto<>'' ) and PacienteID="&PacienteID&" AND sysActive=1 ) as totalrecibos, "&_
     "(select count(fpae.id) from buiformspreenchidos as fpae left join buiforms as mae on fpae.ModeloID=mae.id where fpae.PacienteID="&PacienteID&" and (fpae.sysActive=1 or fpae.sysActive is null) and (mae.Tipo=1 or mae.Tipo=2 or isnull(mae.Tipo))) as totalae, "&_
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)
 end if
-    splBdgs = split("totalprescricoes, totalatestados, qtepedidos, totaldiagnosticos, totalarquivos, totalimagens, totalrecibos, totalae, totallf", ", ")
+    splBdgs = split("totalprescricoes, totalatestados, totalpedidos, totaldiagnosticos, totalarquivos, totalimagens, totalae, totallf", ", ")
 
 
 if not isnull(reg("Nascimento")) and not isnull(reg("NomePaciente")) then

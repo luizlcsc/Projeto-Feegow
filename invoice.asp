@@ -1173,11 +1173,11 @@ function saveInvoiceSubmit(cb){
     }).error(function(err){
         showMessageDialog("Ocorreu um erro ao tentar salvar");
 
-        //notifyEvent({
-        //    description: "Erro ao salvar conta.",
-        //    criticity: 1,
-        //    moduleName: "<%=req("P")%>" 
-        //});
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_invoice',
+                'event_label': "Erro ao salvar invoice."
+            });
     });
 }
 $("#formItens").submit(function(){

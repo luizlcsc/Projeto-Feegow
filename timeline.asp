@@ -1136,7 +1136,7 @@ LocalStorageRestoreHabilitar();
 
             gtag('event', 'erro_500', {
                 'event_category': 'erro_prontuario',
-                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+                'event_label': "Erro ao abrir prontuário. "),
             });
     }
 

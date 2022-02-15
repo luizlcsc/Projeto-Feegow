@@ -289,8 +289,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             if cstr(session("User"))=ti("sysUser")&""  then
                             %>
 
-                                <a title="Ver mais" href="javascript:JustificativaTimeline('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
-                                   <i class="far fa-list "></i>
+                                <a title="Ver log de inativação" href="javascript:JustificativaTimeline('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                   <i class="far fa-history "></i>
                                 </a>
 
                                 <a title="Compartilhamento" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">

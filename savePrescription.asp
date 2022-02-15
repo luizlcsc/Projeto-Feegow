@@ -5,7 +5,7 @@ if ref("ControleEspecial")="true" then
 end if
 
 save = ref("save")
-set reg = db.execute("select * from PacientesPrescricoes where Prescricao like '"&refhtml("receituario")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+set reg = db.execute("select * from PacientesPrescricoes where Prescricao = '"&refhtml("receituario")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 
 if reg.EOF then
     if cbool(save) then

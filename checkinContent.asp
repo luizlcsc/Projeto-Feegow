@@ -33,7 +33,11 @@
                 sqlProf = " AND a.ProfissionalID IN ("& ref("fProfissionalID") &") "
             end if
             if ref("fNomePaciente")<>"" then
-                sqlPac = " AND pac.NomePaciente LIKE '%"& replace(ref("fNomePaciente"), " ", "%") &"%' "
+                if inStr(ref("fNomePaciente"),"#") then
+                    sqlPac = " AND (pac.Matricula1 ='"&replace(ref("fNomePaciente"),"#","")&"') "
+                else
+                    sqlPac = " AND (pac.NomePaciente LIKE '%"& replace(ref("fNomePaciente"), " ", "%") &"%') "                    
+                end if
             end if
             if req("PacienteID") <> "" then
                 sqlPac = " AND pac.id = "&req("PacienteID")

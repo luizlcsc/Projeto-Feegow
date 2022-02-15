@@ -427,6 +427,7 @@ while not comGrade.eof
                 ProcedimentoID: "<%= ProcedimentoID %>",
                 Locais: "<%= ref("Locais") %>",
                 ObsAgenda: "<%= ObsAgenda %>",
+                GeoLocalizacao: "<%= GeoLocalizacaoAtivada %>",
                 strAB: '<%= strAB %>'
             }, function (data) {
                 $('#pf<%= comGrade("ProfissionalID") %>').html(data)

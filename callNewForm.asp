@@ -23,7 +23,9 @@
 	padding:1px!important;
 }
 #iProntCont table tbody tr td input {
-	border:none!important;
+    border: none;
+    border-bottom: 1px solid #d1d1d1;
+    border-radius: 0;
 }
 
 #iProntCont .lembrar {
@@ -374,13 +376,13 @@ function editCurva(CampoID){
         $("<%= pids("inputs") %>").on('keyup blur', function () {
 			var idIpt = $(this).attr("id");
 			
-			clearTimeout(timeoutCalc);
+			//clearTimeout(timeoutCalc);
 
-			timeoutCalc = setTimeout(function(){
+			//timeoutCalc = setTimeout(function(){
 				$.post("formCalc.asp?Input="+ idIpt, $(".campoInput, .campoCheck, .tbl").serialize(), function (data) {
 					eval(data);
 				});
-			}, 250);
+			//}, 250);
         });
         <%
     end if

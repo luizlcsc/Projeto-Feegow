@@ -98,7 +98,7 @@ if aut(lcase(ref("resource"))&"A")=1 then
 	    ResourceID = 1
 	    initialOrder = "NomePaciente"
 	    tableName = "pacientes"
-	    Pers = 1
+	    Pers = "Follow"
 	    mainFormColumn = ""
     else
         if instr(ref("oti"), "agenda") then

@@ -12,6 +12,7 @@ if not reg.eof then
 		DataEmissao = reg("DataEmissao")
 		UnidadeID = reg("UnidadeID")
         LoteID = reg("LoteID")
+		StatusLote = "Não enviado"
 
         if not isnull(reg("ConvenioID")) and reg("ConvenioID")<>0 then
             set convBloq=db.execute("select BloquearAlteracoes from convenios where id="&reg("ConvenioID"))
@@ -30,6 +31,22 @@ if not reg.eof then
             end if
         end if
     	Procedimentos = reg("Procedimentos")
+
+		if LoteID&"" <> "" then
+			set EnviadoSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE id="&treatvalzero(LoteID))
+			if not EnviadoSQL.eof then
+				numeroLote = EnviadoSQL("Lote")
+				Enviado = EnviadoSQL("Enviado")
+				if Enviado = 1 then
+					StatusLote = "Enviado"
+				else
+					StatusLote = "Não enviado"
+				end if
+			end if
+		else
+			numeroLote = "Sem Lote"
+			StatusLote = "Não enviado"
+		end if
 
         if LoteID&"" <> "" and aut("guiadentrodeloteA")=0 then
             set LoteSQL = db.execute("SELECT Enviado, id, DataEnvio, Lote FROM tisslotes WHERE Enviado=1 and id="&treatvalzero(LoteID))
@@ -97,6 +114,7 @@ if not reg.eof then
 	Observacoes = reg("Observacoes")
     DataEmissao = reg("DataEmissao")
 	Procedimentos = reg("Procedimentos")
+	GuiaStatus = reg("GuiaStatus")
 	TotalProcedimentos = Procedimentos
 	'identificadorBeneficiario = reg("identificadorBeneficiario")
 
@@ -426,8 +444,11 @@ end if
 </script>
 <form id="GuiaHonorarios" action="" method="post">
 		<div class="row">
-			<div class="col-md-10 page-header">
+			<div class="col-md-5 page-header">
 			</div>
+			<%=quickField("text", "numeroLote", "Lote", 1, numeroLote,"","","disabled")%>
+			<%=quickField("text", "StatusLote", "Status do Lote", 2, StatusLote,"","","disabled")%>
+			<%=quickField("select", "GuiaStatus", "Status da Guia", 2, GuiaStatus,"SELECT id,`Status` FROM cliniccentral.tissguiastatus","Status","")%>
 			<%=quickField("empresa", "UnidadeID", "Unidade", 2, UnidadeID, "", "", "")%>
 		</div>
 
@@ -463,7 +484,7 @@ end if
             </div>
 				<div class="row">
 					<%= quickField("text", "ContratadoLocalCodigoNaOperadora", "* C&oacute;digo na Operadora", 2, ContratadoLocalCodigoNaOperadora, "", "", " required ") %>
-					<input type="hidden" id="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
+					<input type="hidden" id="ContratadoLocalNome" name="ContratadoLocalNome" value="<%=ContratadoLocalNome%>"/>
 					<div class="col-md-7">
 						<%= selectInsert("Nome do Hospital / Local Solicitado", "LocalExternoID", LocalExternoID, "locaisexternos", "nomelocal", " empty="""" required=""required""", "", "") %>
 					</div>

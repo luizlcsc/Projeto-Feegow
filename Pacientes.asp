@@ -143,6 +143,7 @@ end if
 </div>
 <%
 omitir = ""
+
 if session("Admin")=0 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
@@ -178,6 +179,15 @@ if session("MasterPwd")&""="S" then
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+	pointer-events: none;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+.btn-sensitive-action, .btn-sensitive-action *{
+	opacity: 0.4;
+    user-select: none;
+	pointer-events: none;
+	cursor: not-allowed;
 }
     <%
 end if
@@ -584,8 +594,30 @@ $("#Nascimento").change(function(){
 });
 
 
-// 23/08/2021
-// CAL-517 Normalização de municípios no cadastro de pacientes
+$("#Cep").keyup(function(){
+	getEndereco();
+});
+var resultadoCEP
+function getEndereco() {
+
+		var temUnder = /_/i.test($("#Cep").val())
+		if(temUnder == false){
+			$.getScript("webservice-cep/cep.php?cep="+$("#Cep").val(), function(){
+				if(resultadoCEP["logradouro"]!=""){
+					$("#Endereco").val(unescape(resultadoCEP["logradouro"]));
+					$("#Bairro").val(unescape(resultadoCEP["bairro"]));
+					$("#Cidade").val(unescape(resultadoCEP["cidade"]));
+					$("#Estado").val(unescape(resultadoCEP["uf"]));
+					if(resultadoCEP["pais"]==1){
+					    $("#Pais").html("<option value='1'>Brasil</option>").val(1).change();
+					}
+					$("#Numero").focus();
+				}else{
+					$("#Endereco").focus();
+				}
+			});
+		}
+}
 
 $("#Altura").keyup(function(){
 	imc();
@@ -613,9 +645,9 @@ $(".mainTab").click(function(){
 	$("#DadosComplementares").slideDown();
 	$("#divAvatar").removeClass("col-md-1");
 	$("#divAvatar").addClass("col-md-2");
-	if($("#avatarFoto").attr("src")=="uploads/"){
+	if($("#avatarFoto").attr("src").indexOf("load-image")===-1){
 		$("#divDisplayUploadFoto").css("display", "block");
-	}
+	}	
 	$("#resumoConvenios").addClass("hidden");
 	$("#pront, .tray-left").addClass("hidden");
 	$("#Dados, #p1, #pPacientesRetornos, #pPacientesRelativos, #dCad, .alerta-dependente, #Servicos, #block-care-team, #block-programas-saude").removeClass("hidden");
@@ -661,7 +693,7 @@ function pront(U){
 
       gtag('event', 'erro_500', {
           'event_category': 'erro_timeline',
-          'event_label': "Erro ao acessar timeline (<%=LicenseID&":"&req("I")%>)"
+          'event_label': "Erro ao acessar timeline"
       });
 
     });
@@ -1062,33 +1094,35 @@ $(".form-control").change(function(){
        //change to feegow-api
       var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 
-		$('#clicar').on('click', function(event) {
-	        //var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
+		$('#clicar').on('click', function(evt) {
+	      //  var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
 			sayCheese.on('start', function() {
-			  $('#take-photo').on('click', function(event) {
+			  $('#take-photo').on('click', function(evt) {
                 sayCheese.takeSnapshot();
-                let obj = {};
-                obj.userType = 'pacientes';
-                obj.userId = "<%=req("I")%>";
-                obj.licenca = "<%= replace(session("Banco"), "clinic", "") %>";
-                obj.upload_file = $("input[name='photo-data']").val();
-                obj.folder_name = "Perfil";
-                endpointupload(obj);
-			});
+                let objct = {};
+                objct.userType = 'pacientes';
+                objct.userId = "<%=req("I")%>";
+                objct.licenca = "<%= replace(session("Banco"), "clinic", "") %>";
+                objct.upload_file = $("input[name='photo-data']").val();
+                objct.folder_name = "Perfil";
+                endpointupload(objct);
 
-            $('video').insertBefore($('#divAvatar .row'))
-            $('video').css('border-radius', '4px');
-            $('video').css('border', '1px solid #dddddd');
+			});
         });
 
-		function cancelar() {
+
+
+		function cancelar(){
 			sayCheese.on('stop', function(evt) {
-			    $( "video" ).remove();
+			$( "video" ).remove();
 			});
             sayCheese.stop();
             //alert("toaqui");return false;
             //$('#photo').html('');
 		}
+
+
+
 
         sayCheese.on('error', function(error) {
           var alert = $('<div>');
@@ -1173,7 +1207,7 @@ $(".form-control").change(function(){
 
             gtag('event', 'erro_500', {
                 'event_category': 'erro_prontuario',
-                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+                'event_label': "Erro ao abrir prontuário. ",
             });
     }
 

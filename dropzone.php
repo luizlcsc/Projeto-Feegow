@@ -403,7 +403,7 @@
 						form.classList.remove( 'is-uploading' );
 						if( ajax.status >= 200 && ajax.status < 400 )
 						{
-                            parent.callUpload && parent.callUpload(ajax.responseText)
+                            parent.callUpload && parent.callUpload(ajax.responseText, '<?=$_GET['Tipo']?>')
 							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
 							if( !ajax.success ) errorMsg.textContent = ajax.error;
 						}
@@ -431,7 +431,7 @@
                     ajaxData.append('FormularioID',$('input[name="FormularioID"]').val());
                     ajaxData.append('OrdemDeCompraID',$('input[name="OrdemDeCompraID"]').val());
 					ajax.send( ajaxData );
-                    parent.callUpload && parent.callUpload(ajax.responseText);
+                    parent.callUpload && parent.callUpload(ajax.responseText, '<?=$_GET['Tipo']?>');
 
 
 				}

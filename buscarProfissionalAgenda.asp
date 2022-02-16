@@ -142,12 +142,7 @@ while not ocupacoes.eof
                 <%
                 end if
 
-                
-
             response.write("</div>")
-
-
-
 
         response.write("</td>")
         
@@ -160,11 +155,6 @@ while not ocupacoes.eof
                 " ORDER BY ro.Hora desc LIMIT 1 ") 
             
             verificaLimiteAgendamento = false
-            if isnumeric(getConfig("TotalDeAgendasLiberadas")) then
-                if getConfig("TotalDeAgendasLiberadas") > 0 then
-                    verificaLimiteAgendamento = true 
-                end if
-            end if
             
             sqlGradeEncaixe = "SELECT GradeEncaixe " &_
                     "FROM assfixalocalxprofissional ap " &_
@@ -285,13 +275,8 @@ while not ocupacoes.eof
                     horarioFim              = ""
                     TipoLimiteHorario       = ""
                     verificaLimiteAgendamento = false
-                    if isnumeric(getConfig("TotalDeAgendasLiberadas")) then
-                        TotalDeAgendasLiberadas = getConfig("TotalDeAgendasLiberadas") 
-                    else
-                        TotalDeAgendasLiberadas = 0
-                    end if
 
-                    sqlPossuiMarcarOrdem = "SELECT MarcarOrdem, IFNULL(MarcarEmOrdemHoraA,'') MarcarEmOrdemHoraA, COALESCE(TipoLimiteHorario, 'I') TipoLimiteHorario " &_
+                    sqlPossuiMarcarOrdem = "SELECT MarcarOrdem, IFNULL(MarcarEmOrdemHoraA,'') MarcarEmOrdemHoraA, COALESCE(TipoLimiteHorario, 'I') TipoLimiteHorario, MarcarOrdemLimit " &_
                         "FROM assfixalocalxprofissional ap " &_
                         "INNER JOIN agenda_horarios ro ON ap.id = ro.GradeID " &_
                         "WHERE ro.Situacao = 'V' and ro.ProfissionalID = "& ProfissionalID &"  AND CarrinhoID = " & CarrinhoID & " AND UnidadeID = " & UnidadeID & " " &_  
@@ -306,6 +291,7 @@ while not ocupacoes.eof
 
                         horaMarcarEmOrdem = verificaMarcarOrdem("MarcarEmOrdemHoraA")
                         TipoLimiteHorario = verificaMarcarOrdem("TipoLimiteHorario")
+                        TotalDeAgendasLiberadas = verificaMarcarOrdem("MarcarOrdemLimit")
 
                         if (TipoLimiteHorario = "I") then
                             horaDirection = "ASC"

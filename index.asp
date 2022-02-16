@@ -8,11 +8,11 @@ if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
-
-set shellExec = createobject("WScript.Shell")
-Set objSystemVariables = shellExec.Environment("SYSTEM")
-AppEnv = objSystemVariables("FC_APP_ENV")
-WootricToken = objSystemVariables("FC_WOOTRIC_TOKEN")
+%>
+<!--#include file="Classes/Environment.asp"-->
+<%
+AppEnv = getEnv("FC_APP_ENV", "local")
+WootricToken = getEnv("FC_WOOTRIC_TOKEN", "")
 
 
 
@@ -27,13 +27,24 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 <head>
   <meta name="robots" content="noindex">
+  <meta name="msapplication-TitleColor" content="#3595d9">
+  <meta name="theme-color" content="#3595d9">
+
   <style type="text/css">
 
     @font-face {
          font-family: "Open Sans";
          src: url('https://cdn.feegow.com/feegowclinic-v7/assets/fonts/open-sans/OpenSans-Regular.ttf');
     }
-
+    .fake{
+        height: 39px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid #dddddd;
+        border-radius: 0 4px 4px 0;
+    }
     .tooltip{
           z-index:99999999; overflow: visible !important;overflow: visible !important;
       }
@@ -205,13 +216,16 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.13.1">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.14.0">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2-bootstrap.css" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/old.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.css">
+
+  <link href="https://cdn.feegow.com/feegowclinic-v7/assets/fonts/material-design-icons/css/materialdesignicons.min.css" rel="stylesheet">
+
   <style>
   /*===============================================
     Custom Scrollbar
@@ -244,7 +258,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=47"></script>
+  <script src="js/components.js?v=1.1.2"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -372,6 +386,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         <%
         end if
         %>
+
+      
+        initComponents({
+          apiUrl: '<%=getEnv("FC_API_URL","")%>'
+        });
 
         var sessionObj = {
             Table:'<%=session("Table")%>',
@@ -534,8 +553,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
       end if
 
       if device()<>"" then %>
-        <div onclick="fechar(); fecharSubmenu()" id="cortina" style="width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
-        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class="bg-primary darker pt10">
+        <div onclick="fechar(); fecharSubmenu()" id="cortina" class="fade in" style="backdrop-filter:blur(5px);width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
+        <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class=" bg-primary darker pt10">
             <div id="menu" style="position:absolute; width:260px; height:1000px; top:0; left:-260px; z-index:10000000001; background:#fff">
                 <div class="row">
                     <div class="col-md-12">
@@ -632,7 +651,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         </script>
     <% end if %>
 
-    <div id="disc" class="alert alert-danger text-center hidden" style="position:absolute; z-index:9999; width:100%"></div>
+    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
 
         <div id="modalCaixa" class="modal fade" tabindex="-1">
             <div class="modal-dialog">
@@ -958,7 +977,6 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                       </li>
                       <%
                     end if
-      end if
                   if aut("gerenciamentodearquivos")= 1 then
                   %>
                     <li class="list-group-item menu-click-meu-perfil-arquivos">
@@ -969,6 +987,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </li>
                   <%
                   end if
+      else
+
                   if session("Admin")=1 then
                   %>
                   <li class="list-group-item">
@@ -984,16 +1004,17 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                     </a>
                   </li>
                   <%
-								%>
-
-								<li class="list-group-item">
-									<a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
-										<i class="far fa-calendar"></i>
-										Confirmação Geral
-									</a>
-								</li>
-								<%
 							end if
+              %>
+
+              <li class="list-group-item">
+                <a class="green animated animated-short fadeInUp" href="?P=ConfirmAll&Pers=1&Data=<%= date() %>">
+                  <i class="far fa-calendar"></i>
+                  Confirmação Geral
+                </a>
+              </li>
+              <%
+          end if 
 
 
 							licencas = session("Licencas")
@@ -1322,7 +1343,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
 
 								IF FileName = "Home.asp" THEN
-                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 then
+                  if getConfig("HomeOtimizada")="1" or PorteClinica > 3 or AppEnv<>"production" then
 								      FileName = "HomeModoFranquia.asp"
                   end if
 								END IF
@@ -1421,7 +1442,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 
-                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
+                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -2052,8 +2073,8 @@ function callSta(callID, StaID){
 'or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 
     if session("OtherCurrencies")="phone" then
 	    %>
-	    setTimeout(function(){constante()}, 1500);
-	    setInterval(function(){constante()}, 7000);
+	    setTimeout(function(){constante()}, 5500);
+	    setInterval(function(){constante()}, 27000);
 	    <%
     else
 	    %>
@@ -2501,7 +2522,7 @@ function abreModalUnidade(backdrop=true){
   </script>
   <!-- END: PAGE SCRIPTS -->
 
-<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:#903; color:#FFF; padding:3px; display:none" id="legend">
+<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px); " id="legend">
 	<marquee id="legendText"></marquee>
 </div>
 <iframe width="250" id="speak" name="speak" height="195" scrolling="no" style="position:fixed; bottom:0; left:0; display:none" frameborder="0" src="about:blank"></iframe>
@@ -2562,6 +2583,8 @@ end if
 %>
 			<script type="text/javascript">
 			$(document).ready(function(){
+
+
 			<%=scrollBaixo%>
 
 
@@ -2728,7 +2751,9 @@ end if
  gtag('config', 'UA-54670639-4');
 </script>
 
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
 function chatNotificacao(titulo, mensagem) {
     let options = {
       body: mensagem,
@@ -2825,5 +2850,5 @@ if PermiteChat then
 end if
 %>
 <% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
-<script src="assets/js/whatsApp/whatsAppStatus.js"></script>
+<script src="assets/js/whatsApp/whatsAppStatus.js?cache_prevent=9"></script>
 <% END IF %>

@@ -38,17 +38,15 @@ else
     set reg = db.execute("select p.*, "&_
     "(select count(id) from pacientesprescricoes where sysActive=1 AND PacienteID="&PacienteID&" ) as totalprescricoes, "&_
     "(select count(id) from pacientesatestados where sysActive=1 AND PacienteID="&PacienteID&" ) as totalatestados, "&_
-    "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as qtepedidos, "&_
-    "(select count(id) from pedidossadt where sysActive=1 AND PacienteID="&PacienteID&" ) as qtepedidossadt, "&_
+    "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalpedidos, "&_
     "(select count(id) from pacientesdiagnosticos where sysActive=1 AND PacienteID="&PacienteID&" ) as totaldiagnosticos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='I' ) as totalimagens, "&_
-    "(select count(id) from recibos where (Texto is not null and Texto<>'' ) and PacienteID="&PacienteID&" AND sysActive=1 ) as totalrecibos, "&_
     "(select count(fpae.id) from buiformspreenchidos as fpae left join buiforms as mae on fpae.ModeloID=mae.id where fpae.PacienteID="&PacienteID&" and (fpae.sysActive=1 or fpae.sysActive is null) and (mae.Tipo=1 or mae.Tipo=2 or isnull(mae.Tipo))) as totalae, "&_
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)
 end if
-    splBdgs = split("totalprescricoes, totalatestados, qtepedidos, totaldiagnosticos, totalarquivos, totalimagens, totalrecibos, totalae, totallf", ", ")
+    splBdgs = split("totalprescricoes, totalatestados, totalpedidos, totaldiagnosticos, totalarquivos, totalimagens, totalae, totallf", ", ")
 
 
 if not isnull(reg("Nascimento")) and not isnull(reg("NomePaciente")) then
@@ -64,6 +62,7 @@ end if
 	<input type="hidden" name="I" value="<%=PacienteID%>" />
 	<input type="hidden" name="cmd" value="<%=req("cmd")%>" />
 	<input type="hidden" name="P" value="<%=req("P")%>" />
+
 
 <%=header(req("P"), "Paciente", reg("sysActive"), req("I"), req("Pers"), "Follow")%>
     <script type="text/javascript">
@@ -127,40 +126,28 @@ else
 end if
 %>
 
+
+
+
 <div class="panel" id="DadosComplementares">
   <div class="panel-body">
-	    <div class="col-md-2" id="divAvatar">
-
-        <div id="camera" class="camera"></div>
+	<div class="col-md-2" id="divAvatar">
+            <div id="camera" class="camera"></div>
             <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
                 <input type="file" name="Foto" id="Foto" />
                 <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
             </div>
             <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail" width="100%" />
+	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
                 <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
             </div>
-            <div class="row">
-              <div class="col-xs-6">
-	              <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
-              </div>
-            <div class="col-xs-6">
+            <div class="row"><div class="col-xs-6">
+	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
+            </div><div class="col-xs-6">
 	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
-            </div>
-          </div>
+            </div></div>
     </div>
-
-    <script>
-        function cancelPhotoTaking(){
-            sayCheese.on('stop', () => $( "video" ).remove());
-            sayCheese.stop();
-            $('#divDisplayUploadFoto').show();
-            $('#take-photo').hide();
-            $('#cancelar').hide();
-        }
-    </script>
-    
-    <script type="text/javascript">
+      <script type="text/javascript">
 
           function sipac(Ipac){
             if(Ipac>1000000000){
@@ -174,19 +161,17 @@ end if
                let val = $(that).is(':checked');
 
                var data = $('#Pais').select2('data');
-               var nomePais = $('#PaisID option:selected').text() || data[0].full_name;
+               var nomePais = data[0].full_name;
                let outroPais = nomePais && nomePais != "" && nomePais != "Brasil";
 
               if(val || outroPais){
-                  $('#EstrangeiroText').text('SIM');
                   $("#CPF").removeAttr("required").attr("readonly", true).val("");
-                  $('#SemCPF-CPF').prop('checked', true);
               }
               if(!(val || outroPais))
               {
-                  $('#EstrangeiroText').text('NÃO');
                   $("#CPF").attr("required", "required").attr("readonly", false);
                   var a = $("#CPF");
+
               }
           }
       </script>
@@ -194,7 +179,7 @@ end if
     <div class="col-md-10">
         <div class="row">
 
-            <div class="col-md-3 col-lg-3 col-xl-4">
+            <div class="col-md-4">
                 <%=selectList("Nome &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small class=""label label-xs label-light hidden"" id=""resumoConvenios""></small>", "NomePaciente", reg("NomePaciente"), "pacientes", "NomePaciente", "sipac($(this).val());", " required", "")%>
             </div>
             <%
@@ -208,7 +193,7 @@ end if
             end if
             %>
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
-            <div class="col-md-2 col-lg-2 col-xl-1">
+            <div class="col-md-1">
                 <label for="Estrangeiro">Estrangeiro</label>
                 <div style="
                             border: 1px solid #dddddd;
@@ -250,21 +235,17 @@ end if
 
             <%=quickField("simpleColor", "CorIdentificacao", "Cor de Identificação", 2, CorIdentificacao, "select * from Cores", "Cor", "")%>
 
-            <script>
-                $(document).ready(() => {
-                    $('#qfcoridentificacao label').css('white-space', 'nowrap');
-                });
-            </script>
-
         </div><br />
         <div class="row">
             <%= quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", " empty")%>
             <%= quickField("text", "NomeSocial", "Nome Social", 2, reg("NomeSocial"), "", "", " autocomplete='nome-social' ") %>
-			<%= quickField("text", "Altura", "Altura (m)", 2, reg("Altura"), " input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "Peso", "Peso (kg)", 2, reg("Peso"), "input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "IMC", "IMC", 2, reg("IMC"), "text-right", "", " readonly") %>
+			<div class="col-md-4">
+                <%= quickField("text", "Altura", "Altura", 4, reg("Altura"), " input-mask-brl text-right", "", "") %>
+                <%= quickField("text", "Peso", "Peso", 4, reg("Peso"), "input-mask-brl text-right", "", "") %>
+                <%= quickField("text", "IMC", "IMC", 4, reg("IMC"), "text-right", "", " readonly") %>
+            </div>
             <div class="col-md-2">
-            	<label>Nº do Prontu&aacute;rio
+            	<label>Prontu&aacute;rio
 
                 <%
                 AlterarNumeroProntuario= getConfig("AlterarNumeroProntuario")
@@ -280,7 +261,6 @@ end if
                   <br /></label>
 			<%
                 if AlterarNumeroProntuario = 1 then
-                'if session("banco")="clinic1612" or session("banco")="clinic5868" or session("banco")="clinic3610" or session("banco")="clinic105" or session("banco")="clinic3859" or session("banco")="clinic5491" then
 				Prontuario = reg("idImportado")
 				if isnull(Prontuario) then
 					set pultPront = db.execute("select idImportado Prontuario from pacientes where not isnull(idImportado) order by idImportado desc limit 1")
@@ -296,6 +276,11 @@ end if
     	        <input type="text" class="form-control text-right" value="<%=reg("id")%>" disabled='disabled' />
 			<% End If%>
             </div>
+            <%
+                sqlprioridade = "select * from cliniccentral.pacientesprioridades"
+            %>
+            <%= quickField("simpleSelect", "Prioridade", "Prioridade", 2, reg("Prioridade"), sqlprioridade , "Prioridade", "") %>
+            
         </div>
 
         <%
@@ -442,18 +427,18 @@ end if
             	<div class="col-md-8">
                     <div class="row">
                         <span style="font-size: 9px; width: 8px; position: absolute; left: 50px; min-width: 80px; z-index: 5;top: 5px" ><a href="http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm" target="_blank">Não sei o CEP</a></span>
-                        <%= quickField("text", "Cep", "CEP", 3, reg("cep"), "input-mask-cep", "", " autocomplete='cep' ") %>
-                        <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "", "", " autocomplete='endereco' ") %>
-                        <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "", "", "") %>
-                        <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "", "", " autocomplete='complemento' ") %>
+                        <%= quickField("text", "Cep", "Cep", 3, reg("cep"), "input-mask-cep Ipt-Cep", "", " autocomplete='cep' ") %>
+                        <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "Ipt-Endereco", "", " autocomplete='endereco' ") %>
+                        <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "Ipt-Numero", "", "") %>
+                        <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "Ipt-Complemento", "", " autocomplete='complemento' ") %>
                     </div>
                     <div class="row">
-                        <div class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
+                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "Ipt-Bairro", "", " autocomplete='bairro' ") %>
+                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "Ipt-Cidade", "", " autocomplete='cidade' ") %>
+                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "Ipt-Estado", "", " autocomplete='estado-uf' ") %>
+                        <div id="ficha_Paises" class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
 	                        <%= selectInsert("Pa&iacute;s", "Pais", reg("Pais"), "paises", "NomePais", "", "", "") %>
                         </div>
-                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", " autocomplete='estado-uf' ") %>
-                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "", "", " autocomplete='cidade' ") %>
-                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "", "", " autocomplete='bairro' ") %>
                     </div>
                     <div class="row">
 						<%= quickField("phone", "Tel1", "Telefone", 4, reg("tel1"), "", "", " autocomplete='tel1' ") %>
@@ -982,6 +967,34 @@ function liberar(Usuario , senha , id, Nometable){
         });
     }
 
+$( document ).ready(function() {
+    $(".Ipt-Cep").keyup(function(){      
+        getEndereco();
+    });
+    //var resultadoCEP = {"logradouro":"Estrada do Guanumbi","bairro":"Freguesia (Jacarepagua)","cidade":"Rio de Janeiro","uf":"RJ","cep":"22745-200","pais":1}
+    var resultadoCEP
+    function getEndereco() {        
+            //alert($(".Ipt-Cep").val());
+            var temUnder = /_/i.test($(".Ipt-Cep").val())
+            if(temUnder == false){
+                $.getScript("webservice-cep/cep.php?cep="+$(".Ipt-Cep").val(), function(){
+                   
+                    if(resultadoCEP["logradouro"]!=""){
+                        $(".Ipt-Endereco").val(unescape(resultadoCEP["logradouro"]));
+                        $(".Ipt-Bairro").val(unescape(resultadoCEP["bairro"]));
+                        $(".Ipt-Cidade").val(unescape(resultadoCEP["cidade"]));
+                        $(".Ipt-Estado").val(unescape(resultadoCEP["uf"]));
+                        if(resultadoCEP["pais"]==1){
+                            $('select[id=Pais]').html("<option value='1'>Brasil</option>").val(1).change();                           
+                        }
+                        $(".Ipt-Numero").focus();
+                    }else{
+                        $(".Ipt-Endereco").focus();
+                    }
 
+                });				
+            }			
+    }
+});
 
 </script>

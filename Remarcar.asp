@@ -23,7 +23,7 @@ if ProfissionalID="" then
     ProfissionalNaoInformado=True
 end if
 
-set AgendamentoSQL = db.execute("SELECT *, IF(rdValorPlano='P',ValorPlano,0) ConvenioID FROM agendamentos WHERE id="&AgendamentoID)
+set AgendamentoSQL = db.execute("SELECT *, IF(rdValorPlano='P',ValorPlano,0) ConvenioID, Tempo FROM agendamentos WHERE id="&AgendamentoID)
 
 if AgendamentoSQL.eof then
     Response.End
@@ -83,12 +83,23 @@ end if
 
 if Acao="Remarcar" then
     Encaixe=0
+    HoraSolIni = Hora
+    Tempo = AgendamentoSQL("Tempo")
+    if Tempo&"" <> "" then
+        HoraSolFin = dateadd("n", Tempo,HoraSolIni)
 
-
+        set ve1=db.execute("select * from agendamentos where sysActive=1 AND ProfissionalID = '"&ProfissionalID&"' and StaID !=11 and ProfissionalID<>0 and Data = '"&mydate(Data)&"' and not id = '"&AgendamentoID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and Hora<time('"&HoraSolFin&"') and Encaixe IS NULL and sysactive=1 and HoraFinal>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"')")
+        if not ve1.eof then
+            erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
+        end if
+    end if
 
     if Hora="00:00" or Hora=""  then
         erro = "Escolha um horário para a remarcação."
-         %>
+    end if
+
+    if erro <> "" then
+        %>
             showMessageDialog("<%=erro%>", "danger")
         <%
         response.end
@@ -254,7 +265,7 @@ if Acao="Remarcar" then
         
             ConsultaID = pultCon("id")
         else
-            sql = "update agendamentos set EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
+            sql = "update agendamentos set sysActive='1',EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
             db_execute(sql)
             ConsultaID = session("RemSol")
         end if

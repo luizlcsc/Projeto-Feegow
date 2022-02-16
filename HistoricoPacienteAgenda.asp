@@ -241,13 +241,13 @@ end if
     <table class="table footable fw-labels table-condensed" data-page-size="20">
         <thead>
             <tr>
-                <th>Título</th>
                 <th>Data</th>
                 <th>Executor</th>
                 <th>Valor</th>
                 <th>Desconto</th>
                 <th>3x</th>
                 <th>6x</th>
+                <th>Status</th>
                 <th>
                     <a href="#" class="btn btn-xs btn-success pull-right" onclick="propostas()">
                         <i class="far fa-plus"></i> Nova proposta
@@ -292,7 +292,6 @@ end if
 
         %>
             <tr>
-                <td><%=propostaSQL("TituloItens")%><%=propostaSQL("idproposta")%></td>
                 <td><%=propostaSQL("DataProposta")%></td>
                 <td><%=propostaSQL("NomeProfissional") %></td>
                 <td><% if propostaSQL("valorTotal")&"" <> "" then
@@ -303,6 +302,7 @@ end if
                     end if %></td>
                 <td><%= "R$ " & formatnumber(tresVezes) %></td>
                 <td><%= "R$ " & formatnumber(seisVezes) %></td>
+                <td><%=propostaSQL("NomeStatus")%></td>
                 <td>
                 <div class="btn-group pull-right">
                     <button title="Detalhes" class="btn btn-default btn-xs" data-propostaid="<%= propostaSQL("idproposta") %>" id="prophist2<%=propostaSQL("idproposta")%>"><i class="far fa-info-circle"></i></button>

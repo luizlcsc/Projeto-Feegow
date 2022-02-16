@@ -35,6 +35,10 @@ select case TipoChamada
         %>
         <!--#include file="PacientesProtocolos.asp"-->
         <%
+    case "Encaminhamentos"
+        %>
+        <!--#include file="pacientesEncaminhamentos.asp"-->
+        <%
 end select
 %>
 

@@ -1,25 +1,38 @@
 <!--#include file="connect.asp"-->
 
 <%
-itemGuiaId = ref("itemGuiaId")
+guiaInvoiceID = ref("guiaInvoiceID")
+itemID = ref("itemID")
+InvoiceID = ref("InvoiceID")
 
-set Lote = db.execute("SELECT LoteID FROM tissguiasinvoice TI INNER JOIN tissguiasadt TG ON TI.GuiaID = TG.id WHERE TI.id = '"&itemGuiaId&"'") 
+set Lote = db.execute("SELECT LoteID FROM tissguiasinvoice TI INNER JOIN tissguiasadt TG ON TI.GuiaID = TG.id WHERE TI.id = '"&guiaInvoiceID&"'") 
 loteId = Lote("LoteID")
 
-db.execute("DELETE FROM tissguiasinvoice WHERE id='"&itemGuiaId&"'")   
+'remove a guia de dentro da invoice
+db.execute("DELETE FROM tissguiasinvoice WHERE id='"&guiaInvoiceID&"'")
 
-set TotalGeral = db.execute("SELECT SUM(TotalGeral) AS Total FROM tissguiasadt WHERE LoteID = '"&loteId&"'") 
-totalGeral = TotalGeral("Total")
+set Guias = db.execute("SELECT GuiaID, ItemInvoiceID FROM tissguiasinvoice WHERE invoiceid='"&InvoiceID&"'")
 
-set TotalPago = db.execute("SELECT SUM(ValorPago) AS TotalPago FROM tissguiasadt TG INNER JOIN tissguiasinvoice TI ON TG.id = TI.GuiaID WHERE LoteID = '"&loteId&"'")
-totalPago = TotalPago("TotalPago")
+valorFinal = 0
+while not Guias.eof
+    set TotalGuias = db.execute("SELECT TotalGeral FROM tissguiasadt WHERE id='"&Guias("GuiaID")&"'")
+        valorFinal = valorFinal + TotalGuias("TotalGeral")
+Guias.movenext
+wend
+Guias.close
 
-total = fn(totalGeral - totalPago)
+'atualiza valor do item de onde foi retirada a invoice
+atualizaItemInv = db.execute("UPDATE itensinvoice set ValorUnitario= "&treatValZero(valorFinal)&" WHERE id= "&itemID)
 
-'set Total = db.execute("SELECT SUM(TotalGeral) - SUM(ValorPago) AS Total  FROM tissguiasadt WHERE LoteID = '"&loteId&"'") 
-'totalGeral = Total("Total")
-'totalGeral = formatnumber(totalGeral,2)
+'calcula o valor total da invoice
+set TotalGeral = db.execute("Select SUM(ValorUnitario) As Total from itensinvoice where InvoiceID= "&InvoiceID)
+totalGeral = treatVal(TotalGeral("Total"))
 
-response.write(total)
+'atualiza a mov e a inv
+atualizaMov = db.execute("UPDATE sys_financialmovement set Value="&totalGeral&" WHERE type='Bill' AND InvoiceID="&InvoiceID)
+
+atualizaInv = db.execute("UPDATE sys_financialinvoices set Value="&totalGeral&" WHERE id="&InvoiceID)
+
+response.write(totalGeral)
 
 %>

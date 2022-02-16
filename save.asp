@@ -339,13 +339,20 @@ if not getResource.EOF then
 					sqlValue = "'"&year(ref(getFields("columnName")))&"-"&month(ref(getFields("columnName")))&"-"&day(ref(getFields("columnName")))&"'"
 				end if
 			end if
-		else
-			sqlValue = "'"&refhtml(getFields("columnName"))&"'"
-		end if
+
+        elseif getFields("fieldTypeID")=7 then
+            if getFields("columnName") = "DiasAvisoValidade" then
+                sqlValue = treatvalnull(refhtml(getFields("columnName")))
+            else
+                sqlValue = valnullToZero(ref(getFields("columnName")))
+            end if
+        else
+            sqlValue = "'"&refhtml(getFields("columnName"))&"'"
+        end if
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
 
-            valor = refhtml(getFields("columnName"))
+            valor = ref(getFields("columnName"))
 
             if instr(getFields("columnName"), "Nome")>0 then
                 valor = NomeNoPadrao(valor)

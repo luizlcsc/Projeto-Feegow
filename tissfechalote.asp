@@ -12,9 +12,7 @@ Planos = req("Planos")
 Contratados = replace(req("Contratados"),"''","'")
 Procedimentos =  req("Procedimentos")
 Executantes =  req("Executantes")
-Pais =  req("PaisID")
-Estado =  req("EstadoID")
-Cidade =  req("CidadeID")
+CriaInvoice = req("CriaInvoice")
 
 if Unidades="" then
 	Unidades = session("Unidades")
@@ -30,7 +28,7 @@ end if
     	<div class="row">
             <div class="col-md-2">
                 <label>Tipo de Guia</label><br />
-                <select name="T" id="T" class="form-control" required onchange="return onChangeGuiaTipo();">
+                <select name="T" id="T" class="form-control" required>
                     <option value="">Selecione</option>
                     <option value="GuiaConsulta"<%if req("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
                     <option value="GuiaSADT"<%if req("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
@@ -40,7 +38,7 @@ end if
             <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", " empty="""" required=""required""") %>
             <%= quickField("datepicker", "DataDe", "Data do Preenchimento", 2, req("DataDe"), "", "", " placeholder='De'") %>
             <%= quickField("datepicker", "DataAte", "&nbsp;", 2, req("DataAte"), "", "", " placeholder='At&eacute;'") %>
-            <div class="col-md-1">
+            <div class="col-md-3">
                 <label>&nbsp;</label><br />
                 <button class="btn btn-md btn-primary"><i class="far fa-search"></i> Buscar</button>
             </div>
@@ -272,23 +270,7 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" then
         sqlExecutantes = " and g.ProfissionalID IN ("&Executantes&") "
     end if
 
-    if Pais<>"" then
-        if Pais = 1 then
-            sqlPais = " and p.PaisID = 1"
-        else
-            sqlPais = " and p.PaisID <> 1"
-        end if
-    end if
-
-    if Estado<>"" then
-        sqlEstado = " and p.EstadoID = "&Estado
-    end if
-
-    if Cidade<>"" then
-        sqlCidade = " and p.CidadeID = "&Cidade
-    end if
-
-    sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&sqlExecutantes&sqlPais&sqlEstado&sqlCidade&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
+    sqlGuia = "select g.*, proc.NomeProcedimento from tissguiaconsulta g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN procedimentos proc ON proc.id = g.ProcedimentoID where g.sysActive=1"&sqlLote&sqlContratados&sqlPlanos&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&sqlExecutantes&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &orderBy
 
 	set guias = db.execute(sqlGuia)
 	while not guias.EOF
@@ -550,26 +532,8 @@ elseif req("ConvenioID")<>"" and req("T")="GuiaSADT" then
         sqlExecutantes = " and tps.ProfissionalID IN ("&Executantes&") "
     end if
 
-    if Pais<>"" then
-        if Pais = 1 then
-            sqlPais = " and p.PaisID = 1"
-        else
-            sqlPais = " and p.PaisID <> 1"
-        end if
-    end if
 
-    if Estado<>"" then
-        sqlEstado = " and p.EstadoID = "&Estado
-    end if
-
-    if Cidade<>"" then
-        sqlCidade = " and p.CidadeID = "&Cidade
-    end if
-
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes&sqlPais&sqlEstado&sqlCidade&" GROUP BY g.id "& orderBy
-
-    %><script>console.log('<%=sqlGuias%>')</script><%
-
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') Procedimentos from tissguiasadt g LEFT JOIN pacientes p ON p.id = g.PacienteID LEFT JOIN tissprocedimentossadt tps ON tps.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tps.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlPlanos&sqlProcedimentos&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes& " GROUP BY g.id "& orderBy
 	set guias = db.execute(sqlGuias)
 
 	while not guias.EOF
@@ -758,7 +722,7 @@ function geraInvoice(T, V, Incrementar){
 // Fecha o lote
     $.ajax({
 		   type:"POST",
-		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
+		   url:"saveLote.asp?Acao=Inserir&CriaInvoice=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
 		   data:$("#frmModal, #guias").serialize(),
 		   success:function(data){
 			   eval(data);
@@ -795,6 +759,7 @@ jQuery(function() {
       searching: false
   });
 });
+
 </script>
 
 <!-- CAL-514 Adição de filtro de país, estado e cidade no fechamento de lote de guias TISS -->

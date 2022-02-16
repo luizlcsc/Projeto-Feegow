@@ -74,7 +74,7 @@ if not PacienteSQL.eof then
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Local.Sigla]", AgendamentoProcedimentoSQL("Sigla"))
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Paciente.Convenio]", AgendamentoProcedimentoSQL("NomeConvenio")&"")
 
-	Cabecalho = replaceTags(EtiquetaAgendamento, PacienteSQL("id"), session("User"), session("Unidade"))
+	EtiquetaAgendamento = unscapeOutput(replaceTags(EtiquetaAgendamento, PacienteSQL("id"), session("User"), session("Unidade")))
     %>
 <style>
 @page

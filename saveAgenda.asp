@@ -164,6 +164,7 @@ if ConsultaID<>"0" then
     if altCarac>0 and aut("senhaagendaI")=0 and session("SenhaStatusAgenda")="S" then
         if not pCon.eof then
             altCarac = 0
+            status = pCon("StatID")
             'se config:alteracao de carac somente mediante senha e usuario nao tem perm, e (status anterior aguard ou atend) e status atual <> aguard ou atend
             if isnumeric(rfValorPlano) and rfValorPlano<>"" then
                 ccurValorPlano = ccur(rfValorPlano)
@@ -413,7 +414,7 @@ if erro="" then
 
     if cdate(ref("Data"))< date() then
 
-        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and pCon("StaID")&"" <> rfStaID then
+        if (rfStaID="11" or rfStaID="16" or rfStaID="6" ) and status&"" <> rfStaID&"" then
             'status de agendamento passado alterado para status em que o atendimento nao foi prestado.
 
             call registraEventoAuditoria("altera_status_agendamento_passado", ConsultaID, "")
@@ -495,59 +496,40 @@ if erro="" then
         $.get(feegow_components_path+"/googlecalendar/save", {Licenca: "<%=LicenseID%>" ,Acao:"<%=Action%>", Email:"vca", AgendamentoID:"<%=ConsultaID%>", ProfissionalID:"<%=rfProfissionalID%>", NomePaciente:"<%=GCNomePaciente%>", Data:"", Hora:"", Tempo:"", NomeProcedimento:"", Notas:""}, function(){})
 
         <%
-        'call centralSMS(ref("ConfSMS"), rfData, rfHora, ConsultaID)
-        'call centralEmail(ref("ConfEmail"), rfData, rfHora, ConsultaID)
+        forceNotSendSMS = "true"
+        forceNotSendWhatsApp = "true"
+        forceNotSendEmail = "true"
+        channel = ""
+        if ref("ConfWhatsapp")="S" or ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
 
-        if ref("ConfSMS")="S" or ref("ConfEmail")="S" or True then
-
-            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
-            if recursoAdicional(43) = 4 and ref("ConfSMS")="S" then
-                
-                'VERIFICA TIPOS DE EVENTO PARA DISPARAR O WEBHOOK
-                validaEventosSQL =  "SELECT ev.id, ev.Status, ev.Descricao                                            "&chr(13)&_
-                                    "FROM eventos_emailsms ev "&chr(13)&_                                                              
-                                    "LEFT JOIN cliniccentral.eventos_whatsapp AS eveWha ON eveWha.Nome = ev.Descricao "&chr(13)&_
-                                    "WHERE ev.WhatsApp=1                                                              "&chr(13)&_                                                                                         
-                                    "AND ev.sysActive=1                                                               "&chr(13)&_
-                                    "AND eveWha.id IS NOT NULL                                                        "&chr(13)&_                                                                                          
-                                    "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|1879|%')        "&chr(13)&_               
-                                    "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|0|%')                     "&chr(13)&_                       
-                                    "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|126|%')       "&chr(13)&_           
-                                    "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|16|%')          "&chr(13)&_                
-                                    "AND (ev.Status LIKE '%|ALL|%' OR ev.Status LIKE '%|7|%')"
-                set validaEventos = db.execute(validaEventosSQL)
-                if not validaEventos.eof then
-                    while not validaEventos.eof
-                        
-                        EventoStatus = validaEventos("Status")
-                        EventoID = validaEventos("id")
-                        bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
-                        bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ref("ConsultaID") &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
-
-                        'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
-                        if (ref("StaID") = 7 and instr(EventoStatus,"|7|")>0 ) OR (ref("StaID") = 1 and instr(EventoStatus,"|1|")>0 ) then
-                            call webhook(119, true, bodyContentFrom, bodyContentTo)  
-                        end if
-                        '***********************************************************************************
-                        '*APÓS HOMOLOGAR SISTEMA DE MENSAGENS, APROVAR COM A BLIP NOVOS MODELOS DE MENSAGEM*
-                        '*E CRIAR EVENTOS EM NOSSO HOOK NO CLINICCENTRAL COM OS STATUS ABAIXO***************
-                        '***********************************************************************************
-                            'ATENDIDO = 3
-                            'DESMARCADO PELO PACIENTE = 11
-                            'NÃO COMPARECEU = 6
-                            'REMARCADO = 15
-
-                    validaEventos.movenext
-                    wend
+            if recursoAdicional(43) = 4 then
+                if ref("ConfWhatsapp")="S" then
+                    channel = "whatsapp"
+                    forceNotSendWhatsApp = "false"
                 end if
-                validaEventos.close
-                set validaEventos = nothing
-                
             end if
-            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES WHATSAPP> 
+
+            if ref("ConfSMS")="S" then
+                forceNotSendSMS = "false"
+                channel = channel&",sms"
+            end if
+
+            if ref("ConfEmail")="S" then
+                forceNotSendEmail = "false"
+                channel = channel&",email"
+            end if
+
+            '<ACIONA WEBHOOK ASP PADRÃO PARA NOTIFICAÇÕES DA MENSAGERIA 2.0 (WHATSAPP, EMAIL, SMS)> 
+            if channel<>"" then
+                '##### SERVIÇO DE MENSAGERIA 2.0 (FEEGOW MESSAGE) #####
+                call webhookMessage(channel)
+            end if
+
+            '##### SERVIÇO DE MENSAGERIA FEEGOW API #####
             %>
-            getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
+                getUrl("patient-interaction/get-appointment-events", {appointmentId: "<%=ConsultaID%>",sms: "<%=ref("ConfSMS")%>"=='S',email:"<%=ref("ConfEmail")%>"=='S' })
             <%
+
         end if
         %>
 	}

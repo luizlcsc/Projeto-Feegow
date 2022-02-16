@@ -3,7 +3,7 @@
 save = ref("save")
 redirect = ref("redirect")
 
-set reg = db.execute("select * from PacientesAtestados where Atestado like '"&ref("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+set reg = db.execute("select * from PacientesAtestados where Atestado = '"&refHtml("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 if reg.EOF then
     if cbool(save) then
         'inclusão do atendimentoID se houver atendimento em curso
@@ -35,11 +35,11 @@ recursoPermissaoUnimed = recursoAdicional(12)
         if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
         'if   session("Banco")="clinic100000" or session("Banco")="clinic5760" or session("Banco")="clinic1526" or session("Banco")="clinic6865" or session("Banco")="clinic6273" or session("Banco")="clinic1526" or recursoPermissaoUnimed=4 then
         %>
-        <object style="width:100%; height: 600px;" id="ImpressaoAtestado" width="800" data="" type="text/html"></object>
+        <object class="sensitive-data" style="width:100%; height: 600px;" id="ImpressaoAtestado" width="800" data="" type="text/html"></object>
         <%
         else
         %>
-        <iframe width="100%" height="600px" src="<%=src%>" id="ImpressaoAtestado" name="ImpressaoAtestado" frameborder="0"></iframe>
+        <iframe class="sensitive-data" width="100%" height="600px" src="<%=src%>" id="ImpressaoAtestado" name="ImpressaoAtestado" frameborder="0"></iframe>
         <%
         end if
         %>
@@ -48,7 +48,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
             <label><input type="checkbox" id="Carimbo" name="Carimbo" class="ace" checked="checked" onclick="window.frames['ImpressaoAtestado'].Carimbo(this.checked);" />
                 <span class="lbl"> Carimbar</span>
             </label>
-            <label><input type="checkbox" id="Timbrado" name="Timbrado" class="ace" checked  onclick="window.frames['ImpressaoAtestado'].Timbrado(this.checked);" />
+            <label><input type="checkbox" id="Timbrado" name="Timbrado" class="ace" checked onclick="window.frames['ImpressaoAtestado'].TimbradoAtestado(this.checked);" />
                 <span class="lbl"> Papel Timbrado</span>
             </label>
             <hr />

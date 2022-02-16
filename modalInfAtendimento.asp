@@ -125,7 +125,10 @@ end if
 set atendimento = db.execute("select a.*, p.* from atendimentos as a left join pacientes as p on a.PacienteID=p.id where a.id="&AtendimentoID)
 set un = db.execute("select *,COALESCE((SELECT concat('|',GROUP_CONCAT(UsuarioID SEPARATOR '|, |'),'|') FROM config_usuarios_solicitacoes where UnidadeID  = "&session("UnidadeID")&"),sys_users.UsuariosNotificar) as UsuariosNotificar FROM  sys_users where id="&session("User"))
 if btn = "0" then
-    UsuariosNotificar = un("UsuariosNotificar")&" "
+    UsuariosNotificar = ""
+    if not un.eof then
+        UsuariosNotificar = un("UsuariosNotificar")&" "
+    end if
 end if
 PacienteID = atendimento("PacienteID")
 Solicitacao = req("Solicitacao")

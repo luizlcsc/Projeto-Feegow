@@ -322,122 +322,114 @@ end if
 
                                                       %>
                                                  </div>
-                                                    <% IF NOT ModoFranquia THEN %>
-                                                      <div class="col-md-3">
-                                                           <label>Profissional Executante</label>
-                                                           <% ExecucaoRequired = " required empty " %>
-                                                            <%=simpleSelectCurrentAccounts("ProfissionalExecutanteID", "5, 8, 2", ProfissionalExecutanteID, ExecucaoRequired&" "&onchangeProfissional&DisabledRepasse, "") %>
-                                                       </div>
-                                                   <% ELSE %>
-                                                      <div class="col-md-3">
-                                                          <label>Profissional Executante</label>
-                                                          <button type="button" onclick="executadosPacientesPropostas()" class="btn btn-default btn-block">
-                                                              <i class="far fa-check-circle"></i> Marcar itens como executado
-                                                          </button>
-                                                      </div>
-                                                      <script>
+                                                    <div class="col-md-3">
+                                                        <label>Profissional Executante</label>
+                                                        <button type="button" onclick="executadosPacientesPropostas()" class="btn btn-default btn-block">
+                                                            <i class="far fa-check-circle"></i> Marcar itens como executado
+                                                        </button>
+                                                    </div>
+                                                    <script>
 
-                                                        var profissionalSelecionado = null;
+                                                    var profissionalSelecionado = null;
 
-                                                        function selectExecuteAll(){
-                                                            $("[name^=table-select]:checked").each((a,b) =>{
+                                                    function selectExecuteAll(){
+                                                        $("[name^=table-select]:checked").each((a,b) =>{
 
-                                                                if(!profissionalSelecionado){
-                                                                    let dataVal = $(b).val();
-                                                                    $("[data-val="+dataVal+"] .executantes [type='checkbox']").prop("checked",false);
-                                                                    $("[data-val="+dataVal+"] .openAllProfissional").slideUp();
-                                                                    $("[data-val="+dataVal+"] .openAllProfissional select").each((key,item) => $(item).select2("val",profissionalSelecionado));
-                                                                    return;
-                                                                }
-
+                                                            if(!profissionalSelecionado){
                                                                 let dataVal = $(b).val();
-                                                                $("[data-val="+dataVal+"] .executantes [type='checkbox']").prop("checked",true);
-                                                                $("[data-val="+dataVal+"] .openAllProfissional").slideDown();
+                                                                $("[data-val="+dataVal+"] .executantes [type='checkbox']").prop("checked",false);
+                                                                $("[data-val="+dataVal+"] .openAllProfissional").slideUp();
                                                                 $("[data-val="+dataVal+"] .openAllProfissional select").each((key,item) => $(item).select2("val",profissionalSelecionado));
-                                                            })
-
-
-                                                            $("#modal-components").modal("hide");
-                                                            setTimeout(() =>reloadItens(),500);
-                                                        }
-
-                                                        var arr2 = [];
-                                                        function executadosPacientesPropostas(){
-
-                                                                arr2 = [];
-                                                                let showOption = [];
-                                                                $(".openAllProfissional select").each((key,item) =>{
-                                                                    let itensRow = {data_val:$(item).parents("tr").attr("data-val"),itens:[]}
-                                                                    $(item).find("option").map(function() { itensRow.itens.push(this.value);showOption.push(this.value) })
-                                                                    arr2.push(itensRow)
-                                                                });
-
-                                                                openModal(`<div>
-                                                                      <div class='mb15'>Selecione abaixo os itens que deseja marcar como "Executado":</div>
-                                                                      <div class='mb15'>Executante</div>
-                                                                     <%=simpleSelectCurrentAccounts("ProfissionalSelecao", "5, 8, 2", ProfissionalSelecao, "  ") %>
-                                                                </div><br/><div class="table-select-all"></div>`,"Marcar múltiplas execuções",true,() => {
-                                                                      profissionalSelecionado = $("#ProfissionalSelecao").val();
-                                                                      selectExecuteAll();
-                                                                });
-
-                                                                $("#ProfissionalSelecao option").attr('disabled','disabled')
-
-                                                                showOption && showOption.forEach((item) => {
-                                                                    $("#ProfissionalSelecao option[value='"+item+"']").removeAttr('disabled');
-                                                                })
-                                                                setTimeout(() =>$("#ProfissionalSelecao").select2(),100);
-                                                        }
-
-                                                        function _selecionarProf() {
-                                                                let profissionalSelecao = $("#ProfissionalSelecao").val();
-                                                                let arr = arr2.filter((item) => item.itens.includes(profissionalSelecao))
-
-                                                                let tableData = arr.map((data_val) => {
-                                                                    let tag = $(`[data-val=${data_val.data_val}]`);
-                                                                    console.log(tag.find("[name^=ItemID]").select2("data")[0].text.trim())
-                                                                    let item = tag.find("[name^=ItemID]").select2("data")[0].text.trim();
-                                                                    let valorTotal = tag.find("[id^=sub]").text().trim();
-                                                                    let val = data_val.data_val;
-                                                                    console.log(tag.find("[name^=ProfissionalLinhaID]").select2("data"))
-                                                                    let profissionalExecutante = tag.find("[name^=ProfissionalLinhaID]").select2("data")[0].text.trim();
-
-                                                                    return {item,valorTotal,profissionalExecutante,val};
-                                                                })
-
-                                                                let trs = tableData.map((item) => {
-                                                                    return `<tr>
-                                                                                <td><input type="checkbox" value="${item.val}" name="table-select[]" /></td>
-                                                                                <td>${item.item}</td>
-                                                                                <td>${item.profissionalExecutante}</td>
-                                                                                <td style="text-align: right">${item.valorTotal}</td>
-                                                                            </tr>`
-                                                                }).join("");
-
-                                                                $(".table-select-all").html(`
-                                                                    <table class="table table-condensed">
-                                                                        <thead>
-                                                                            <tr class="primary">
-                                                                                <th style="width: 10px"><input type="checkbox"  onchange="selecionarTodosFornencedores(this.checked)" /></th>
-                                                                                <th>Item</th>
-                                                                                <th>Profissional Executante</th>
-                                                                                <th style="text-align: right">Valor Total</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            ${trs}
-                                                                        </tbody>
-                                                                    </table>
-                                                                `)
-
+                                                                return;
                                                             }
 
-                                                        $("body").on("change","#ProfissionalSelecao", _selecionarProf)
-                                                        function selecionarTodosFornencedores(value){
-                                                            $("[name='table-select[]']").prop("checked",value)
+                                                            let dataVal = $(b).val();
+                                                            $("[data-val="+dataVal+"] .executantes [type='checkbox']").prop("checked",true);
+                                                            $("[data-val="+dataVal+"] .openAllProfissional").slideDown();
+                                                            $("[data-val="+dataVal+"] .openAllProfissional select").each((key,item) => $(item).select2("val",profissionalSelecionado));
+                                                        })
+
+
+                                                        $("#modal-components").modal("hide");
+                                                        setTimeout(() =>reloadItens(),500);
+                                                    }
+
+                                                    var arr2 = [];
+                                                    function executadosPacientesPropostas(){
+
+                                                            arr2 = [];
+                                                            let showOption = [];
+                                                            $(".openAllProfissional select").each((key,item) =>{
+                                                                let itensRow = {data_val:$(item).parents("tr").attr("data-val"),itens:[]}
+                                                                $(item).find("option").map(function() { itensRow.itens.push(this.value);showOption.push(this.value) })
+                                                                arr2.push(itensRow)
+                                                            });
+
+                                                            openModal(`<div>
+                                                                    <div class='mb15'>Selecione abaixo os itens que deseja marcar como "Executado":</div>
+                                                                    <div class='mb15'>Executante</div>
+                                                                    <%=simpleSelectCurrentAccounts("ProfissionalSelecao", "5, 8, 2", ProfissionalSelecao, "  ", "") %>
+                                                            </div><br/><div class="table-select-all"></div>`,"Marcar múltiplas execuções",true,() => {
+                                                                    profissionalSelecionado = $("#ProfissionalSelecao").val();
+                                                                    selectExecuteAll();
+                                                            });
+
+                                                            $("#ProfissionalSelecao option").attr('disabled','disabled')
+
+                                                            showOption && showOption.forEach((item) => {
+                                                                $("#ProfissionalSelecao option[value='"+item+"']").removeAttr('disabled');
+                                                            })
+                                                            setTimeout(() =>$("#ProfissionalSelecao").select2(),100);
+                                                    }
+
+                                                    function _selecionarProf() {
+                                                            let profissionalSelecao = $("#ProfissionalSelecao").val();
+                                                            let arr = arr2.filter((item) => item.itens.includes(profissionalSelecao))
+
+                                                            let tableData = arr.map((data_val) => {
+                                                                let tag = $(`[data-val=${data_val.data_val}]`);
+                                                                console.log(tag.find("[name^=ItemID]").select2("data")[0].text.trim())
+                                                                let item = tag.find("[name^=ItemID]").select2("data")[0].text.trim();
+                                                                let valorTotal = tag.find("[id^=sub]").text().trim();
+                                                                let val = data_val.data_val;
+                                                                console.log(tag.find("[name^=ProfissionalLinhaID]").select2("data"))
+                                                                let profissionalExecutante = tag.find("[name^=ProfissionalLinhaID]").select2("data")[0].text.trim();
+
+                                                                return {item,valorTotal,profissionalExecutante,val};
+                                                            })
+
+                                                            let trs = tableData.map((item) => {
+                                                                return `<tr>
+                                                                            <td><input type="checkbox" value="${item.val}" name="table-select[]" /></td>
+                                                                            <td>${item.item}</td>
+                                                                            <td>${item.profissionalExecutante}</td>
+                                                                            <td style="text-align: right">${item.valorTotal}</td>
+                                                                        </tr>`
+                                                            }).join("");
+
+                                                            $(".table-select-all").html(`
+                                                                <table class="table table-condensed">
+                                                                    <thead>
+                                                                        <tr class="primary">
+                                                                            <th style="width: 10px"><input type="checkbox"  onchange="selecionarTodosFornencedores(this.checked)" /></th>
+                                                                            <th>Item</th>
+                                                                            <th>Profissional Executante</th>
+                                                                            <th style="text-align: right">Valor Total</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        ${trs}
+                                                                    </tbody>
+                                                                </table>
+                                                            `)
+
                                                         }
-                                                      </script>
-                                                   <% END IF  %>
+
+                                                    $("body").on("change","#ProfissionalSelecao", _selecionarProf)
+                                                    function selecionarTodosFornencedores(value){
+                                                        $("[name='table-select[]']").prop("checked",value)
+                                                    }
+                                                    </script>
                                                    <div class="col-md-3">
                                                        <label>Status</label>
                                                        <%= quickField("simpleSelect", "StaID", "", 4, StaID, "select * from propostasstatus order by id", "NomeStatus", "semVazio") %>
@@ -958,7 +950,10 @@ var $conteudoParaOdontograma = $('#feegow-odontograma-conteudo'),
                   let parents = $(this).parents("tr");
                   reloadItensByParent(parents)
             });
+
         })
+
+        
 
     function formatNumber(num,fix){
         return Number(num).toLocaleString('de-DE', {
@@ -982,6 +977,63 @@ function cacularValorTabela({Procedimento,Tabela,Unidade="",AssociationAccountID
     });
 }
 
+function modalPreparo(){
+    // const pacienteID = 2;
+    const pacienteID = document.getElementById("PacienteID").value;
+    const profissionais = document.querySelectorAll("[id^='ProfissionalLinhaID']");
+    const procedimentos = document.querySelectorAll("[id^='ItemID']");
+
+    const arrayProfissionais = [].map.call(profissionais, elem => elem.value);
+    const arrayProcedimentos = [].map.call(procedimentos, elem => elem.value);
+        
+    const params = [];
+    const procedimento = [];
+
+
+    for (let i=0; i<arrayProfissionais.length; i++) {
+
+        let procedTemporario;
+
+        $(document).on('change', "[id^=ProfissionalLinhaID]", _ => {
+            if(($("[id^='ProfissionalLinhaID']").prop('checked'))===false) {
+            
+                showMessageDialog("Os campos procedimentos e profissionais são obrigatórios", 'warning');
+            
+            }
+
+            return;
+        });
+
+        if(arrayProfissionais[i] === arrayProfissionais[i+1]) {
+            procedimento.push(arrayProcedimentos[i]);
+            procedimento.join(", ");
+            console.log(procedimento);
+            params.push(arrayProfissionais[i]+"|"+procedimento);
+
+        }else {
+            procedTemporario = arrayProcedimentos.shift();
+            console.log(procedTemporario);
+            params.push(arrayProfissionais[i]+"|"+procedTemporario);
+
+        }
+    }
+
+    const param = params.join("-");
+        // const param = `5_11716|119763,119817`;
+
+    
+    $("#modal-table").modal("show");
+    $("#modal").html("Carregando...");
+    $.post("PreparoExame.asp",
+        {
+            param:param,
+            pacienteID:pacienteID
+        }
+        , function(data){
+        $("#modal").html(data);
+    });
+
+}
 
 <%
 if ModoFranquia then

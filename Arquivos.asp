@@ -7,7 +7,7 @@ IF True THEN
             %>
       <div class="galery-ajax"></div>
       <script>
-              fetch("ImagensNew.asp?ArquivoImagem=Arquivo&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>&OrdemDeCompraID=<%=req("OrdemDeCompraID")%>")
+              fetch("ImagensNew.asp?ArquivoImagem=Arquivos&PacienteID=<%=req("PacienteID")%>&MovementID=<%=req("MovementID")%>&OrdemDeCompraID=<%=req("OrdemDeCompraID")%>")
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);

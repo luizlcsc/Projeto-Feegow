@@ -5,6 +5,9 @@
      $(".crumb-active a").html("Configurações de SMS/E-mail");
 </script>
 <%
+
+LicencaID = replace(session("Banco"), "clinic", "")
+
 if session("admin")=1 then
     if ref("E")="E" then
         db.execute("update configeventos set EnvioAutomaticoEmail='"&ref("EnvioAutomaticoEmail")&"' , EnvioAutomaticoSMS='"&ref("EnvioAutomaticoSMS")&"' ,EnvioAutomaticoWhatsapp='"&ref("EnvioAutomaticoWhatsapp")&"' , AtivarServicoEmail='"&ref("AtivarServicoEmail")&"', AtivarServicoSMS='"&ref("AtivarServicoSMS")&"', AtivarServicoWhatsapp='"&ref("AtivarServicoWhatsapp")&"', ModeloMsgWhatsapp='"&ref("ModeloMsgWhatsapp")&"' WHERE id=1")
@@ -61,13 +64,35 @@ if session("admin")=1 then
 
     end if
 
-    MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorUnitario FROM cliniccentral.servicosadicionais sa WHERE sa.id = 31;"
-    SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
-    
-    custoMSG  = MensalidadeIndividual("ValorUnitario")
-    custoMSG = formatNumber(custoMSG, 2)
-    MensalidadeIndividual.close
-    SET MensalidadeIndividual  = nothing
+    whatsapp = false       
+
+    if recursoAdicional(31)=4 then            
+        servicoID = 31
+        whatsapp = true
+    end if
+    if recursoAdicional(49)=4 then            
+        servicoID = 49
+        whatsapp = true
+    end if
+    if recursoAdicional(43)=4 then            
+        servicoID = 43
+        whatsapp = true
+    end if
+
+    if whatsapp then
+        MensalidadeIndividualSQL = "SELECT COALESCE(csa.ValorUnitario, sa.ValorUnitario) AS ValorUnitario  "&chr(13)&_
+                                   "FROM cliniccentral.clientes_servicosadicionais csa                     "&chr(13)&_
+                                   "LEFT JOIN cliniccentral.servicosadicionais sa ON sa.id = csa.ServicoID "&chr(13)&_
+                                   "WHERE csa.LicencaID = "&LicencaID&"                                    "&chr(13)&_
+                                   "AND csa.ServicoID = "&servicoID&"                                      "
+                                
+        SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
+        
+        custoMSG  = MensalidadeIndividual("ValorUnitario")
+        custoMSG = formatNumber(custoMSG, 2)
+        MensalidadeIndividual.close
+        SET MensalidadeIndividual  = nothing
+    end if 
 
     set reg = db.execute("select * from configeventos where id=1")
     if not reg.EOF then
@@ -139,9 +164,9 @@ if session("admin")=1 then
 
                                     </label>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                    <%= quickfield("simpleSelect", "ModeloMsgWhatsapp", "Modelo para mensagem do whatsapp", 12, ModeloMsgWhatsapp, "select * from sys_smsemail where sysActive=1", "Descricao", " no-select2 ") %>
-
+                                    <p class="m10"><strong>*Referente ao serviço de whatsapp manual</strong></p>
                                 </div>
 
                             </div>

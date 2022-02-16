@@ -347,11 +347,17 @@ end if
         if aut("|altunirectoA|")=0 and CD="C" then
             disabUN = " disabled "
             response.write("<input type='hidden' name='CompanyUnitID' id='UnidadeIDPagtoHidden' value='"& UnidadeID &"'>")
-       end if
-       %>
-        <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
 
-        <%
+            set UnidadeSQL = db.execute("SELECT NomeFantasia FROM vw_unidades WHERE id="&treatvalzero(UnidadeID))
+            %>
+            <div class="col-md-2"><label>Unidade</label><br> <%=UnidadeSQL("NomeFantasia")%></div>
+            <%
+        else
+            %>
+            <%=quickField("empresa", "CompanyUnitID", "Unidade", 2, UnidadeID, "", showColumn , onchangeParcelas& disabUN )%>
+            <%
+        end if
+        
         if scp()=1  then
             call quickField("datepicker", "sysDate", "Data", 1, sysDate, "input-mask-date", "", ""&dateReadonly)
             call quickField("text", "nroNFe", "N. Fiscal", 1, nroNFe, "text-right", "", "")
@@ -1092,12 +1098,15 @@ var itensAlterados = false;
 
 function itens(T, A, II, autoPCi, cb){
     itensAlterados=true;
-	var inc = $('.invoice-linha-item[data-val]:last').attr('data-val');
+	var inc = $('tr[id^="row"][data-val]:last').attr('data-val');
 	var centroCustoId = $("#CentroCustoBase").val();
 	var LimitarPlanoContas = $("#LimitarPlanoContas").val();
-
+    var fornecedor = "";
+    if(T=="O"){
+        fornecedor = "&fornecedor="+$('#AccountID').val();
+    }
 	if(inc==undefined){inc=0}
-	$.post("invoiceItens.asp?I=<%=InvoiceID%>&Row="+inc+"&autoPCi="+autoPCi, {T:T,A:A,II:II, CC: centroCustoId, LimitarPlanoContas: LimitarPlanoContas}, function(data, status){
+	$.post("invoiceItens.asp?I=<%=InvoiceID%>&Row="+inc+fornecedor+"&autoPCi="+autoPCi, {T:T,A:A,II:II, CC: centroCustoId, LimitarPlanoContas: LimitarPlanoContas}, function(data, status){
 	if(A=="I"){
 		$("#footItens").before(data);
 	}else if(A=="X"){
@@ -1164,11 +1173,11 @@ function saveInvoiceSubmit(cb){
     }).error(function(err){
         showMessageDialog("Ocorreu um erro ao tentar salvar");
 
-        //notifyEvent({
-        //    description: "Erro ao salvar conta.",
-        //    criticity: 1,
-        //    moduleName: "<%=req("P")%>" 
-        //});
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_invoice',
+                'event_label': "Erro ao salvar invoice."
+            });
     });
 }
 $("#formItens").submit(function(){
@@ -1801,6 +1810,22 @@ if req("Div")="divHistorico" then
     <%
 end if
 %>
+
+
+$('.deletaGuia').on('click', function(){
+    var itemGuiaId = $(this).data('id');
+    var linhaItem = $('.js-del-linha[id="' + itemGuiaId + '"]');
+
+    if(confirm("Tem Certeza Que Deseja Deletar a Guia?")){
+        $.post("deletaItemGuia.asp", { guiaInvoiceID: guiaInvoiceID , itemID:itemID, InvoiceID:InvoiceID}, function(data) {
+            if(data){
+                linhaItem.fadeOut('fast', function (){
+                    $('#totalGeral').html(data);
+                });
+            }
+        })
+    };
+})
 </script>
 
 

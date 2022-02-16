@@ -3,7 +3,7 @@
 Server.ScriptTimeout = 1800
 
 if 1 then
-    set ages = db.execute("select g.* from googleagenda g LEFT JOIN agendamentos a ON a.id = g.AgendamentoID where g.ProfissionalID="&req("ProfissionalID")&" AND a.Data >= CURDATE()")
+    set ages = db.execute("select g.* from googleagenda g LEFT JOIN agendamentos a ON a.id = g.AgendamentoID where g.ProfissionalID="&req("ProfissionalID")&" AND a.Hora IS NOT NULL AND a.Data >= CURDATE()")
     while not ages.EOF
         call googleCalendar("X", "", ages("AgendamentoID"), "", "", "", "", "", "", "")
     ages.movenext

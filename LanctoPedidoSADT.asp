@@ -100,21 +100,10 @@ if erro<>"" then
     Response.End
 end if
 
-set pedproc = db.execute("select * from pedidossadtprocedimentos where PedidoID="&PedidoID)
-while not pedproc.eof
-    TabelaID = pedproc("TabelaID")
-    CodigoProcedimento = pedproc("CodigoProcedimento")
-    Descricao = pedproc("Descricao")
-    Quantidade = pedproc("Quantidade")
-    db_execute("insert into tissprocedimentossadt (GuiaID, ProfissionalID, `Data`, TabelaID, ProcedimentoID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao) values ("&GuiaID&", "&session("idInTable")&", now(), "&TabelaID&", 0,  '"&CodigoProcedimento&"', '"&Descricao&"', '"&Quantidade&"', 1, 1, 1, 0, 0, "&session("User")&", 5 )")
-pedproc.movenext
-wend
-pedproc.close
-set pedproc=nothing
-
 if ProfissionalExecutante&""<>"" then
     ProfissionalSplt = split(ProfissionalExecutante,"_")
-    set profexe = db.execute("select * from profissionais where id="&ProfissionalSplt(1))
+    ProfissionalExecutanteSplt=ProfissionalSplt(1)
+    set profexe = db.execute("select * from profissionais where id="&ProfissionalExecutanteSplt)
     if not profexe.eof then
         set espexe = db.execute("select CodigoTISS from especialidades where id = '"&profexe("EspecialidadeID")&"'")
         if not espexe.eof then
@@ -132,10 +121,23 @@ if ProfissionalExecutante&""<>"" then
         db_execute("insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&GuiaID&", "&Sequencial&", "&GrauParticipacaoID&", "&ProfissionalID&", '"&CodigoNaOperadoraOuCPF&"', "&ConselhoID&", '"&DocumentoConselho&"', '"&UFConselho&"', '"&CodigoCBO&"', "&session("User")&")")
     end if
 else
+    ProfissionalExecutanteSplt=0
     Contratado=""
     CodigoNaOperadora=""
     CodigoCNES=""
 end if
+
+set pedproc = db.execute("select * from pedidossadtprocedimentos where PedidoID="&PedidoID)
+while not pedproc.eof
+    TabelaID = pedproc("TabelaID")
+    CodigoProcedimento = pedproc("CodigoProcedimento")
+    Descricao = pedproc("Descricao")
+    Quantidade = pedproc("Quantidade")
+    db_execute("insert into tissprocedimentossadt (GuiaID, ProfissionalID, `Data`, TabelaID, ProcedimentoID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao) values ("&GuiaID&", "&ProfissionalExecutanteSplt&", now(), "&TabelaID&", 0,  '"&CodigoProcedimento&"', '"&Descricao&"', '"&Quantidade&"', 1, 1, 1, 0, 0, "&session("User")&", 5 )")
+pedproc.movenext
+wend
+pedproc.close
+set pedproc=nothing
 
 DataSolicitacao = date()
 

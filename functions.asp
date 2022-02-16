@@ -4,11 +4,20 @@ Function strip_tags(text_to_strip)
     Regex.Pattern = "<(.|\n)+?>"
     Regex.Global = True
     strip_tags = Regex.Replace(Trim(text_to_strip),"")
+    strip_tags = replace(strip_tags, "<", "")
+    strip_tags = replace(strip_tags, ">", "")
 End Function
 
-function clear_ref_req (val)
+function clear_ref_req (val, escapeQuotes)
+        '1- remove all
+        '2- escape
+        '3- keep 
+
         tentativa = false
     
+        'EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
+        val = replace(val, "​", "")
+        
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
@@ -19,7 +28,13 @@ function clear_ref_req (val)
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
         val = replace(val,"&#x7c;", "")
-        
+
+        'if escapeQuotes=1 then
+        '    val = replace(val, """", "")
+        'elseif escapeQuotes=2 or escapeQuotes=3 then
+        'end if
+        val = replace(val, """", "&quot;")
+
         clear_ref_req = val
 end function 
 
@@ -27,22 +42,22 @@ function ref(ColVal)
     val = request.Form(ColVal)
     val = strip_tags(val)
 
-    ref = clear_ref_req(val)
+    ref = clear_ref_req(val, 2)
 end function
 
 function refHTML(ColVal)
     val = request.Form(ColVal)
-    refHTML = clear_ref_req(val)
+    refHTML = clear_ref_req(val, 3)
 end function
 
 function req(ColVal)
     val = request.QueryString(ColVal)
     val = strip_tags(val)
-    req = clear_ref_req(val)
+    req = clear_ref_req(val, 1)
 end function
 
 function reqHTML(ColVal)
-    reqHTML = clear_ref_req(request.QueryString(ColVal))
+    reqHTML = clear_ref_req(request.QueryString(ColVal), 3)
 end function
 
 function refNull(ColVal)
@@ -53,6 +68,9 @@ function refNull(ColVal)
 	end if
 end function
 
+function unscapeOutput(outputVal)
+    unscapeOutput = replace(outputVal&"","&quot;", """")
+end function
 
 function reqf(P)
 

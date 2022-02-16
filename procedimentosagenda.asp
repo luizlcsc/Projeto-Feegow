@@ -26,6 +26,14 @@ end if
 <script type="text/javascript">
 <!--#include file="JQueryFunctions.asp"-->
 $(function(){
+    $('select[id^="ConvenioID"],input[id^="rdValorPlanoP"]').change(ele=>{
+        let convenio = $(ele.target).val()
+        if(convenio){
+            let linha = '<%=linhas%>';
+           $('#ProcedimentoID'+linha).attr("data-camposuperior","ConvenioID"+linha)
+           s2aj("ProcedimentoID"+linha, 'procedimentos', 'NomeProcedimento', 'ConvenioID'+linha, '','agenda');
+        }
+    })
     // console.log("<%=linhas%>")
     $(".valorprocedimento, .linha-procedimento").on('change', function(){
         somarValores();

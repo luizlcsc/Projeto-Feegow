@@ -18,6 +18,7 @@ sqlReg = "select * from Profissionais where id="&req("I")
 
 set reg = db.execute(sqlReg)
 RegUnidades = reg("Unidades")
+novoProfissional = reg("sysActive")
 
 if regUnidades&"" = "" then
     regUnidades = "|0|"
@@ -318,8 +319,12 @@ end if
                             <%=quickField("multiple", "AgendaProfissionais", "Acesso as agendas dos profissionais", 4, AgendaProfissionais, "select id, NomeProfissional from profissionais where ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
                         <%end if%>
 
-                        <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 3, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
+                        <%= quickfield("multiple", "SomenteConvenios", "Convênios para agendamento", 4, reg("SomenteConvenios"), "(select '|NONE|' id, 'NÃO PERMITIR CONVÊNIO' NomeConvenio) UNION ALL (select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' order by NomeConvenio)", "NomeConvenio", "") %>
+                        
+                        <%= quickField("number", "IdadeMinima", "Idade mínima", 2, reg("IdadeMinima"), "", "", "") %>
 
+                        <%= quickField("number", "IdadeMaxima", "Idade máxima", 2, reg("IdadeMaxima"), "", "", "") %>
+                        
                         <%'= quickField("simpleSelect", "PlanoContaID", "Plano de Contas", 3, "", "select id,Name from sys_financialexpensetype where sysActive=1 order by Name", "Name", "") %>
 
                     </div>
@@ -327,10 +332,12 @@ end if
                         <div class='col-md-5'>
                             <%=quickField("simpleCheckbox", "NaoExibirAgenda", "Não exibir o profissional na agenda", 12, reg("NaoExibirAgenda"), "", "", "")%>
 
-                            <% IF session("admin")=1 THEN %>
-                                <%=quickField("simpleCheckbox", "auditor", "Este profissional é auditor", 12,reg("auditor"), "", "", "")%>
+                            <% IF session("admin") = 1 and recursoadicional(37) = 4 THEN %>
+                                <%=quickField("simpleCheckbox", "auditor", "Este é um médico auditor", 12,reg("auditor"), "", "", "")%>
+                                <%=quickField("simpleCheckbox", "farmaceutico_auditor", "Este é um farmacêutico é auditor", 12,reg("farmaceutico_auditor"), "", "", "")%>
                             <% ELSE %>
                                 <input type="hidden" value="<%=reg("auditor")%>" name="auditor">
+                                <input type="hidden" value="<%=reg("farmaceutico_auditor")%>" name="farmaceutico_auditor">
                             <% END IF %>
                         </div>
                     </div>
@@ -405,9 +412,23 @@ if session("Admin")=1 then
 end if
 %>
 <script type="text/javascript">
-$(document).ready(function(e) {
-	<%call formSave("frm", "save", "")%>
 
+function desbloquear(status,tabela){
+    if(status){
+        $("#dadosAcesso").css("display", "block")
+        $("#permissoes").css("display", "block")
+    }
+}
+
+$(document).ready(function(e) {
+	<%call formSave("frm", "save", "desbloquear(true,'profissionais')")%>
+
+ let novoProfissional = "<%=novoProfissional%>"
+
+    if (novoProfissional == 0){
+        $("#dadosAcesso").css("display", "none")
+        $("#permissoes").css("display", "none")
+    } 
     const $coordsInput = $('#Coordenadas');
 
     var coords = $coordsInput.val();
@@ -654,6 +675,13 @@ function selecionarTodasUnidades(cel){
 function VisualizarEnvioDasAgendas() {
     openComponentsModal("ProfissionalEnvioAgenda.asp", {ProfissionalID:"<%=req("I")%>"}, "Envio das agendas", true)
 }
+
+$("#farmaceutico_auditor").change(()=>{
+    document.getElementById('auditor').checked = false;
+})
+$("#auditor").change(()=>{
+    document.getElementById('farmaceutico_auditor').checked = false;
+})
 </script>
 
 <script src="src/imageUtil.js"></script>

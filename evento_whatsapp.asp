@@ -90,7 +90,15 @@
 
 <body>
     <% 
-        MensalidadeIndividualSQL = "SELECT sa.MensalidadeIndividual custo, ValorUnitario FROM cliniccentral.servicosadicionais sa WHERE sa.id =43;"
+
+    LicencaID = replace(session("Banco"), "clinic", "")
+
+    MensalidadeIndividualSQL =  "SELECT COALESCE(csa.ValorUnitario, sa.ValorUnitario) AS ValorUnitario  "&chr(13)&_
+                                "FROM cliniccentral.clientes_servicosadicionais csa                     "&chr(13)&_
+                                "LEFT JOIN cliniccentral.servicosadicionais sa ON sa.id = csa.ServicoID "&chr(13)&_
+                                "WHERE csa.LicencaID = "&LicencaID&"                                    "&chr(13)&_
+                                "AND csa.ServicoID = 43                                                 "
+
         SET MensalidadeIndividual = db.execute(MensalidadeIndividualSQL)
 
         if  MensalidadeIndividual.eof then
@@ -119,68 +127,78 @@
                 <table id="table-" class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr class="info">
-                            <th class=" hidden-xs ">Tipo</th>
+                            <th class=" hidden-xs ">Nome</th>
 
                             <th class=" hidden-xs">Descrição</th>
                             
                             <th class=" hidden-xs ">Visualizar</th>
 
-                            <th width="1%" class="hidden-print"></th>
+                            <th width="1%" class="hidden-print">Ações</th>
                         </tr>
                     </thead>
         
                     <tbody>
                         <% 
-                            modeloDeMensagemSQL =   " SELECT                                                                    "&chr(13)&_
-                                                    " eve.ModeloID, eveW.Nome, eve.Descricao 'NomeEvento', eveW.Descricao,      "&chr(13)&_
-                                                    " eveW.Conteudo, eve.`Status`, eveW.ExemploResposta, eve.id 'EventoID',     "&chr(13)&_
-                                                    " sys.id 'SysID', eve.AntesDepois, eve.IntervaloHoras, eve.Unidades,        "&chr(13)&_
-                                                    " eve.Especialidades, eve.ApenasAgendamentoOnline, eve.EnviarPara,          "&chr(13)&_
-                                                    " eve.Procedimentos, eve.Profissionais,eve.Ativo, eve.sysActive   			"&chr(13)&_
-                                                    " FROM cliniccentral.eventos_whatsapp eveW                                  "&chr(13)&_
-                                                    " LEFT JOIN sys_smsemail sys ON sys.Descricao = eveW.Nome                   "&chr(13)&_
-                                                    " LEFT JOIN eventos_emailsms eve ON eve.ModeloID = sys.id                   "
+                            modeloDeMensagemSQL =   " SELECT                                                                                    "&chr(13)&_
+                                                    " eveW.id AS whatsappID, eveW.Nome 'ModeloWpp', eve.Descricao 'NomeEvento',                 "&chr(13)&_
+                                                    " eveW.Descricao, eveW.Conteudo, eve.LinkPersonalizado, eve.`Status`, eveW.ExemploResposta, "&chr(13)&_
+                                                    " eve.id 'EventoID', sys.id 'SysID', eve.AntesDepois, eve.IntervaloHoras,                   "&chr(13)&_
+                                                    " eve.Unidades, eve.Especialidades, eve.ApenasAgendamentoOnline,                            "&chr(13)&_
+                                                    " eve.EnviarPara, eve.Procedimentos, eve.Profissionais,eve.Ativo, eve.sysActive             "&chr(13)&_
+                                                    " FROM cliniccentral.eventos_whatsapp eveW                                                  "&chr(13)&_
+                                                    " LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id                             "&chr(13)&_
+                                                    " LEFT JOIN eventos_emailsms eve ON eve.ModeloID = sys.id                                   "&chr(13)&_
+                                                    " WHERE eveW.FacebookStatus = 1                                                             "
                             SET modeloDeMensagem = db.execute(modeloDeMensagemSQL)
+                            
 
                             i = 1
                             while not modeloDeMensagem.eof
                             
                                 sysID = modeloDeMensagem("SysID")&""
-                                nomeModelo = modeloDeMensagem("Nome")
+                                nomeModelo = modeloDeMensagem("ModeloWpp")
+                                whatsappID = modeloDeMensagem("whatsappID")
 
                                 eveID = modeloDeMensagem("EventoID")&""
                                 nomeEvento = modeloDeMensagem("NomeEvento")
-                                eventoPadrao = "Confirmação de agendamento (Padrão)"
 
                                 if sysID = "" then
-                                    
-                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `AtivoWhatsapp`, `sysActive`) VALUES ('"&nomeModelo&"', 'on', 0)"
+
+                                    AddModeloNoSysSQL = "INSERT INTO `sys_smsemail` (`Descricao`, `AtivoWhatsapp`, `EventosWhatsappID`, `sysUser`, `sysActive`) VALUES ('"&nomeModelo&"', 'on', '"&whatsappID&"', '"&session("User")&"', 0)"
                                     db.execute(AddModeloNoSysSQL) %>
 
                                     <script type="text/javascript">document.location.reload(true);</script> <%
 
                                 end if
                                 
-                                if sysID <> "" AND eveID <> "" then
-
-                                    descricao = modeloDeMensagem("Descricao")
-                                    modelo = modeloDeMensagem("Conteudo")
-                                    modeloID = modeloDeMensagem("ModeloID")
-                                    resposta = modeloDeMensagem("ExemploResposta")
-                                    ativoWhatsApp = modeloDeMensagem("Ativo")
-                                    sysActive = modeloDeMensagem("sysActive")
-                                    statusAgenda = modeloDeMensagem("Status")
+                                if whatsappID <> "" AND eveID <> "" then
+                                'dd(modeloDeMensagem("EventoID"))
+                                    descricao      = modeloDeMensagem("Descricao")
+                                    modelo         = modeloDeMensagem("Conteudo")
+                                    linkPers       = modeloDeMensagem("LinkPersonalizado")
+                                    modeloID       = sysID
+                                    resposta       = modeloDeMensagem("ExemploResposta")
+                                    ativoWhatsApp  = modeloDeMensagem("Ativo")
+                                    sysActive      = modeloDeMensagem("sysActive")
+                                    statusAgenda   = modeloDeMensagem("Status")
                                     intervaloHoras = modeloDeMensagem("IntervaloHoras")
-                                    antesDepois = modeloDeMensagem("AntesDepois")
-                                    paraApenas = modeloDeMensagem("ApenasAgendamentoOnline")
-                                    profissionais = modeloDeMensagem("Profissionais")
+                                    antesDepois    = modeloDeMensagem("AntesDepois")
+                                    paraApenas     = modeloDeMensagem("ApenasAgendamentoOnline")
+                                    profissionais  = modeloDeMensagem("Profissionais")
+                                    unidades       = modeloDeMensagem("Unidades")
                                     especialidades = modeloDeMensagem("Especialidades")
-                                    procedimentos = modeloDeMensagem("Procedimentos")
-                                    enviarPara = modeloDeMensagem("EnviarPara")
+                                    procedimentos  = modeloDeMensagem("Procedimentos")
+                                    enviarPara     = modeloDeMensagem("EnviarPara")
                             %>
                                     <tr>
-
                                         <td class="hidden-xs">
+                                        <%
+                                            if ativoWhatsApp = 1 then
+                                            %>  <i class="fal fa-check" style="color:green"></i> <%
+                                            else 
+                                            %>  <i class="fal fa-clock"></i> <%
+                                            end if
+                                        %>
                                             <a id="nomeEvento-<%=i%>" href="#"><%=nomeEvento%></a>
                                         </td>
 
@@ -197,6 +215,7 @@
                                                 <a href="#" class="btn btn-xs btn-info tooltip-info" onclick="configWhatsapp(this, <%=eveID%>)" data-rel="tooltip" data-original-title="Editar">
                                                     <i class="far fa-edit bigger-130"></i>
                                                     <input name="statusAgenda" id="statusAgenda-<%=i%>" type="hidden" value="<%=statusAgenda%>"/>
+                                                    <input name="linkPers" id="linkPers-<%=i%>" type="hidden" value="<%=linkPers%>"/>
                                                     <input name="intervalo" id="intervalo-<%=i%>" type="hidden" value="<%=intervaloHoras%>"/>
                                                     <input name="antesDepois" id="antesDepois-<%=i%>" type="hidden" value="<%=antesDepois%>" />
                                                     <input name="paraApenas" id="paraApenas-<%=i%>" type="hidden" value="<%=paraApenas%>" />
@@ -213,18 +232,10 @@
                                                     <i class="far fa-remove bigger-130"></i>
                                                 </a>
                                             </div>
-                    
+
                                         </td>
                                     </tr>
                             <%
-                                else
-                                    if nomeModelo = "agendamento_confirma_01" then
-                                        
-                                        AddModeloNoEveSQL = "INSERT INTO `eventos_emailsms` (`Descricao`, `ModeloID`, `Ativo`, `sysActive`) VALUES ('"&eventoPadrao&"', '"&sysID&"', 0, 0)"
-                                        db.execute(AddModeloNoEveSQL) %>
-                                        
-                                        <script type="text/javascript">document.location.reload(true);</script> <%
-                                    end if
                                 end if
                             i = i+1
                             modeloDeMensagem.movenext
@@ -304,6 +315,7 @@
 
         function configWhatsapp(elem, eventoWhatsappID) {
 
+            const linkPers       = $(elem).children("[name=linkPers]").val();
             const statusAgenda   = $(elem).children("[name=statusAgenda]").val();
             const intervalo      = $(elem).children("[name=intervalo]").val();
             const antesDepois    = $(elem).children("[name=antesDepois]").val();
@@ -321,6 +333,7 @@
 
             $.post("configWhatsapp.asp", 
                 {
+                    linkPers:linkPers,
                     statusAgenda:statusAgenda,
                     intervalo:intervalo,
                     antesDepois:antesDepois,

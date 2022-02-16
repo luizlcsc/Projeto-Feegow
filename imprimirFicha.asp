@@ -115,14 +115,14 @@
             end if
 
 
-            if aut("arquivos")=1 then
+            'if aut("arquivos")=1 then
 		    %>
-            <div class="checkbox-custom checkbox-default">
+            <!--<div class="checkbox-custom checkbox-default">
                 <input data-rel="tooltip" title="" type="checkbox" class="tooltip-danger PacienteImpressaoOpt" id="ImprimirArquivos" value="Arquivos">
                 <label for="ImprimirArquivos"> Arquivos</label>
-            </div>
+            </div> -->
             <%
-            end if
+            'end if
 
             %>
         </div>

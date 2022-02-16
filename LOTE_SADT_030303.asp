@@ -144,6 +144,9 @@ prefixo = right(prefixo, 20)
 							NomeContratadoSolicitante = TISS__FormataConteudo(contExt("NomeContratado"))
 						end if
 					end if
+                    if NomeContratadoSolicitante = "" then
+                        NomeContratadoSolicitante = NomeContratado
+                    end if
 					ContratadoSolicitanteCodigoNaOperadora = TISS__FormataConteudo(guias("ContratadoSolicitanteCodigoNaOperadora"))
                     tipoCodigoNaOperadoraContratadoSolicitante = "codigoPrestadorNaOperadora"
                     set TipoContratoSQL = db.execute("SELECT IdentificadorCNPJ,Contratado FROM contratosconvenio WHERE ConvenioID="&guias("ConvenioID")&" AND CodigoNaOperadora='"&CodigoNaOperadora&"'")

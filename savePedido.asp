@@ -57,7 +57,7 @@ if cbool(save) then
         end if
     end if
 
-    set reg = db.execute("select * from PacientesPedidos where PedidoExame like '"&ref("pedido")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+    set reg = db.execute("select * from PacientesPedidos where PedidoExame = '"&refHtml("pedido")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 
     exameNovo = FALSE
 
@@ -123,11 +123,11 @@ recursoPermissaoUnimed = recursoAdicional(12)
         if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
         'if session("Banco")="clinic6273" or session("Banco")="clinic6006" or session("Banco")="clinic6256" or session("Banco")="clinic1526" or recursoPermissaoUnimed=4 then
         %>
-        <object style="width:100%; height: 600px;" id="ImpressaoPedido" width="800" data="" type="text/html"></object>
+        <object class="sensitive-data" style="width:100%; height: 600px;" id="ImpressaoPedido" width="800" data="" type="text/html"></object>
         <%
         else
         %>
-        <iframe width="100%" height="600px" src="<%=src%>" id="ImpressaoPedido" name="ImpressaoPedido" frameborder="0"></iframe>
+        <iframe class="sensitive-data" width="100%" height="600px" src="<%=src%>" id="ImpressaoPedido" name="ImpressaoPedido" frameborder="0"></iframe>
         <%
         end if
         %>

@@ -12,6 +12,18 @@
         CaixaID = getMovement("CaixaID")
         mType = getMovement("Type")
         AccountAssociationIDCredit = getMovement("AccountAssociationIDCredit")
+        movId = getMovement("id")
+
+        if mType="Bill" then
+            InvoiceID=getMovement("InvoiceID")
+        else
+            set MovementBillSQL = db.execute("SELECT movb.InvoiceID FROM sys_financialdiscountpayments disc "&_
+                                           "JOIN sys_financialmovement movb ON movb.id = disc.InstallmentID "&_
+                                           "WHERE disc.MovementID="&movId)
+            if not MovementBillSQL.eof then
+                InvoiceID = MovementBillSQL("InvoiceID")
+            end if
+        end if
 
 
         set vcaRep = db.execute("select rr.id FROM itensdescontados idesc LEFT JOIN rateiorateios rr ON rr.ItemDescontadoID=idesc.id WHERE (NOT ISNULL(rr.ItemContaAPagar) AND rr.ItemContaAPagar<>0) AND idesc.PagamentoID="& MovementID &"")
@@ -26,6 +38,16 @@
         if not vcaItemCanc.eof then
             erro = "Você não pode excluir pagamentos que contenham itens executados."
         end if
+
+        if InvoiceID&"" <> "" then
+            set NFSeSQL = db.execute("SELECT nf.Status, nf.Numero FROM nfse_emitidas nf "&_
+                                     "WHERE nf.InvoiceID=" & InvoiceID)
+            if not NFSeSQL.eof then
+                if NFSeSQL("status")&""="3" then
+                    erro = "Você não pode excluir pagamentos que contenham Nota Fiscal autorizada."
+                end if
+            end if
+        end if 
 
         if erro="" then
 

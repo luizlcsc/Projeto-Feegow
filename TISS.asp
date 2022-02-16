@@ -44,7 +44,7 @@ function completaProfissionalSolicitante(id)
 	end if
 end function
 
-function completaConvenio(ConvenioID, PacienteID)
+function completaConvenio(ConvenioID, PacienteID, ProfissionalSolicitanteID)
 	set vpac = db.execute("select * from pacientes where id = '"&PacienteID&"'")
 	if not vpac.eof then
 		if not isnull(vpac("ConvenioID1")) AND vpac("ConvenioID1")=ccur(ConvenioID) then
@@ -60,6 +60,43 @@ function completaConvenio(ConvenioID, PacienteID)
 			Matricula = vpac("Matricula"&Numero)
 			Validade = vpac("Validade"&Numero)
 		end if
+		Plano1 = ""
+		Plano2 = ""
+		Plano3 = ""
+		if  vpac("PlanoID1")&"" <> "" then
+			Plano1 = vpac("PlanoID1")
+		end if
+		if  vpac("PlanoID2")&"" <> "" then
+			Plano2 = ","&vpac("PlanoID2")
+		end if
+		if vpac("PlanoID3")&"" <> "" then
+			Plano3 = ","&vpac("PlanoID3")
+		end if
+		PlanoPacienteID = Plano1&Plano2&Plano3
+        if PlanoPacienteID<>"" then
+			%>
+			let arrayPlanos = [];
+			$('#PlanoID').html(`<option value="0">Selecione</option>`);
+			<%
+			set PlanoPacienteSQL = db_execute("SELECT id, NomePlano FROM conveniosplanos WHERE ConvenioID = "&ConvenioID&" AND id IN("&PlanoPacienteID&")")
+			while not PlanoPacienteSQL.eof 
+				%>
+					arrayPlanos.push({
+						"id":"<%=PlanoPacienteSQL("id")%>",
+						"NomePlano":"<%=PlanoPacienteSQL("NomePlano")%>"
+					});
+				<%
+				PlanoPacienteSQL.movenext
+			wend
+			%>
+				if(arrayPlanos.length > 0){
+					$('#PlanoID').children().detach();
+					arrayPlanos.map((plano)=>{
+						$('#PlanoID').append(`<option value="${plano.id}">${plano.NomePlano}</option>`)
+					});
+				}
+			<%
+        end if
 	end if
     'chama funcao que refaz a lista de contratados
     %>
@@ -151,8 +188,7 @@ function completaConvenio(ConvenioID, PacienteID)
 		'set contconv = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 AND (SomenteUnidades LIKE '%|"&ref("UnidadeID")&"|%' or SomenteUnidades is null OR SomenteUnidades = '') order by Contratado")'Vai chamar sempre as filiais primeiro por serem negativas, depois ver esse comportamento
 		'response.write()
 		'set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) ORDER BY (Contratado = "&session("idInTable")&") DESC ")
-		set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
-
+		set contconv = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" ORDER BY (Contratado = "&ProfissionalSolicitanteID&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
 		if not contconv.eof then
 			call completaContratado(contconv("Contratado"), conv("id"))
 			call completaContratadoSolicitante(contconv("Contratado"), conv("id"))
@@ -220,9 +256,11 @@ function completaContratado(id, ConvenioID)
 			set emp = db.execute("select * from empresa")
 			if not emp.eof then
 				CodigoCNES = emp("CNES")
+				CNPJ = emp("CNPJ")
 			end if
 		elseif id>0 then
 			CodigoCNES = "9999999"
+			CNPJ = "99999999999999"
 			%>
 			$("#gProfissionalID").val("<%=id%>");
 			<%
@@ -231,6 +269,7 @@ function completaContratado(id, ConvenioID)
 			set com = db.execute("select * from sys_financialcompanyunits where id="&(id*(-1)))
 			if not com.eof then
 				CodigoCNES = com("CNES")
+				CNPJ = com("CNPJ")
 			end if
 		end if
 	end if
@@ -241,9 +280,12 @@ function completaContratado(id, ConvenioID)
 			'set contrato = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" AND coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) ORDER BY (Contratado = "&session("idInTable")&") DESC ")
 			'set contrato = db.execute("SELECT * FROM contratosconvenio WHERE ConvenioID = "&ConvenioID&" ORDER BY (Contratado = "&session("idInTable")&") DESC, coalesce(SomenteUnidades like CONCAT('%|',nullif('"&session("UnidadeID")&"',''),'|%'),TRUE) DESC ")
 			if not contrato.eof then
-
+				IdentificadorCNPJ = contrato("IdentificadorCNPJ")
 				CodigoNaOperadora = contrato("CodigoNaOperadora") 'conv("NumeroContrato")
 				Contratado = contrato("Contratado")
+				if IdentificadorCNPJ = "S" then
+					CodigoNaOperadora = CNPJ
+				end if
 				%>
                 $("#Contratado, #ContratadoID").val("<%=Contratado%>");
 				<%
@@ -367,8 +409,9 @@ function completaPaciente(id)
             NomeConvenio = pac("NomeConvenio"&Numero)
 			Validade = pac("Validade"&Numero)
 			ConvenioID = pac("ConvenioID"&Numero)
-			PlanoID = pac("PlanoID"&Numero)
-			call completaConvenio(pac("ConvenioID"&Numero), id)
+
+			call completaConvenio(pac("ConvenioID"&Numero), id, 1)
+
 		end if
 		Nascimento = myDate(pac("Nascimento"))
 		%>
@@ -421,8 +464,6 @@ function completaPaciente(id)
 
       $("#gConvenioID").select2("destroy");
    	  s2aj("gConvenioID", 'convenios', 'NomeConvenio', '', '');
-
-    $("#PlanoID").val("<%=PlanoID%>");
 	<%
 end function
 

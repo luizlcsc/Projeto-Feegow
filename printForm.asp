@@ -1,13 +1,8 @@
 <!--#include file="connect.asp"-->
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
-		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
-		<!--link rel="stylesheet" href="assets/css/animate.css" />-->
-
-		<!--[if IE 7]>
-		  <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
-		<![endif]-->
-
-		<!-- page specific plugin styles -->
+		
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
+        
 		<link rel="stylesheet" href="assets/css/jquery-ui-1.10.3.custom.min.css" />
 		<link rel="stylesheet" href="assets/css/chosen.css" />
 		<link rel="stylesheet" href="assets/css/datepicker.css" />
@@ -231,6 +226,10 @@ else
         end if
 	end if
 end if
+
+
+Cabecalho = unscapeOutput(Cabecalho)
+Rodape = unscapeOutput(Rodape)
 	%>
 <style>
 @media print {

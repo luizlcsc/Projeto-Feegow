@@ -115,6 +115,9 @@ function propostaSave(reload, callback){
 			}else{
 				$("#ListaProposta").click();
 			}*/
+		}).error(function(err){
+			showMessageDialog("Ocorreu um erro ao tentar salvar");
+
 		});
 
 }

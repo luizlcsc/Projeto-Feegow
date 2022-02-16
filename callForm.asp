@@ -39,13 +39,13 @@ if not getForm.eof then
             <code id="nomeProfissionalPreen"></code>
         </span>
         <span class="panel-controls">
-            <button type="button" class="btn btn-alert btn-sm hidden-xs" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-alert btn-sm hidden-xs btn-sensitive-action" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-default btn-sm btn-print-form hidden-xs" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
+                <button class="btn btn-default btn-sm btn-print-form hidden-xs btn-sensitive-action" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
 
             <% if ExibeForm <> false then %>
-                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+                <button class="btn btn-primary btn-sm btn-save-form btn-sensitive-action" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
             <% end if %>
 
             <% if req("LaudoSC")="" then %>
@@ -87,15 +87,15 @@ if not getForm.eof then
 </div>
     <% if req("IFR")="" then %>
         <div class="panel-footer text-right">
-            <button type="button" class="btn btn-default hidden-xs btn-sm " onclick="showLog()"><i class="far fa-history"></i> Logs</button>
+            <button type="button" class="btn btn-default hidden-xs btn-sm btn-sensitive-action" onclick="showLog()"><i class="far fa-history"></i> Logs</button>
 
             <button type="button" class="btn btn-default btn-sm hidden" onclick="window.open('<%=appUrl(False)%>/feegow_components/api/FormLogs?P=<%=req("p") %>')"><i class="far fa-history"></i> Logs</button>
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-default btn-sm hidden-xs btn-print-form" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
+                <button class="btn btn-default btn-sm hidden-xs btn-print-form btn-sensitive-action" type="button" onclick="saveForm('P')"><i class="far fa-print"></i> Imprimir</button>
             <% end if %>
             
             <% if ExibeForm <> false then %>
-                <button class="btn btn-primary btn-sm btn-save-form" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
+                <button class="btn btn-primary btn-sm btn-save-form btn-sensitive-action" type="button" onclick="saveForm(0, 0);"><i class="far fa-save"></i> <span class="btn-save-form-text">Salvar</span></button>
             <% end if %>
         </div>
     <% end if %>
@@ -260,13 +260,19 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
               $btnSave.attr("disabled", false);
               $btnPrint.attr("disabled", false);
               $btnSaveText.html("Salvar");
+              SaveOnLocal(FormID, formdata, true);
+
+              showMessageDialog("Ocorreu um erro ao tentar salvar.")
             });
     }
 
-    function SaveOnLocal(formID, dataForm)
+    function SaveOnLocal(formID, dataForm, errorForm = false)
     {
         let jsonForm = $(".campoInput, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID").serializeFormJSON();
-        let local = localStorage.getItem("logForms");
+        let localStorageKey = errorForm ? "logErrorForms" : "logForms";
+
+        let local = localStorage.getItem(localStorageKey);
+
         let data_hora = new Date();;
         let data = {
             formID:String(formID),
@@ -295,7 +301,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
                 ret[element].dataHora = data.dataHora;
             }else
             {
-                if(ret.length >= 5)
+                if(ret.length >= 10)
                 {
                     ret.pop();
                     ret.push(data);
@@ -306,7 +312,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         {
             ret.push(data);
         }
-        localStorage.setItem("logForms", JSON.stringify(ret));
+        localStorage.setItem(localStorageKey, JSON.stringify(ret));
     }
 
     function DescartarLog(id){
@@ -361,9 +367,8 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
             ultimo=atual;
 
             recordLog({
-                module:"forms",
-                action: action,
-                logUrl: "<%= Request.ServerVariables("SERVER_NAME") &"/"& Request.ServerVariables("SCRIPT_NAME") %>",
+                category:"forms",
+                event: action,
                 licenseId: "<%=LicenseId%>",
                 userId: "<%=Session("User")%>",
                 oldData: {},
@@ -481,14 +486,14 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 <style>
 
-.logTimeLine {
+#iProntCont .logTimeLine {
   width: 700px;
   margin: 25px auto;
   padding: 10px 20px 10px 20px;
   border-left: 2px solid #3498db;
 }
 
-.logTimeLine-item {
+#iProntCont .logTimeLine-item {
   background-color: #fff;
   padding: 10px;
   margin: 10px;
@@ -501,7 +506,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 
 }
 
-.logTimeLine-item:before {
+#iProntCont .logTimeLine-item:before {
   content: "";
   display: block;
   width: 10px;
@@ -512,7 +517,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
   left: -29px
 }
 
-.logTimeLine-item:after {
+#iProntCont .logTimeLine-item:after {
   content: "";
   width: 0;
   height: 0;

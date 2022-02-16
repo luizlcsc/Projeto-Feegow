@@ -62,7 +62,9 @@ function modalPaymentDetails(movementID, deleteID){
 		   movementID:movementID,
 		   deleteID:deleteID
 		   },function(data,status){
-      $("#pagar, #modal").html(data);
+        $("#pagar, #modal").html(data);
+        $("#pagar").fadeIn();
+        $("#pagar").removeClass('fade');
     });
 }
 
@@ -187,6 +189,10 @@ function modalNFE(reciboId){
 }
 
 function modalNFEBeta() {
+    openComponentsModal("nfe/invoice/create-view", {invoiceId: invoiceId, provider: 'enotas'})
+}
+
+function modalNFEBeta2(invoiceId) {
     openComponentsModal("nfe/invoice/create-view", {invoiceId: invoiceId, provider: 'enotas'})
 }
 

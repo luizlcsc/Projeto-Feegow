@@ -9,12 +9,12 @@ if ref("Ate")="" then Ate=date() else Ate=cdate(ref("Ate")) end if
 <div class="panel mt20">
 	<div class="panel-body">
 		<form method="post">
-			<%= quickfield("multiple", "Profissionais", "Profissionais", 3, ref("Profissionais"), "select id, NomeProfissional from profissionais where ativo='on' and sysActive=1", "NomeProfissional", " required ") %>
+			<%= quickfield("multiple", "Profissionais", "Profissionais", 3, ref("Profissionais"), "select id, NomeProfissional from profissionais where ativo='on' and sysActive=1 order by NomeProfissional", "NomeProfissional", " required ") %>
 			<%=quickField("datepicker", "De", "De", "2", De, "", "", " required ")%>
 			<%=quickField("datepicker", "Ate", "Até", "2", Ate, "", "", " required ")%>
 			<%=quickField("empresaMulti", "Unidades", "Unidades", "2", ref("Unidades"), "", "", " required ")%>
 			<div class="col-md-2">
-				<button class="btn btn-primary mt25">Buscar</button>
+				<button class="btn btn-primary mt25"><i class="far fa-search"></i> Buscar</button>
 			</div>
 		</form>
 	</div>
@@ -29,7 +29,7 @@ if ref("Profissionais")<>"" then
 				<span class="panel-title"></span>
 				<span class="panel-controls">
 					<button class="btn btn-sm btn-success">
-						LANÇAR
+						<i class="far fa-money-bill"></i> LANÇAR
 					</button>
 				</span>
 			</div>
@@ -54,8 +54,8 @@ if ref("Profissionais")<>"" then
 						if NOT Horarios.eof then
 							%>
 							<tr><th class="primary">
-								<input type="checkbox" name="ProfissionaisChecados" value="<%= ProfissionalID %>">
-								<%= nameInAccount("5_"& ProfissionalID) %>
+								<input type="checkbox" name="ProfissionaisChecados" value="<%= ProfissionalID %>" id="honorario_<%= ProfissionalID %>">
+								<label for="honorario_<%= ProfissionalID %>"><%= nameInAccount("5_"& ProfissionalID) %></label>
 							</th><tr>
 							<%
 								%>
@@ -78,20 +78,40 @@ if ref("Profissionais")<>"" then
 												TempoGrade = datediff("n", HoraDe, HoraA)
 												ValorMinuto = ValorHonorario / 60
 												ValorGrade = ValorMinuto * TempoGrade
+												TempoBloqueado=0
+												ValorGradeBloqueada=0
+
+												ExisteHorarioBloqueado=False
+
+												set HorariosBloqueadosSQL = db.execute("SELECT HoraDe, HoraA FROM compromissos WHERE ProfissionalID="&ProfissionalID&" AND "&mydatenull(Data)&" BETWEEN DataDe AND DataA")
+												if not HorariosBloqueadosSQL.eof then
+													ExisteHorarioBloqueado=True
+
+													TempoBloqueado = datediff("n", HorariosBloqueadosSQL("HoraDe"), HorariosBloqueadosSQL("HoraA"))
+													ValorGradeBloqueada = ValorMinuto * TempoBloqueado
+												end if
 												%>
 												<tr>
 													<td>
 
 
-
+														<span class="badge badge-success"><i class="far fa-calendar"></i> Grades abertas:</span>
 														De <%= ft(Horarios("HoraDe")) %> às <%= ft(Horarios("HoraA")) %> - Valor da Hora: R$ <%= fn(Horarios("ValorHonorario")) %>
 														:: Tempo de grade: <%= TempoGrade %> min
 														:: Valor da grade: R$ <%= fn(ValorGrade) %>
+														<%
+														if ExisteHorarioBloqueado  then
+															%>
+															<span class="badge badge-danger"><i class="far fa-lock"></i> Bloqueios:</span>
+															Valor bloqueado: R$ <%= fn(ValorGradeBloqueada) %> (<%= TempoBloqueado %> min)
+															<%
+														end if
+														%>
 													</td>
 												</tr>
 												<%
-												tMin = tMin+TempoGrade
-												tVal = tVal+ValorGrade
+												tMin = tMin+TempoGrade-TempoBloqueado
+												tVal = tVal+ValorGrade-ValorGradeBloqueada
 											Horarios.movenext
 											wend
 											Horarios.close
@@ -107,8 +127,8 @@ if ref("Profissionais")<>"" then
 															%>
 															<a target="_blank" href="./?P=Invoice&Pers=1&CD=D&I=<%= vcaII("InvoiceID") %>" class="btn btn-xs btn-success">VER CONTA</a>
 														<% else %>
-															<input type="checkbox" name="Profissional<%= ProfissionalID %>" value="<%= Data &"_"& tMin &"_"& tVal %>" checked >
-															 R$ <%= fn(tVal) %>
+															<input type="checkbox" name="Profissional<%= ProfissionalID %>" value="<%= Data &"_"& tMin &"_"& tVal %>" checked id="honorario_registro_<%=ProfissionalID&"_"& Data &"_"& tMin &"_"& tVal %>">
+															 <label for="honorario_registro_<%=ProfissionalID&"_"& Data &"_"& tMin &"_"& tVal %>">R$ <%= fn(tVal) %></label>
 														<% end if %>
 													</th>
 												</tr>

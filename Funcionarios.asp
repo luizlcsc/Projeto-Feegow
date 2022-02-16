@@ -15,6 +15,8 @@ set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 Profissionais = reg("Profissionais")
 regUnidades = reg("unidades")
 
+novoFuncionario = reg("sysActive")
+
 if regUnidades&"" = "" then
     regUnidades = "|0|"
 end if
@@ -224,8 +226,24 @@ if session("Admin")=1 then
 end if
 %>
 <script type="text/javascript">
+function desbloquear(status,tabela){
+    if(status){
+        $("#dadosAcesso").css("display", "block")
+        $("#permissoes").css("display", "block")
+    }
+}
+
 $(document).ready(function(e) {
-	<%call formSave("frm", "save", "")%>
+
+	<%call formSave("frm", "save", "desbloquear(true,'funcionario')")%>
+
+    let novoFuncionario = "<%=novoFuncionario%>"
+
+    if (novoFuncionario == 0){
+        $("#dadosAcesso").css("display", "none")
+        $("#permissoes").css("display", "none")
+    } 
+
 });
 $("#Cep").keyup(function(){
 	getEndereco();

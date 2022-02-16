@@ -125,8 +125,9 @@ else
 	
 	sql = "insert into LogsMarcacoes (PacienteID, ProfissionalID, ProcedimentoID, DataHoraFeito, Data, Hora, Sta, Usuario, Motivo, Obs, ARX, ConsultaID, UnidadeID) values ('"&PacienteID&"', '"&ProfissionalID&"', '"&ProcedimentoID&"', '"&now()&"', "&mydatenull(Data)&", '"&Hora&"', '"&Sta&"', '"&Usuario&"', '"&Motivo&"', '"&Obs&"', '"&ARE&"', '"&ConsultaID&"', "&treatvalzero(session("UnidadeID"))&")"
 	
-'	response.Write(sql)
-	
+	' response.Write(sql)
+	db.execute(sql)
+
     if token = "98b4d9bbfdfe2170003fcb23b8c13e6b" then
 
         call agendaUnificada("delete", ConsultaID, ProfissionalID)

@@ -37,10 +37,10 @@
         }
         memedTipo = type;
 
-        // abre diretamente se for prescrição clássica
+        //  2021-11-09 - permite abrir a prescrição Memed por aqui
         if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
-            openClassicPrescription();
-            return;
+            // openClassicPrescription();
+            // return;
         }
 
         // se já estiver inicializando, exibe mensagem e seta para abrir após a inicialização
@@ -264,23 +264,31 @@
         const fullEndereco = endereco+numero;
         const peso         = $('#Peso').val()   ? parseFloat($('#Peso').val().replace('.', '').replace(',', '.')) : null;
         const altura       = $('#Altura').val() ? parseFloat($('#Altura').val().replace('.', '').replace(',', '.')) : null;
+        const cpf          = $('#CPF').val().replace(/\D/g,'');
 
         const dadosPaciente = {
+            idExterno: MEMED_NUMERO_PRONTUARIO,
             nome: nome,
-            telefone: telefone,
+            cpf: cpf,
             endereco: fullEndereco,
             cidade: cidade,
+            telefone: telefone,
             peso: peso,
-            altura: altura,
-            idExterno: MEMED_NUMERO_PRONTUARIO
+            altura: altura
         };
+
+        // não envia dados vazios
+        Object.keys(dadosPaciente).forEach((k) => {
+            !dadosPaciente[k] && delete dadosPaciente[k]
+        });
+
         return MdHub.command.send('plataforma.prescricao', 'setPaciente', dadosPaciente);
     }
 
     async function newPrescricaoMemed() {
         if (memedTipo === 'prescricao' && memedClassicPrescription || memedTipo === 'exame' && memedClassicExam) {
-            openClassicPrescription();
-            return;
+            // openClassicPrescription();
+            // return;
         }
 
         setMemedLoading(true);

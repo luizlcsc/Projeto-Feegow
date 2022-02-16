@@ -194,8 +194,18 @@
             </div>
         </div>
     </div>
+
     <div style="margin-top: 50px; text-align:center;">
-        <button type="submit" class="botao" data-style="zoom-in" id="Entrar"> <span class="btn-entrar-txt" style="padding-right: 10px;">Entrar</span><i style="font-size: 12px" class="icon-btn-login fal fa-arrow-right"></i></button>
+
+    <%
+    if SolicitaDesafio then
+        %>
+<div data-callback="recaptchaSuccess" class="g-recaptcha" data-sitekey="6LcYU94cAAAAAE-wjHMKmWdjz5-JlEukwcyVqzj4"></div>
+<br>
+        <%
+    end if
+    %>
+        <button <% if SolicitaDesafio then response.write("disabled") end if %> type="submit" class="botao" data-style="zoom-in" id="Entrar"> <span class="btn-entrar-txt" style="padding-right: 10px;">Entrar</span><i style="font-size: 12px" class="icon-btn-login fal fa-arrow-right"></i></button>
     </div>
     <div class="login-erro" style="display: <% if ErroLogin then response.write("block") else response.write("none") end if%>">
         <i class="far fa-exclamation-circle"></i>

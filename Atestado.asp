@@ -116,6 +116,9 @@ end if
                 end if
             end if
         end if
+        
+        Cabecalho = unscapeOutput(Cabecalho)
+        Rodape = unscapeOutput(Rodape)
 
 
 'strVarPac = "[Paciente.Nome]|^[Paciente.NomeSocial]|^[Paciente.Idade]|^[Paciente.Endereco]|^[Paciente.Bairro]|^[Paciente.Cidade]|^[Paciente.Estado]|^[Paciente.Email]|^[Paciente.Telefone]|^[Data.DDMMAAAA]|^[Data.Extenso]|^[Sistema.Hora]"
@@ -221,12 +224,24 @@ function Carimbo(checked){
 		document.getElementById('Carimbo').style.display='none';
 	}
 }
+
+function TimbradoAtestado(checked){
+	if(checked==true){
+		document.getElementById('footer').style.display='block';
+        document.getElementById('CabecalhoTimbrado').style.display='block';
+	}else{
+		document.getElementById('footer').style.display='none';
+        document.getElementById('CabecalhoTimbrado').style.display='none';
+	}
+}
 </script>
 <table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0">
     <thead>
         <tr class="cabecalho">
             <td>
-                <%= Cabecalho %>
+                <div id='CabecalhoTimbrado'>
+                    <%= Cabecalho %>
+                </div>
             </td>
         </tr>
     </thead>

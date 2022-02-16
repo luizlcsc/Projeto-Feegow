@@ -28,6 +28,8 @@ end if
     }
 </style>
 <link rel="stylesheet" type="text/css" href="assets/skin/default_skin/css/fgw.css">
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
+
 <%
 Posicao = ref("Posicao")
 if not isnumeric(Posicao) or Posicao="" then

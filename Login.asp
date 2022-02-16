@@ -1,26 +1,44 @@
+<!--#include file="Classes/LogService.asp"-->
+<!--#include file="functions.asp"-->
 <%
+
 if request("Log")="Off" then
 	if session("Partner")="" then
 		urlRedir = "./?P=Login"
 	else
 		urlRedir = "./?P=Login&Partner="&session("Partner")
 	end if
+    call sendLogLogout()
 	session.Abandon()
 	response.Redirect(urlRedir)
+elseif session("User")="" then
+    call sendLogSessionExpired() 'não loga tudo, a lógica está dentro desta função
 end if
-
 
 %>
 <!--#include file="functions.asp"-->
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/URLDecode.asp"-->
 <!--#include file="Classes/Environment.asp"-->
-<% GTM_ID = getEnv("FC_GTM_ID", "")%>
+<% 
+mainVersion = "main"
+GTM_ID = getEnv("FC_GTM_ID", "")
+APP_ENV = getEnv("FC_APP_ENV", "")
+Version = Request.ServerVariables("URL")
+Version = replace(Version, "/", "")
+Version = replace(Version, "index.asp", "")
+
+if APP_ENV="production" and Version<>mainVersion then
+    urlRedir = "/"&mainVersion&"/?P=Login&U="&req("U")&"&Partner="&req("Partner")&"&qs="&Server.URLEncode(req("qs"))
+	response.Redirect(urlRedir)
+end if
+
+%>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <% if GTM_ID <> "" and False then %>
+    <% if GTM_ID <> "" then %>
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -45,6 +63,7 @@ end if
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
 
     <script src="js/components.js?a=2"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="/docs/4.0/assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
@@ -305,7 +324,8 @@ end if
             }
 
             .botao:disabled {
-
+                opacity: 0.5;
+                cursor: not-allowed;
             }
 
             .botao {
@@ -332,7 +352,7 @@ end if
             }
 
             .botao:hover {
-              color: white;
+                color: white;
                 background: rgba(9,197,210,1);
                 letter-spacing: 0.4px;
             }
@@ -678,7 +698,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
         </div>
         <input id="authtoken" type="hidden">
-        <input id="qs" type="hidden" name="qs" value="<%= URLDecode(req("qs"))%>">
+        <input id="qs" type="hidden" name="qs" value="<%= clear_ref_req(URLDecode(req("qs")), 1) %>">
     </form>
 
     <!-- BEGIN: PAGE SCRIPTS -->
@@ -888,5 +908,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
 
         });
+
+        
+        var captchaToken = null;
+
+        function recaptchaSuccess(token){
+            $("#Entrar").attr("disabled",false);
+        }
     </script>
 </body>

@@ -293,7 +293,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     <td>
                     <%
                     statusIcon = imoon(ag("StaID"))
-                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle btn-transparent' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
                     set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116, 22)")
                     while not StatusSQL.eof
                         Active=""

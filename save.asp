@@ -378,6 +378,7 @@ if not getResource.EOF then
 		if instr(inputsCompare, "|"&getFields("columnName")&"|")=0 then
 			falta = falta&"|"&getFields("columnName")&"|"
 		end if
+
         '-> GRAVANDO NOVO LOG 2
         if not valorAntigo.eof then
             txtValorAntigo = valorAntigo(""&getFields("columnName")&"")&""
@@ -399,7 +400,6 @@ if not getResource.EOF then
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
-	
 	if erro<>"" then
         %>
         new PNotify({
@@ -460,6 +460,7 @@ if not getResource.EOF then
         <%    
         end if
 
+
         IF session("Franqueador") <> "" and tableName = "sys_financialcompanyunits" and Novo THEN %>
             gerarLicenca(<%=id%>)
         <% END IF %>
@@ -485,11 +486,15 @@ if not getResource.EOF then
         end if
     end if
 
-	set getSubforms = db.execute("select * from cliniccentral.sys_resources where mainForm="&getResource("id"))
+
+    getSubformsSQL = "select * from cliniccentral.sys_resources where mainForm="&getResource("id")
+	set getSubforms = db.execute(getSubformsSQL)
 	while not getSubforms.EOF
 		strSubTipos = ""
 		strSubNomes = ""
-		set getSubFields = db.execute("select * from cliniccentral.sys_resourcesFields where resourceID="&getSubForms("id")&" and not columnName='"&getSubForms("mainFormColumn")&"'")
+        getSubFieldsSQL = "select * from cliniccentral.sys_resourcesFields where resourceID="&getSubForms("id")&" and not columnName='"&getSubForms("mainFormColumn")&"'"
+        ' response.write(getSubFieldsSQL)
+		set getSubFields = db.execute(getSubFieldsSQL)
 		while not getSubFields.EOF
 			strSubTipos = strSubTipos&"|"&getSubFields("fieldTypeID")
 			strSubNomes = strSubNomes&"|"&getSubFields("columnName")
@@ -498,8 +503,6 @@ if not getResource.EOF then
 		getSubFields.close
 		set getSubFields=nothing
 
-''		response.Write(strSubTipos&chr(10)) => para fazer conferencia de campos faltando
-''		response.Write(strSubNomes&chr(10))
 		splSubTipos = split(strSubTipos, "|")
 		splSubNomes = split(strSubNomes, "|")
 

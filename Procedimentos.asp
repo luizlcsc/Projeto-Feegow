@@ -343,9 +343,10 @@ TipoGuia = reg("TipoGuia")
             </div>
         </div>
 
+        <% if getConfig("Vacina") = 1 then%>
         <div id="divVacina" class="tab-pane">
             <div class="panel">
-<% 
+            <% 
                 sqlVacina = "SELECT * FROM vacina WHERE ProcedimentoID = "& req("I")
 
                 set regVacina = db.execute(sqlVacina)
@@ -354,8 +355,7 @@ TipoGuia = reg("TipoGuia")
                     db_execute("INSERT INTO vacina (ProcedimentoID, sysActive, sysUser) VALUES ("&req("I")&",1,"&session("User")&") ")
                     set regVacina = db.execute(sqlVacina)
                 end if
-
-%>
+            %>
                 <style>
                     .input-group-addon{
                         display: none;
@@ -404,6 +404,7 @@ TipoGuia = reg("TipoGuia")
                 </script>
             </div>
         </div>
+        <% end if %>
         <div class="tab-pane" id="divEquipe">
             Carregando...
         </div>

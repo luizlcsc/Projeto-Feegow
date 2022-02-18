@@ -545,6 +545,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
+                                                    NomeCid=""
                                                     IF pcampos("enviardadoscid") = 1 THEN
                                                         sqlBmj = montaSubqueryBMJ("bmj.cid10ID = cliniccentral.cid10.id")
                                                     ELSE

@@ -28,7 +28,13 @@ end if
         });
         return false;
     });
-
+    function showSalvar(opcao){
+        if(opcao){
+            $('#rbtns #Salvar').show()
+        }else{
+            $('#rbtns #Salvar').hide()
+        }
+    }
     function Posicao(CD, ProdutoID){
         $.get('<%= "EstoquePosicao.asp?ItemInvoiceID="& ItemInvoiceID &"&ProdutoInvoiceID="& ProdutoInvoiceID &"&AtendimentoID="& AtendimentoID &"&CD="%>' + CD + '&I=' + ProdutoID, function (data) {
             $("#ResultadoBusca").html(data);

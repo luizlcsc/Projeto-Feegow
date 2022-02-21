@@ -374,11 +374,11 @@ while not campo.eof
                     else
                         %>
                         <label class="campoLabel"><%=Rotulo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label>
-                        <select id="input_<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=Rotulo%>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput">
+                        <select id="Campo<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=Rotulo%>" name="Campo<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput prot">
                             <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
                         </select>
                         <script type="text/javascript">
-                            s2aj('input_<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
+                            s2aj('Campo<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
                         </script>
 
                     <%

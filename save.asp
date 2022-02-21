@@ -805,10 +805,7 @@ end if
 	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 
 if sqlAtivoNome<>"" then
-    on error resume next
-    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
-    Set db1 = Server.CreateObject("ADODB.Connection")
-    db1.Open ConnString1
-    db1.execute( sqlAtivoNome )
+%><!--#include file="connectCentral.asp"--><%
+    dbc.execute( sqlAtivoNome )
 end if
 %>

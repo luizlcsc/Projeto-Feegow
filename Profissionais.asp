@@ -573,7 +573,7 @@ $(document).ready(function () {
         splObr = split(Obr, ", ")
         for o=0 to ubound(splObr)
             %>
-            alert("<%=splObr(o) %>");
+            
             setTimeout(function(){
                 <%
                 if replace(splObr(o), "|", "")="Tel1" then

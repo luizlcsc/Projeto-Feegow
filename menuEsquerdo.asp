@@ -920,7 +920,7 @@ end if
                 </li>
                 <%
                 end if
-                if aut("vacinapacienteV")=1 then
+                if aut("vacinapacienteV") = 1  and getConfig("Vacina") = 1 then
                 %>
                 <li class="checkStatus">
                     <a data-toggle="tab" class="tab menu-aba-pacientes-resultados-de-exames" id="abaVacinas" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|VacinaPaciente|`, this);'>

@@ -3,7 +3,7 @@
 save = ref("save")
 redirect = ref("redirect")
 
-set reg = db.execute("select * from PacientesAtestados where Atestado like '"&ref("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
+set reg = db.execute("select * from PacientesAtestados where Atestado = '"&refHtml("atestado")&"' and PacienteID="&ref("PacienteID")&" and date(Data)='"&mydate(date())&"'")
 if reg.EOF then
     if cbool(save) then
         'inclusão do atendimentoID se houver atendimento em curso

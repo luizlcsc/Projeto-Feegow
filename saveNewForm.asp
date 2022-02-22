@@ -107,30 +107,33 @@ if I="N" then
     db_execute("insert into `_"&ModeloID&"` (id, PacienteID, sysUser) values ("&I&", "&PacienteID&", "&session("User")&")")
 end if
 
+set ValorOriginalSQL = db.execute("SELECT * FROM `_"&ModeloID&"` WHERE id = " &treatvalzero(I))
+
 set pcampos = db.execute("select id, TipoCampoID, enviardadoscid from buicamposforms where FormID="&ModeloID)
 while not pcampos.eof
     select case pcampos("TipoCampoID")
         case 1, 2, 4, 5, 6, 8,3,16
             if Request("input_"&pcampos("id")).Count > 0 then
-                valorCampo = refHTML("input_"&pcampos("id"))
-                valorCampo = stripHTML(valorCampo)
+                if pcampos("TipoCampoID")=8 then
+                    valorCampo = refHTML("input_"&pcampos("id"))
+                else
+                    valorCampo = ref("input_"&pcampos("id"))
+                end if
+
 
                 'se o campo vier em branco, verifica se houve alteração
                 campoAlterado = false
                 if valorCampo = "" then
-                    set rsHasUpdate = db.execute("SELECT " & pcampos("id") & " as campo FROM `_"&ModeloID&"` WHERE id = " &I)
-                    if not rsHasUpdate.eof then
-                        valorAtual = stripHTML(rsHasUpdate("campo")&"")
-                        if valorAtual <> valorCampo then
+                    if not ValorOriginalSQL.eof then
+                        valorAtual = ValorOriginalSQL(pcampos("id")&"")
+                        if stripHTML(valorAtual&"") <> stripHTML(valorCampo&"") then
                             campoAlterado = true
                         end if
                     end if
                 end if
 
                 if valorCampo <> "" or habilitarVazio = "1" or campoAlterado = true then
-                    inputValor = refHTML("input_"&pcampos("id"))
-                    'O SEGUNDO PARAMETRO EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
-                    inputValor = replace(inputValor, "​", "")
+                    inputValor = valorCampo
                     sqlUp = sqlUp & ", `"& pcampos("id") &"`='"& inputValor &"'"
                     if pcampos("TipoCampoID")  = 16 and  pcampos("enviardadoscid") = 1 then
                         sqlIncluirCid = "INSERT INTO pacientesdiagnosticos ( PacienteID, CidID, Descricao, DataHora, sysUser, sysActive,  AtendimentoID) "&_

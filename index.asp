@@ -8,11 +8,11 @@ if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
-
-set shellExec = createobject("WScript.Shell")
-Set objSystemVariables = shellExec.Environment("SYSTEM")
-AppEnv = objSystemVariables("FC_APP_ENV")
-WootricToken = objSystemVariables("FC_WOOTRIC_TOKEN")
+%>
+<!--#include file="Classes/Environment.asp"-->
+<%
+AppEnv = getEnv("FC_APP_ENV", "local")
+WootricToken = getEnv("FC_WOOTRIC_TOKEN", "")
 
 
 
@@ -258,7 +258,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?a=47"></script>
+  <script src="js/components.js?v=1.1.2"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -386,6 +386,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
         <%
         end if
         %>
+
+      
+        initComponents({
+          apiUrl: '<%=getEnv("FC_API_URL","")%>'
+        });
 
         var sessionObj = {
             Table:'<%=session("Table")%>',
@@ -2578,6 +2583,8 @@ end if
 %>
 			<script type="text/javascript">
 			$(document).ready(function(){
+
+
 			<%=scrollBaixo%>
 
 

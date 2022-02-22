@@ -283,6 +283,48 @@ end if
 </tbody>
 <%
 
+elseif LinhaID=10 then
+
+%>
+
+<thead>
+    <tr class="info">
+        <th>Paciente</th>
+        <th>Valor Total</th>
+        <th>#</th>
+    </tr>
+</thead>
+<tbody>
+<%
+sqlUtilizacaoDeSaldo="SELECT ifnull(d.DiscountedValue,0) ValorUtilizado, movbill.InvoiceID, p.NomePaciente FROM sys_financialmovement mov "&_
+                     " "&_
+                     "JOIN pacientes p ON p.id=mov.AccountIdCredit " &_
+                     "INNER JOIN sys_financialdiscountpayments d ON d.MovementID=mov.id "&_
+                     "INNER JOIN sys_financialmovement movbill ON movbill.id=d.InstallmentID "&_
+                     " "&_
+                     "WHERE mov.`Type`='transfer' "&_
+                     "AND mov.UnidadeID="&UnidadeID&"  "&_
+                     "AND mov.AccountAssociationIDCredit=3 "&_
+                     "AND movbill.Date="&mydatenull(Data) &_
+                     " AND d.DiscountedValue>0 "
+
+set UtilizacaoDeCreditoSQL = db.execute(sqlUtilizacaoDeSaldo )
+while not UtilizacaoDeCreditoSQL.eof
+    %>
+<tr>
+    <td><%=UtilizacaoDeCreditoSQL("NomePaciente")%></td>
+    <td><%=fn(UtilizacaoDeCreditoSQL("ValorUtilizado"))%></td>
+    <td><a href="./?P=invoice&I=<%=UtilizacaoDeCreditoSQL("InvoiceID")%>&A=&Pers=1&T=C&Ent=" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
+</tr>
+    <%
+UtilizacaoDeCreditoSQL.movenext
+wend
+UtilizacaoDeCreditoSQL.close
+set UtilizacaoDeCreditoSQL=nothing
+%>
+</tbody>
+<%
+
 elseif LinhaID=9 then
 
 %>
@@ -299,13 +341,13 @@ elseif LinhaID=9 then
 </thead>
 <tbody>
 <%
-sqlNaoPago="SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
-"LEFT JOIN sys_financialinvoices i ON i.id=mov.InvoiceID LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
-"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&" AND mov.CaixaID IN ("&Caixas&") AND mov.CD='C' AND mov.Type='Bill' "
+'sqlNaoPago="SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
+'"LEFT JOIN sys_financialinvoices i ON i.id=mov.InvoiceID LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
+'"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&" AND mov.CaixaID IN ("&Caixas&") AND mov.CD='C' AND mov.Type='Bill' UNION ALL"
 
-sqlNaoPago= sqlNaoPago&" UNION ALL SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
+sqlNaoPago= sqlNaoPago&"  SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
 "LEFT JOIN sys_financialinvoices i ON i.id=mov.InvoiceID LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
-"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&" AND mov.CaixaID IS NULL AND mov.Date="&mydatenull(Data)&" AND mov.CD='C' AND mov.Type='Bill' "
+"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&"  AND mov.Date="&mydatenull(Data)&" AND mov.CD='C' AND mov.Type='Bill' "
 
 'sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL) AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
 
@@ -340,6 +382,7 @@ elseif LinhaID="8.1" or LinhaID="8.2" then
         <th>Data</th>
         <th>Usuário</th>
         <th>Valor Total</th>
+        <th>#</th>
     </tr>
 </thead>
 <tbody>
@@ -351,11 +394,13 @@ else
     sqlAccount = " AND exp.Name!='Repasses'"
 end if
 
-sqlDespesas = "select m.sysUser, m.Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date FROM sys_financialmovement m "&_
+sqlDespesas = "select ii.id, m.sysUser, SUM(r.Valor) Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date, ii.InvoiceID FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+"INNER JOIN rateiorateios r ON r.ItemContaAPagar=ii.id "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
-"WHERE m.AccountAssociationIDCredit=7 "&sqlAccount&"  AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &""
+"WHERE m.AccountAssociationIDCredit=7 "&sqlAccount&" AND r.DataServicoExecucao=m.Date AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mydatenull(Data) &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" " &_
+"GROUP BY r.id"
 
 set DespesasSQL = db.execute(sqlDespesas )
 
@@ -372,6 +417,7 @@ while not DespesasSQL.eof
     <td><%=DespesasSQL("Date")%></td>
     <td><%=nameInTable(DespesasSQL("sysUser"))%></td>
     <td><%=fn(DespesasSQL("Value"))%></td>
+    <td><a href="./?P=invoice&I=<%=DespesasSQL("InvoiceID")%>&A=&Pers=1&T=D" target="_blank" class="btn btn-primary btn-xs"><i class="far fa-external-link"></i></a></td>
 </tr>
     <%
 DespesasSQL.movenext

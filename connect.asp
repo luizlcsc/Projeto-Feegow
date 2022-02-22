@@ -3,10 +3,13 @@
 <%
 Session.Timeout=600
 session.LCID=1046
-if session("Servidor")="" then
-    sServidor = "localhost"
-else
-    sServidor = session("Servidor")
+
+sServidor = session("Servidor")
+
+'Fila being accessed directly anauthorized
+if session("Banco")="" then
+    Response.Status = "403"
+    Response.End
 end if
 
 On Error Resume Next
@@ -22,7 +25,7 @@ On Error Goto 0
 'db.Open ConnString
 LicenseID=replace(session("Banco"), "clinic", "")
 'componentslegacyurl = "http://localhost:8080/"
-componentslegacyurl = "https://components-legacy.feegow.com/"
+componentslegacyurl = "https://components-legacy.feegow.com/index.php"
 
 PorteClinica = session("PorteClinica") 
 
@@ -2301,43 +2304,46 @@ end function
 
 
 function compartilhamentoFormulario(idprofissional,tipoDeFormulario)
+    if idprofissional&""="0" then
+        compartilhamentoFormulario=0
+    else
+        idProfissional = accountUser(idProfissional)
+        idProfissionalspl = split(idProfissional,"_")
+        idProfissional = idProfissionalspl(1)
 
-    idProfissional = accountUser(idProfissional)
-    idProfissionalspl = split(idProfissional,"_")
-    idProfissional = idProfissionalspl(1)
 
+        select Case tipoDeFormulario
+            case "Prescricao"
+                categoria = 1
+            case "Diagnostico"
+                categoria = 2
+            case "Atestado"
+                categoria = 3
+            case "Pedido"
+                categoria = 4
+            case "I" ' não achei
+                categoria = 5
+            case "A" ' não achei
+                categoria = 6
+            case "PedidosSADT"
+                categoria = 7
+            case "L"
+                categoria = 8
+            case "AE"
+                categoria = 9
+        end select 
 
-    select Case tipoDeFormulario
-	    case "Prescricao"
-            categoria = 1
-	    case "Diagnostico"
-            categoria = 2
-	    case "Atestado"
-            categoria = 3
-	    case "Pedido"
-            categoria = 4
-	    case "I" ' não achei
-            categoria = 5
-	    case "A" ' não achei
-            categoria = 6
-	    case "PedidosSADT"
-            categoria = 7
-	    case "L"
-            categoria = 8
-	    case "AE"
-            categoria = 9
-    end select 
+        sqlPermissao = "select TipoCompartilhamentoID from prontuariocompartilhamento p where ProfissionalID = "&idprofissional&" AND CategoriaID ="&categoria
 
-    sqlPermissao = "select TipoCompartilhamentoID from prontuariocompartilhamento p where ProfissionalID = "&idprofissional&" AND CategoriaID ="&categoria
+        resultado = 0
 
-    resultado = 0
+        set compartilhamento = db_execute(sqlPermissao)
+        if not compartilhamento.eof then
+            resultado = compartilhamento("TipoCompartilhamentoID")
+        end if
 
-    set compartilhamento = db_execute(sqlPermissao)
-    if not compartilhamento.eof then
-        resultado = compartilhamento("TipoCompartilhamentoID")
+        compartilhamentoFormulario = resultado
     end if
-
-    compartilhamentoFormulario = resultado
 end function 
 
 
@@ -3520,7 +3526,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 	if Tempo="" or isnull(Tempo) or Tempo="0" or not isnumeric(Tempo) then
 		Tempo=15
 	end if
-	if Acao="I" and Email<>"vca" and NomePaciente<>"" then
+	if Acao="I" and Email<>"vca" and NomePaciente<>"" and Hora&""<>"" then
 		Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
 			Inicio = dataGoogle(Data, Hora)
 			HoraFinal = dateadd("n", Tempo, Hora)
@@ -3982,7 +3988,7 @@ function fSysActive(NomeCampo, psysActive, PacienteID)
 end function
 
 function podeExcluir(xCaixaID, xType, xCD, xAccountAssociationIDCredit)
-    if (xCaixaID=session("CaixaID") and aut("|aberturacaixinhaX|") and xType="Pay") or (aut("|contasareceberX|") and xCD="D" and xType="Pay") or (aut("|areceberpacienteX|") and xCD="D" and xAccountAssociationIDCredit=3 and xType="Pay") or (aut("|contasapagarA|") and xCD="C" and xType="Pay") or (aut("|lancamentosX|") and xType="Transfer") then
+    if (xCaixaID=session("CaixaID") and aut("|aberturacaixinhaX|") and xType="Pay") or (aut("|contasareceberX|") and xCD="D" and xType="Pay") or (aut("|areceberpacienteX|") and xCD="D" and xAccountAssociationIDCredit=3 and xType="Pay") or (aut("|contasapagarA|") and xCD="C" and xType="Pay") or (aut("|lancamentosX|") and xType="Transfer")  or (aut("|lancamentosX|") and aut("|movementX|") and xType="CCCred") then
         podeExcluir = true
     else
         podeExcluir = false

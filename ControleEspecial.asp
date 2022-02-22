@@ -107,6 +107,8 @@ for i=0 to ubound(ViasSplit)
             end if
         end if
 
+        Cabecalho = unscapeOutput(Cabecalho)
+        Rodape = unscapeOutput(Rodape)
 
 
 %>

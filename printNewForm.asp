@@ -128,6 +128,10 @@ while not campos.eof
               end if
           end if
       end if
+
+
+	Cabecalho = unscapeOutput(Cabecalho)
+	Rodape = unscapeOutput(Rodape)
       %>
 <style>
 .ready .campo{

@@ -142,7 +142,7 @@ function dynamicallyLoadScript(url) {
 
     document.head.appendChild(script); // Add it to the end of the head section of the page (could change 'head' to 'body' to add it to the end of the body section instead)
 }
-dynamicallyLoadScript("<%=componentslegacyurl%>/assets/js/field-validator.js?cache-control=1");
+dynamicallyLoadScript("<%=replace(componentslegacyurl,"/index.php","")%>/assets/js/field-validator.js?cache-control=2");
 
 <%
 if session("Banco")="clinic5459" or session("Banco")="clinic3882" or session("Banco")="clinic2263" or  session("Banco")="clinic100000" or  session("Banco")="clinic6259" or  session("User")="81847" then
@@ -153,7 +153,7 @@ dynamicallyLoadScript("https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios
 <%
 else
 %>
-dynamicallyLoadScript("<%=componentslegacyurl%>/assets/modules-assets/nfe/js/nota-fiscal-eletronica-1.2.0.js");
+dynamicallyLoadScript("<%=replace(componentslegacyurl,"/index.php","")%>/assets/modules-assets/nfe/js/nota-fiscal-eletronica-1.2.0.js");
 <%
 end if
 %>

@@ -23,7 +23,7 @@ response.Charset="utf-8"
 'response.write(request.QueryString)
 
 
-formHTML = getForm("HTML")
+formHTML = unscapeOutput(getForm("HTML"))
 formHTML = replaceTags(formHTML, PacienteID, session("User"), session("UnidadeID"))
 response.Write(formHTML)
 

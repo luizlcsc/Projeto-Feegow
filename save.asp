@@ -378,6 +378,7 @@ if not getResource.EOF then
 		if instr(inputsCompare, "|"&getFields("columnName")&"|")=0 then
 			falta = falta&"|"&getFields("columnName")&"|"
 		end if
+
         '-> GRAVANDO NOVO LOG 2
         if not valorAntigo.eof then
             txtValorAntigo = valorAntigo(""&getFields("columnName")&"")&""
@@ -399,7 +400,6 @@ if not getResource.EOF then
 	    sqlFields = sqlFields & ", sysDate=NOW()"
 	end if
 	sql = "update "&tableName&" set "&sqlFields&" where id="&id
-	
 	if erro<>"" then
         %>
         new PNotify({
@@ -460,6 +460,7 @@ if not getResource.EOF then
         <%    
         end if
 
+
         IF session("Franqueador") <> "" and tableName = "sys_financialcompanyunits" and Novo THEN %>
             gerarLicenca(<%=id%>)
         <% END IF %>
@@ -485,11 +486,15 @@ if not getResource.EOF then
         end if
     end if
 
-	set getSubforms = db.execute("select * from cliniccentral.sys_resources where mainForm="&getResource("id"))
+
+    getSubformsSQL = "select * from cliniccentral.sys_resources where mainForm="&getResource("id")
+	set getSubforms = db.execute(getSubformsSQL)
 	while not getSubforms.EOF
 		strSubTipos = ""
 		strSubNomes = ""
-		set getSubFields = db.execute("select * from cliniccentral.sys_resourcesFields where resourceID="&getSubForms("id")&" and not columnName='"&getSubForms("mainFormColumn")&"'")
+        getSubFieldsSQL = "select * from cliniccentral.sys_resourcesFields where resourceID="&getSubForms("id")&" and not columnName='"&getSubForms("mainFormColumn")&"'"
+        ' response.write(getSubFieldsSQL)
+		set getSubFields = db.execute(getSubFieldsSQL)
 		while not getSubFields.EOF
 			strSubTipos = strSubTipos&"|"&getSubFields("fieldTypeID")
 			strSubNomes = strSubNomes&"|"&getSubFields("columnName")
@@ -498,8 +503,6 @@ if not getResource.EOF then
 		getSubFields.close
 		set getSubFields=nothing
 
-''		response.Write(strSubTipos&chr(10)) => para fazer conferencia de campos faltando
-''		response.Write(strSubNomes&chr(10))
 		splSubTipos = split(strSubTipos, "|")
 		splSubNomes = split(strSubNomes, "|")
 
@@ -805,10 +808,7 @@ end if
 	db_execute("insert into cliniccentral.logprofissionais (dados) values ('"&replace(request.Form(), "'", "''")& "  ---   Usuario: "& session("User") &" --- IP: "& request.ServerVariables("REMOTE_ADDR") &"')")
 
 if sqlAtivoNome<>"" then
-    on error resume next
-    ConnString1 = "Driver={MySQL ODBC 8.0 ANSI Driver};Server=dbfeegow01.cyux19yw7nw6.sa-east-1.rds.amazonaws.com;Database=cliniccentral;uid="&objSystemVariables("FC_MYSQL_USER")&";pwd="&objSystemVariables("FC_MYSQL_PASSWORD")&";"
-    Set db1 = Server.CreateObject("ADODB.Connection")
-    db1.Open ConnString1
-    db1.execute( sqlAtivoNome )
+%><!--#include file="connectCentral.asp"--><%
+    dbc.execute( sqlAtivoNome )
 end if
 %>

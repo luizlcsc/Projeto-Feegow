@@ -100,7 +100,7 @@ end if
     }
 
     .config{
-        z-index: 999;
+        z-index: 2;
         position: absolute;
         display: flex;
         width: var(--width-main);
@@ -130,7 +130,7 @@ end if
         color: #1c2730 !important;
     }
     .galery-data-envio{
-        z-index: 999;
+        z-index: 2;
         position: absolute;
         text-align: right;
         color: #f4f4f4;
@@ -170,10 +170,10 @@ end if
 <%
 
 if ArquivoImagem="" then
-    ArquivoImagem="Imagem"
+    ArquivoImagem="Imagens"
 end if
 
-if ArquivoImagem="Imagem" then
+if ArquivoImagem="Imagens" then
 %>
 <div class="btn-group ib m20 pull-left ">
   <button type="button" class="btn btn-default hidden-xs" onclick="comparar()">
@@ -199,15 +199,25 @@ end if
       <button type="button" class="multiselect dropdown-toggle btn btn-default" data-toggle="dropdown" title="All Labels" aria-expanded="false"><span class="filter-img">Imagens, Arquivos</span><b class="caret"></b></button>
         <ul class="multiselect-container dropdown-menu">
             <li>
+            <%
+            if ArquivoImagem="Imagens" or ArquivoImagem="" then
+            %>
                 <a href="javascript:void(0)">
                     <label class="checkbox"><input type="checkbox" value="I" name="a" onchange="loadItens()" v-v="Imagens">Imagens</label>
                 </a>
             <li>
+            <%
+            end if
+            if ArquivoImagem="Arquivos" or ArquivoImagem="" then
+            %>
             <li>
                 <a href="javascript:void(0)">
                     <label class="checkbox"><input type="checkbox" value="A" name="a" onchange="loadItens()" v-v="Arquivos">Arquivos</label>
                 </a>
             <li>
+            <%
+            end if
+            %>
         </ul>
       </div>
     </fieldset>

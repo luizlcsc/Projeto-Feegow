@@ -1157,11 +1157,11 @@ function saveInvoiceSubmit(cb){
     }).error(function(err){
         showMessageDialog("Ocorreu um erro ao tentar salvar");
 
-        //notifyEvent({
-        //    description: "Erro ao salvar conta.",
-        //    criticity: 1,
-        //    moduleName: "<%=req("P")%>" 
-        //});
+
+            gtag('event', 'erro_500', {
+                'event_category': 'erro_invoice',
+                'event_label': "Erro ao salvar invoice."
+            });
     });
 }
 $("#formItens").submit(function(){
@@ -1324,7 +1324,7 @@ var InvoiceAlterada = false;
             changeComponentsModalTitle('Odontograma');
             var fn = appendComponentsModal();
             changeComponentsModalFooter('<button type="button" class="btn btn-success" id="feegow-odontograma-finalizar">Finalizar</button>');
-            $.get('<%=componentslegacyurl%>index.php/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
+            $.get('<%=componentslegacyurl%>/odontograma?P='+accountId+'&B=<%=ccur(replace(session("Banco"), "clinic", ""))*999 %>&O=Invoice&U=<%=session("User")%>&I=<%=InvoiceID%>&L=<%=session("Banco")%>',
             function (data) {
                 fn(data);
             });

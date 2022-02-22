@@ -12,6 +12,21 @@ end if
 recursoUnimed = recursoAdicional(12)
 urlbmj = getConfig("urlbmj")
 
+set HasRegraCompartilhamentoSQL = db.execute("SELECT COALESCE(count(id),0)qtd FROM prontuariocompartilhamento WHERE sysActive=1")
+HasRegraCompartilhamento = True
+
+if not HasRegraCompartilhamentoSQL.eof then
+    if HasRegraCompartilhamentoSQL("qtd")&""="0" then
+        HasRegraCompartilhamento = False
+    end if
+end if
+
+sqlFilterEspecialidade = ""
+
+if EspecialidadeID<>"" then
+    sqlFilterEspecialidade = " AND COALESCE(cliniccentral.overlap(CONCAT('|',NULLIF('"&EspecialidadeID&"',''),'|'),f.Especialidade),TRUE) "
+end if
+
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
     SqlLimit = "limit "&loadMore&","&MaximoLimit
@@ -21,15 +36,15 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if ProfessionalID <>"" then
-        sqlProf = "left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID
+        sqlProf = " left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID&" "
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&") "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
     end if
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
@@ -67,7 +82,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) and ")&" sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
         sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
     end if
 
@@ -84,12 +99,19 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
                  cont=0
 
-    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
+    sql = "select t.*, esp.Especialidade, lu.Nome UserName from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
-                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
+                ") t "&sqlProf&" "&_
+                " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUser "&_
+                " LEFT JOIN sys_users su ON su.id=lu.id "&_
+                " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
+                " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+                "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
     'response.write(sql)
              set ti = db.execute( sql )
+             
              while not ti.eof
+                
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
                     abreAno = "          <div class=""timeline-divider mtn hidden-xs"">            <div class=""divider-label"">"&Ano&"</div>          </div>          <div class=""row"">          <div class=""col-sm-6 right-column"">"
@@ -127,7 +149,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 			                    icone = "lock"
 		                    end if
 
-                            if preen("preenchedor")&""="" or preen("preenchedor")&""="0" then
+                            if preen("preenchedor")&""="" or preen("preenchedor")&""="0" or not HasRegraCompartilhamento then
                                 CompartilhamentoOk = True
                             else
                                 CompartilhamentoOk = compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1
@@ -149,7 +171,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" and ti("sysUser")&""<>"0" then
                 'logica de compartilhamento de prontuario, e arquivos
                 'verifica permissão para acesso dos arquivos
-                permissao = VerificaProntuarioCompartilhamento(session("User"), ti("Tipo"), ti("id"))
+                permissao = VerificaProntuarioCompartilhamento(ti("sysUser"), ti("Tipo"), ti("id"))
                 if permissao <> "" then
                     permissaoSplit = split(permissao,"|")
                     PermissaoArquivo = permissaoSplit(0)
@@ -169,11 +191,13 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
                 PermissaoArquivo=true
             end if
-            
-            if preen.eof then
-                if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
-                    PermissaoArquivo = true
-                end if 
+
+            if typename(preen)="Recordset" then
+                if not preen.eof then
+                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
+                        PermissaoArquivo = true
+                    end if 
+                end if
             end if
 
             if not PermissaoArquivo then
@@ -194,7 +218,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                     <div class="panel-heading">
                         <span class="panel-title panel-warning">
                             <span class="far fa-align-justify"></span>
-                            <% if ti("sysUser")<>0 then response.write( nameInTable(ti("sysUser")) ) end if %>
+                            <% if ti("sysUser")<>0 then response.write( ti("UserName") ) end if %>
+                            <% if ti("especialidade")&""<>"" then response.write( "<small> &nbsp; ( <i class='far fa-stethoscope' ></i> "&ti("Especialidade") &" )</small> &nbsp;") end if %>
                             <code><%=ti("Titulo") %></code>
                         </span>
 
@@ -244,8 +269,9 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             <span class="far fa-align-justify"></span>
                             <%
                             if ti("sysUser")<>0 then
-                                response.write( nameInTable(ti("sysUser")) )
+                                response.write( ti("UserName") )
                             end if
+                            if ti("especialidade")&""<>"" then response.write( "<small> &nbsp; ( <i class='far fa-stethoscope' ></i> "&ti("Especialidade") &" )</small> &nbsp;") end if
                             titulo = ti("Titulo")
                             if len(titulo)>30 then
                                 titulo = left(titulo, 40)&"..."
@@ -263,8 +289,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             if cstr(session("User"))=ti("sysUser")&""  then
                             %>
 
-                                <a title="Ver mais" href="javascript:JustificativaTimeline('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
-                                   <i class="far fa-list "></i>
+                                <a title="Ver log de inativação" href="javascript:JustificativaTimeline('<%=ti("Tipo") %>', <%=PacienteID%>, '<%=ti("Modelo")%>', <%=ti("id") %>, '<%=Assinado%>');">
+                                   <i class="far fa-history "></i>
                                 </a>
 
                                 <a title="Compartilhamento" data-toggle="dropdown"  aria-haspopup="true" aria-expanded="false">
@@ -519,6 +545,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                     <iframe width="100%" scrolling="no" height="460" id="ifrCurva<%= ti("id") %>" frameborder="0" src="Curva.asp?CampoID=<%= pcampos("id") %>&FormPID=<%= reg("id") %>"></iframe>
                                                     <%
                                                 case 16
+                                                    NomeCid=""
                                                     IF pcampos("enviardadoscid") = 1 THEN
                                                         sqlBmj = montaSubqueryBMJ("bmj.cid10ID = cliniccentral.cid10.id")
                                                     ELSE
@@ -538,7 +565,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                                                 'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
 
                                                         end if
-                                                        response.Write( Rotulo &"<br>"& Valor  &"<br>" )
+                                                        response.Write( Rotulo &"<br>"& unscapeOutput(Valor)  &"<br>" )
                                                     end if
 
                                                     'CID e BMJ de campos de formulários Estruturados
@@ -642,7 +669,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             %>
                             </ul>
                             <%
-                            response.Write("<small>" & ti("Conteudo") & "</small>")
+                            response.Write("<small>" & unscapeOutput(ti("Conteudo")) & "</small>")
                         end if
                     case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
                             if ti("MemedID")<>"" then
@@ -702,10 +729,12 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 </ul>
                                 <%
                             else
+                                Conteudo = unscapeOutput(ti("Conteudo")&"")
+
                                 IF urlbmj <> "" THEN
-                                    response.Write("<small>" & replace(ti("Conteudo")&"","[linkbmj]",urlbmj) & "</small>")
+                                    response.Write("<small>" & replace(Conteudo,"[linkbmj]",urlbmj) & "</small>")
                                 ELSE
-                                    response.Write("<small>" & ti("Conteudo") & "</small>")
+                                    response.Write("<small>" & Conteudo & "</small>")
                                 END IF
                             end if
                     case "PedidosSADT"
@@ -743,7 +772,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                         %>
                         <div class="row">
                             <%
-                                set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
+                                set im = db.execute("select * from arquivos where "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
                                 while not im.eof
                                     'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão da imagem
                                     podever = true
@@ -780,7 +809,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             %>
                        <div class="row">
                          <%
-                            set im = db.execute("select * from arquivos where date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='A' AND PacienteID="&PacienteID)
+                            set im = db.execute("select * from arquivos where "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='A' AND PacienteID="&PacienteID)
                             while not im.eof
                                 podever = true
                                 'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo

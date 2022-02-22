@@ -15,6 +15,9 @@ function clear_ref_req (val, escapeQuotes)
 
         tentativa = false
     
+        'EH UM CARACTER FANTASMA . NAO REMOVER A LINHA DE BAIXO !!!!!
+        val = replace(val, "​", "")
+        
         val = replace(val, "'", "''")
         val = replace(val,"\", "\\")
         val = replace(val,"<script>", "")
@@ -65,6 +68,9 @@ function refNull(ColVal)
 	end if
 end function
 
+function unscapeOutput(outputVal)
+    unscapeOutput = replace(outputVal&"","&quot;", """")
+end function
 
 function reqf(P)
 

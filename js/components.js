@@ -18,7 +18,7 @@ if(window.location.href.indexOf('sandbox') > 0){
 }
 
 var domain = null;
-var api = null;
+var api = "./api/";
 
 switch (env){
     case "local":
@@ -37,6 +37,14 @@ switch (env){
         api = "/main/api/";
         break;
 }
+
+const initComponents = ({
+        apiUrl
+    }) => {
+        if(apiUrl){
+            window.domain = apiUrl;
+        }
+};
 
 var modalTimeout = 1000;
 

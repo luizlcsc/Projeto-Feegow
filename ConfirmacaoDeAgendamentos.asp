@@ -95,24 +95,29 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
     }
 
     var whatsAppAlertado = false;
-    function AlertarWhatsapp(Celular, Texto, id) {
-        var TipoLinkWhatsApp = $("#TipoLinkWhatsApp").val();
+    function AlertarWhatsapp(Celular, Texto, id, params) {
+        $.get("getMensagemConfirmacao.asp", {AgendamentoID:params[0],PacienteID: params[1],ProfissionalID: params[2],LocalID: params[3],ProcedimentoID: params[4]}, function(data){
+            Texto = data;
+            
+            var TipoLinkWhatsApp = $("#TipoLinkWhatsApp").val();
 
-        if(!whatsAppAlertado){
-            whatsAppAlertado=true;
-            showMessageDialog("<strong>Atenção!</strong> Para enviar uma mensagem via WhatsApp é preciso ter a ferramenta instalada em seu computador.  <a target='_blank' href='https://www.whatsapp.com/download/'>Clique aqui para instalar.</a>",
-            "warning", "Instalar o WhatsApp", 60 * 1000);
-        }
-        localStorage.setItem("TipoLinkWhatsApp", TipoLinkWhatsApp);
+            if(!whatsAppAlertado){
+                whatsAppAlertado=true;
+                showMessageDialog("<strong>Atenção!</strong> Para enviar uma mensagem via WhatsApp é preciso ter a ferramenta instalada em seu computador.  <a target='_blank' href='https://www.whatsapp.com/download/'>Clique aqui para instalar.</a>",
+                "warning", "Instalar o WhatsApp", 60 * 1000);
+            }
+            localStorage.setItem("TipoLinkWhatsApp", TipoLinkWhatsApp);
 
-        var url = TipoLinkWhatsApp+"?phone="+Celular+"&text="+Texto;
-        $("#wpp-"+id).html("<i class='success far fa-check-circle'></i>");
+            var url = TipoLinkWhatsApp+"?phone="+Celular+"&text="+Texto;
+            $("#wpp-"+id).html("<i class='success far fa-check-circle'></i>");
 
-        if(AdicionarObservacoesAoAlterarStatus == "1"){
-            AlterarStatus(1, id, "Contato via WhatsApp", true, 1);
-        }
+            if(AdicionarObservacoesAoAlterarStatus == "1"){
+                AlterarStatus(1, id, "Contato via WhatsApp", true, 1);
+            }
 
-        openTab(url);
+            openTab(url);
+        });
+
     }
 
     function openTab(url) {

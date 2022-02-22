@@ -309,6 +309,14 @@ else
 
         if not veseha.EOF then
             PacId=veseha("PacienteID")
+
+            if veseha("rdValorPlano")="V" then
+				if aut("areceberpacienteV")=1 then
+	                Valor = veseha("ValorPlano")
+				else
+					Valor = ""
+				end if
+            end if
             
             if session("Banco")="clinic100000" or session("Banco")="clinic2263" or session("Banco")="clinic5856" then
                  set TabelaSQL = db.execute("SELECT t.NomeTabela FROM tabelaparticular t LEFT JOIN pacientes p ON p.Tabela=t.id WHERE p.id = "&veseha("PacienteID"))

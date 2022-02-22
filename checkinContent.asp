@@ -22,6 +22,27 @@
         <tbody>
             <%
             StatusSelecionados = ref("fStaID")
+
+            StatusSelectDefault = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>var_icon</span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+            set StatusSQL=db_execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
+            while not StatusSQL.eof
+
+                StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' style='cursor:pointer' class='muda-status'><img src='assets/img/"&StatusSQL("id")&".png'> "&StatusSQL("StaConsulta")&"</a></option>"
+            StatusSQL.movenext
+            wend
+            StatusSQL.close
+            set StatusSQL = nothing
+            StatusSelectDefault= StatusSelectDefault&"</div></ul>"
+
+
+            function getStatusSelect(statusId, statusTitle)
+                tempStatusSelect = StatusSelectDefault
+                tempStatusSelect = replace(tempStatusSelect, "var_active-"&status, "active")
+                tempStatusSelect = replace(tempStatusSelect, "var_icon", imoon(statusId))
+
+                getStatusSelect = tempStatusSelect
+            end function
+
             if StatusSelecionados <> "|1|, |4|, |5|, |7|, |15|, |101|" then
                 session("StatusCheckin") = StatusSelecionados
             end if
@@ -74,26 +95,7 @@
                 <tr data-id="<%=ag("id")%>">
                     <td>
                     <%
-                    statusIcon = imoon(ag("StaID"))
-
-                    StatusSelect = "<div class='btn-group'><button class='btn btn-sm btn-transparent dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
-                    set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
-                    while not StatusSQL.eof
-                        Active=""
-                        if StatusSQL("id")=ag("StaID") then
-                            Active=" active "
-                        end if
-
-                        statusIcon = imoon(StatusSQL("id"))
-
-                        StatusSelect = StatusSelect&"<li class='"&Active&"'><a data-value='"&StatusSQL("id")&"' style='cursor:pointer' class='muda-status'>"&statusIcon&" "&StatusSQL("StaConsulta")&"</a></option>"
-                    StatusSQL.movenext
-                    wend
-                    StatusSQL.close
-                    set StatusSQL = nothing
-                    StatusSelect= StatusSelect&"</div></ul>"
-
-                    response.write(StatusSelect)
+                    response.write(getStatusSelect(ag("StaID"), ag("StaConsulta")))
                     %>
                     </td>
                     <td><a href="?P=Agenda-1&Pers=1&AgendamentoID=<%=ag("id")%>" target="_blank"><%= ft(ag("Hora")) %></a></td>

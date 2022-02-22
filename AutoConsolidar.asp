@@ -7,7 +7,7 @@
 <%
 response.charset = "utf-8"
 
-set rec = db.execute("select * from reconsolidar LIMIT 500")
+set rec = db_execute("select * from reconsolidar ORDER BY id DESC LIMIT 20")
 
 while not rec.eof
     AC = AC & ","& rec("id")

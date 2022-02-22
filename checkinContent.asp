@@ -27,7 +27,7 @@
             set StatusSQL=db_execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
             while not StatusSQL.eof
 
-                StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' style='cursor:pointer' class='muda-status'><img src='assets/img/"&StatusSQL("id")&".png'> "&StatusSQL("StaConsulta")&"</a></option>"
+                StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' style='cursor:pointer' class='muda-status'>"&imoon(StatusSQL("id"))&StatusSQL("StaConsulta")&"</a></option>"
             StatusSQL.movenext
             wend
             StatusSQL.close

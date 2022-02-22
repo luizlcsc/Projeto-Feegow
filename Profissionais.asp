@@ -565,6 +565,34 @@ $(document).ready(function () {
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
 
+        //NECESSÁRIO PARA USAR AS CONFIGURAÇÕES DE CAMPOS OBRIGATORIOS
+        <%      
+      set obriga = db.execute("select * from obrigacampos where Tipo='Profissional' and Obrigar like '%|%'")
+      if not obriga.eof then
+        Obr = obriga("Obrigar")
+        splObr = split(Obr, ", ")
+        for o=0 to ubound(splObr)
+            %>
+            alert("<%=splObr(o) %>");
+            setTimeout(function(){
+                <%
+                if replace(splObr(o), "|", "")="Tel1" then
+                %>
+                console.log($("#<%=replace(splObr(o), "|", "") %>").parents(".qf"))
+                <%
+                end if
+                %>
+                if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
+                    $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
+                }
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(` <i class='fas fa-asterisk text-danger input-required-asterisk' ></i>`);
+                    
+            }, 500);
+			<%
+        next
+      end if
+       %>
+
 <%
 Parametros = "P="&req("P")&"&I="&req("I")&"&Col=Foto"
 %>

@@ -619,6 +619,35 @@ function VerDetalhesValor(){
 <!--#include file="jQueryFunctions.asp"-->
 
 
+  //NECESSÁRIO PARA USAR AS CONFIGURAÇÕES DE CAMPOS OBRIGATORIOS
+        <%      
+      set obriga = db.execute("select * from obrigacampos where Tipo='Procedimento' and Obrigar like '%|%'")
+      if not obriga.eof then
+        Obr = obriga("Obrigar")
+        splObr = split(Obr, ", ")
+        for o=0 to ubound(splObr)
+            %>
+
+            setTimeout(function(){
+                <%
+                if replace(splObr(o), "|", "")="Tel1" then
+                %>
+                console.log($("#<%=replace(splObr(o), "|", "") %>").parents(".qf"))
+                <%
+                end if
+                %>
+                if(!$("#<%=replace(splObr(o), "|", "") %>").parents(".qf").hasClass("hidden")){
+                    $("#<%=replace(splObr(o), "|", "") %>").prop("required", true);
+                }
+					$("label[for='<%=replace(splObr(o), "|", "") %>']").append(` <i class='fas fa-asterisk text-danger input-required-asterisk' ></i>`);
+            }, 500);
+			<%
+        next
+      end if
+       %>
+
+
+
 function addItemTabela(arg1,arg2){
 
     let sugestao = sugestoes.find(e => e.id == arg2);

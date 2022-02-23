@@ -7,9 +7,17 @@ Tipo = req("T")
 
 if Tipo="Profissionais" then
 	if erro="" then
-        if ref("GrauParticipacaoID")<>"0" then
-            db_execute("update profissionais set GrauPadrao="&ref("GrauParticipacaoID")&" where id="&ref("gProfissionalID")&" and (isnull(GrauPadrao) or GrauPadrao=0)")
-        end if
+		Associacao = ref("tipoProfissional")
+		ProfissionalID = ref("gProfissionalID")
+		if Associacao = "" then
+			Associacao = 5
+		end if
+		if Associacao = 8 then
+			ProfissionalID = ref("gProfissionalExternoID")
+		end if
+		if Associacao = 5 and ref("GrauParticipacaoID")<>"0" then
+			db_execute("update profissionais set GrauPadrao="&ref("GrauParticipacaoID")&" where id="&ProfissionalID&" and (isnull(GrauPadrao) or GrauPadrao=0)")
+		end if
 		if CalculaCPF(ref("CodigoNaOperadoraOuCPF"))=True then
 			cpf = replace(replace(replace(ref("CodigoNaOperadoraOuCPF"), " ", ""), ".", ""), "-", "")
 			cpf = left(cpf, 3)&"."&mid(cpf, 4, 3)&"."&mid(cpf, 7, 3)&"-"&right(cpf, 2)
@@ -23,9 +31,9 @@ if Tipo="Profissionais" then
 		end if
 		'db_execute("update profissionais set Conselho='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', EspecialidadeID="&EspecialidadeID&sqlCPF&" where id="&ref("gProfissionalID"))
 		if ItemID="0" then
-			db_execute("insert into profissionaiscirurgia (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ref("gProfissionalID")&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"')")
+			db_execute("insert into profissionaiscirurgia (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser, Associacao) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ProfissionalID&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"', "&Associacao&")")
 		else
-			db_execute("update profissionaiscirurgia set Sequencial='"&ref("Sequencial")&"', GrauParticipacaoID='"&ref("GrauParticipacaoID")&"', ProfissionalID='"&ref("gProfissionalID")&"', CodigoNaOperadoraOuCPF='"&ref("CodigoNaOperadoraOuCPF")&"', ConselhoID='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', sysUser='"&session("User")&"' where id="&ItemID)
+			db_execute("update profissionaiscirurgia set Sequencial='"&ref("Sequencial")&"', GrauParticipacaoID='"&ref("GrauParticipacaoID")&"', ProfissionalID='"&ProfissionalID&"', CodigoNaOperadoraOuCPF='"&ref("CodigoNaOperadoraOuCPF")&"', ConselhoID='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', sysUser='"&session("User")&"', Associacao="&Associacao&" where id="&ItemID)
 		end if
 		%>
 		$("#modal-table").modal("hide");
@@ -44,11 +52,10 @@ elseif Tipo="Procedimentos" then
 		else
 			db_execute("update tissprocedimentostabela set Descricao='"&ref("Descricao")&"' where id="&pt("id"))
 		end if
-
-
-
+		splProfissional= split(ref("ProfissionalID"&ItemID),"_")
+		Associacao = splProfissional(0)
+		ProfissionalID = splProfissional(1)
 		if ref("gConvenioID")<>"" and ref("gConvenioID")<>"0" then
-		
 		
 		
 'original
@@ -82,11 +89,11 @@ elseif Tipo="Procedimentos" then
 		end if
 
 		if ItemID="0" then
-			db_execute("insert into procedimentoscirurgia (GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) values ("&GuiaID&", "&treatvalnull(ref("ProfissionalID"&ItemID))&", '"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"')")
+			db_execute("insert into procedimentoscirurgia (GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao) values ("&GuiaID&", "&ProfissionalID&", '"&myDate(ref("Data"))&"', "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', '"&treatval(ref("Fator"))&"', '"&treatval(ref("ValorUnitario"))&"', '"&treatval(ref("ValorTotal"))&"', '"&session("User")&"', "&Associacao&")")
 			set pult = db.execute("select id from procedimentoscirurgia where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc LIMIT 1")
 			EsteItem = pult("id")
 		else
-			db_execute("update procedimentoscirurgia set ProfissionalID="&treatvalnull(ref("ProfissionalID"&ItemID))&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"' where id="&ItemID)
+			db_execute("update procedimentoscirurgia set ProfissionalID="&ProfissionalID&", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"', Associacao="&Associacao&" where id="&ItemID)
 			EsteItem = ItemID
 		end if
 		'verifica se na regra deste procedimento para este convenio existem despesas adicionais e insere (EsteItem é o id IDProcedimentohonorarios)
@@ -108,24 +115,27 @@ elseif Tipo="Procedimentos" then
 		    vDesp.close
 		    set vDesp=nothing
         'end if
-		
+
         '-> inserindo o profissional executor nesta guia se ele nao existe
-        if ref("ProfissionalID"&ItemID)<>"0" then
-            set vca = db.execute("select id from profissionaiscirurgia where ProfissionalID="&ref("ProfissionalID"&ItemID)&" and GuiaID="&GuiaID)
+        if ProfissionalID<>"0" then
+            set vca = db.execute("select id from profissionaiscirurgia where ProfissionalID="&ProfissionalID&" and Associacao='"&Associacao&"' and GuiaID="&GuiaID)
             if vca.eof then
-               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&ref("ProfissionalID"&ItemID)&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
-  '             response.write(sqlProf)
+				if Associacao = 8 then
+            		sqlProf = "select p.*, e.codigoTISS, '' as GrauPadrao from profissionalexterno p left join especialidades e on e.id=p.EspecialidadeID where p.id="&ProfissionalID&" and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+				else
+            		sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&ProfissionalID&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+				end if
                set prof = db.execute(sqlProf)
                if not prof.eof then
                     if len(prof("CPF"))>3 then
                         CodigoNaOperadora = prof("CPF")
                     end if
-                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="&ref("ProfissionalID"&ItemID)&" and CodigoNaOperadora not like ''")
+                    set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="&ProfissionalID&" and CodigoNaOperadora not like ''")
                     if not vcaContrato.eof then
                         CodigoNaOperadora = vcaContrato("CodigoNaOperadora")
                     end if
                     if CodigoNaOperadora<>"" then
-                        db_execute("insert into profissionaiscirurgia (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalzero(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"')")
+                        db_execute("insert into profissionaiscirurgia (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, Associacao) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalzero(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"', '"&Associacao&"')")
                         %>
         		        atualizaTabela("profissionaiscirurgia", "profissionaiscirurgia.asp?I=<%=GuiaID%>");
                         <%
@@ -133,6 +143,54 @@ elseif Tipo="Procedimentos" then
                 end if
             end if
         end if
+
+		'-> inserindo equipe para faturamento
+		if ref("rdValorPlano") = "P" then
+			sqlEquipe = "select * from procedimentosequipeconvenio where ProcedimentoID='"&ref("gProcedimentoID")&"'"
+			set EquipeProc = db.execute(sqlEquipe)
+			while not EquipeProc.eof
+				Funcao = EquipeProc("Funcao")
+				if EquipeProc("ContaPadrao") = "" then
+					db_execute("insert into profissionaiscirurgia (GuiaID, Sequencial, GrauParticipacaoID) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&Funcao&")")
+				else
+					IntegranteSpl = split(EquipeProc("ContaPadrao"),"_")
+					Associacao = IntegranteSpl(0)
+					select case Associacao
+						case 8
+							if recursoAdicional(50) <> 4 then 
+								EquipeProc.movenext
+							end if
+							sqlIntegrante = "select p.*, e.codigoTISS from profissionalexterno p left join especialidades e on e.id=p.EspecialidadeID where p.id="&IntegranteSpl(1)&" and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+						case 5
+							sqlIntegrante = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&IntegranteSpl(1)&" and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+						case 4, 2
+							EquipeProc.movenext
+					end select
+					set Integrante = db.execute(sqlIntegrante)
+					if not Integrante.eof then
+						set VerificaProf = db.execute("select id from profissionaiscirurgia where ProfissionalID="&Integrante("id")&" and Associacao="&Associacao&" and GuiaID="&GuiaID)
+						if VerificaProf.eof then
+							if len(Integrante("CPF"))>3 then
+								CodigoNaOperadora = Integrante("CPF")
+							end if
+							set vcaContrato = db.execute("select * from contratosconvenio where ConvenioID="&ref("gConvenioID")&" and Contratado="&IntegranteSpl(1)&" and CodigoNaOperadora not like ''")
+							if not vcaContrato.eof then
+								CodigoNaOperadora = vcaContrato("CodigoNaOperadora")
+							end if
+							if CodigoNaOperadora<>"" then
+								db_execute("insert into profissionaiscirurgia (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, Associacao) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&Funcao&", "&Integrante("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(Integrante("Conselho"))&", '"&rep(Integrante("DocumentoConselho"))&"', '"&rep(left(Integrante("UFConselho")&" ", 2))&"', '"&Integrante("codigoTISS")&"', "&Associacao&")")
+							end if
+						end if
+					end if
+				end if
+			EquipeProc.movenext
+			wend
+			EquipeProc.close
+			set EquipeProc = nothing
+			%>
+				atualizaTabela("profissionaiscirurgia", "profissionaiscirurgia.asp?I=<%=GuiaID%>");
+			<%
+		end if
         '<- inserindo o prof...
 		
 		if 0 then

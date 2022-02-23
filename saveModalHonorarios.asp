@@ -17,8 +17,16 @@ end if
 
 if Tipo="Profissionais" then
 	if erro="" then
-        if ref("GrauParticipacaoID")<>"0" then
-            db_execute("update profissionais set GrauPadrao="&ref("GrauParticipacaoID")&" where id="&ref("gProfissionalID")&" and (isnull(GrauPadrao) or GrauPadrao=0)")
+		Associacao = ref("tipoProfissional")
+		ProfissionalID = ref("gProfissionalID")
+		if Associacao = "" then
+			Associacao = 5
+		end if
+		if Associacao = 8 then
+			ProfissionalID = ref("gProfissionalExternoID")
+		end if
+        if Associacao = 5 and ref("GrauParticipacaoID")<>"0" then
+            db_execute("update profissionais set GrauPadrao="&ref("GrauParticipacaoID")&" where id="&ProfissionalID&" and (isnull(GrauPadrao) or GrauPadrao=0)")
         end if
 		if CalculaCPF(ref("CodigoNaOperadoraOuCPF"))=True then
 			cpf = replace(replace(replace(ref("CodigoNaOperadoraOuCPF"), " ", ""), ".", ""), "-", "")
@@ -33,9 +41,9 @@ if Tipo="Profissionais" then
 		end if
 		'db_execute("update profissionais set Conselho='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', EspecialidadeID="&EspecialidadeID&sqlCPF&" where id="&ref("gProfissionalID"))
 		if ItemID="0" then
-			db_execute("insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ref("gProfissionalID")&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"')")
+			db_execute("insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser, Associacao) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ProfissionalID&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"',"&Associacao&")")
 		else
-			db_execute("update tissprofissionaishonorarios set Sequencial='"&ref("Sequencial")&"', GrauParticipacaoID='"&ref("GrauParticipacaoID")&"', ProfissionalID='"&ref("gProfissionalID")&"', CodigoNaOperadoraOuCPF='"&ref("CodigoNaOperadoraOuCPF")&"', ConselhoID='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', sysUser='"&session("User")&"' where id="&ItemID)
+			db_execute("update tissprofissionaishonorarios set Sequencial='"&ref("Sequencial")&"', GrauParticipacaoID='"&ref("GrauParticipacaoID")&"', ProfissionalID='"&ref("gProfissionalID")&"', CodigoNaOperadoraOuCPF='"&ref("CodigoNaOperadoraOuCPF")&"', ConselhoID='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', sysUser='"&session("User")&"', Associacao="&Associacao&" where id="&ItemID)
 		end if
 		%>
 		$("#modal-table").modal("hide");
@@ -120,10 +128,14 @@ elseif Tipo="Procedimentos" then
         'end if
 		
         '-> inserindo o profissional executor nesta guia se ele nao existe
-        if rfProfissionalID&""<>"0" and rfAssociacao&""="5" and ref("gConvenioID")&""<>"" then
-            set vca = db.execute("select id from tissprofissionaishonorarios where ProfissionalID="&rfProfissionalID&" and GuiaID="&GuiaID)
+        if rfProfissionalID&""<>"0" and ref("gConvenioID")&""<>"" then
+            set vca = db.execute("select id from tissprofissionaishonorarios where ProfissionalID="&rfProfissionalID&" and Associacao="&rfAssociacao&" and GuiaID="&GuiaID)
             if vca.eof then
-               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&rfProfissionalID&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+				if Associacao = 8 then
+					sqlProf = "select p.*, e.codigoTISS, '' as GrauPadrao from profissionalexterno p left join especialidades e on e.id=p.EspecialidadeID where p.id="&ProfissionalID&" and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+				else
+					sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&rfProfissionalID&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+				end if
   '             response.write(sqlProf)
                set prof = db.execute(sqlProf)
                if not prof.eof then
@@ -135,7 +147,7 @@ elseif Tipo="Procedimentos" then
                         CodigoNaOperadora = vcaContrato("CodigoNaOperadora")
                     end if
                     if CodigoNaOperadora<>"" then
-                        db_execute("insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalzero(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"')")
+                        db_execute("insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, Associacao) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalzero(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"',"&rfAssociacao&")")
                         %>
         		        atualizaTabela("tissprofissionaishonorarios", "tissprofissionaishonorarios.asp?I=<%=GuiaID%>");
                         <%

@@ -24,6 +24,14 @@ Set ProcedimentoIncluidos=Server.CreateObject("Scripting.Dictionary")
 
 if Tipo="Profissionais" then
 	if erro="" then
+        Associacao = ref("tipoProfissional")
+		ProfissionalID = ref("gProfissionalID")
+		if Associacao = "" then
+			Associacao = 5
+		end if
+		if Associacao = 8 then
+			ProfissionalID = ref("gProfissionalExternoID")
+		end if
         if ref("GrauParticipacaoID")<>"0" then
          '   db.execute("update profissionais set GrauPadrao="&ref("GrauParticipacaoID")&" where id="&ref("gProfissionalID")&" and (isnull(GrauPadrao) or GrauPadrao=0)")
         end if
@@ -57,10 +65,10 @@ if Tipo="Profissionais" then
         'end if
 
 		if ItemID="0" then
-			sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ref("gProfissionalID")&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"')"
+			sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser, Associacao) values ("&GuiaID&", '"&ref("Sequencial")&"', '"&ref("GrauParticipacaoID")&"', '"&ProfissionalID&"', '"&ref("CodigoNaOperadoraOuCPF")&"', '"&ref("ConselhoID")&"', '"&ref("DocumentoConselho")&"', '"&ref("UFConselho")&"', '"&ref("CodigoCBO")&"', '"&session("User")&"',"&Associacao&")"
 		    db.execute(sqlExecute)
 		else
-			sqlExecute = "update tissprofissionaissadt set Sequencial='"&ref("Sequencial")&"', GrauParticipacaoID="& treatvalnull(ref("GrauParticipacaoID")) &", ProfissionalID='"&ref("gProfissionalID")&"', CodigoNaOperadoraOuCPF='"&ref("CodigoNaOperadoraOuCPF")&"', ConselhoID='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', sysUser='"&session("User")&"' where id="&ItemID
+			sqlExecute = "update tissprofissionaissadt set Sequencial='"&ref("Sequencial")&"', GrauParticipacaoID="& treatvalnull(ref("GrauParticipacaoID")) &", ProfissionalID='"&ProfissionalID&"', CodigoNaOperadoraOuCPF='"&ref("CodigoNaOperadoraOuCPF")&"', ConselhoID='"&ref("ConselhoID")&"', DocumentoConselho='"&ref("DocumentoConselho")&"', UFConselho='"&ref("UFConselho")&"', CodigoCBO='"&ref("CodigoCBO")&"', sysUser='"&session("User")&"', Associacao="&Associacao&" where id="&ItemID
             db.execute(sqlExecute)
 		end if
 		%>
@@ -189,9 +197,9 @@ elseif Tipo="Procedimentos" then
                         Sequencial = SequencialSQL("Sequencial") + 1
                     end if
 
-                    sqlInsert = "INSERT INTO tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser)" &_
+                    sqlInsert = "INSERT INTO tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser,Associacao)" &_
                                                     "VALUES ("&GuiaID&", "&treatvalzero(Sequencial)&", "&DadosDoProfissionalParaAdicionarSQL("GrauParticipacaoID")&", "&DadosDoProfissionalParaAdicionarSQL("ProfissionalID")&", '"&DadosDoProfissionalParaAdicionarSQL("CPF")&"', "&_
-                                                    treatvalzero(DadosDoProfissionalParaAdicionarSQL("ConselhoID"))&", '"&DadosDoProfissionalParaAdicionarSQL("DocumentoConselho")&"', '"&DadosDoProfissionalParaAdicionarSQL("UFConselho")&"', "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("CBOS"))&", "&session("User")&")"
+                                                    treatvalzero(DadosDoProfissionalParaAdicionarSQL("ConselhoID"))&", '"&DadosDoProfissionalParaAdicionarSQL("DocumentoConselho")&"', '"&DadosDoProfissionalParaAdicionarSQL("UFConselho")&"', "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("CBOS"))&", "&session("User")&","&Associacao&")"
 
 
                     db.execute(sqlInsert )
@@ -409,13 +417,16 @@ elseif Tipo="Procedimentos" then
         end if
         '-> inserindo o profissional executor nesta guia se ele nao existe
 
-        if rfProfissionalID&""<>"0" and AssociacaoID&""="5" then
-
-            sqlProfissional = "select id from tissprofissionaissadt where ProfissionalID="& treatvalzero(rfProfissionalID) &" and GuiaID="&GuiaID
+        if rfProfissionalID&""<>"0" then
+            sqlProfissional = "select id from tissprofissionaissadt where ProfissionalID="& treatvalzero(rfProfissionalID) &" and Associacao="&AssociacaoID&" and GuiaID="&GuiaID
             set vca = db.execute(sqlProfissional)
 
             if vca.eof then
-               sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="& treatvalzero(rfProfissionalID) &" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho != '' and p.UFConselho != '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+                if Associacao = 8 then
+					sqlProf = "select p.*, e.codigoTISS, '' as GrauPadrao from profissionalexterno p left join especialidades e on e.id=p.EspecialidadeID where p.id="&ProfissionalID&" and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+				else
+					sqlProf = "select p.*, e.codigoTISS from profissionais p left join especialidades e on e.id=p.EspecialidadeID where p.id="&rfProfissionalID&" and not isnull(p.GrauPadrao) and p.GrauPadrao!=0 and not isnull(p.Conselho) and p.Conselho<>'' and p.DocumentoConselho not like '' and p.UFConselho not like '' and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0"
+			    end if
 
                set prof = db.execute(sqlProf)
                if not prof.eof then
@@ -428,7 +439,7 @@ elseif Tipo="Procedimentos" then
                     end if
 
                     if CodigoNaOperadora<>"" then
-                        sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalnull(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"')"
+                        sqlExecute = "insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, Associacao) values ("&GuiaID&", "&getSequencial(GuiaID)&", "&treatvalnull(prof("GrauPadrao"))&", "&prof("id")&", '"&rep(CodigoNaOperadora)&"', "&treatvalzero(prof("Conselho"))&", '"&rep(prof("DocumentoConselho"))&"', '"&rep(left(prof("UFConselho")&" ", 2))&"', '"&prof("codigoTISS")&"',"&AssociacaoID&")"
                         db.execute(sqlExecute)
 
                         %>

@@ -23,14 +23,22 @@ end if
   <%
   set p = db.execute("select * from profissionaiscirurgia where GuiaID="&req("I"))
   while not p.eof
-  	set pro = db.execute("select p.NomeProfissional, cons.TISS as ConselhoTISS from profissionais as p left join conselhosprofissionais as cons on cons.id=p.Conselho where p.id="&p("ProfissionalID"))
-	if pro.eof then
-		NomeProfissional = "<em>Profissional exclu&iacute;do</em>"
-		ConselhoTISS = "-"
-	else
-		NomeProfissional = pro("NomeProfissional")
-		ConselhoTISS = pro("ConselhoTISS")
-	end if
+    NomeProfissional = ""
+    ConselhoTISS = ""
+    if p("ProfissionalID") <> "" then
+      if p("Associacao") = 8 then
+        set pro = db.execute("select p.NomeProfissional, cons.TISS as ConselhoTISS from profissionalexterno as p left join conselhosprofissionais as cons on cons.id=p.Conselho where p.id="&p("ProfissionalID"))
+      else
+        set pro = db.execute("select p.NomeProfissional, cons.TISS as ConselhoTISS from profissionais as p left join conselhosprofissionais as cons on cons.id=p.Conselho where p.id="&p("ProfissionalID"))
+      end if
+      if pro.eof then
+        NomeProfissional = "<em>Profissional exclu&iacute;do</em>"
+        ConselhoTISS = "-"
+      else
+        NomeProfissional = pro("NomeProfissional")
+        ConselhoTISS = pro("ConselhoTISS")
+      end if
+    end if
   %>
     <tr id="lProfissionais<%=p("id") %>">
       <td align="center"><button type="button" class="btn btn-xs btn-success" onClick="itemCirurgia('Profissionais', <%=req("I")%>, <%=p("id")%>);"><i class="far fa-edit"></i></button></td>

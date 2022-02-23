@@ -4,100 +4,6 @@
 <%
 PermitirSelecionarModeloWhatsApp=getConfig("PermitirSelecionarModeloWhatsApp")
 
-function centralWhatsApp(AgendamentoID, MensagemPadrao)
-        Mensagem = MensagemPadrao
-        if Mensagem="" then
-            sql = "select se.TextoSMS from configeventos ce "&_
-                " left join sys_smsemail se on se.id = ce.ModeloMsgWhatsapp "&_
-                " where ce.id = 1 "
-
-            set reg = db.execute(sql)
-
-            Mensagem=""
-
-            if not reg.eof then
-                TextoSMS = reg("TextoSMS")
-                if not isnull(TextoSMS) then
-                    Mensagem=TextoSMS
-                end if
-            end if
-        end if
-
-
-        if Mensagem&"" ="" then
-            Mensagem = "Olá, [Paciente.Nome] !%0a%0aPosso confirmar [Procedimento.Nome] com [Profissional.Nome] às [Agendamento.Hora]?"
-        end if
-        'dados para replace
-        set age = db.execute("select a.*, p.TextoEmail, p.TextoSMS, p.MensagemDiferenciada, p.NomeProcedimento from agendamentos a left join procedimentos p on p.id=a.TipoCompromissoID where a.id="&AgendamentoID)
-        set pac = db.execute("select NomePaciente, Cel1, Cel2 from pacientes where id="&age("PacienteID"))
-
-        if not pac.eof then
-            NomePaciente = trim(pac("NomePaciente"))
-            NomeCompletoPaciente = trim(pac("NomePaciente"))
-            if instr(NomePaciente, " ") then
-                splPac = split(NomePaciente, " ")
-                NomePaciente = splPac(0)
-            end if
-        end if
-
-        set pro = db.execute("select * from profissionais where id="&treatvalzero(age("ProfissionalID")))
-        if not pro.EOF then
-            set Trat = db.execute("select * from tratamento where id = '"&pro("TratamentoID")&"'")
-            if not Trat.eof then
-                Tratamento = trat("Tratamento")
-            end if
-            NomeProfissional = Tratamento&" "&pro("NomeProfissional")
-        end if
-
-        TratamentoProfissional = ""
-
-        ProcedimentoID = 0
-        if instr(Mensagem, "[Procedimento.Tipo]") or instr(Mensagem, "[Procedimento.Nome]") then
-            set proc = db.execute("select p.id,p.NomeProcedimento,t.TipoProcedimento from procedimentos p LEFT JOIN tiposprocedimentos t ON t.id=p.TipoProcedimentoID where p.id="&age("TipoCompromissoID"))
-            if not proc.eof then
-                TipoProcedimento = trim(proc("TipoProcedimento"))&""
-                NomeProcedimento = trim(proc("NomeProcedimento"))&""
-                ProcedimentoID = proc("id")&""
-            end if
-        end if
-
-        Hora = age("Hora")
-
-        if not isnull(Hora) then
-            Hora= formatdatetime( hour(Hora)&":"&minute(Hora) , 4)
-        else
-            Hora=""
-        end if
-
-        'CONVERSÃO DE TAGS MANUAL DESATIVADO 
-        'Mensagem = replace(Mensagem, "[Procedimento.Tipo]", TipoProcedimento)
-        'Mensagem = replace(Mensagem, "[Procedimento.Nome]", NomeProcedimento)
-        'Mensagem = replace(Mensagem, "[Paciente.Nome]", NomePaciente)
-        'Mensagem = replace(Mensagem, "[Paciente.NomeCompleto]", NomeCompletoPaciente)
-        'Mensagem = replace(Mensagem, "[Profissional.Tratamento]", "")
-        'Mensagem = replace(Mensagem, "[Profissional.Nome]", NomeProfissional)
-        'Mensagem = replace(Mensagem, "[Agendamento.Hora]", Hora)
-        'Mensagem = replace(Mensagem, "[Agendamento.Data]", age("Data"))
-        'Mensagem = trim(Mensagem)
-        'Mensagem = Replace(Mensagem,"""","")
-
-        UnidadeID = 0
-        set pUnidade = db.execute("select u.id from locais l left join sys_financialcompanyunits u on u.id=l.UnidadeID where l.id like '"&age("LocalID")&"'")
-        if not pUnidade.eof then
-            if not isnull(pUnidade("id")) then
-                UnidadeID = pUnidade("id")
-            end if
-        end if
-        'Mensagem = replaceTags(Mensagem, age("PacienteID"), session("UserID"), UnidadeID)
-
-        'APLICADO A FUNÇÃO PARA CONVERSÃO DE TAGS || Rafael Maia - 03/07/2020
-        Mensagem = tagsConverte(Mensagem,"PacienteID_"&age("PacienteID")&"|ProcedimentoID_"&ProcedimentoID&"|AgendamentoID_"&age("id")&"|UnidadeID_"&UnidadeID&"|ProfissionalID_"&age("ProfissionalID"),"")
-
-        
-
-        centralWhatsApp = Mensagem
-end function
-
 
 Unidades = ref("Unidades")
 
@@ -112,6 +18,27 @@ function formataNome(nome, primeiroNome)
     else
         formataNome=nome
     end if
+end function
+
+
+StatusSelectDefault = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>var_icon</span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
+set StatusSQL=db_execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
+while not StatusSQL.eof
+
+    StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' style='cursor:pointer' class='muda-status'>"&imoon(StatusSQL("id"))& StatusSQL("StaConsulta")&"</a></option>"
+StatusSQL.movenext
+wend
+StatusSQL.close
+set StatusSQL = nothing
+StatusSelectDefault= StatusSelectDefault&"</div></ul>"
+
+
+function getStatusSelect(statusId, statusTitle)
+    tempStatusSelect = StatusSelectDefault
+    tempStatusSelect = replace(tempStatusSelect, "var_active-"&status, "active")
+    tempStatusSelect = replace(tempStatusSelect, "var_icon", imoon(statusId))
+
+    getStatusSelect = tempStatusSelect
 end function
 
 if ref("fStaID")<>"" then
@@ -214,13 +141,17 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
             LinhaProfissional = ""
 
             sqlConf = "select a.PacienteID, a.id, a.Notas, a.Data, a.id, a.ProfissionalID, a.LocalID, a.StaID, s.StaConsulta, a.Hora, pac.NomePaciente, pac.Cel1, trat.Tratamento, concat(if(isnull(pro.NomeSocial) or pro.NomeSocial='', pro.NomeProfissional, pro.NomeSocial)) NomeProfissional,"&_
-                                   "esp.Especialidade, proc.NomeProcedimento, proc.TipoProcedimentoID, a.TipoCompromissoID, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela "&_
+                                   "esp.Especialidade, proc.NomeProcedimento, proc.id AS ProcedimentoID, tp.TipoProcedimento, proc.TipoProcedimentoID, a.TipoCompromissoID, l.Nomelocal, eq.NomeEquipamento, a.rdValorPlano, a.ValorPlano, conv.NomeConvenio, tab.NomeTabela "&_
                                    ", (select Resposta from agendamentosrespostas where AgendamentoID=a.id limit 1) Resposta, (select EventoID from agendamentosrespostas where AgendamentoID=a.id limit 1) RespostaID "&_
                                    "FROM agendamentos a LEFT JOIN staconsulta s ON a.StaID=s.id LEFT JOIN pacientes pac ON pac.id=a.PacienteID "&_
                                    "LEFT JOIN profissionais pro ON pro.id=a.ProfissionalID "&_
                                    "LEFT JOIN tratamento trat ON trat.id=pro.TratamentoID "&_
-                                   "LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID LEFT JOIN locais l ON l.id=a.LocalID "&_
-                                   "LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID "&_
+                                   "LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID "&_
+                                   "LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
+                                   "LEFT JOIN tiposprocedimentos tp ON tp.id=proc.TipoProcedimentoID "&_
+                                   "LEFT JOIN locais l ON l.id=a.LocalID "&_
+                                   "LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID "&_
+                                   "LEFT JOIN convenios conv ON conv.id=a.ValorPlano LEFT JOIN tabelaparticular tab ON tab.id=a.TabelaParticularID "&_
                                    "WHERE "&sqlData& sqlSta & sqlProf & sqlPac & sqlTipoProc & sqlGrupoProc & sqlUnidade &" AND a.sysActive=1 ORDER BY Data, ProfissionalID, Hora"
             'dd(sqlConf)
             set ag = db.execute(sqlConf)
@@ -273,44 +204,19 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                 end if
 
                 TipoProcedimentoPronome = "a sua"
-
-                if not isnull(ag("TipoProcedimentoID")) then
-                    set TipoProcedimentoSQL = db.execute("SELECT id, TipoProcedimento FROM tiposprocedimentos WHERE id="&treatvalzero(ag("TipoProcedimentoID")))
-                    if not TipoProcedimentoSQL.eof then
-                        TipoProcedimento= lcase(TipoProcedimentoSQL("TipoProcedimento"))
-
-                        if TipoProcedimentoSQL("id")>=3 then
-                            TipoProcedimentoPronome="o seu"
-                        end if
-                    end if
+                TipoProcedimento= lcase(ag("TipoProcedimento"))
+                if ag("TipoProcedimentoID")>=3 then
+                    TipoProcedimentoPronome="o seu"
                 end if
 
                 'TextoWhatsApp = "Olá, "&PacientePrimeiroNome&"! Posso confirmar "&TipoProcedimentoPronome&" "&TipoProcedimento&" com "&ProfissionalPrimeiroNome&" "&DiaMensagem&" às "&Hora&"?"
-                TextoWhatsApp = centralWhatsApp(ag("id"),"")
+                TextoWhatsApp = ""'centralWhatsApp(ag("id"),"")
 
                 %>
                 <tr data-id="<%=ag("id")%>">
                     <td>
                     <%
-                    statusIcon = imoon(ag("StaID"))
-                    StatusSelect = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle btn-transparent' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>"&statusIcon&"</span>  <i class='far fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
-                    set StatusSQL=db.execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116, 22)")
-                    while not StatusSQL.eof
-                        Active=""
-                        if StatusSQL("id")=ag("StaID") then
-                            Active=" active "
-                        end if
-
-                        statusOptionIcon = imoon(StatusSQL("id"))
-
-                        StatusSelect = StatusSelect&"<li class='"&Active&"'><a data-value='"&StatusSQL("id")&"' onclick=""AlterarStatus('"&StatusSQL("id")&"','"&ag("id")&"')"" style='cursor:pointer' class='muda-status'>"&statusOptionIcon&" "&StatusSQL("StaConsulta")&"</a></option>"
-                    StatusSQL.movenext
-                    wend
-                    StatusSQL.close
-                    set StatusSQL = nothing
-                    StatusSelect= StatusSelect&"</div></ul>"
-
-                    response.write(StatusSelect)
+                    response.write(getStatusSelect(ag("StaID"), ag("StaConsulta")))
 
                     TagWhatsApp = False
 
@@ -327,7 +233,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                     if PermitirSelecionarModeloWhatsApp = 0 then
                     FormatTextoWhatsApp = replace(TextoWhatsApp, "'", "&apos;")
                     %>
-                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick='AlertarWhatsapp(`<%=CelularFormatadado%>`, `<%=FormatTextoWhatsApp%>`, `<%=ag("id")%>`)' <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='far fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
+                    <span <% if TagWhatsApp then %> style="color: #6495ed; text-decoration: underline; cursor: pointer;"  onclick='AlertarWhatsapp(`<%=CelularFormatadado%>`, `<%=FormatTextoWhatsApp%>`, `<%=ag("id")%>`, [<%=ag("id")&","&ag("PacienteId")&","&ag("ProfissionalID")&","&ag("LocalID")&","&ag("ProcedimentoID")%>])' <% end if%> ><span style="color:#06d755" id="wpp-<%=ag("id")%>"><% if TagWhatsApp then %><i class='far fa-whatsapp'></i><% end if %> </span> <%= Celular %></span>
                     <%
                     else
                         whatsAppFiltro_ProfissionalID = LinhaProfissional

@@ -51,10 +51,19 @@ if Tipo="Profissionais" then
 			DocumentoConselho = reg("DocumentoConselho")
 			UFConselho = reg("UFConselho")
 			CodigoCBO = reg("CodigoCBO")
+			Associacao = reg("Associacao")
 	    end if
     else
         Sequencial = getSequencial(GuiaID)
+        Associacao = 5
 	end if
+    IF Associacao  = 5 then
+		reqI = "required = ""required"""
+		reqE = ""
+	else
+		reqI = ""
+		reqE = "required = ""required"""
+    end if
 	%>
     	<div class="row">
         	<div class="col-md-1"><label for="Sequencial">Seq. Ref.</label><br>
@@ -71,11 +80,25 @@ if Tipo="Profissionais" then
                 %>
                 </select>
             </div>
-            <%= quickField("simpleSelect", "gProfissionalID", "* Nome do Profissional", 2, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' required='required'") %>
+            <%if recursoAdicional(50) = 4 then %>
+                <span id="spanProfissionalI"<%if Associacao <> 5 Then %> style="display:none"<% End If %>>
+                    <%= quickField("simpleSelect", "gProfissionalID", "Nome do Profissional", 2, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' "&reqI) %>
+                </span>
+                <span id="spanProfissionalE"<%if Associacao = 5 Then %> style="display:none"<% End If %>>
+                    <%= quickField("simpleSelect", "gProfissionalExternoID", "Profissional Externo", 2, ProfissionalID, "select * from profissionalexterno where sysActive=1 order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' "&reqE) %>
+                </span>
+                <span class="pull-left">
+                    <br>
+                    <label><input type="radio" name="tipoProfissional" id="tipoProfissionalI" value="5"<% if Associacao = 5 Then %> checked="checked"<% End If %> class="ace" onclick="tc('I');" /> <span class="lbl">Interno</span></label><br/>
+                    <label><input type="radio" name="tipoProfissional" id="tipoProfissionalE" value="8"<% if Associacao = 8 Then %> checked="checked"<% End If %> class="ace" onclick="tc('E');" /> <span class="lbl">Externo</span></label>
+                </span>
+			<%else%>
+            	<%= quickField("simpleSelect", "gProfissionalID", "Nome do Profissional", 2, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " onchange=""tissCompletaDados('Profissional', this.value);"" empty='' required='required'") %>
+			<%end if%>
             <%= quickField("simpleSelect", "GrauParticipacaoID", "* Participa&ccedil;&atilde;o", 2, GrauParticipacaoID, "select * from cliniccentral.tissgrauparticipacao order by descricao", "descricao", " empty no-select2 ") %>
             <%= quickField("text", "CodigoNaOperadoraOuCPF", "* Cód. na Operadora / CPF", 2, CodigoNaOperadoraOuCPF, "", "", " required='required'"&CampoReadonly) %>
             <%= quickField("simpleSelect", "ConselhoID", "* Conselho", 1, ConselhoID, "select * from conselhosprofissionais order by descricao", "descricao", " empty='' required='required' no-select2"&CampoReadonly) %>
-            <%= quickField("text", "DocumentoConselho", "* N&deg; no Conselho", 2, DocumentoConselho, "", "", " required='required'"&CampoReadonly) %>
+            <%= quickField("text", "DocumentoConselho", "* N&deg; no Conselho", 1, DocumentoConselho, "", "", " required='required'"&CampoReadonly) %>
             <%= quickField("text", "UFConselho", "* UF", 1, UFConselho, "", "", " required='required' pattern='[a-zA-Z]{2}'"&CampoReadonly) %>
             <%= quickField("text", "CodigoCBO", "* C&oacute;d. CBO", 1, CodigoCBO, "", "", " required='required'"&CampoReadonly) %>
         </div>
@@ -416,4 +439,18 @@ function alertCalculo(arg){
  		atualizaTabela("tissprocedimentossadt", `tissprocedimentossadt.asp?I=${GuiadID}&T=${T}&setPlano=${setPlano}&setConvenio=${setConvenio}`)
      }
  }
+
+ function tc(T){
+	if(T=="I"){
+		$("#spanProfissionalE").css("display", "none");
+		$("#spanProfissionalI").css("display", "block");
+		$("#gProfissionalID").attr("required", true);
+		$("#gProfissionalExternoID").attr("required", false);
+	}else{
+		$("#spanProfissionalE").css("display", "block");
+		$("#spanProfissionalI").css("display", "none");
+		$("#gProfissionalID").attr("required", false);
+		$("#gProfissionalExternoID").attr("required", true);
+	}
+}
 </script>

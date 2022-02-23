@@ -66,9 +66,9 @@ if ref("ageNascimento")<>"" and FieldExists(ProfissionalSQL, "IdadeMinima") then
     if isnumeric(ProfissionalSQL("IdadeMinima")) then
         if ProfissionalSQL("IdadeMinima")>0 then
             idadePaciente = DateDiff("yyyy", cdate(ref("ageNascimento")), date())
-            
+
             if isnumeric(idadePaciente) then
-                if cint(idadePaciente) < ProfissionalSQL("IdadeMinima") then
+                if cint(idadePaciente) < cint(ProfissionalSQL("IdadeMinima")) then
                     erro = "Profissional atende apenas pacientes a partir de "&ProfissionalSQL("IdadeMinima")&" anos de idade. Verifique a configuração do profissional."
                 end if
             end if

@@ -25,7 +25,7 @@ StatusSelectDefault = "<div class='btn-group mb10'><button style='background-col
 set StatusSQL=db_execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
 while not StatusSQL.eof
 
-    StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' style='cursor:pointer' class='muda-status'>"&imoon(StatusSQL("id"))& StatusSQL("StaConsulta")&"</a></option>"
+    StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' onclick=""AlterarStatus('"&StatusSQL("id")&"','var_agendamento-id')"" style='cursor:pointer' class='muda-status'>"&imoon(StatusSQL("id"))& StatusSQL("StaConsulta")&"</a></option>"
 StatusSQL.movenext
 wend
 StatusSQL.close
@@ -33,10 +33,12 @@ set StatusSQL = nothing
 StatusSelectDefault= StatusSelectDefault&"</div></ul>"
 
 
-function getStatusSelect(statusId, statusTitle)
+function getStatusSelect(statusId, statusTitle, agendamentoId)
     tempStatusSelect = StatusSelectDefault
     tempStatusSelect = replace(tempStatusSelect, "var_active-"&status, "active")
-    tempStatusSelect = replace(tempStatusSelect, "var_icon", imoon(statusId))
+    tempStatusSelect = replace(tempStatusSelect, "var_title", statusTitle)
+    tempStatusSelect = replace(tempStatusSelect, "var_status-id", statusId)
+    tempStatusSelect = replace(tempStatusSelect, "var_agendamento-id", agendamentoId)
 
     getStatusSelect = tempStatusSelect
 end function
@@ -216,7 +218,7 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                 <tr data-id="<%=ag("id")%>">
                     <td>
                     <%
-                    response.write(getStatusSelect(ag("StaID"), ag("StaConsulta")))
+                    response.write(getStatusSelect(ag("StaID"), ag("StaConsulta"), ag("id")))
 
                     TagWhatsApp = False
 

@@ -18,7 +18,7 @@ function verificaSevicoIntegracaoLaboratorial(unidade)
             end if 
         else 
             if unidade <> "" then
-               set labAutenticacao = db.execute("SELECT versao FROM slabs_autenticacao WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade))
+               set labAutenticacao = db.execute("SELECT max(versao) as versao FROM slabs_autenticacao WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade))
                if labAutenticacao.eof then
                     verificaSevicoIntegracaoLaboratorial = "0|0"
                else
@@ -53,14 +53,26 @@ function verificaIntegracaoLaboratorial(tabela, id)
            versaoIl = "2"
         end if
         'Verifica se a Unidade Possui credencial cadastrada
-        sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
+        if versaoIl = "1" then  
+            sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
+        else
+            sqlAutenticacao = "SELECT id FROM labs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
+        end if 
         set rs2 = db.execute(sqlAutenticacao)
         if not rs2.eof then
             'Verifica se já existe integracao feita para a conta 
-            sqlTabela = "SELECT * FROM slabs_solicitacoes AS sls WHERE sls.tabelaid = '"&id&"' AND  sls.tabela ='"&tabela&"' AND sls.success = 'S' AND sls.statusid=1 and sls.tiposolicitacao='1';"
+            if versaoIl = "1" then
+                sqlTabela = "SELECT * FROM labs_solicitacoes AS sls WHERE sls.invoiceid = '"&id&"' AND  sls.success = 'S';"
+            else
+                sqlTabela = "SELECT * FROM slabs_solicitacoes AS sls WHERE sls.tabelaid = '"&id&"' AND  sls.tabela ='"&tabela&"' AND sls.success = 'S' AND sls.statusid=1 and sls.tiposolicitacao='1';"
+            end if 
             set rs3 = db.execute(sqlTabela)
             if not rs3.eof then
-                verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&versaoIl
+                if versaoIl = "1" then
+                    verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&versaoIl&"|"&rs3("LabID")
+                else
+                    verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&versaoIl
+                end if 
             else
                 select case tabela
                     ' Verifica se existem procedimentos possíveis de serem integrados na conta
@@ -111,32 +123,46 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
     else
         radical = "sfi"
     end if
-    select case arrayintegracao(0)
-        case "0"       
-            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
-                                                 "<i class=""fa fa-flask""></i> </button></div>"
-       
-        case "1"
-            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
-                                                 "<i class=""fa fa-flask""></i></button></div>"
-            
-        case "2"
-            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
-                                                 "<i class=""fa fa-flask""></i></button></div>"
-            
-        case else
-            retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
-    end select  
+    if arrayintegracao(2)=1 and radical = "tgs" then 
+        retornaBotaoIntegracaoLaboratorial = ""
+    else
+        select case arrayintegracao(0)
+            case "0"       
+                retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
+                                                    "<i class=""fa fa-flask""></i> </button></div>"
+        
+            case "1"
+                retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
+                                                    "<i class=""fa fa-flask""></i></button></div>"
+                
+            case "2"
+                if arrayintegracao(2)=1 then
+                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                                                        "<i class=""fa fa-flask""></i></button></div>"
+                else
+                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                                                        "<i class=""fa fa-flask""></i></button></div>"                    
+                end if 
+            case else
+                retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
+        end select  
+    end if
 end function 
 
 function retornaChamadaIntegracaoLaboratorial(link)
-    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
+    verificaAcesso = verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))
+    arrayintegracao = split(verificaAcesso,"|")
     if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao
-            retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
-                                                    " $("".app"").hide(); " &_
-                                                    " $("".app"").html(data); " &_
-                                                    " $("".app"").fadeIn('slow');}); "
+        'convertendo os links para a versão antiga para manter a compatibilidade
+            select case link 
+                case "fila-coleta"
+                    link = "matrix/work-queue"                    
+            end select
+                retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
+                                                        " $("".app"").hide(); " &_
+                                                        " $("".app"").html(data); " &_
+                                                        " $("".app"").fadeIn('slow');}); "
         else
             retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
                                                     " $("".app"").hide(); " &_
@@ -149,7 +175,7 @@ function retornaChamadaIntegracaoLaboratorial(link)
 end function 
 
 function verificaStatusIntegracaoConta(tabela,id)
-    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
+    arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(session("UnidadeID")),"|")
     resultado = 0
     if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao

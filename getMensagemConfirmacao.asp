@@ -17,6 +17,11 @@ if not reqConfigEventoSQL.eof then
     end if
 end if
 
+TextoPadrao=ref("TextoPadrao")
+if TextoPadrao<>"" then
+    MensagemPadraoWhatsApp = TextoPadrao
+end if
+
 function centralWhatsApp(AgendamentoID, MensagemPadrao,PacienteID,ProfissionalID,localID,ProcedimentoID)
 
         if MensagemPadrao="" then
@@ -47,6 +52,6 @@ function centralWhatsApp(AgendamentoID, MensagemPadrao,PacienteID,ProfissionalID
 end function
 
 
-response.write(centralWhatsApp(req("AgendamentoID"), "",req("PacienteID"),req("ProfissionalID"),req("LocalID"),req("ProcedimentoID")))
+response.write(centralWhatsApp(ref("AgendamentoID"), "",ref("PacienteID"),ref("ProfissionalID"),ref("LocalID"),ref("ProcedimentoID")))
 
 %>

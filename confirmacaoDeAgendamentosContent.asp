@@ -256,12 +256,12 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
                         set listPhones=db.execute(listPhonesSQL)
                         while not listPhones.eof
                             msgWhatsApp_titulo = listPhones("Descricao")
-                            msgWhatsApp_conteudo = centralWhatsApp(ag("id"),listPhones("TextoSMS"))
+                            'msgWhatsApp_conteudo = centralWhatsApp(ag("id"),listPhones("TextoSMS"))
 
                             msgWhatsApp_numero = Celular
                             msgWhatsApp_numeroFormatado = CelularFormatadado
 
-                            whatsAppWeb_htmlContent = "<li><a href='https://api.whatsapp.com/send?phone="&msgWhatsApp_numeroFormatado&"&text="&msgWhatsApp_conteudo&"' target='_blank'>"&msgWhatsApp_titulo&"</a></li>"
+                            whatsAppWeb_htmlContent = "<li><a onclick='AlertarWhatsapp(`"&CelularFormatadado&"`, `"&listPhones("TextoSMS")&"`, `"&ag("id")&"`, ["&ag("id")&","&ag("PacienteId")&","&ag("ProfissionalID")&","&ag("LocalID")&","&ag("ProcedimentoID")&"])' href='#' >"&msgWhatsApp_titulo&"</a></li>"
 
                             if whatsAppWeb_html ="" then   
                                 whatsAppWeb_html = whatsAppWeb_htmlContent

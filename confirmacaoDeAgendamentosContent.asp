@@ -39,6 +39,7 @@ function getStatusSelect(statusId, statusTitle, agendamentoId)
     tempStatusSelect = replace(tempStatusSelect, "var_title", statusTitle)
     tempStatusSelect = replace(tempStatusSelect, "var_status-id", statusId)
     tempStatusSelect = replace(tempStatusSelect, "var_agendamento-id", agendamentoId)
+    tempStatusSelect = replace(tempStatusSelect, "var_icon", imoon(statusId))
 
     getStatusSelect = tempStatusSelect
 end function

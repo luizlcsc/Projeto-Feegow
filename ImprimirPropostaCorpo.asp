@@ -277,6 +277,11 @@ body{
                                     wend
                                     TabelasSQL.close
                                     set TabelasSQL=nothing
+                                    
+                                    ColspanFoot = ColspanFoot+1
+                                    %>
+                                    <th style="text-align: center">Valor</th>
+                                    <%
                                 else
                                     ColspanFoot = ColspanFoot+1
                                 %>
@@ -345,6 +350,9 @@ body{
                                     wend
                                     TabelasSQL.close
                                     set TabelasSQL=nothing
+                                    %>
+                                    <td style="text-align: center"><%=fn(Total)%></td>
+                                    <%
                                 else
                                 %>
     							<td class="<%=hiddenValor%>" align="right"><% IF ExibirValorUnitario = "1" THEN %>R$ <%=formatnumber(ValorUnitarioSemDesconto,2)%><% END IF %></td>

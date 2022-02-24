@@ -187,8 +187,8 @@ if lcase(session("table"))="profissionais" then
                     "LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID "&_
                     "INNER JOIN pacientes pac ON pac.id=age.PacienteID "&_
                     "LEFT JOIN locais l ON l.id=age.LocalID "&_
-                    " LEFT JOIN convenios conv ON conv.id=a.ValorPlano AND a.rdValorPlano='P' "&_
-                    " LEFT JOIN staconsulta st ON st.id=a.StaID "&_
+                    " LEFT JOIN convenios conv ON conv.id=age.ValorPlano AND age.rdValorPlano='P' "&_
+                    " LEFT JOIN staconsulta st ON st.id=age.StaID "&_
                     "where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' and age.sysActive = 1 "&_
                     "order by "&Ordem
                 end if
@@ -324,17 +324,19 @@ else
                     Valor = TabelaSQL("NomeTabela")
                 end if
             end if
-
-            if veseha("qtdProcedimentosExtras")&""<>"0" then
-                TipoCompromisso=ucase(pTip("NomeProcedimento"))
-                set OutrosProcedimentos = db.execute("SELECT GROUP_CONCAT(' /<br>',UPPER(p.NomeProcedimento))procs,rdValorPlano, if(rdValorPlano = 'V', ((select IFNULL(ValorPlano,0) from agendamentos where id = a.AgendamentoId) + (ifnull(sum(a.ValorPlano), 0))), a.ValorPlano) as ValorPlano FROM agendamentosprocedimentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.AgendamentoID = "&veseha("id"))
-                if not OutrosProcedimentos.eof then
-                    if OutrosProcedimentos("rdValorPlano")="V" and not isnull(OutrosProcedimentos("ValorPlano")) then
-                        if isnumeric(Valor) and isnumeric(OutrosProcedimentos("ValorPlano")) then
-                            Valor = OutrosProcedimentos("ValorPlano")
+            set pTip=db.execute("select * from procedimentos where id ="&veseha("TipoCompromissoID"))
+            if not pTip.EOF then
+                if veseha("qtdProcedimentosExtras")&""<>"0" then
+                    TipoCompromisso=ucase(pTip("NomeProcedimento"))
+                    set OutrosProcedimentos = db.execute("SELECT GROUP_CONCAT(' /<br>',UPPER(p.NomeProcedimento))procs,rdValorPlano, if(rdValorPlano = 'V', ((select IFNULL(ValorPlano,0) from agendamentos where id = a.AgendamentoId) + (ifnull(sum(a.ValorPlano), 0))), a.ValorPlano) as ValorPlano FROM agendamentosprocedimentos a LEFT JOIN procedimentos p ON p.id = a.TipoCompromissoID WHERE a.AgendamentoID = "&veseha("id"))
+                    if not OutrosProcedimentos.eof then
+                        if OutrosProcedimentos("rdValorPlano")="V" and not isnull(OutrosProcedimentos("ValorPlano")) then
+                            if isnumeric(Valor) and isnumeric(OutrosProcedimentos("ValorPlano")) then
+                                Valor = OutrosProcedimentos("ValorPlano")
+                            end if
                         end if
+                        OutrosProcedimentosStr = OutrosProcedimentos("procs")
                     end if
-                    OutrosProcedimentosStr = OutrosProcedimentos("procs")
                 end if
             end if
         end if

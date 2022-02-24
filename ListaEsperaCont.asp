@@ -179,7 +179,7 @@ if lcase(session("table"))="profissionais" then
                     ", ( "&_
                     " SELECT count(ap.id) "&_
                     " FROM agendamentosprocedimentos ap "&_
-                    " WHERE ap.agendamentoid = a.id) qtdProcedimentosExtras "&_
+                    " WHERE ap.agendamentoid = age.id) qtdProcedimentosExtras "&_
                     "from agendamentos age "&_
                     "INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
                     "LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID "&_
@@ -187,8 +187,8 @@ if lcase(session("table"))="profissionais" then
                     "LEFT JOIN agendamentocanais ac ON ac.id=age.CanalID "&_
                     "INNER JOIN pacientes pac ON pac.id=age.PacienteID "&_
                     "LEFT JOIN locais l ON l.id=age.LocalID "&_
-                    " LEFT JOIN convenios conv ON conv.id=a.ValorPlano AND a.rdValorPlano='P' "&_
-                    " LEFT JOIN staconsulta st ON st.id=a.StaID "&_
+                    " LEFT JOIN convenios conv ON conv.id=age.ValorPlano AND age.rdValorPlano='P' "&_
+                    " LEFT JOIN staconsulta st ON st.id=age.StaID "&_
                     "where age.Data = '"&mydate(DataHoje)&"' and age.StaID in(2,"&StatusExibir&", 5, 33, 102,105,106) AND '"&TriagemProcedimentos&"' LIKE CONCAT('%|',age.TipoCompromissoID,'|%') AND (l.UnidadeID IS NULL or l.UnidadeID='"&session("UnidadeID")&"') or '"&session("UnidadeID")&"'='' and age.sysActive = 1 "&_
                     "order by "&Ordem
                 end if
@@ -200,6 +200,7 @@ end if
 if req("debug")="1" then
     response.write("<pre>"&sql&"</pre>")
 end if
+dd(sql)
 set veseha=db.execute(sql)'Hora
 if session("Table")="profissionais" then
     set vtotal=db.execute(sqlTotal)'Hora

@@ -10,7 +10,7 @@
 call insertRedir(req("P"), req("I"))
 set reg = db.execute("select * from "&req("P")&" where id="&req("I"))
 close = req("close")
-idtissguia = req("I") 
+
 MinimoDigitos = 0
 MaximoDigitos = 100
 
@@ -974,8 +974,6 @@ min-width: 150px;
       <ul class="dropdown-menu" role="menu">
         <li><a href="javascript:SalvarEimprimir=true;$('#btnSalvar').click();"><i class="far fa-print"></i> Salvar e imprimir</a></li>
       </ul>
-        <!-- <%=retornaBotaoIntegracaoLaboratorial ("tissguiasadt", idtissguia) %> -->
-       
     </div>
 
     <button type="button" class="btn btn-md btn-default pull-right ml5" title="Histórico de alterações" onclick="openComponentsModal('DefaultLog.asp?Impressao=1&R=<%=req("P")%>&I=<%=req("I")%>', {},'Log de alterações', true)"><i class="far fa-history"></i></button>

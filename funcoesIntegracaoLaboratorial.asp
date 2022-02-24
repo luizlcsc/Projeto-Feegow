@@ -68,11 +68,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
             end if 
             set rs3 = db.execute(sqlTabela)
             if not rs3.eof then
-                if versaoIl = "1" then
-                    verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&versaoIl&"|"&rs3("LabID")
-                else
-                    verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&versaoIl
-                end if 
+                verificaIntegracaoLaboratorial = "2|"&rs3("id")&"|"&versaoIl&"|"&rs3("LabID")
             else
                 select case tabela
                     ' Verifica se existem procedimentos possíveis de serem integrados na conta
@@ -117,7 +113,8 @@ function verificaIntegracaoLaboratorial(tabela, id)
 end function 
 
 function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
-    arrayintegracao = split(verificaIntegracaoLaboratorial(vartabela, varid),"|")
+    verificacao = verificaIntegracaoLaboratorial(vartabela, varid)
+    arrayintegracao = split(verificacao,"|")
     if vartabela="tissguiasadt" then
         radical = "tgs"
     else

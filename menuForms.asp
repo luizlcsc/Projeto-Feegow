@@ -76,6 +76,7 @@ FormularioNaTimeline = getConfig("FormularioNaTimeline")
                 </tr>
                 <tr>
                     <td><button type="button" onClick="addCampo(23, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-external-link bigger-200"></i><br>Encaminhamento</button></td>
+                    <td><button type="button" onClick="addCampo(17, <%=GrupoID%>)" class="btn btn-app btn-block btn-primary btn-sm"><i class="far fa-align-justify bigger-200"></i><br>Memo CID</button></td>
                 </tr>
                 <%
                 end if

@@ -39,6 +39,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 2
 		'data
 		NomeCampo = ""
@@ -50,6 +51,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 3
 		'imagem
 		NomeCampo = ""
@@ -61,6 +63,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 12
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 4
 		'check
 		NomeCampo = ""
@@ -72,6 +75,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 5
 		'radio
 		NomeCampo = ""
@@ -83,6 +87,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 6
 		'select
 		NomeCampo = ""
@@ -94,6 +99,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 8
 		'memo
 		NomeCampo = ""
@@ -105,6 +111,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 9
 		'tabela
 		NomeCampo = ""
@@ -118,6 +125,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 8
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 10
 		'titulo
 		NomeCampo = ""
@@ -129,6 +137,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 11
 	    NomeCampo = "Gráfico"
         RotuloCampo = "Gráfico"
@@ -139,6 +148,7 @@ select case TipoCampoID
         Colunas = 14
         Linhas = 8
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 13
 		'conjunto de campos
 		NomeCampo = ""
@@ -150,6 +160,7 @@ select case TipoCampoID
 		Colunas = 14
 		Linhas = 8
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 12
 		'audiometria
 		NomeCampo = ""
@@ -161,6 +172,7 @@ select case TipoCampoID
 		Colunas = 14
 		Linhas = 8
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 14
 		'curva de crescimento
 		NomeCampo = ""
@@ -172,6 +184,7 @@ select case TipoCampoID
 		Colunas = 14
 		Linhas = 14
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 15
 		'código de barras do prontuário
 		NomeCampo = ""
@@ -183,6 +196,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 16
 		'select
 		NomeCampo = ""
@@ -194,6 +208,19 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 2
 		tipoCampo = " varchar("&MaxCarac&") NULL DEFAULT NULL"
+		Estruturacao = ""
+	case 17
+		'memo com CID-BMJ
+		NomeCampo = ""
+		RotuloCampo = "Novo Memo"
+		ValorPadrao = ""
+		MaxCarac = 3
+		Checado = "S"
+		Texto = ""
+		Colunas = 7
+		Linhas = 4
+		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = "|CID|"
 	case 19
 		'prescrição
 		NomeCampo = ""
@@ -205,6 +232,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 20
 		'pedidos de exames e procedimentos
 		NomeCampo = ""
@@ -216,6 +244,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 21
 		'textos e atestados
 		NomeCampo = ""
@@ -227,6 +256,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 23
 		'encaminhamento
 		NomeCampo = ""
@@ -238,6 +268,7 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 	case 24
 		'carteira de vacinação
 		NomeCampo = ""
@@ -249,9 +280,10 @@ select case TipoCampoID
 		Colunas = 7
 		Linhas = 4
 		tipoCampo = " text NULL DEFAULT NULL"
+		Estruturacao = ""
 end select
 
-sql = "insert into buicamposforms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, ValorPadrao, pTop, pLeft, MaxCarac, Checado, Obrigatorio, Texto, Colunas, Linhas, GrupoID, Tamanho, Largura) values ("&TipoCampoID&", '"&NomeCampo&"', '"&RotuloCampo&"', "&I&", 0, '"&ValorPadrao&"', 0, 0, '"&MaxCarac&"', '"&Checado&"', '', '"&Texto&"', "&Colunas&", "&Linhas&", "&GrupoID&", "&treatvalnull(Tamanho)&", '"&Largura&"')"
+sql = "insert into buicamposforms (TipoCampoID, NomeCampo, RotuloCampo, FormID, Ordem, ValorPadrao, pTop, pLeft, MaxCarac, Checado, Obrigatorio, Texto, Colunas, Linhas, GrupoID, Tamanho, Largura, Estruturacao) values ("&TipoCampoID&", '"&NomeCampo&"', '"&RotuloCampo&"', "&I&", 0, '"&ValorPadrao&"', 0, 0, '"&MaxCarac&"', '"&Checado&"', '', '"&Texto&"', "&Colunas&", "&Linhas&", "&GrupoID&", "&treatvalnull(Tamanho)&", '"&Largura&"', '"&Estruturacao&"')"
 
 'response.Write("//"&sql)
 

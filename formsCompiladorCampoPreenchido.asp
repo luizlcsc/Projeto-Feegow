@@ -324,7 +324,7 @@ $(function() {
 				checks.close
 				set checks = nothing
 				%></select><%
-	  	case 8'textarea
+	  	case 8,17'textarea
                 ckrender = ckrender & "altura = $('#"& CampoID &"').innerHeight()-22 + 'px'; $('#input_"& CampoID &"mem').css('height', altura );"
 			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>
 

@@ -38,17 +38,15 @@ else
     set reg = db.execute("select p.*, "&_
     "(select count(id) from pacientesprescricoes where sysActive=1 AND PacienteID="&PacienteID&" ) as totalprescricoes, "&_
     "(select count(id) from pacientesatestados where sysActive=1 AND PacienteID="&PacienteID&" ) as totalatestados, "&_
-    "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as qtepedidos, "&_
-    "(select count(id) from pedidossadt where sysActive=1 AND PacienteID="&PacienteID&" ) as qtepedidossadt, "&_
+    "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalpedidos, "&_
     "(select count(id) from pacientesdiagnosticos where sysActive=1 AND PacienteID="&PacienteID&" ) as totaldiagnosticos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='I' ) as totalimagens, "&_
-    "(select count(id) from recibos where (Texto is not null and Texto<>'' ) and PacienteID="&PacienteID&" AND sysActive=1 ) as totalrecibos, "&_
     "(select count(fpae.id) from buiformspreenchidos as fpae left join buiforms as mae on fpae.ModeloID=mae.id where fpae.PacienteID="&PacienteID&" and (fpae.sysActive=1 or fpae.sysActive is null) and (mae.Tipo=1 or mae.Tipo=2 or isnull(mae.Tipo))) as totalae, "&_
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)
 end if
-    splBdgs = split("totalprescricoes, totalatestados, qtepedidos, totaldiagnosticos, totalarquivos, totalimagens, totalrecibos, totalae, totallf", ", ")
+    splBdgs = split("totalprescricoes, totalatestados, totalpedidos, totaldiagnosticos, totalarquivos, totalimagens, totalae, totallf", ", ")
 
 
 if not isnull(reg("Nascimento")) and not isnull(reg("NomePaciente")) then
@@ -228,9 +226,11 @@ end if
         <div class="row">
             <%= quickField("simpleSelect", "Sexo", "Sexo", 2, reg("Sexo"), "select * from Sexo where sysActive=1", "NomeSexo", " empty")%>
             <%= quickField("text", "NomeSocial", "Nome Social", 2, reg("NomeSocial"), "", "", " autocomplete='nome-social' ") %>
-			<%= quickField("text", "Altura", "Altura", 2, reg("Altura"), " input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "Peso", "Peso", 2, reg("Peso"), "input-mask-brl text-right", "", "") %>
-            <%= quickField("text", "IMC", "IMC", 2, reg("IMC"), "text-right", "", " readonly") %>
+			<div class="col-md-4">
+                <%= quickField("text", "Altura", "Altura", 4, reg("Altura"), " input-mask-brl text-right", "", "") %>
+                <%= quickField("text", "Peso", "Peso", 4, reg("Peso"), "input-mask-brl text-right", "", "") %>
+                <%= quickField("text", "IMC", "IMC", 4, reg("IMC"), "text-right", "", " readonly") %>
+            </div>
             <div class="col-md-2">
             	<label>Prontu&aacute;rio
 
@@ -248,7 +248,6 @@ end if
                   <br /></label>
 			<%
                 if AlterarNumeroProntuario = 1 then
-                'if session("banco")="clinic1612" or session("banco")="clinic5868" or session("banco")="clinic3610" or session("banco")="clinic105" or session("banco")="clinic3859" or session("banco")="clinic5491" then
 				Prontuario = reg("idImportado")
 				if isnull(Prontuario) then
 					set pultPront = db.execute("select idImportado Prontuario from pacientes where not isnull(idImportado) order by idImportado desc limit 1")
@@ -264,6 +263,11 @@ end if
     	        <input type="text" class="form-control text-right" value="<%=reg("id")%>" disabled='disabled' />
 			<% End If%>
             </div>
+            <%
+                sqlprioridade = "select * from cliniccentral.pacientesprioridades"
+            %>
+            <%= quickField("simpleSelect", "Prioridade", "Prioridade", 2, reg("Prioridade"), sqlprioridade , "Prioridade", "") %>
+            
         </div>
 
         <%
@@ -410,16 +414,16 @@ end if
             	<div class="col-md-8">
                     <div class="row">
                         <span style="font-size: 9px; width: 8px; position: absolute; left: 50px; min-width: 80px; z-index: 5;top: 5px" ><a href="http://www.buscacep.correios.com.br/sistemas/buscacep/buscaCepEndereco.cfm" target="_blank">Não sei o CEP</a></span>
-                        <%= quickField("text", "Cep", "Cep", 3, reg("cep"), "input-mask-cep", "", " autocomplete='cep' ") %>
-                        <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "", "", " autocomplete='endereco' ") %>
-                        <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "", "", "") %>
-                        <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "", "", " autocomplete='complemento' ") %>
+                        <%= quickField("text", "Cep", "Cep", 3, reg("cep"), "input-mask-cep Ipt-Cep", "", " autocomplete='cep' ") %>
+                        <%= quickField("text", "Endereco", "Endere&ccedil;o", 5, reg("endereco"), "Ipt-Endereco", "", " autocomplete='endereco' ") %>
+                        <%= quickField("text", "Numero", "N&uacute;mero", 2, reg("numero"), "Ipt-Numero", "", "") %>
+                        <%= quickField("text", "Complemento", "Compl.", 2, reg("complemento"), "Ipt-Complemento", "", " autocomplete='complemento' ") %>
                     </div>
                     <div class="row">
-                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "", "", " autocomplete='bairro' ") %>
-                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "", "", " autocomplete='cidade' ") %>
-                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "", "", " autocomplete='estado-uf' ") %>
-                        <div class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
+                        <%= quickField("text", "Bairro", "Bairro", 4, reg("bairro"), "Ipt-Bairro", "", " autocomplete='bairro' ") %>
+                        <%= quickField("text", "Cidade", "Cidade", 4, reg("cidade"), "Ipt-Cidade", "", " autocomplete='cidade' ") %>
+                        <%= quickField("text", "Estado", "Estado", 2, reg("estado"), "Ipt-Estado", "", " autocomplete='estado-uf' ") %>
+                        <div id="ficha_Paises" class="col-md-2<%if instr(Omitir, "|pais|") then%> hidden<%end if%>">
 	                        <%= selectInsert("Pa&iacute;s", "Pais", reg("Pais"), "paises", "NomePais", "", "", "") %>
                         </div>
                     </div>
@@ -950,6 +954,34 @@ function liberar(Usuario , senha , id, Nometable){
         });
     }
 
+$( document ).ready(function() {
+    $(".Ipt-Cep").keyup(function(){      
+        getEndereco();
+    });
+    //var resultadoCEP = {"logradouro":"Estrada do Guanumbi","bairro":"Freguesia (Jacarepagua)","cidade":"Rio de Janeiro","uf":"RJ","cep":"22745-200","pais":1}
+    var resultadoCEP
+    function getEndereco() {        
+            //alert($(".Ipt-Cep").val());
+            var temUnder = /_/i.test($(".Ipt-Cep").val())
+            if(temUnder == false){
+                $.getScript("webservice-cep/cep.php?cep="+$(".Ipt-Cep").val(), function(){
+                   
+                    if(resultadoCEP["logradouro"]!=""){
+                        $(".Ipt-Endereco").val(unescape(resultadoCEP["logradouro"]));
+                        $(".Ipt-Bairro").val(unescape(resultadoCEP["bairro"]));
+                        $(".Ipt-Cidade").val(unescape(resultadoCEP["cidade"]));
+                        $(".Ipt-Estado").val(unescape(resultadoCEP["uf"]));
+                        if(resultadoCEP["pais"]==1){
+                            $('select[id=Pais]').html("<option value='1'>Brasil</option>").val(1).change();                           
+                        }
+                        $(".Ipt-Numero").focus();
+                    }else{
+                        $(".Ipt-Endereco").focus();
+                    }
 
+                });				
+            }			
+    }
+});
 
 </script>

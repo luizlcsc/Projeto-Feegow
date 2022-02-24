@@ -843,6 +843,9 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                                 <%
 
                             end if
+                            if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
+                            <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                            <% end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
                                 %>
@@ -966,7 +969,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
  %>
        <div class="galery-ajax"></div>
        <script>
-        fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+        fetch("ImagensNew.asp?ArquivoImagem=Imagens&PacienteID=<%=req("PacienteID")%>")
         .then(data => data.text())
         .then(data => {
            $(".galery-ajax").html(data);
@@ -1060,7 +1063,7 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
          %>
                <div class="galery-ajax"></div>
                <script>
-                fetch("ImagensNew.asp?PacienteID=<%=req("PacienteID")%>")
+                fetch("ImagensNew.asp?ArquivoImagem=Arquivos&PacienteID=<%=req("PacienteID")%>")
                 .then(data => data.text())
                 .then(data => {
                    $(".galery-ajax").html(data);
@@ -1093,10 +1096,25 @@ end select
     %>
     <div class="col-xs-12">
         <div class="row">
-            <div class="col-md-4 col-md-offset-4"></div>
+            <div class="col-md-4"></div>
+            <%
+
+            if ModoFranquia then
+                %>
+            <div class="col-md-4">
+                <%=quickfield("simpleSelect", "Especialidades", "", 4, req("EspecialidadeID"), "select '' as id,'Todas as Especialidades' as especialidade, 0 as ordem UNION SELECT id,especialidade, 1 as ordem FROM especialidades WHERE sysActive = 1 ORDER BY 3,2;", "especialidade", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
+            </div>
+                <%
+            else
+                %>
+            <div class="col-md-4"></div>
+                <%
+            end if
+            %>
         <%
         qProfissionalLaudadorSQL =  " SELECT p.id,p.NomeProfissional FROM profissionais p"&chr(13)&_
                                     " WHERE p.sysActive=1 AND Ativo= 'on'                "&chr(13)&_
+                                    " "&franquiaUnidade(" AND (id IN (SELECT ProfissionalID FROM profissionais_unidades WHERE UnidadeID IN ("&session("unidadeID")&"))OR NULLIF(Unidades,'') IS NULL)")&" " &_
                                     " ORDER BY p.NomeProfissional ASC                    "
 
         if session("Table")="profissionais" then
@@ -1111,7 +1129,7 @@ end select
         <div class="row">
             <div class="col-md-4 col-md-offset-4"></div>
             <div class="col-md-4">
-                <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
+                <%=quickfield("simpleSelect", "Profissionais", "", 4, req("ProfessionalID"), "select '0' as id,'Todos os profissionais' as NomeProfissional, 0 as ordem union select id, NomeProfissional, 1 as ordem from profissionais where ativo='on' and sysActive=1 "&franquiaUnidade(" AND (id IN (SELECT ProfissionalID FROM profissionais_unidades WHERE UnidadeID IN ("&session("unidadeID")&"))OR NULLIF(Unidades,'') IS NULL)")&" order by ordem, NomeProfissional", "NomeProfissional", " semVazio onchange='professionalFilter(this.value,"""&Tipo&""","&PacienteID&");'" ) %>
                 <div class="pull-right">
                     <div title="Inativar" class="switch switch-xs switch-default switch-inline" style="position:relative;top: 6px;">
                         <input <% if showInactive="1" then response.write("checked") end if %>  name="RegistrosInativos" class="InativarRegistroTimeline" onchange="toggleRegistrosInativos(this)" id="RegistrosInativos" type="checkbox">
@@ -1125,6 +1143,7 @@ end select
     <%
     end if
     ProfessionalID = req("ProfessionalID")
+    EspecialidadeID = req("EspecialidadeID")
     %>
     <div id="divProtocolo">
     </div>
@@ -1169,12 +1188,6 @@ end select
         </div>
     </div>
 
-</div>
- 
-
-</div>
-
-</div>
 <%
 If Err.Number <> 0 Then
     db.execute("INSERT INTO cliniccentral.exceptions (Message, File, LicencaID, UsuarioID, Linha, Metadata) VALUES ('"&Err.Description&"', '"&Request.ServerVariables("SCRIPT_NAME")&"', '"&replace(session("Banco"), "clinic","")&"', "&session("User")&", 0, "&PacienteID&")")
@@ -1189,7 +1202,7 @@ LocalStorageRestoreHabilitar();
 
             gtag('event', 'erro_500', {
                 'event_category': 'erro_prontuario',
-                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+                'event_label': "Erro ao abrir prontuário. ",
             });
     }
 
@@ -1454,12 +1467,17 @@ function excluirSerie(id) {
     {
         var L= '<%=session("Banco")%>';
         var prof = "";
+        professionalID   = $("#Profissionais").val() || "";
+        let especialidadesID = $("#Especialidades").val()  || "";
+        if(!especialidadesID){
+            especialidadesID = ""
+        }
         if(professionalID!=="0")
         {
             prof = "&ProfessionalID="+professionalID
         }
 
-        pront("timeline.asp?L="+L+"&PacienteID="+PacienteId+"&Tipo="+tipo+prof);
+        pront("timeline.asp?EspecialidadeId="+especialidadesID+"&L="+L+"&PacienteID="+PacienteId+"&Tipo="+tipo+prof);
     }
 
     $(document).ready(function() {

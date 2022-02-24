@@ -95,7 +95,11 @@ AdicionarObservacoesAoAlterarStatus = getConfig("AdicionarObservacoesAoAlterarSt
     }
 
     var whatsAppAlertado = false;
-    function AlertarWhatsapp(Celular, Texto, id) {
+    const AlertarWhatsapp = async function(Celular, Texto, id, params) {
+        if(params){
+            Texto = await $.post("getMensagemConfirmacao.asp", {TextoPadrao: Texto, AgendamentoID:params[0],PacienteID: params[1],ProfissionalID: params[2],LocalID: params[3],ProcedimentoID: params[4]});
+        }
+        
         var TipoLinkWhatsApp = $("#TipoLinkWhatsApp").val();
 
         if(!whatsAppAlertado){

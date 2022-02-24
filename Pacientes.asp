@@ -143,7 +143,7 @@ end if
 </div>
 <%
 omitir = ""
-if session("Admin")=1 then
+if session("Admin")<>1 then
 	set omit = db.execute("select * from omissaocampos")
 	while not omit.eof
 		tipo = omit("Tipo")
@@ -692,7 +692,7 @@ function pront(U){
 
       gtag('event', 'erro_500', {
           'event_category': 'erro_timeline',
-          'event_label': "Erro ao acessar timeline (<%=LicenseID&":"&req("I")%>)"
+          'event_label': "Erro ao acessar timeline"
       });
 
     });
@@ -1206,7 +1206,7 @@ $(".form-control").change(function(){
 
             gtag('event', 'erro_500', {
                 'event_category': 'erro_prontuario',
-                'event_label': "Erro ao abrir prontuário. Dados: " + JSON.stringify([t, p, m, i, a, FormID, CampoID]),
+                'event_label': "Erro ao abrir prontuário. ",
             });
     }
 

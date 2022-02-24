@@ -116,8 +116,19 @@ end if
                             <td colspan="2">
                                 <table class="table table-striped table-condensed">
                                     <%
-                            sqlGrade = "select a.*,  substring(l.NomeLocal, 1, 20) NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia &" and "& mydatenull(ViewDate) &">=ifnull(InicioVigencia, '1900-01-01') and "& mydatenull(ViewDate) &"<=ifnull(FimVigencia, '3000-01-01')"
-                            'response.write( sqlGrade )
+                            ' sqlGrade = "select a.*,  substring(l.NomeLocal, 1, 10) NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia &" and "& mydatenull(ViewDate) &">=ifnull(InicioVigencia, '1900-01-01') and "& mydatenull(ViewDate) &"<=ifnull(FimVigencia, '3000-01-01')"
+
+                            sqlGrade = " SELECT a.*, substring(l.NomeLocal, 1, 10) NomeLocal, l.UnidadeID                                       "&chr(13)&_
+                                       " FROM assfixalocalxprofissional a                                                                       "&chr(13)&_
+                                       " LEFT JOIN profissionais p ON p.id = a.ProfissionalID                                                   "&chr(13)&_
+                                       " LEFT JOIN locais l        ON l.id=a.LocalID                                                            "&chr(13)&_
+                                       " WHERE a.ProfissionalID="&ProfissionalID&"                                                              "&chr(13)&_
+                                       "   AND a.DiaSemana="& Dia &"                                                                            "&chr(13)&_
+                                       "   AND "& mydatenull(ViewDate) &" >= ifnull(InicioVigencia, '1900-01-01')                               "&chr(13)&_
+                                       "   AND "& mydatenull(ViewDate) &" <= ifnull(FimVigencia, '3000-01-01')                                  "&chr(13)&_
+                                           franquiaUnidade("   AND coalesce(cliniccentral.sp_contidos('[Unidades]',p.Unidades,concat('|',l.UnidadeID,'|')),true)    ")
+
+                            '   response.write( sqlGrade )
 				            set h = db.execute( sqlGrade )
 				            'set h = db.execute("select a.*, l.NomeLocal, l.UnidadeID from assfixalocalxprofissional a LEFT JOIN locais l on l.id=a.LocalID where a.ProfissionalID="&ProfissionalID&" and a.DiaSemana="& Dia )
 				            if h.eof then

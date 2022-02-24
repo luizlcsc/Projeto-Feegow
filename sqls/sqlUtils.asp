@@ -149,5 +149,47 @@ function FieldExists(ByVal rs, ByVal fieldName)
     Err.Clear
 end function
 
+function sqlProcedimentosPorProfissional(ProfissionalId)
+
+    if ProfissionalID<>"" and isnumeric(ProfissionalID) and ProfissionalID<>"0" then
+        set prof = db.execute("select EspecialidadeID from profissionais where not isnull(EspecialidadeID) and EspecialidadeID<>0 and id="& ProfissionalID)
+        if not prof.eof then
+            EspecialidadeID = prof("EspecialidadeID")
+
+            sqlEspecialidades = " (SomenteEspecialidades like '%|"& EspecialidadeID &"|%' or SomenteEspecialidades IS NULL)"
+
+            set EspecialidadesSQL = db.execute("SELECT EspecialidadeID FROM profissionaisespecialidades WHERE ProfissionalID="&ProfissionalID)
+            while not EspecialidadesSQL.eof
+
+                sqlEspecialidades =  sqlEspecialidades & " or SomenteEspecialidades like '%|"& EspecialidadesSQL("EspecialidadeID") &"|%'"
+
+            EspecialidadesSQL.movenext
+            wend
+            EspecialidadesSQL.close
+            set EspecialidadesSQL=nothing
+
+            sqlEsp = " (opcoesagenda in (4,5) AND ("&sqlEspecialidades&")) "
+            'SomenteProcedimentos = prof("SomenteProcedimentos")&""
+        else
+
+        'entra aqui quando pela agenda de equipamentos
+            sqlEsp = " false "
+        end if
+        sqlProf = " (opcoesagenda IN (4,5) and SomenteProfissionais like '%|"& ProfissionalID &"|%') "
+
+        if SomenteProcedimentos<>"" then
+            sqlProfProc = " and ('"&SomenteProcedimentos&"' LIKE CONCAT('%|',id,'|%')) "
+        end if
+        if sqlProf = "" then sqlProf = " true "
+        if sqlEsp = "" then sqlEsp = " true "
+
+        sqlProfEsp = " or (OpcoesAgenda=4 AND ("&sqlProf&" or "&sqlEsp&"))"
+
+        sqlProfEsp = sqlProfEsp&" or (OpcoesAgenda=5 AND (("&sqlProf&" OR SomenteProfissionais='') AND ("&sqlEsp&" OR SomenteEspecialidades='')))"
+
+    end if
+
+    sqlProcedimentosPorProfissional = "select id, NomeProcedimento from procedimentos where sysActive=1 and Ativo='on' "&franquia("AND CASE WHEN procedimentos.OpcoesAgenda IN (4,5) THEN COALESCE(NULLIF(SomenteProfissionais,'') LIKE '%|"&ProfissionalID&"|%',TRUE) ELSE TRUE END")&" and OpcoesAgenda not in (3) and (isnull(opcoesagenda) or opcoesagenda=0 or opcoesagenda=1 " &sqlProfProc& sqlProfEsp &") order by OpcoesAgenda desc, NomeProcedimento"
+end function
 
 %>

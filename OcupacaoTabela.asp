@@ -42,7 +42,7 @@ end if
         <%
 		splLocais = split(rfLocais, ", ")
 		for il=0 to ubound(splLocais)
-			call ocupacao(lDe, lAte, Especialidades, "", "", "", splLocais(il))
+			call ocupacao(lDe, lAte, Especialidades, "", "", "", splLocais(il), True)
 
 
  			set prof = db.execute("select distinct ro.ProfissionalID, ro.EspecialidadeID, ro.UnidadeID, prof.NomeProfissional, esp.especialidade, u.NomeFantasia FROM agenda_horarios ro LEFT JOIN profissionais prof ON prof.id=ro.ProfissionalID LEFT JOIN especialidades esp ON ro.EspecialidadeID=esp.id LEFT JOIN sys_financialcompanyunits u ON u.id=ro.UnidadeID WHERE ro.sysUser="& session("User") &" and prof.Ativo='ON' ORDER BY prof.NomeProfissional")

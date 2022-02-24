@@ -237,6 +237,11 @@ elseif req("E")<>"E" AND NOT ISNUMERIC(req("E")) then
         AdquirenteID = 2
         PrimeiraLinhaConteudo = 5
 
+    'primeira linha safrapay
+    elseif instr(PrimeiraLinha, "T;EC") then
+        AdquirenteID = 3
+        PrimeiraLinhaConteudo = 2
+
     else
         AdquirenteID = 0'Layout inválido
         %>
@@ -299,6 +304,23 @@ IF 0 THEN
                     Autorizacao = spl(12)
                     Transacao = spl(13)
                     Categoria = spl(1)'Recebíveis de venda
+                elseif AdquirenteID=3 then'Safrapay
+                    NomeAdquirente = "Safrapay"
+                    Autorizacao = spl(1)
+                    Transacao = spl(2)
+                    CredDeb = spl(3)
+                    Bandeira = spl(4)
+                    CodigoMaquina = spl(5)
+                    'NumeroCartao = spl(11)
+                    Status = spl(7)
+                    Categoria = spl(8)'Recebíveis de venda
+                    DataVenda = spl(9)
+                    DataPagto = spl(10)
+                    ValorBruto = spl(11)
+                    ValorLiquido = spl(12)
+                    'ValorAntecipacao = spl(13)
+                    ValorTaxa = ccur(ValorBruto) - ccur(ValorLiquido) + ccur(ValorAntecipacao)
+                    Parcela = spl(13)
                 end if
 
                 hash = AdquirenteID &", '"& Autorizacao &"', '"& Transacao &"', '"& CredDeb &"', '"& Bandeira &"', '"& CodigoMaquina &"', '"& NumeroCartao &"', '"& Status &"', '"& Categoria &"', "& mydatetime(DataVenda) &", "& mydatetime(DataPagto) &", "& treatvalzero(ValorBruto) &", "& treatvalzero(ValorLiquido) &", "& treatvalzero(ValorAntecipacao) &", "& treatvalzero(ValorTaxa) &", "& treatvalzero(Parcela) &", "& treatvalzero(Parcelas)
@@ -325,6 +347,9 @@ ELSE
                                 if Tipo="varchar" then
                                     ValorItem = "'"& ValorItem &"'"
                                 elseif Tipo="timestamp" then
+                                    if instr(ValorItem,".")>0 then
+                                        ValorItem=replace(ValorItem,".","-")
+                                    end if
                                     ValorItem = mydatetime( ValorItem )
                                 elseif Tipo="double" or Tipo="int" then
                                     ValorItem = treatvalzero( ValorItem )
@@ -343,6 +368,7 @@ ELSE
                 db.execute("insert ignore into cartaoconciliacao (AdquirenteID"& Colunas & ", Hash) VALUES ("& AdquirenteID & Valores &", md5('"& hash &"'))")
                 
                 db.execute("UPDATE cartaoconciliacao as filho INNER JOIN cartaoconciliacao AS pai ON (filho.Transacao=pai.Transacao AND filho.Autorizacao=pai.Autorizacao AND filho.Parcela=pai.Parcela and pai.ValorBruto>0) SET filho.Pai=pai.id WHERE filho.conciliado=0 AND filho.ValorBruto<0 AND filho.Pai=0")
+                db.execute("UPDATE cartaoconciliacao SET ValorTaxa=ValorBruto-ValorLiquido WHERE Conciliado=0 AND ISNULL(ValorTaxa) AND ValorBruto>0 AND ValorLiquido>0")
 
 END IF
             end if

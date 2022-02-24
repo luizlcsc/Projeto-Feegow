@@ -241,7 +241,7 @@ if not reg.eof then
 						    if not conv.eof then
 							    RegistroANS = conv("RegistroANS")
                                 RepetirNumeroOperadora = conv("RepetirNumeroOperadora")
-							    set contratoExecutante = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and (ExecutanteOuSolicitante like '%|E|%' or  ExecutanteOuSolicitante='') and not isnull(Contratado)")
+							    set contratoExecutante = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and (ExecutanteOuSolicitante like '%|E|%' or  ExecutanteOuSolicitante='') and not isnull(Contratado)ORDER BY (Contratado = '"&ProfisionalID&"') DESC")
 							    'response.write("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and (ExecutanteOuSolicitante like '%|E|%' or  ExecutanteOuSolicitante='') and not isnull(Contratado)")
 
 							    if not contratoExecutante.eof then
@@ -250,7 +250,7 @@ if not reg.eof then
 								    CodigoNaOperadora = contratoExecutante("CodigoNaOperadora") 'conv("NumeroContrato")
 							    end if
 
-                                set contratoSolicitante = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and (ExecutanteOuSolicitante like '%|S|%' or  ExecutanteOuSolicitante='') and not isnull(Contratado)")
+                                set contratoSolicitante = db.execute("select * from contratosconvenio where ConvenioID="&conv("id")&" and sysActive=1 and (ExecutanteOuSolicitante like '%|S|%' or  ExecutanteOuSolicitante='') and not isnull(Contratado) ORDER BY (Contratado = '"&ProfisionalID&"') DESC")
                                 if not contratoSolicitante.eof then
                                     ContratadoSolicitanteID = contratoSolicitante("Contratado")
                                     ContratadoSolicitanteCodigoNaOperadora = contratoSolicitante("CodigoNaOperadora") ' conv("NumeroContrato")

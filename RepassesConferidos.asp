@@ -398,8 +398,8 @@ if ExibeResultado then
                             <th class="colTh" name-col="colConvenio">Convênio</th>
                             <th class="colTh" name-col="colForma">Forma</th>
                             <th class="colTh" name-col="colParcelas">Parcelas</th>
-                            <th class="colTh" name-col="colValorTotalServ">Valor Total Serv.</th>
-                            <th class="colTh" name-col="colValorParcela">Valor Parcela</th>
+                            <th class="colTh" name-col="colValorTotalServ">Valor do Procedimento</th>
+                            <th class="colTh" name-col="colValorParcela">Valor Total do Pagamento</th>
                             <th class="colTh" name-col="colRepasse">Repasse</th>
                             <th width="1%"><i class="far fa-remove"></i></th>
                         </tr>

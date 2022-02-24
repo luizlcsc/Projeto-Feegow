@@ -37,6 +37,8 @@ if instr(Contrato, "[CodigoBarras.")>0 then
     end if
     Contrato = replace(Contrato, "[CodigoBarras."&NumeroCB&"]", "<iframe frameborder=0 scrolling=no width=200 height=50 src='CodBarras.asp?NumeroCodigo="& NumeroCB &"'></iframe>")
 end if
+
+Contrato = unscapeOutput(Contrato)
 %>
 </head>
 <body>

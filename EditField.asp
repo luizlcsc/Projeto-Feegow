@@ -46,11 +46,6 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
 <div class="panel-body">
     <div class="bootbox-body">
 
-<form name="frmec1" id="frmec1" action="" method="post">
-	<div class="row">
-    	<%=quickField("text", "RotuloCampo", "T&iacute;tulo", 6, pCampo("RotuloCampo"), "", "", "")%>
-    	<%=quickField("text", "Ordem", "Ordem", 2, pCampo("Ordem"), "", "", "")%>
-    	<%if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 or TipoCampoID=8 or TipoCampoID=16 then%>
         <%
             hidden = "hidden"
             ' 1 -> text
@@ -58,10 +53,16 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
             ' 5 -> Rádio
             ' 6 -> Seleção
             ' 8 -> Memorando
-            IF TipoCampoID = 1 or TipoCampoID = 4 or TipoCampoID = 5 or TipoCampoID = 6 or TipoCampoID = 8 THEN
+            IF TipoCampoID = 1 or TipoCampoID = 4 or TipoCampoID = 5 or TipoCampoID = 6 or TipoCampoID = 8 or TipoCampoID = 16 THEN
                 hidden = ""
             END IF
         %>
+
+<form name="frmec1" id="frmec1" action="" method="post">
+	<div class="row">
+    	<%=quickField("text", "RotuloCampo", "T&iacute;tulo", 6, pCampo("RotuloCampo"), "", "", "")%>
+    	<%=quickField("text", "Ordem", "Ordem", 2, pCampo("Ordem"), "", "", "")%>
+    	<%if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 or TipoCampoID=8 or TipoCampoID=16 then%>
         <div class="col-md-4 <%=hidden%>"><label>&nbsp;</label><br>
         	<label><input type="checkbox" class="ace" name="Obrigatorio" value="S"<%if pCampo("Obrigatorio")="S" then%> checked<%end if%>/><span class="lbl mb20">
             Campo obrigatório</span></label>

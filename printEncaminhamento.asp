@@ -90,6 +90,10 @@ EspecialidadeID = req("EspecialidadeID")
             end if
         end if
 
+Cabecalho = unscapeOutput(Cabecalho)
+Rodape = unscapeOutput(Rodape)
+
+
 '-----> Substituindo as tags do conteudo
 if EspecialidadeID = "" then
     set getEncaminhamento = db.execute("select * from protocolosencaminhamentos where sysActive=1 AND id="&EncaminhamentoID)

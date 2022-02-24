@@ -23,7 +23,9 @@
 	padding:1px!important;
 }
 #iProntCont table tbody tr td input {
-	border:none!important;
+    border: none;
+    border-bottom: 1px solid #d1d1d1;
+    border-radius: 0;
 }
 
 #iProntCont .lembrar {
@@ -369,11 +371,18 @@ function editCurva(CampoID){
         NomesCampos = right(NomesCampos, len(NomesCampos) - 2)
         set pids = db.execute("select group_concat( concat('#input_', id)) inputs from buicamposforms where NomeCampo IN(" & NomesCampos & ") AND FormID=" & ModeloID)
         %>
-        $("<%= pids("inputs") %>").on('keyup blur', function () {
+		var timeoutCalc; 
 
-            $.post("formCalc.asp?Input="+ $(this).attr("id"), $(".campoInput, .campoCheck, .tbl").serialize(), function (data) {
-                eval(data);
-            });
+        $("<%= pids("inputs") %>").on('keyup blur', function () {
+			var idIpt = $(this).attr("id");
+			
+			//clearTimeout(timeoutCalc);
+
+			//timeoutCalc = setTimeout(function(){
+				$.post("formCalc.asp?Input="+ idIpt, $(".campoInput, .campoCheck, .tbl").serialize(), function (data) {
+					eval(data);
+				});
+			//}, 250);
         });
         <%
     end if

@@ -27,10 +27,11 @@ set vcaProc = db.execute("select * from procedimentoscirurgia where GuiaID="&I)
 if vcaProc.eof then
 	erro = "Insira ao menos um procedimento na guia."
 end if
-'set vcaProf = db.execute("select * from profissionaiscirurgia where GuiaID="&I)
-'if vcaProf.eof then
-'	erro = "Insira ao menos um profissional executante na guia."
-'end if
+
+set vcaProf = db.execute("select * from profissionaiscirurgia where GuiaID="&I&" and ProfissionalID is null")
+if not vcaProf.eof then
+	erro = "Preencha todos os dados dos profissionais executantes"
+end if
 
 if erro<>"" then
 	%>

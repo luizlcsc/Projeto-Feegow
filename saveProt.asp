@@ -29,8 +29,8 @@ if T="0" then
     set c = db.execute("select * from buicamposforms where FormID="& ModeloID)
     while not c.eof
         select case c("TipoCampoID")
-            case 1, 2, 4, 5, 8
-                db.execute("update `_"& ModeloID &"` set `"& c("id") &"`='"& ref("Campo"& c("id")) &"' WHERE id="& FormID)
+            case 1, 2, 4, 5, 8, 16
+                db.execute("update `_"& ModeloID &"` set `"& c("id") &"`='"& refHTML("Campo"& c("id")) &"' WHERE id="& FormID)
         end select
     c.movenext
     wend

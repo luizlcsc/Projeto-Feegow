@@ -93,8 +93,11 @@ while not campos.eof
 	  Linhas = campos("Linhas")
 	  LadoALado = campos("LadoALado")
 	  Ordem = campos("Ordem")
+	  ValorPadrao = ""
 	  if UsarPreenchido="S" and TipoCampoID<>9 and TipoCampoID<>13 then
-	      ValorPadrao = f(""&campos("id")&"")
+	  		if FieldExists(f,""&campos("id")&"") then
+	      		ValorPadrao = f(""&campos("id")&"")
+			end if
 	  else
 		  ValorPadrao = campos("ValorPadrao")
 	  end if
@@ -125,6 +128,10 @@ while not campos.eof
               end if
           end if
       end if
+
+
+	Cabecalho = unscapeOutput(Cabecalho)
+	Rodape = unscapeOutput(Rodape)
       %>
 <style>
 .ready .campo{

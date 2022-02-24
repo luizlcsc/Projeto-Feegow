@@ -83,7 +83,7 @@ if not lanc.eof or (ItemInvoiceID="" and AtendimentoID="" and ProdutoInvoiceID="
                     NF = lanc("nroNFe")
 					Responsavel = accountName(NULL, lanc("Responsavel"))
 				    if c=0 and aut("estoquemovimentacaoX")=1 then
-					    btnX = "<button class=""btn btn-danger btn-xs"" type=""button"" onclick=""if(confirm('Tem certeza de que deseja excluir este lançamento?'))ajxContent('Lancamentos&X="&lanc("id")&"', "&req("I")&", 1, 'divLancamentos');""><i class=""far fa-remove""></i></button>"
+					    btnX = "<button class=""btn btn-danger btn-xs"" type=""button"" onclick=""if(confirm('Tem certeza de que deseja excluir este lançamento?'))ajxContent('Lancamentos&X="&lanc("id")&"', '"&req("I")&"', 1, 'divLancamentos');""><i class=""far fa-remove""></i></button>"
 				    else
 					    btnX = ""
 				    end if

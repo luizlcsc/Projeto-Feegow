@@ -1,4 +1,5 @@
 ﻿<!--#include file="connect.asp"-->
+<!--#include file="modal.asp"-->
 
 <%
 sqlData = ""
@@ -55,15 +56,15 @@ if Faturar<>"" then
         db.execute("insert into tissguiahonorarios (PacienteID, CNS, ConvenioID, PlanoID, RegistroANS, Senha, NumeroCarteira, AtendimentoRN, Contratado,CodigoNaOperadora, CodigoCNES, ContratadoLocalCodigoNaOperadora, ContratadoLocalNome, ContratadoLocalCNES, Procedimentos, sysUser, sysActive, UnidadeID, DataEmissao) select PacienteID, CNS, ConvenioID, PlanoID, RegistroANS, Senha, NumeroCarteira, AtendimentoRN, Contratado,CodigoNaOperadora, CodigoCNES, ContratadoLocalCodigoNaOperadora, ContratadoLocalNome, ContratadoLocalCNES, Procedimentos, sysUser, sysActive, UnidadeID, curdate() from agendacirurgica WHERE id="& Faturar)
         set phon = db.execute("select id from tissguiahonorarios where sysUser="& session("User") &" order by id desc limit 1")
         IDFaturamento = phon("id")
-        db.execute("insert into tissprocedimentoshonorarios (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) select "& IDFaturamento &", ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, "& session("User") &" from procedimentoscirurgia where GuiaID="& Faturar)
-        db.execute("insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) select "& IDFaturamento &", Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, "& session("User") &" from profissionaiscirurgia WHERE GuiaID="& Faturar)
+        db.execute("insert into tissprocedimentoshonorarios (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao) select "& IDFaturamento &", ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, "& session("User") &", Associacao from procedimentoscirurgia where GuiaID="& Faturar)
+        db.execute("insert into tissprofissionaishonorarios (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser, Associacao) select "& IDFaturamento &", Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, "& session("User") &", Associacao from profissionaiscirurgia WHERE GuiaID="& Faturar)
         Tabela = "tissguiahonorarios"
     elseif Tipo="SADT" then
         db.execute("insert into tissguiasadt (PacienteID, CNS, ConvenioID, PlanoID, RegistroANS, Senha, NumeroCarteira, AtendimentoRN, Contratado,CodigoNaOperadora, CodigoCNES, Procedimentos, sysUser, sysActive, UnidadeID) select PacienteID, CNS, ConvenioID, PlanoID, RegistroANS, Senha, NumeroCarteira, AtendimentoRN, Contratado,CodigoNaOperadora, CodigoCNES, Procedimentos, sysUser, sysActive, UnidadeID from agendacirurgica WHERE id="& Faturar)
         set phon = db.execute("select id from tissguiasadt where sysUser="& session("User") &" order by id desc limit 1")
         IDFaturamento = phon("id")
-        db.execute("insert into tissprocedimentossadt (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser) select "& IDFaturamento &", ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, "& session("User") &" from procedimentoscirurgia where GuiaID="& Faturar)
-        db.execute("insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser) select "& IDFaturamento &", Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, "& session("User") &" from profissionaiscirurgia WHERE GuiaID="& Faturar)
+        db.execute("insert into tissprocedimentossadt (GuiaID, ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao) select "& IDFaturamento &", ProfissionalID, Data, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, "& session("User") &", Associacao from procedimentoscirurgia where GuiaID="& Faturar)
+        db.execute("insert into tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser, Associacao) select "& IDFaturamento &", Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, "& session("User") &", Associacao from profissionaiscirurgia WHERE GuiaID="& Faturar)
         db.execute("insert into tissguiaanexa (GuiaID, CD, Data, TabelaProdutoID, ProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao, ProcGSID) select '"& IDFaturamento &"', CD, Data, TabelaProdutoID, ProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao, ProcGSID from cirurgiaanexos where GuiaID="& Faturar )
         Tabela = "tissguiasadt"
     end if
@@ -75,6 +76,7 @@ end if
             <thead>
                 <tr class="info">
                     <th>Status</th>
+                    <th>Lote</th>
                     <th>Data</th>
                     <th>Hora</th>
                     <th>Paciente</th>
@@ -85,20 +87,26 @@ end if
                     <th width="1%"></th>
                     <th width="1%"></th>
                     <th width="1%"></th>
+                    <th width="1%"></th>
                 </tr>
             </thead>
             <tbody>
             <%
-            sqlCirurgia = "select s.NomeStatus, ac.StatusID, ac.rdValorPlano, ac.IDFaturamento, ac.Tabela, ac.id, ac.DataEmissao, ac.Hora, pac.NomePaciente, c.NomeConvenio, ac.ContratadoLocalNome, if(ac.rdValorPlano='V', 'Particular', c.NomeConvenio) NomeConvenio, ac.PacienteID, pac.Cel1 "&_
+            sqlCirurgia = "SELECT COALESCE(tl.Lote,'Sem Lote') AS loteID, s.NomeStatus, ac.IDFaturamento AS Lote, ac.StatusID, ac.rdValorPlano, ac.IDFaturamento, ac.Tabela, ac.id, ac.DataEmissao, ac.Hora, pac.NomePaciente, c.NomeConvenio, ac.ContratadoLocalNome, if(ac.rdValorPlano='V', 'Particular', c.NomeConvenio) NomeConvenio, ac.PacienteID, pac.Cel1 "&_
                                       " ,(SELECT NomeProfissional FROM profissionaiscirurgia pc INNER JOIN profissionais prof ON prof.id=pc.ProfissionalID WHERE pc.GuiaID=ac.id AND pc.GrauParticipacaoID=100 LIMIT 1) Cirurgiao "&_
-                                      "from agendacirurgica ac LeFT JOIN agendacirurgicastatus s ON s.id=ac.StatusID LEFT JOIN pacientes pac ON pac.id=ac.PacienteID LEFT JOIN convenios c ON c.id=ac.ConvenioID "&_
-                                      "where ac.sysActive=1 "&sqlProfissionais&" "&sqlData&" "&sqlUnidades&" "&StatusAgenda&" order by ac.DataEmissao desc, Hora desc"
-
+                                      "FROM agendacirurgica ac LeFT JOIN agendacirurgicastatus s ON s.id=ac.StatusID "&_
+                                      "LEFT JOIN tissguiahonorarios tgh ON ac.IDFaturamento = tgh.id "&_
+                                      "LEFT JOIN tissguiasadt tgs ON ac.IDFaturamento = tgs.id "&_
+                                      "LEFT JOIN pacientes pac ON pac.id=ac.PacienteID "&_
+                                      "LEFT JOIN convenios c ON c.id=ac.ConvenioID "&_
+                                      "LEFT JOIN tisslotes tl ON tl.id=if(ac.Tabela='tissguiahonorarios',tgh.LoteID,if(ac.Tabela='tissguiasadt',tgs.LoteID,0)) "&_
+                                      "WHERE ac.sysActive=1 "&sqlProfissionais&" "&sqlData&" "&sqlUnidades&" "&StatusAgenda&" ORDER BY ac.DataEmissao desc, Hora desc"
             set ac = db.execute(sqlCirurgia)
             while not ac.eof
                 %>
                 <tr>
                     <td><%= ac("NomeStatus") %></td>
+                    <td><%= ac("LoteID")&"" %></td>
                     <td><%= ac("DataEmissao") %></td>
                     <td><%= replace(ft(ac("Hora")), "00:00", "") %></td>
                     <td><a href="?P=Pacientes&Pers=1&I=<%=ac("PacienteID")%>" target="_blank"><%= ac("NomePaciente") %></a></td>
@@ -108,6 +116,9 @@ end if
                     <td><%= ac("Cirurgiao") %></td>
                     <td width="1%" nowrap>
                         <a class="btn btn-xs btn-primary" href="./?P=AgendaCirurgica&I=<%= ac("id") %>&Pers=1"><i class="far fa-edit"></i></a>
+                    </td>
+                    <td width="1%" nowrap>
+                        <a class='btn btn-xs btn-system <% if isnull(ac("IDFaturamento")) then %> disabled <% end if %>' style='float:right' href="javascript:modalInsuranceAttachments('<%= ac("IDFaturamento") %>','GuiaHonorarios');" title='Anexar laudo à guia'> <i class="far fa-paperclip bigger-140 white"></i></a>
                     </td>
                     <td width="1%">
                         <%
@@ -149,3 +160,14 @@ end if
             %>                
             </tbody>
         </table>
+<script>
+    function modalInsuranceAttachments(guiaID, tipoGuia){
+    $.post("modalInsuranceAttachments.asp",{
+		   guiaID:guiaID,
+		   tipoGuia:tipoGuia
+		   },function(data){
+        $("#modal").html(data);
+        $("#modal-table").modal("show");
+    });
+}
+</script>

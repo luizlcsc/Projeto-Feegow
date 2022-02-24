@@ -1,540 +1,342 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/Json.asp"-->
 <%
 ConvenioID = req("ConvenioID")
+
+'recupera as regras já criadas
+sqlModificadores = "SELECT * FROM conveniosmodificadores WHERE ConvenioID = "&ConvenioID
+set rsModificadores = db.execute(sqlModificadores)
+ModificadoresJson = recordToJSON(rsModificadores)
+
+'recupera os calculos
+sqlCalculos = "SELECT text, concat('|', text, '|') AS id FROM "&_
+    "(SELECT 'UCO' text UNION ALL SELECT 'CH' UNION ALL SELECT 'R$' UNION ALL SELECT 'Filme' UNION ALL SELECT 'Porte' UNION ALL SELECT 'Materiais' UNION ALL SELECT 'Medicamentos' UNION ALL "&_
+    "SELECT 'OPME' UNION ALL SELECT 'Taxas' UNION ALL SELECT 'Gases')  AS T"
+set rsCalculos = db.execute(sqlCalculos)
+CalculosJson = recordToJSON(rsCalculos)
+
+'recupera contratados
+sqlContratado = " SELECT CONCAT('|' ,contratosconvenio.id,'','|') AS id,CONCAT(CodigoNaOperadora,' - ',NomeContratado) as text FROM (                "&chr(13)&_
+                " select 0 as id,NomeFantasia as NomeContratado from empresa                                      "&chr(13)&_
+                " UNION ALL                                                                                      "&chr(13)&_
+                " select id*-1,NomeFantasia from sys_financialcompanyunits where not isnull(UnitName) and sysActive=1"&chr(13)&_
+                " UNION ALL                                                                                      "&chr(13)&_
+                " select id, NomeProfissional from profissionais where sysActive=1) t                            "&chr(13)&_
+                " JOIN contratosconvenio ON contratosconvenio.Contratado = t.id                                  "&chr(13)&_
+                " WHERE ConvenioID = "&ConvenioID&"                                                              "
+set rsContratados = db.execute(sqlContratado)
+ContratadosJson = recordToJSON(rsContratados)
+
+'recupera Produtos
+sqlProdutos = "SELECT concat('|', id, '|') id, if(TipoProduto=3,concat('Material - ',NomeProduto),concat('Medicamento - ',NomeProduto)) text, TipoProduto FROM produtos WHERE TipoProduto IN (3, 4) ORDER BY text"
+set rsProdutos = db.execute(sqlProdutos)
+ProdutosJson = recordToJSON(rsProdutos)
+
+'recupera Grupo de procedimentos
+sqlGrupos = "SELECT concat('|', id, '|') id, NomeGrupo as text FROM procedimentosgrupos  WHERE sysActive = 1"
+set rsGrupos = db.execute(sqlGrupos)
+GruposJson = recordToJSON(rsGrupos)
+
+'recupera os Procedimentos
+sqlProcedimentos = "SELECT concat('|', id, '|') id,NomeProcedimento as text FROM procedimentos WHERE Ativo = 'on' AND sysActive = 1"
+set rsProcedimentos = db.execute(sqlProcedimentos)
+ProcedimentosJson = recordToJSON(rsProcedimentos)
+
+'recupera os Planos do convenio
+sqlPlanos = "SELECT concat('|', id, '|') id, NomePlano as text FROM conveniosplanos WHERE ConvenioID = "&ConvenioID
+set rsPlanos = db.execute(sqlPlanos)
+PlanosJson = recordToJSON(rsPlanos)
+
+'recupera Vias
+sqlVias = "select concat('|', id, '|') id, descricao as text from tissvia order by descricao"
+set rsVias = db.execute(sqlVias)
+ViasJson = recordToJSON(rsVias)
 %>
-<form id="frmOC" onsubmit="return salvarProcedimentos()" >
+<form id="frmOC">
     <div id="main-nofitificados">
-        <div class="row"  style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px">
+        
+        <div v-for="(regra, indexRegra) in regras" class="row"  style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px" v-if="exibe">
             <div class="col-md-12" >
-                 <%
-                  sql = "SELECT descricao, descricao AS id FROM "&_
-                        "(SELECT 'UCO' Descricao UNION ALL SELECT 'CH' UNION ALL SELECT 'R$' UNION ALL SELECT 'Filme' UNION ALL SELECT 'Porte' UNION ALL SELECT 'Materiais' UNION ALL SELECT 'Medicamentos' UNION ALL "&_
-                        "SELECT 'OPME' UNION ALL SELECT 'Taxas' UNION ALL SELECT 'Gases')  AS T"
+                <div class="col-md-3">
+                    <label>Cálculos</label>
+                    <app-multiselect  :options="CalculosJson" v-model="regra.calculos" v-on:input="verificaMatMed(regra)" :key="indexRegra + 'calculo'">
+                    </app-multiselect>
+                </div>
+                <div class="col-md-3" v-if="regra._exibeMatMed">
+                <label>Tabela</label>
+                <select class="form-control" v-model="regra.tabela" :key="indexRegra + 'tabela'">
+                    <option value="">Selecione</option>
+                    <option value="|Brasindice|">Brasindice</option>
+                    <option value="|Simpro|">Simpro</option>
+                </select>
+                </div>
 
-                  sqlContratado = " SELECT CONCAT(contratosconvenio.id,'') AS id,CONCAT(CodigoNaOperadora,' - ',NomeContratado) as Contratado FROM (                "&chr(13)&_
-                                  " select 0 as id,NomeFantasia as NomeContratado from empresa                                      "&chr(13)&_
-                                  " UNION ALL                                                                                      "&chr(13)&_
-                                  " select id*-1,NomeFantasia from sys_financialcompanyunits where not isnull(UnitName) and sysActive=1"&chr(13)&_
-                                  " UNION ALL                                                                                      "&chr(13)&_
-                                  " select id, NomeProfissional from profissionais where sysActive=1) t                            "&chr(13)&_
-                                  " JOIN contratosconvenio ON contratosconvenio.Contratado = t.id                                  "&chr(13)&_
-                                  " WHERE ConvenioID = "&ConvenioID&"                                                              "
+                <div class="col-md-3" v-if="regra._exibeMatMed">
+                    <label>Preço</label>
+                    <select class="form-control" v-model="regra.preco" :key="indexRegra + 'preco'" >
+                        <option value="|PFB|">PFB</option>
+                        <option value="|PMC|">PMC</option>
+                    </select>
+                </div>
 
-                  %>
-              
-                 <%= quickfield("multiple", "Calculos[0]", "Cálculos", 3, Calculo, sql, "descricao",  "onchange=""ocultar_campos($(this).data('key'))"" teste2 ")%>
-                
- 
+                <div class="col-md-3" v-if="regra._exibeMatMed === 'MatEMed'">
+                    <label>Materiais e Medicamentos</label>
+                    <app-multiselect  :options="MateriaisEMedicamentos" v-model="regra.produtos" :key="indexRegra + 'produto-matmed'">
+                    </app-multiselect>
+                </div>
 
-                 <div id="medic0" style="display:none;">
+                <div class="col-md-3" v-if="regra._exibeMatMed === 'Mat'">
+                    <label>Materiais</label>
+                    <app-multiselect  :options="Materiais" v-model="regra.produtos" :key="indexRegra + 'produto-mat'">
+                    </app-multiselect>
+                </div>
 
-                    <div class="col-md-3">
-                        <label for="tabela[0]">Tabela</label>
-                        <select class="form-control" id="tabela[0]" name="tabela[0]">
-                            <option value="">Selecione</option>
-                            <option value="|Brasindice|">Brasindice</option>
-                            <option value="|Simpro|">Simpro</option>
-                        </select>
-                    </div>
+                <div class="col-md-3" v-if="regra._exibeMatMed === 'Med'">
+                    <label>Medicamentos</label>
+                    <app-multiselect  :options="Medicamentos" v-model="regra.produtos"  :key="indexRegra + 'produto-med'">
+                    </app-multiselect>
+                </div>
+                <div class="col-md-3">
+                    <label>Grupos</label>
+                    <app-multiselect  :options="GruposJson" v-model="regra.grupos"  :key="indexRegra + 'grupo'">
+                    </app-multiselect>
+                </div>
+                <div class="col-md-3">
+                    <label>Procedimentos</label>
+                    <app-multiselect  :options="ProcedimentosJson" v-model="regra.procedimentos" :key="indexRegra + 'procedimento'" :id="indexRegra + 'procedimento'">
+                    </app-multiselect>
+                </div>
 
-                    <div class="col-md-3">
-                        <label for="preco[0]">Preço</label>
-                        <select class="form-control" id="preco[0]" name="preco[0]">
-                            <option value="|PFB|">PFB</option>
-                            <option value="|PMC|">PMC</option>
-                        </select>
-                    </div>
+                <div class="col-md-3">
+                    <label>Planos</label>
+                    <app-multiselect  :options="PlanosJson" v-model="regra.planos" :key="indexRegra + 'planos'" :id="indexRegra + 'planos'">
+                    </app-multiselect>
+                </div>
 
-                    <%= produtos %>
-                    <div id="produtoWarper" class="col-md-3">
-                    
-                    </div>
-                 </div>
+                <div class="col-md-3">
+                    <label>Contratados</label>
+                    <app-multiselect  :options="ContratadosJson" v-model="regra.contratados" :key="indexRegra + 'contratados'">
+                    </app-multiselect>
+                </div>
 
-                 <%= quickfield("multiple", "Grupos[0]", "Grupos", 3, Planos,"SELECT * FROM procedimentosgrupos  WHERE sysActive = 1  ", "NomeGrupo", "") %>
-                 <%= quickfield("multiple", "Procedimentos[0]", "Procedimentos", 3, Procedimentos, "SELECT id,NomeProcedimento FROM procedimentos WHERE Ativo = 'on' AND sysActive = 1", "NomeProcedimento", "") %>
-                 <%= quickfield("multiple", "Planos[0]", "Planos", 3, Planos,"SELECT id, NomePlano FROM conveniosplanos WHERE ConvenioID = "&ConvenioID, "NomePlano", "") %>
-            </div>
-            <div class="col-md-12 mt10">
-                 <%= quickfield("multiple", "Contratados[0]", "Contratados", 3, "",sqlContratado, "Contratado", "") %>
-                 <%= quickfield("multiple", "Vias[0]", "Vias", 3, "","select * from tissvia order by descricao", "descricao", "") %>
-                 <div class="col-md-3">
-                    <label for="Planos">Tipo</label>
-                    <select class="form-control" id="tipo[0]" name="tipo[0]">
+                <div class="col-md-3">
+                    <label>Vias</label>
+                    <app-multiselect  :options="ViasJson" v-model="regra.vias" :key="indexRegra + 'vias'">
+                    </app-multiselect>
+                </div>
+
+                <div class="col-md-3" >
+                    <label>Tipo</label>
+                    <select class="form-control" v-model="regra.tipo" :key="indexRegra + 'tipo'">
                         <option value="-1">Deflator (-)</option>
                         <option value="1">Inflator (+)</option>
                     </select>
-               
-               
-                 </div>
-              
-                
-
-                
-                  <div class="col-md-2">
-                      <%=quickField("text", "valor[0]", "Valor (%)", 12, ValorCH, " sql-mask-4-digits  ", "", " ")%>
-                  </div>
-                   
-                <div class="col-md-1">
-                      <label>&nbsp;</label>
-                      <br/>
-                     <button type="button" class="btn btn-block btn-success" onclick="addNotificados(null,null)"> <i class="far fa-plus"></i></button>
                 </div>
 
+                <div class="col-md-2">
+                    <label>Valor(%)</label>
+                    <app-inputmoney v-model="regra.valor" class="form-control text-right" data-lpignore="true" :key="indexRegra + 'valor'" :id="indexRegra + 'valor'">
+                    </app-inputmoney>
+                </div>
+                <div class="col-md-1">
+                        <label>&nbsp;</label>
+                        <br/>
+                        <button type="button" class="btn btn-block btn-success" v-if="indexRegra == 0" v-on:click="addRegras"> <i class="fa fa-plus"></i></button>
+
+                        <button type="button" class="btn btn-block btn-danger" v-if="indexRegra >= 1" v-on:click="excluirRegra(indexRegra)"> <i class="far fa-times"></i></button>
+                </div>
             </div>
+
         </div>
-    </div>
-
-    <div id="add-nofitificados">
 
     </div>
-<!--    <div class="text-right">-->
-<!--        <button type="submit" class="btn btn-success btn-sm">Salvar</button>-->
-<!--    </div>-->
+
 </form>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js?_=1638792466182"></script>
 <script type="text/javascript">
-    
-
-
-
-
-  
-
-var countCombinacao = 0;
-var Count = 0;
-
-function removerRow(arg) {
-    $(arg).parent().parent().parent().remove()
-}
-
-function addNotificados(values){
-    countCombinacao++;
- 
-
-    let calculos = $("#main-nofitificados select")[0].outerHTML;
-        calculos = calculos.replace(/Calculos\[0\]/g,"Calculos["+ countCombinacao +"]");
-        calculos = calculos.replace(/qfcalculos\[0\]/g,"qfcalculos["+ countCombinacao +"] ");
-        calculos = calculos.replace("ocultar_campos(0)","ocultar_campos("+ countCombinacao +")");
-        calculos = calculos.replace("teste2","data-key=\""+countCombinacao+"\"");
-      
-      
-    let preco = $("#main-nofitificados select")[2].outerHTML;
-        preco = preco.replace(/preco\[0\]/g,"preco["+ countCombinacao +"]");
-        preco = preco.replace(/qfpreco\[0\]/g,"qfpreco["+ countCombinacao +"]");
-
-    let tabela = $("#main-nofitificados select")[1].outerHTML;
-        tabela = tabela.replace(/tabela\[0\]/g,"tabela["+ countCombinacao +"]");
-        tabela = tabela.replace(/qftabela\[0\]/g,"qftabela["+ countCombinacao +"]");
-
-    let produto = $("#main-nofitificados select")[3].outerHTML;
-        produto = produto.replace(/Produtos\[0\]/g,"Produtos["+ countCombinacao +"]");
-        produto = produto.replace(/qfprodutos\[0\]/g,"qfprodutos["+ countCombinacao +"]");
-
-    let grupos = $("#main-nofitificados select")[4].outerHTML;
-        grupos = grupos.replace(/Grupos\[0\]/g,"Grupos["+ countCombinacao +"]");
-        grupos = grupos.replace(/qfgrupos\[0\]/g,"qfgrupos["+ countCombinacao +"]");
-
-    let procedimentos = $("#main-nofitificados select")[5].outerHTML;
-        procedimentos = procedimentos.replace(/Procedimentos\[0\]/g,"Procedimentos["+ countCombinacao +"]");
-        procedimentos = procedimentos.replace(/qfprocedimentos\[0\]/g,"qfprocedimentos["+ countCombinacao +"]");
-
-    let planos = $("#main-nofitificados select")[6].outerHTML;
-        planos = planos.replace(/Planos\[0\]/g,"Planos["+ countCombinacao +"]");
-        planos = planos.replace(/qfplanos\[0\]/g,"qfplanos["+ countCombinacao +"]");
-
-    let contratados = $("#main-nofitificados select")[7].outerHTML;
-        contratados = contratados.replace(/Contratados\[0\]/g,"Contratados["+ countCombinacao +"]");
-        contratados = contratados.replace(/qfcontratados\[0\]/g,"qfcontratados["+ countCombinacao +"]");
-
-    let vias = $("#main-nofitificados select")[8].outerHTML;
-        vias = vias.replace(/Vias\[0\]/g,"Vias["+ countCombinacao +"]");
-        vias = vias.replace(/qfvias\[0\]/g,"qfvias["+ countCombinacao +"]");
-
-        
-
-
-    let valorCH = $("#valor\\[0\\]")[0].outerHTML;
-        valorCH = valorCH.replace(/valor\[0\]/g,"valor["+ countCombinacao +"]");
-
-    let html  = `<div class="row" style="margin: 15px; padding: 15px; border: #dfdfdf dashed 1px" >
-                     <div class="col-md-12 calculos" data-key="${countCombinacao}">
-                        <div class="col-md-3 qf" data-key="${countCombinacao}">
-                            <label>Cálculos</label>
-                            ${calculos}
-                   
-                        </div>
-                            
-                        <div id="medic${countCombinacao}" style="display:none;">
-                      
-                            <div class="col-md-3">
-                                <label>Tabela</label>
-                                ${tabela}
-                            </div>
-
-                            <div class="col-md-3">
-                                <label>Preço</label>
-                                ${preco}
-                            </div>
-
-                            <div class="col-md-3 qf">
-                                <label>Materiais e Medicamentos</label>
-                                ${produto}
-                            </div>
-
-                        </div>
-
-                        <div class="col-md-3 qf">
-                            <label>Grupos</label>
-                            ${grupos}
-                        </div>
-                        <div class="col-md-3 qf">
-                            <label>Procedimentos</label>
-                            ${procedimentos}
-                        </div>
-                        <div class="col-md-3 qf">
-                            <label>Planos</label>
-                            ${planos}
-                        </div>
-
-                     </div>
-                     <div class="col-md-12 mt10"  >
-                        <div class="col-md-3 qf">
-                            <label>Contratados</label>
-                            ${contratados}
-                        </div>
-                        <div class="col-md-3">
-                            <label>Vias</label>
-                             ${vias}
-                        </div>
-
-                    
-                        <div class="col-md-3">
-                            <label>Tipo</label>
-                            <select class="form-control" id="tipo[${countCombinacao}]" name="tipo[${countCombinacao}]">
-                                <option value="-1">Deflator (-)</option>
-                                <option value="1">Inflator (+)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Valor (%)</label>
-                             ${valorCH}
-                        </div>
-                        <div  class="col-md-1">
-                            <label>&nbsp;</label>
-
-                            <button type="submit" class="btn btn-block btn-danger" onclick="removerRow(this)"> <i class="far fa-times"></i></button>
-                        </div>
-                     </div>
-                  </div>`;
-
-    $("#add-nofitificados").append(html);
-
-    let config = {
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true,
-                    filterPlaceholder: 'Filtrar ...',
-                    allSelectedText: 'Todos Selecionados',
-                    maxHeight: 200,
-                    numberDisplayed: 3,
-                    includeSelectAllOption: true
-                  };
-
-    let tagCalculo      = $('#add-nofitificados > div').last().find("select.multisel").eq(0);
-    let tagGrupo        = $('#add-nofitificados > div').last().find("select.multisel").eq(2);
-    let tagProcedimento = $('#add-nofitificados > div').last().find("select.multisel").eq(3);
-    let tagPlano        = $('#add-nofitificados > div').last().find("select.multisel").eq(4);
-    let tagContratado   = $('#add-nofitificados > div').last().find("select.multisel").eq(5);
-    let tagVias         = $('#add-nofitificados > div').last().find("select.multisel").eq(6);
-    let tagProduto      = $('#add-nofitificados > div').last().find("select.multisel").eq(1);
-    let tagTabela       = $('#add-nofitificados > div').last().find("select").eq(1);
-    let tagPreco        = $('#add-nofitificados > div').last().find("select").eq(2);
-
-
-    if(values){
-        tagCalculo.val(values.calculos.split(","));
-        tagGrupo.val(values.grupos.split(","));
-        tagProcedimento.val(values.procedimentos.split(","));
-        tagPlano.val(values.planos.split(","));
-        tagContratado.val(values.contratados.split(","));
-        tagVias.val(values.vias.split(","));
-        tagTabela.val(values.tabela);
-        tagPreco.val(values.preco);
-        tagProduto.val(values.produtos.split(","));
-
-        $(`[name='tipo[${countCombinacao}]`).val(values.tipo);
-        $(`[name='valor[${countCombinacao}]`).val(values.valor);
-    }
-
-    tagCalculo.multiselect(config);
-    tagGrupo.multiselect(config);
-    tagProcedimento.multiselect(config);
-    tagPlano.multiselect(config);
-    tagContratado.multiselect(config);
-    tagVias.multiselect(config);
-    tagProduto.multiselect(config);
-
-    $(".sql-mask-4-digits").maskMoney({prefix:'', thousands:'.', decimal:',', affixesStay: true, precision: 4});
-}
-
-function getValues(){
-    let keys = [];
-
-    ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias","preco","tabela","Produtos"].forEach((tagName) => {
-        $("select[name^='"+tagName+"']").each((item,tag) => {
-           
-            re = new RegExp(tagName+"\\[(.)+\\]", "g");
-            let key = $(tag).attr("name").replace(re, '$1');
-
-            if(keys.indexOf(key) === -1){
-                keys.push(key);
-            }
-        });
-    });
-
-
-    let result = {};
-    let errors = [];
-    ["Contratados","Calculos","Planos","Procedimentos","Grupos","Vias","preco","tabela","Produtos"].forEach((tagName)=>{
-        keys.forEach((key) => {
-           
-            $("select[name='"+tagName+"["+key+"]']").each((item,tag) => {
-                if(!result[key]){
-                    result[key] = {};
+    const ConvenioID        = <%=ConvenioID%>;
+    const CalculosJson      = <%=CalculosJson%>;
+    const ContratadosJson   = <%=ContratadosJson%>;
+    const ProdutosJson      = <%=ProdutosJson%>;
+    const GruposJson        = <%=GruposJson%>;
+    const ProcedimentosJson = <%=ProcedimentosJson%>;
+    const PlanosJson        = <%=PlanosJson%>;
+    const ViasJson          = <%=ViasJson%>;
+    const ModificadoresJson = <%=ModificadoresJson%>;
+    Vue.component("app-select2", {
+        props: ["value", "options"],
+        template: "<select><slot></slot></select>",
+        mounted: function() {
+            const vm = this;
+            $(this.$el).select2(this.options ? {data: this.options} : undefined).val(this.value).trigger("change")
+                .on("change", function() {
+                    if (vm.value !== this.value) {
+                        vm.$emit("input", this.value);
+                    }
+            });
+        },
+        watch: {
+            value: function(value) {
+                if ($(this.$el).val() !== value) {
+                    $(this.$el).val(value).trigger('change');
                 }
-                let isvalid = validCampos(key,tagName,$(tag).val());
-                if(isvalid!="")
-                    errors.push(isvalid)
-                result[key][tagName] = $(tag).val();
-            });
-        });
-    });
+            },
 
-    keys.forEach((key) => {
-      
-        let isvalid = validCampos(key,"Tipo",$(`[name='tipo[${key}]']`).val())
-        if(isvalid != "")
-            errors.push(isvalid)
-
-        isvalid = validCampos(key,"valor",$(`[name='valor[${key}]']`).val())
-        if(isvalid != "")
-            errors.push(isvalid)
-
-        result[key]["Tipo"]  = $(`[name='tipo[${key}]']`).val();
-        result[key]["valor"] = $(`[name='valor[${key}]']`).val().replace(".","").replace(",",".");
-         
-       
-
-
-    });
-
-    if(errors.length>0)
-        result.errors = errors;
-
-    return result;
-}
-
-function validCampos(itemIndex,campo,valor){
-    let RequiredCampos = ["Calculos","valor"];
-    if(RequiredCampos.includes(campo))
-    {
-        if (valor=="" ||valor == null)
-           return "o campo "+campo+" do item "+(parseInt( itemIndex)+1)+" deve ser preenchido";
-    }
-    return "";
-
-}
-
-$('#save').replaceWith($('#save').clone());
-$("#save").on('click',() => salvarProcedimentos());
-
-var salvarProcedimentos = function(){
-
-    if(!$("#divValoresPlanos").is(':visible')){
-    return ;
-    }
-    let values = getValues();
-    if( values.hasOwnProperty('errors')){
-        for (const error of values.errors) {
-            new PNotify({
-                title: 'Atenção!',
-                text: error,
-                type: 'warning',
-                delay: 2500
-            });
-        }
-        return;
-    }
-      fetch(domain+'api/convenios-modificadores/save',{
-         method:"POST",
-         headers: {
-                "x-access-token":localStorage.getItem("tk"),
-                 'Accept': 'application/json',
-                 'Content-Type': 'application/json'
-         },
-         body:JSON.stringify({parametros:values,convenio:<%=ConvenioID%>})
-      }).then(data => data.json()).then( jsonData => {
-          const result = jsonData;
-         
-          if(result.status === "error"){
-             new PNotify({
-                  title: 'Atenção!',
-                  text: result.msg,
-                  type: 'warning',
-                  delay: 2500
-              }); 
-          }else if(result.status === "success")
-             {
-             new PNotify({
-                  title: 'Sucesso!',
-                  text: 'Dados cadastrados com sucesso.',
-                  type: 'success',
-                  delay: 2500
-              });
+            options: function(options) {
+                $(this.$el).empty().select2({ data: options });
             }
-      });
-
-      return false;
-};
-
-var resultados = [];
-
-<%
-    set objRec = db.execute("SELECT * FROM conveniosmodificadores WHERE ConvenioID = "&ConvenioID)
-
-    While Not objRec.EOF
-    %>
-    resultados.push({
-       tipo:         '<%=objRec("tipo") %>',
-       valor:        '<% if not isnull(objRec("valor")) then
-                                response.write(formatnumber(objRec("valor"),4))
-                        end if %>',
-       grupos:       '<%=objRec("grupos") %>',
-       planos:       '<%=objRec("planos") %>',
-       calculos:     '<%=objRec("calculos") %>',
-       procedimentos:'<%=objRec("procedimentos") %>',
-       contratados   :'<%=objRec("contratados") %>',
-       vias          :'<%=objRec("vias") %>',    
-       tabela          :'<%=objRec("tabela") %>',
-       preco          :'<%=objRec("preco") %>',
-       produtos: '<%=objRec("produtos") %>',
+        },
+        destroyed: function() {
+            $(this.$el).off().select2("destroy");
+        }
     });
-    <%
-      objRec.MoveNext
-    Wend
-%>
 
+    Vue.component("app-multiselect", {
+        props: ["value", "options"],
+        template: `<select multiple class="input-hidden">
+                        <option v-for="option in options" :value="option.id">{{option.text}}</option>
+                    </select>`,
+        mounted: function() {
+            const vm = this;
+            const config = {
+                includeSelectAllOption: true,
+                enableFiltering: true,
+                numberDisplayed: 1,
+            };
+            const val = this.value ? this.value.split(',') : [];
 
-let i = 0;
-
-count = resultados.length;
-
-resultados.map((key) => { 
-  
-    if(i == 0){
-        
-
-       i++
-        jQuery("#Contratados\\[0\\]").val(key.contratados.split(","));
-        jQuery("#Calculos\\[0\\]").val(key.calculos.split(","));
-        jQuery("#preco\\[0\\]").val(key.preco);
-        jQuery("#tabela\\[0\\]").val(key.tabela);
-             
-        jQuery("#Planos\\[0\\]").val(key.planos.split(","));
-        jQuery("#Grupos\\[0\\]").val(key.grupos.split(","));
-        jQuery("#Procedimentos\\[0\\]").val(key.procedimentos.split(","));
-        jQuery("#tipo\\[0\\]").val(key.tipo.split(","));
-        jQuery("#valor\\[0\\]").val(key.valor.split(","));
-        jQuery("#Vias\\[0\\]").val(key.vias.split(","));
-        jQuery("#Produtos\\[0\\]").val(key.produtos.split(","));
-
-        
-        return;
-    }  
-    addNotificados(key);
-});    
-         
-    
-function ocultar_campos(id){
-    var id = (id === undefined  ? '0' : id);  
-    var qf = document.querySelectorAll('INPUT'); 
-  
-    var ar = '#medic'+id+'';
-    var cr = '#Calculos\\['+id+'\\]';
-    let conteudo = $(cr).val(); 
-    
-    conteudo = (conteudo=== null  ? ' ' : conteudo);  
-
-    if (conteudo.includes("|Materiais|") || conteudo.includes("|Medicamentos|"))
-    { 
-        let tipo = getSelectedCalculo(conteudo)
-        getSelect(tipo)
-
-        $('#preco\\['+id+'\\]').val("|PFB|");
-        $('#tabela\\['+id+'\\]').val("");
-        
-        $(ar).show();
-    }  else{
-        $('#preco\\['+id+'\\]').val(" ");
-        $('#tabela\\['+id+'\\]').val(" ");
-      
-         $(ar).hide();
-    }
-}
-
-function getSelect(id){
-    $.get("ValoresPlanosContratadoGetProduto.asp?tipo=" + id, function (data) {
-        console.log(data)
-            $("#produtoWarper").html(data);
+            $(this.$el).val(val).multiselect(config).trigger("change")
+                .on("change", function() {
+                    const val = $(vm.$el).val() ? $(vm.$el).val().join(',') : null;
+                    if (vm.value !== val) {
+                        vm.$emit("input", val);
+                    }
+            });
+        },
+        watch: {
+            value: function(value) {
+                const currentVal = $(this.$el).val() ? $(this.$el).val().join(',') : null;
+                if (currentVal !== value) {
+                    $(this.$el).val(currentVal.split(',')).trigger('change');
+                }
+            },
+        },
+        destroyed: function() {
+            $(this.$el).off().multiselect("destroy");
+        }
     });
-}
 
-function getSelectedCalculo(conteudo){
-    tipo = false
-    if(conteudo.includes("|Materiais|") && !conteudo.includes("|Medicamentos|")){
-            tipo = 3
-    }else if (conteudo.includes("|Medicamentos|") && !conteudo.includes("|Materiais|")){
-            tipo = 4
-    }else if (conteudo.includes("|Medicamentos|") && conteudo.includes("|Materiais|")){
-            tipo = 0 
-    }
-    return tipo
-}
+    Vue.component("app-inputmoney", {
+        props: ["value"],
+        template: `<input type="text"/>`,
+        mounted: function() {
+            const vm = this;
+            $(this.$el).maskMoney({prefix:'', thousands:'', decimal:',', affixesStay: true, precision: 4}).val(this.value)
+            .trigger("change").on("change", function() {
+                if (vm.value !== this.value) {
+                    vm.$emit("input", this.value);
+                }
+            });
+        },
+        watch: {
+            value: function(value) {
+                if ($(this.$el).val() !== value) {
+                    $(this.$el).val(value).trigger("change");
+                }
+            }
+        },
+        destroyed: function() {
+            $(this.$el).off().maskMoney("destroy");
+        }
+    });
 
-$(document).ready(()=>{
-    let conteudo = $("select[id^='Calculos']").val()
-    conteudo = (conteudo=== null  ? ' ' : conteudo);
-    let selecionado = getSelectedCalculo(conteudo)
-    if(selecionado){
-        getSelect(selecionado)
-    }
-})
+    var app = new Vue({
+        el: '#frmOC',
+        data:{
+            exibe                   : true,
+            exibeMatMed             : false,
+            regras                  : ModificadoresJson,
+            ConvenioID              : ConvenioID,
+            CalculosJson            : CalculosJson,
+            ContratadosJson         : ContratadosJson,
+            MateriaisEMedicamentos  : ProdutosJson,
+            Materiais               : ProdutosJson.filter(p => p.TipoProduto == 3),
+            Medicamentos            : ProdutosJson.filter(p => p.TipoProduto == 4),
+            GruposJson              : GruposJson,
+            ProcedimentosJson       : ProcedimentosJson,
+            PlanosJson              : PlanosJson,
+            ViasJson                : ViasJson
+        },
+        created: function() {
+            if (this.regras.length == 0) {
+                this.regras.push({});
+            }
+            this.regras.map(this.verificaMatMed);
 
- <%
-     contador  = 0
-     if not objRec.bof then
-         objRec.movefirst
-     end if
-     While Not objRec.EOF 
+            $('#save').replaceWith($('#save').clone());
+            $("#save").on('click',() => this.save());
 
-        recCalculos = objRec("calculos")
-        if InStr(recCalculos, "Medicamentos") or InStr(recCalculos, "Materiais") then
-           response.write ("$('#medic"&contador&"').show();")
-        end if
+        },
+        methods: {
+            save: function() {
+                fetch(domain+'api/convenios-modificadores/save',{
+                    method:"POST",
+                    headers: {
+                            "x-access-token":localStorage.getItem("tk"),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({parametros:this.regras,convenio:<%=ConvenioID%>})
+                }).then(data => data.json()).then( jsonData => {
+                    const result = jsonData;
+                    
+                    if(result.status === "error"){
+                        new PNotify({
+                            title: 'Atenção!',
+                            text: result.msg,
+                            type: 'warning',
+                            delay: 2500
+                        }); 
+                    }else if(result.status === "success") {
+                        new PNotify({
+                            title: 'Sucesso!',
+                            text: 'Dados cadastrados com sucesso.',
+                            type: 'success',
+                            delay: 2500
+                        });
+                    }
+                });
+            },
+            addRegras: function(){
+                this.regras.push({});
+            },
+            excluirRegra: function(index) {
+                this.exibe = false;
+                this.regras.splice(index, 1);
+                this.$nextTick(() => {
+                    this.exibe = true;
+                });
+            },
+            verificaMatMed: function(regra) {
+                if (regra.calculos && regra.calculos.includes('Medicamentos') && regra.calculos.includes('Materiais'))  {
+                    regra._exibeMatMed = 'MatEMed';
+                } else if (regra.calculos && regra.calculos.includes('Medicamentos')) {
+                    regra._exibeMatMed = 'Med';
+                    if (regra.produtos) {
+                        regra.produtos = regra.produtos.split(',').filter(p => this.Medicamentos.find(m => m.id == p)).join(',');
+                    }
+                } else if (regra.calculos && regra.calculos.includes('Materiais')) {
+                    regra._exibeMatMed = 'Mat';
+                    if (regra.produtos) {
+                        regra.produtos = regra.produtos.split(',').filter(p => this.Materiais.find(m => m.id == p)).join(',');
+                    }
+                } else {
+                    regra._exibeMatMed = null;
+                    regra.produtos = null;
+                }
+            },
+        }
 
-        contador  = contador + 1
-        objRec.MoveNext
-     wend 
-  %>
-a=-1;
-resultados.map((key) => { 
-    a++;
-    console.log(a)
-jQuery("#preco\\["+a+"\\]").val(key.preco);
-jQuery("#tabela\\["+a+"\\]").val(key.tabela);
-
-});
-a--;
-
-<!--#include file="JQueryFunctions.asp"-->
+    })
 </script>

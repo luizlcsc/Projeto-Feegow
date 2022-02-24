@@ -66,14 +66,17 @@ if temregradesconto=1 then
 			temdescontocadastrado=1
 		end if
 
-		'Pegar todos os descontos do usuário pelo perfil dele
-		set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
-											" from regrasdescontos rd  "&_
-											" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
-											" INNER JOIN sys_users suser on suser.RegraID = rd.RegraID "&_
-											" WHERE rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL")
+		if temdescontocadastrado then
+			'Pegar todos os descontos do usuário pelo perfil dele
+			set rsDescontosUsuario = db.execute("select suser.id as idUser, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto "&_
+												" from regrasdescontos rd  "&_
+												" INNER JOIN regraspermissoes rp ON rp.id = rd.RegraID "&_
+												" INNER JOIN sys_users suser on suser.RegraID = rd.RegraID "&_
+												" WHERE rd.Recursos LIKE '%"&querydesconto&"%' AND (rd.Unidades LIKE '%|"& session("UnidadeID") &"|%' OR rd.Unidades  = '' OR rd.Unidades IS NULL OR rd.Unidades  = '0' ) AND rd.RegraID IS NOT NULL"&_
+												" AND rd.DescontoMaximo > 0 ORDER by rd.DescontoMaximo DESC")
 
-		'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )
+			'select suser.id, rd.id, Recursos, Unidades, rd.RegraID, Procedimentos, DescontoMaximo, TipoDesconto from regrasdescontos rd inner join sys_users suser on suser.Permissoes LIKE CONCAT('%[',rd.RegraID,']%') WHERE suser.id = 3531 AND rd.Recursos LIKE '%ContasAReceber%' AND (rd.Unidades LIKE '%|6|%' OR rd.Unidades = '' )
+		end if
 	end if
 end if
 
@@ -179,7 +182,6 @@ if existePagto="" then
 					if descontoIgual = False then
 					    if isnumeric(ref("Quantidade"&splInv(i))) and isnumeric(ref("Desconto"&splInv(i))) then
 
-
                             ValorDesconto = ref("Quantidade"&splInv(i)) * ref("Desconto"&splInv(i))
                             if not rsDescontosUsuario.eof then
 
@@ -256,7 +258,6 @@ if existePagto="" then
 			totParc = totParc+valPar
 		end if
 	next
-
 	if totInvo<=(totParc-0.05) or totInvo>=(totParc+0.05) then
 		erro = "O valor total n&atilde;o coincide com a soma das parcelas."
 	end if
@@ -394,7 +395,7 @@ if erro="" then
 			desInv = ref("Desconto"&splInv(i))
 			acrInv = ref("Acrescimo"&splInv(i))
 			if isnumeric(valInv) and valInv<>"" then valInv=ccur(valInv) else valInv=0 end if
-			if isnumeric(quaInv) and quaInv<>"" then quaInv=ccur(quaInv) else quaInv=1 end if
+			if isnumeric(quaInv) and quaInv<>"" then quaInv=replace(ccur(quaInv),",",".") else quaInv=1 end if
 			if isnumeric(desInv) and desInv<>"" then desInv=ccur(desInv) else desInv=0 end if
 			if isnumeric(acrInv) and acrInv<>"" then acrInv=ccur(acrInv) else acrInv=0 end if
 			if Row>0 then
@@ -616,8 +617,7 @@ if erro="" then
 					end if
 				end if
 
-				
-                Description = ref("Name"&ii)
+				Description = ref("Name"&ii)
 				sqlFM = "insert into sys_financialmovement ("&camID&" AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, CaixaID, UnidadeID, CodigoDeBarras, Name) values ("&valID&"  "&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(valorInserido)&", "&mydatenull(ref("Date"&ii))&", '"&inv("CD")&"', 'Bill', 'BRL', "&treatvalnull(ii)&", "&InvoiceID&", "&c&", "&session("User")&", "&treatvalnull(CaixaID)&", "&treatvalzero(ref("CompanyUnitID"))&", '"&CodigoDeBarras&"', '"&Description&"')"
 				'response.Write("//|||||||||||||||||||||| sqlFM: "&sqlFM & "--"& Description)
 				db.execute(sqlFM)
@@ -703,7 +703,22 @@ if erro="" then
             if TemRepasseConsolidadeSQL.eof then
                 call saveIIO (InvoiceID, NewItemID, Row)
             end if
+
 		next
+
+		splPar = split(ref("ParcelasID"), ", ")
+		for i=0 to ubound(splPar)
+			ii = splPar(i)
+			'PERMITE ATUALIZAR A DATA DE VENCIMENTO DA PARCELA, DESDE QUE A PARCELA NÃO ESTEJA PAGA
+			SqlParcPaga = "SELECT ValorPago FROM sys_financialmovement WHERE InvoiceID= " & InvoiceID & " AND ID= " & ii
+			set rs = db.execute(SqlParcPaga)
+			if not rs.EOF then
+				if ISNULL(rs("ValorPago")) then
+					sqlUpdateVcto = "UPDATE sys_financialmovement SET DATE = " & mydatenull(ref("Date"&ii)) & " WHERE InvoiceID= " & InvoiceID & " AND ID= " & ii & " AND ISNULL(ValorPago)"
+					db.execute(sqlUpdateVcto)
+				end if 
+			end if 			
+		next	
 		'<-
 
 	end if

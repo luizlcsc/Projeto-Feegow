@@ -80,6 +80,10 @@ set reg=db.execute("select * from PacientesPrescricoes where id="&req("Prescrica
 
         Cabecalho= tagsConverte(Cabecalho,"PacienteID_"&reg("PacienteID"),"")
         Rodape= tagsConverte(Rodape,"PacienteID_"&reg("PacienteID"),"")
+
+        
+        Cabecalho = unscapeOutput(Cabecalho)
+        Rodape = unscapeOutput(Rodape)
 %>
 <style>
 #areaImpressao .corpoPrescricao td, #areaImpressao .corpoCarimbo td{

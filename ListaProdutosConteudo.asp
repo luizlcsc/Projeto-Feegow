@@ -146,10 +146,15 @@
                     DiasAvisoValidade = prod("DiasAvisoValidadeGeral")
                 end if
 
-                if prod("Validade")&"" <>"" then
+                if DiasAvisoValidade&"" = "" then
+                  DiasAvisoValidade = 0
+                end if 
+                
+                if prod("Validade")&"" <>"" and DiasAvisoValidade then
+
                     'if prod("Validade") =< dateAdd("d", DiasAvisoValidade, date()) then
                     diferenca = dateDiff("d",date(),prod("Validade"))
-                    if (diferenca >= 0 and diferenca <= Cint(DiasAvisoValidade)) then
+                    if diferenca >= 0 and diferenca <= CInt(DiasAvisoValidade) then
                         Validade = prod("Validade")&""
                         addClass = "label label-warning"
                         if prod("Validade") =< date() then

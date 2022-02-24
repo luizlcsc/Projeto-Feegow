@@ -3,36 +3,46 @@
 <!--#include file="Classes/Arquivo.asp"-->
 <%
 	if isnumeric(req("X")) and req("X")<>"" and req("X")<>"0" then
-		db_execute("delete from arquivos where id="&req("X"))
+		db_execute("update arquivos set sysActive=-1 where id="&req("X"))
 	end if
 	'getConfig("NovaGaleria")
 	IF true THEN
         %>
           <script>
-          function getImagensPaciente(onlyRefresh = false){
+          function getImagensPaciente(onlyRefresh = false, fileType = "I"){
               const uploaderSetado = $(".galery-ajax").length > 0;
 
             if(uploaderSetado && onlyRefresh === false){
                 return;
             }
 
+            if(fileType=="A"){
+                fileType="Arquivos"
+            }else{
+                fileType="Imagens"
+            }
+            
             if(!uploaderSetado){
                 $("#ImagensPaciente").prepend("<div class='galery-ajax'></div>");
             }
 
-            fetch("ImagensNew.asp?ArquivoImagem=Imagem&PacienteID=<%=req("PacienteID")%>")
+            fetch(`ImagensNew.asp?ArquivoImagem=${fileType}&PacienteID=<%=req("PacienteID")%>`)
               .then(data => data.text())
               .then(data => {
                  $(".galery-ajax").html(data);
-                 $("[value='A']").parent().remove();
               });
 
           }
 
-            function callUpload(){
-               getImagensPaciente(true);
+            function callUpload(response, tipo){
+                if(!tipo){
+                    tipo = getSelected()[0];
+                }
+
+               getImagensPaciente(true, tipo);
             }
-            getImagensPaciente();
+
+            getImagensPaciente(false);
         </script>
         <%
     END IF

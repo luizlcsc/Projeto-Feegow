@@ -32,6 +32,7 @@ function whatsAppConnection(){
     $.ajax({
         type:"GET",
         url: domain + "chat-pro/get-status",
+        "x-access-token": localStorage.getItem("tk"),
         success:function(data){
             if(data.connected == true){
                 whatsAppStatusTrue();

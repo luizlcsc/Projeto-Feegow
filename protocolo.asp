@@ -75,13 +75,17 @@ end if
 <div class="panel" <%=DisabledBotao%> >
 
     <%
-set campo = db.execute("select * from buicamposforms where FormID="& ModeloID &" ORDER BY pTop")
+' set campo = db.execute("select * from buicamposforms where FormID="& ModeloID &" ORDER BY pTop")
+set campo = db.execute("select c.*, f.LadoALado from buicamposforms c LEFT JOIN buiforms f on f.id=c.FormID where c.FormID="&ModeloID&" and c.GrupoID=0 and c.TipoCampoID not in(7) order by pTop")
 set reg = db.execute("select * from `_"& ModeloID &"` WHERE id="& FormID)
 while not campo.eof
     Rotulo = campo("RotuloCampo")
     Estruturacao = campo("Estruturacao")&""
     CampoID = campo("id")
     TipoCampoID = campo("TipoCampoID")
+    Obrigatorio = trim(campo("Obrigatorio")&"")
+    ValorPadrao = campo("ValorPadrao")&""
+    LadoALado = campo("LadoALado")
     Valor = ""
     Texto = campo("Texto")&""
     if campo("MaxCarac")&"" <> "" then
@@ -89,7 +93,7 @@ while not campo.eof
     end if
     if campo("TipoCampoID")=1 or campo("TipoCampoID")=4 or campo("TipoCampoID")=5 or campo("TipoCampoID")=8 then
         if not reg.eof then
-            Valor = reg(""& campo("id") &"")
+            Valor = trim(reg(""& campo("id") &""))
         end if
     end if
     cols = 12
@@ -100,15 +104,20 @@ while not campo.eof
     if TipoCampoAnterior=1 and TipoCampoID<>1  and TipoCampoID<>2 then
         response.write("</div>")
     end if
+    required=""
+ 
+    if Obrigatorio = "S" then
+        required = " required"
+    end if 
 
 
     select case campo("TipoCampoID")
         case 1'TEXTO SIMPLES
         %>
             <div class="col-md-4" style="position: relative; z-index:1">
-                <span><b><%= campo("RotuloCampo") %></b></span>
+                <span><b><%= campo("RotuloCampo") %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
-                <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", input_maxlength)%>
+                <%= quickfield("text", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", input_maxlength&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id") )%>
             </div>
         <%
         case 2'DATA
@@ -116,14 +125,14 @@ while not campo.eof
             <div class="col-md-6">
                 <span><b><%= campo("RotuloCampo") %></b></span>
                 <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
-                <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", "")%>
+                <%= quickfield("datepicker", "Campo"& campo("id"), "", 4, Valor, " prot campoInput ", "", ""&required&" data-name="&campo("RotuloCampo")&" data-campoid=Campo"&campo("id"))%>
             </div>
         <%
         case 4'CHECKBOX
             %>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <span><b><%= Rotulo %></b></span>
+                    <span><b><%= Rotulo %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                     <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
                 <div class="row">
@@ -132,7 +141,7 @@ while not campo.eof
                     while not op.eof
                         %>
                         <div class="col-xs-3 pt10">
-                            <span class="checkbox-custom"><input type="checkbox" id="chk<%= CampoID &"_"& op("id") %>" name="<%= "Campo"& CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
+                            <span class="checkbox-custom"><input type="checkbox" id="chk<%= CampoID &"_"& op("id") %>" name="<%= "Campo"& CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" <%=required%> data-campoid="chk<%= CampoID &"_"& op("id") %>" data-name="<%= Rotulo %>" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
                         </div>
                         <% if instr(Rotulo, "Vacina")>0 then %>
                             <div class="col-xs-2"><input type="date" class="form-control" /></div>
@@ -157,7 +166,7 @@ while not campo.eof
             %>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <span><b><%= Rotulo %></b></span>
+                    <span><b><%= Rotulo %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                     <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                 </div>
 
@@ -168,7 +177,7 @@ while not campo.eof
                     while not op.eof
                         %>
                         <div class="col-xs-3 pt10">
-                            <span class="radio-custom"><input type="radio" id="chk<%= CampoID &"_"& op("id") %>" name="Campo<%= CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
+                            <span class="radio-custom"><input type="radio" id="chk<%= CampoID &"_"& op("id") %>" name="Campo<%= CampoID %>" value="|<%= op("id") %>|" <% if instr(Valor, "|"& op("id") &"|") then response.write(" checked ") end if %> onchange="saveProt(0)" <%=required%> data-name="<%= Rotulo %>" data-campo-id="chk<%= CampoID &"_"& op("id") %>" /><label for="chk<%= CampoID &"_"& op("id") %>"> <%= op("Nome") %></label></span>
                         </div>
                         <%
                     op.movenext
@@ -206,11 +215,11 @@ while not campo.eof
             %>
                 <div class="panel-body">
                     <div class="col-md-12">
-                        <span><b><%= Rotulo %></b></span>
+                        <span><b><%= Rotulo %></b><%if Obrigatorio = "S" then%><small class="text-danger">*</small><%end if%></span>
                         <button type="button" id="LogCampo<%=CampoID%>" title="Histórico" onClick="logCampo(<%=CampoID%>, <%=campo("TipoCampoID")%>)" class="btn btn-xs btn-default logCampo hidden-xs"><i class="far fa-history"></i></button>
                     </div>
                     <div class="col-md-<%= cols %>">
-                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo", "", " rows=4 "& chamaProtSug &"") %>
+                        <%= quickfield("memo", "Campo"& CampoID, "", 12, Valor, " prot campo-memo-protocolo ", "", " data-name='"&campo("RotuloCampo")&" '"&required&" rows=4 "& chamaProtSug &"") %>
                     </div>
                     <%
                     if instr(Estruturacao, "|CID|")>0 OR instr(Estruturacao, "|Tags|")>0 then
@@ -340,6 +349,44 @@ while not campo.eof
                 <% end if %>
 
             <%
+        case 16'CID-10 - usar a lógica do campo que auto-sugere
+            %>
+            <div class="panel-body">
+                <div class="col-md-12">
+            <%
+                    NomeCid = ""
+                    if ValorPadrao<>"" and isnumeric(ValorPadrao) and not isnull(ValorPadrao) then
+                        set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorPadrao&"'")
+                        if not pcid.eof then
+                            NomeCid = pcid("Codigo") &" - "& pcid("Descricao")
+                        end if
+                    end if
+                    if LadoALado="S" then
+                        %><table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td width="1%" class="cel_label" nowrap>
+                                    <label class="campoLabel"><%=Rotulo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>                        </td>
+                                <td width="99%" class="cel_input">
+                                    <input tabindex="<%=Ordem%>"  data-name="<%=Rotulo%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text" <% if Obrigatorio = "S" then %>required <%end if%>>
+                                </td>
+                            </tr>
+                        </table><%
+                    else
+                        %>
+                        <label class="campoLabel"><%=Rotulo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label>
+                        <select id="Campo<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=Rotulo%>" name="Campo<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput prot">
+                            <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
+                        </select>
+                        <script type="text/javascript">
+                            s2aj('Campo<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
+                        </script>
+
+                    <%
+                    end if
+                    %>
+                </div>
+            </div>
+        <%
 
         case 19'PRESCRIÇÃO
             %>
@@ -699,6 +746,55 @@ end if
 %>
 
     function salvarAtendimento(ID){
+        // if(!inicio){
+            let formdata = $(".campoInput, .campo-memo-protocolo, .campoCheck, .tbl, .bloc, #ProfissionaisLaudar, #LaudoID")
+            let erro = false;
+            let campoCheck = ""
+            formdata.map((key,input)=>{
+                let required =  $(input).prop('required')
+                if (required){
+                    if ($(input).prop('type')== 'checkbox'){
+                        if(campoCheck != $(input).attr("data-campoid")){
+                            campoCheck = $(input).attr("data-campoid")
+                            var inputs = $(input).parent().parent().find('input');
+                            let temcheckboxselecionado = false
+                            inputs.each(function(key,input){
+                                if ($(input).is(":checked")){
+                                    temcheckboxselecionado = true
+                                }
+                            });
+                            if(!temcheckboxselecionado){
+                                let nome = $(input).data('name').trim()
+                                new PNotify({
+                                        title: 'Ocorreu um erro!',
+                                        text: 'O campo '+nome+' é obrigatório!',
+                                        type: 'danger',
+                                        delay: 3000
+                                    });
+                                    erro = true
+                                    return false
+                            }
+                        }
+                    }else{
+                        let valor = $(input).val()
+                        if(valor.length<=0){
+                            let nome = $(input).data('name').trim()
+                            new PNotify({
+                                title: 'Ocorreu um erro!',
+                                text: 'O campo '+nome+' é obrigatório!',
+                                type: 'danger',
+                                delay: 3000
+                            });
+                            erro = true
+                            return false
+                        }
+                    }
+                }
+            })
+            if(erro){
+                return false
+            }
+        // }
         $.post("saveProt.asp?FormID="+ID+"&Salvar=1", $("#fEst").serialize(), function (data) { eval(data) });
     }
 
@@ -846,7 +942,13 @@ end if
         $("#PosologiaMedicamento"+CampoId).val(Dose+" "+Apresentacao+" de "+TempoTratamento+" em "+TempoTratamento+" "+TipoTratamento+" "+Frequencia+" "+Duracao);
         saveProt(0);
     }
+    
+    const requiredMemos = $(".campo-memo-protocolo[required]");
     $(".campo-memo-protocolo").ckeditor();
+    requiredMemos.attr('required', 'required');
+
+
+
 
 <!--#include file="JQueryFunctions.asp"-->
 </script>

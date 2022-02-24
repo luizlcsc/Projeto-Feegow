@@ -18,15 +18,42 @@ if Voucher<>"" then
             end if
         end if
 
-        if erro="" then
+        if erro = "" then
+            De = vca("De")&""
+            Ate = vca("Ate")&""
+            
+            if ( De <>"" ) then
+                if( date() < cdate(De)) then
+                    erro = "Voucher está fora da validade."
+                end if
+            end if
+
+            if ( Ate <>"")  then
+                if( date() > cdate(Ate)) then
+                    erro = "Voucher está fora da validade."
+                end if
+            end if
+        end if
+
+        if erro = "" then
             Tabelas = vca("Tabelas")&""
             Unidades = vca("Unidades")&""
-            GruposProcedimentos = vca("GruposProcedimentos")&""
-            Procedimentos = vca("Procedimentos")&""
-            Pacotes = vca("Pacotes")&""
-            Valor = vca("Valor")
-            TipoValor = vca("TipoValor")
-            if (Tabelas="" or instr(Tabelas, "|"& ref("invTabelaID") &"|")>0) and ( instr(Unidades, "|"& ref("CompanyUnitID") &"|")>0 ) then
+
+            if (Tabelas <> "" and instr(Tabelas, "|"& ref("invTabelaID") &"|") = 0) then
+                erro = erro&"Voucher não pode ser aplicado para a Tabela selecionada\n"
+            end if
+                
+            if (Unidades <> "" and instr(Unidades, "|"& ref("CompanyUnitID") &"|") = 0 ) then
+                erro = erro&"Voucher não pode ser aplicado para a Unidade selecionada\n"
+            end if
+
+            if erro = "" then
+                GruposProcedimentos = vca("GruposProcedimentos")&""
+                Procedimentos = vca("Procedimentos")&""
+                Pacotes = vca("Pacotes")&""
+                Valor = vca("Valor")
+                TipoValor = vca("TipoValor")
+
                 for i=0 to ubound(spl)
                     if GruposProcedimentos<>"" then
                         set proc = db.execute("select GrupoID from procedimentos where id="& ref("ItemID"& spl(i)))

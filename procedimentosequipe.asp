@@ -1,4 +1,20 @@
 <!--#include file="connect.asp"-->
+<style>
+    .TipoValor{
+        border-bottom-left-radius: 0;
+        border-top-left-radius: 0;
+    }
+    .Valor{
+        border-top-right-radius:0;
+        border-bottom-right-radius:0;
+    }
+    .divValor{
+        padding-right:0px;
+    }
+    .divTipoValor{
+        padding-left:0px;
+    }
+</style>
 <%
 ProcedimentoID = req("I")
 Acao = req("A")
@@ -112,16 +128,16 @@ end if
             while not eq.eof
                 %>
                 <tr class="linhaC" id="<%=eq("id")%>">
-                    <td><%=quickField("simpleSelect", "FuncaoC"&eq("id"), "", 12, eq("Funcao"), "select id, descricao from cliniccentral.tissgrauparticipacao order by codigo", "Descricao", "") %></td>
+                    <td><%=quickField("simpleSelect", "FuncaoC"&eq("id"), "", 12, eq("Funcao"), "select id, descricao from cliniccentral.tissgrauparticipacao order by codigo", "Descricao", " empty='' required = ""required"" ") %></td>
                     <td>
-                        <div class="input-group">
-					        <%=quickField("text", "ValorC"&eq("id"), "", 12, fn(eq("Valor")), " input-mask-brl text-right", "", "")%>
-                            <span class="input-group-addon">
-                                <select class="select-group" name="TipoValorC<%=eq("id")%>" id="TipoValorC<%=eq("id")%>">
-                                    <option value="P"<% If eq("TipoValor")="P" Then %> selected<% End If %>>%</option>
-                                    <option value="V"<% If eq("TipoValor")="V" Then %> selected<% End If %>>R$</option>
-                                </select>
-                            </span>
+                        <div class="col-md-8 divValor">
+					        <%=quickField("text", "ValorC"&eq("id"), "", 7, fn(eq("Valor")), " input-mask-brl text-right Valor", "", "")%>
+                        </div>
+                        <div class="col-md-2 divTipoValor">
+                            <select class="form-control TipoValor" name="TipoValorC<%=eq("id")%>" id="TipoValorC<%=eq("id")%>">
+                                <option value="P"<% If eq("TipoValor")="P" Then %> selected<% End If %>>%</option>
+                                <option value="V"<% If eq("TipoValor")="V" Then %> selected<% End If %>>R$</option>
+                            </select>
                         </div>
                     </td>
                     <td><%call selectCurrentAccounts("ContaPadraoC"&eq("id"), "0, 5, 4, 2, 8", eq("ContaPadrao"), "")%></td>

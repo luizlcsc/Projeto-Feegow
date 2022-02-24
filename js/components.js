@@ -18,7 +18,7 @@ if(window.location.href.indexOf('sandbox') > 0){
 }
 
 var domain = null;
-var api = null;
+var api = "./api/";
 
 switch (env){
     case "local":
@@ -34,6 +34,14 @@ switch (env){
         api = "/main/api/";
         break;
 }
+
+const initComponents = ({
+        apiUrl
+    }) => {
+        if(apiUrl){
+            window.domain = apiUrl;
+        }
+};
 
 var modalTimeout = 1000;
 
@@ -488,40 +496,35 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
   
 const recordLog = async (
     {
-        module,
+        category,
         licenseId,
         userId,
-        logUrl,
         oldData,
         newData,
-        action
+        event
     }) => {
-        var d = new Date();
-        var hash = d.getTime();
-
-        const dateTime = new Date();
 
         $.ajax({
-            url: "https://galahad.feegow.com/logs",
+            url: `https://galahad.feegow.com/logs?tk=${localStorage.getItem("tk")}`,
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json',
             data:
-            JSON.stringify({
-                "licenceId": licenseId,
-                "module": module,
-                "moduleActionType": action,
-                "moduleActionURL": logUrl,
-                "moduleActionHash": hash,
-                "sysUser": userId,
-                "timestamp": dateTime,
-                "payload": {
-                    "action": "update",
-                    "value": newData,
-                    "actionDate": dateTime
-                },
-                "logType": "LOGS_EVENTS"
-            }),
+                JSON.stringify({
+                    "licenseId": licenseId,
+                    "type": "event",
+                    "category": category,
+                    "event": event,
+                    "userId": userId,
+                    "dateTime": (new Date()).toISOString(),
+                    "payload": {
+                        "oldData": oldData,
+                        "newData": newData
+                    },
+                    "request": {
+                        "url": window.location.href
+                    }
+                }),
             success:function(data) {
                 
             },

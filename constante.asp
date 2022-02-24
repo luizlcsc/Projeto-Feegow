@@ -1,5 +1,7 @@
-﻿<%
+﻿<!--#include file="Classes/LogService.asp"-->
+<%
 if session("User")="" then
+    call sendLogSessionExpired()
     %>
     $("#disc").html('<i class="far fa-plug"></i> VOC&Ecirc; EST&Aacute; DESCONECTADO. <a class="btn btn-default" href="./?P=Login&qs=<%=ref("qs")%>">VOLTAR AO LOGIN</a>');
     $("#disc").removeClass('hidden');
@@ -235,8 +237,11 @@ else
         cNot = 0
     
 	    if buscaAtu("TemNotificacao") then
-	        set NotificacoesSQL = db.execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID WHERE n.StatusID IN (1) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id"))
-
+	        set NotificacoesSQL = db_execute("SELECT n.*, nt.TextoNotificacao, NT.Descricao DescricaoNotificacao "&_
+            "FROM notificacoes n INNER JOIN cliniccentral.notificacao_tipo nt ON nt.id=n.TipoNotificacaoID "&_
+            "WHERE n.StatusID IN (1,2) AND TipoNotificacaoID != 4 AND n.UsuarioID="&buscaAtu("id")&" "&_
+            "ORDER BY id DESC LIMIT 20")
+            
 	        while not NotificacoesSQL.eof
 	            cNot=cNot+1
 	            userName = left(nameInTable(NotificacoesSQL("CriadoPorID")),15)

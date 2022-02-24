@@ -44,8 +44,11 @@ end if
 			set auxQuery1 = db.execute("SELECT * FROM buicamposforms WHERE id = "&CampoID)
 			IF auxQuery1("InformacaoCampo")&"" <> "" THEN
 				set auxQuery2 = db.execute("SELECT * FROM `cliniccentral`.`form_campos_padrao` WHERE id = "&auxQuery1("InformacaoCampo"))
-				set auxQuery3 = db.execute("SELECT * FROM `cliniccentral`.`sys_resourcesfieldtypes` WHERE id = "&auxQuery2("TipoCampoID"))
-				TipoCampoInfo = auxQuery3("id")
+				if not auxQuery2.eof then
+					set auxQuery3 = db.execute("SELECT * FROM `cliniccentral`.`sys_resourcesfieldtypes` WHERE id = "&auxQuery2("TipoCampoID"))
+					TipoCampoInfo = auxQuery3("id")
+				end if
+				
 			END IF
 			
 			CampoExtra = ""
@@ -74,19 +77,16 @@ end if
 				%><table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
                         <td width="1%" class="cel_label" nowrap>
-                            <label class="campoLabel"><%=RotuloCampo%></label>
-                            <%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%>
-                        </td>
+                            <label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>                        </td>
                         <td width="99%" class="cel_input">
-                            <input tabindex="<%=Ordem%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text">
+                            <input tabindex="<%=Ordem%>"  data-name="<%=RotuloCampo%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text" <% if Obrigatorio = "S" then %>required <%end if%>>
                         </td>
                     </tr>
 				  </table><%
 			else
 				%>
-                <label class="campoLabel"><%=RotuloCampo%></label>
-                <%if Obrigatorio="S" then%>  <i class="far fa-asterisk" title="Campo obrigatório"></i><%end if%>
-                <select id="input_<%=CampoID %>" name="input_<%=CampoID %>" class="form-control campoInput">
+                <label class="campoLabel"><%=RotuloCampo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label>
+                <select id="input_<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=RotuloCampo%>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput">
                     <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
                 </select>
     		<script type="text/javascript">
@@ -328,9 +328,9 @@ $(function() {
                 ckrender = ckrender & "altura = $('#"& CampoID &"').innerHeight()-22 + 'px'; $('#input_"& CampoID &"mem').css('height', altura );"
 			%><div style="padding-bottom:4px" class="qf"><label class="campoLabel"><%=RotuloCampo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>
 
-            <textarea class="hidden campoInput" data-name="<%=RotuloCampo%>" id="input_<%=CampoID %>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <% end if %>><%=ValorPadrao %></textarea>
+            <textarea class="hidden campoInput" data-name="<%=RotuloCampo%>" id="input_<%=CampoID %>" name="input_<%=CampoID %>" <% if Obrigatorio = "S" then %>required <% end if %>><%=unscapeOutput(ValorPadrao) %></textarea>
 
-            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
+            <div id="input_<%=CampoID%>mem" style="overflow:auto" <%if negadoX<>"S" AND disabled&"" = "" then%> contenteditable="true" <% End If %> class="campoInput memorando postvalue form-control" <%if negadoX<>"S" then%> onblur="alt(); $('#input_<%=CampoID %>').html( $(this).html() )"<% End If %>  data-campoid="<%=CampoID%>" name="input_<%=CampoID%>mem" tabindex="<%=Ordem%>"><%=unscapeOutput(ValorPadrao)%></div>
 
 
 			<script type="text/javascript">

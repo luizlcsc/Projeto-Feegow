@@ -4,10 +4,13 @@
 <%
 Session.Timeout=600
 session.LCID=1046
-if session("Servidor")="" then
-    sServidor = "localhost"
-else
-    sServidor = session("Servidor")
+
+sServidor = session("Servidor")
+
+'Fila being accessed directly anauthorized
+if session("Banco")="" then
+    Response.Status = "403"
+    Response.End
 end if
 
 On Error Resume Next
@@ -23,7 +26,7 @@ On Error Goto 0
 'db.Open ConnString
 LicenseID=replace(session("Banco"), "clinic", "")
 'componentslegacyurl = "http://localhost:8080/"
-componentslegacyurl = "https://components-legacy.feegow.com/"
+componentslegacyurl = "https://components-legacy.feegow.com/index.php"
 
 PorteClinica = session("PorteClinica") 
 
@@ -39,7 +42,7 @@ end if
 
 function permissoesPadrao()
 '	permissoesPadrao = "chatI, contatosV, contatosI, contatosA, contatosX, sys_financialcurrentaccountsV, sys_financialcurrentaccountsI, sys_financialcurrentaccountsA, sys_financialcurrentaccountsX, formasrectoV, formasrectoI, formasrectoA, formasrectoX, origensV, origensI, origensA, origensX, contasapagarV, contasapagarI, contasapagarA, contasapagarX, contasareceberV, contasareceberI, contasareceberA, contasareceberX, contratadoexternoV, contratadoexternoI, contratadoexternoA, contratadoexternoX, fornecedoresV, fornecedoresI, fornecedoresA, fornecedoresX, funcionariosV, funcionariosI, funcionariosA, funcionariosX, locaisgruposV, locaisgruposI, locaisgruposA, locaisgruposX, lancamentosV, lancamentosI, lancamentosA, lancamentosX, locaisV, locaisI, locaisA, locaisX, movementV, movementI, movementA, movementX, orcamentosV, orcamentosI, orcamentosA, orcamentosX, pacotesV, pacotesI, pacotesA, pacotesX, procedimentosV, procedimentosI, procedimentosA, procedimentosX, profissionalexternoV, profissionalexternoI, profissionalexternoA, profissionalexternoX, tabelasV, tabelasI, tabelasA, tabelasX, sys_financialexpensetypeV, sys_financialexpensetypeI, sys_financialexpensetypeA, sys_financialexpensetypeX, sys_financialincometypeV, sys_financialincometypeI, sys_financialincometypeA, sys_financialincometypeX, sys_financialcompanyunitsV, sys_financialcompanyunitsI, sys_financialcompanyunitsA, sys_financialcompanyunitsX, buiformsV, buiformsI, buiformsA, buiformsX, chamadaporvozA, configconfirmacaoA, configrateioV, configrateioI, configrateioA, configrateioX, emailsV, emailsI, emailsA, emailsX, configimpressosV, configimpressosA, produtoscategoriasV, produtoscategoriasI, produtoscategoriasA, produtoscategoriasX, produtosfabricantesV, produtosfabricantesI, produtosfabricantesA, produtosfabricantesX, lctestoqueV, lctestoqueI, lctestoqueA, lctestoqueX, produtoslocalizacoesV, produtoslocalizacoesI, produtoslocalizacoesA, produtoslocalizacoesX, produtosV, produtosI, produtosA, produtosX, conveniosV, conveniosI, conveniosA, conveniosX, faturasV, guiasV, guiasI, guiasA, guiasX, conveniosplanosV, conveniosplanosI, conveniosplanosA, conveniosplanosX, repassesV, repassesI, repassesA, repassesX, formsaeV, formsaeI, formsaeA, arquivosV, arquivosI, arquivosA, arquivosX, atestadosV, atestadosI, atestadosA, atestadosX, pacientesV, pacientesI, pacientesA, pacientesX, historicopacienteV, contapacV, contapacI, contapacX, areceberpacienteV, areceberpacienteI, areceberpacienteA, areceberpacienteX, diagnosticosV, diagnosticosI, diagnosticosA, diagnosticosX, envioemailsI, imagensV, imagensI, imagensA, imagensX, formslV, formslI, formslA, pedidosexamesV, pedidosexamesI, pedidosexamesX, prescricoesV, prescricoesI, prescricoesA, prescricoesX, recibosV, recibosI, recibosA, recibosX, agendaV, agendaI, agendaA, agendaX, horariosV, horariosA, contaprofV, contaprofI, contaprofX, profissionaisV, profissionaisI, profissionaisA, profissionaisX, relatoriosestoqueV, relatoriosfinanceiroV, relatoriospacienteV, chamadatxtV, chamadavozV, senhapA, usuariosI, usuariosA, usuariosX, bloqueioagendaV, bloqueioagendaA, bloqueioagendaI, bloqueioagendaX, ageoutunidadesV, ageoutunidadesA, ageoutunidadesI, ageoutunidadesX, relatoriosfaturamentoV, relatoriosfaturamentoV, relatoriosagendaV"
-	permissoesPadrao = "|ageoutunidadesV|, |ageoutunidadesI|, |ageoutunidadesA|, |ageoutunidadesX|, |agendaV|, |agendaI|, |agendaA|, |agendaX|, |bloqueioagendaV|, |bloqueioagendaI|, |bloqueioagendaA|, |bloqueioagendaX|, |horariosV|, |horariosA|, |historicopacienteV|, |chatI|, |contatosV|, |contatosI|, |contatosA|, |contatosX|, |sys_financialcurrentaccountsV|, |sys_financialcurrentaccountsI|, |sys_financialcurrentaccountsA|, |sys_financialcurrentaccountsX|, |formasrectoV|, |formasrectoI|, |formasrectoA|, |formasrectoX|, |origensV|, |origensI|, |origensA|, |origensX|, |contasapagarV|, |contasapagarI|, |contasapagarA|, |contasapagarX|, |contasareceberV|, |contasareceberI|, |contasareceberA|, |contasareceberX|, |contratadoexternoV|, |contratadoexternoI|, |contratadoexternoA|, |contratadoexternoX|, |fornecedoresV|, |fornecedoresI|, |fornecedoresA|, |fornecedoresX|, |funcionariosV|, |funcionariosI|, |funcionariosA|, |funcionariosX|, |locaisgruposV|, |locaisgruposI|, |locaisgruposA|, |locaisgruposX|, |lancamentosV|, |lancamentosI|, |lancamentosA|, |lancamentosX|, |locaisV|, |locaisI|, |locaisA|, |locaisX|, |movementV|, |movementI|, |movementA|, |movementX|, |orcamentosV|, |orcamentosI|, |orcamentosA|, |orcamentosX|, |pacotesV|, |pacotesI|, |pacotesA|, |pacotesX|, |procedimentosV|, |procedimentosI|, |procedimentosA|, |procedimentosX|, |profissionalexternoV|, |profissionalexternoI|, |profissionalexternoA|, |profissionalexternoX|, |tabelasV|, |tabelasI|, |tabelasA|, |tabelasX|, |sys_financialexpensetypeV|, |sys_financialexpensetypeI|, |sys_financialexpensetypeA|, |sys_financialexpensetypeX|, |sys_financialincometypeV|, |sys_financialincometypeI|, |sys_financialincometypeA|, |sys_financialincometypeX|, |sys_financialcompanyunitsV|, |sys_financialcompanyunitsI|, |sys_financialcompanyunitsA|, |sys_financialcompanyunitsX|, |buiformsV|, |buiformsI|, |buiformsA|, |buiformsX|, |chamadaporvozA|, |configconfirmacaoA|, |configrateioV|, |configrateioI|, |configrateioA|, |configrateioX|, |emailsV|, |emailsI|, |emailsA|, |emailsX|, |configimpressosV|, |configimpressosA|, |produtoscategoriasV|, |produtoscategoriasI|, |produtoscategoriasA|, |produtoscategoriasX|, |produtosfabricantesV|, |produtosfabricantesI|, |produtosfabricantesA|, |produtosfabricantesX|, |lctestoqueV|, |lctestoqueI|, |lctestoqueA|, |lctestoqueX|, |produtoslocalizacoesV|, |produtoslocalizacoesI|, |produtoslocalizacoesA|, |produtoslocalizacoesX|, |produtosV|, |produtosI|, |produtosA|, |produtosX|, |conveniosV|, |conveniosI|, |conveniosA|, |conveniosX|, |faturasV|, |guiasV|, |guiasI|, |guiasA|, |guiasX|, |conveniosplanosV|, |conveniosplanosI|, |conveniosplanosA|, |conveniosplanosX|, |repassesV|, |repassesI|, |repassesA|, |repassesX|, |formsaeV|, |formsaeI|, |formsaeA|, |arquivosV|, |arquivosI|, |arquivosA|, |arquivosX|, |atestadosV|, |atestadosI|, |atestadosA|, |atestadosX|, |pacientesV|, |pacientesI|, |pacientesA|, |pacientesX|, |contapacV|, |contapacI|, |contapacX|, |areceberpacienteV|, |areceberpacienteI|, |areceberpacienteA|, |areceberpacienteX|, |diagnosticosV|, |diagnosticosI|, |diagnosticosA|, |diagnosticosX|, |envioemailsI|, |imagensV|, |imagensI|, |imagensA|, |imagensX|, |formslV|, |formslI|, |formslA|, |pedidosexamesV|, |pedidosexamesI|, |pedidosexamesX|, |prescricoesV|, |prescricoesI|, |prescricoesA|, |prescricoesX|, |recibosV|, |recibosI|, |recibosA|, |recibosX|, |contaprofV|, |contaprofI|, |contaprofX|, |profissionaisV|, |profissionaisI|, |profissionaisA|, |profissionaisX|, |relatoriosagendaV|, |relatoriosestoqueV|, |relatoriosfaturamentoV|, |relatoriosfinanceiroV|, |relatoriospacienteV|, |chamadatxtV|, |chamadavozV|, |senhapA|, |usuariosI|, |usuariosA|, |usuariosX|, |agestafinA|, |agestafinX|, |agehorantI|, |altunirectoA|, |localagendaS|, |vacinapacienteV|, |vacinapacienteI|, |vacinapacienteX|"
+	permissoesPadrao = "|ageoutunidadesV|, |ageoutunidadesI|, |ageoutunidadesA|, |ageoutunidadesX|, |agendaV|, |agendaI|, |agendaA|, |agendaX|, |bloqueioagendaV|, |bloqueioagendaI|, |bloqueioagendaA|, |bloqueioagendaX|, |horariosV|, |horariosA|, |historicopacienteV|, |chatI|, |contatosV|, |contatosI|, |contatosA|, |contatosX|, |sys_financialcurrentaccountsV|, |sys_financialcurrentaccountsI|, |sys_financialcurrentaccountsA|, |sys_financialcurrentaccountsX|, |formasrectoV|, |formasrectoI|, |formasrectoA|, |formasrectoX|, |origensV|, |origensI|, |origensA|, |origensX|, |contasapagarV|, |contasapagarI|, |contasapagarA|, |contasapagarX|, |contasareceberV|, |contasareceberI|, |contasareceberA|, |contasareceberX|, |contratadoexternoV|, |contratadoexternoI|, |contratadoexternoA|, |contratadoexternoX|, |fornecedoresV|, |fornecedoresI|, |fornecedoresA|, |fornecedoresX|, |funcionariosV|, |funcionariosI|, |funcionariosA|, |funcionariosX|, |locaisgruposV|, |locaisgruposI|, |locaisgruposA|, |locaisgruposX|, |lancamentosV|, |lancamentosI|, |lancamentosA|, |lancamentosX|, |locaisV|, |locaisI|, |locaisA|, |locaisX|, |movementV|, |movementI|, |movementA|, |movementX|, |orcamentosV|, |orcamentosI|, |orcamentosA|, |orcamentosX|, |pacotesV|, |pacotesI|, |pacotesA|, |pacotesX|, |procedimentosV|, |procedimentosI|, |procedimentosA|, |procedimentosX|, |profissionalexternoV|, |profissionalexternoI|, |profissionalexternoA|, |profissionalexternoX|, |tabelasV|, |tabelasI|, |tabelasA|, |tabelasX|, |sys_financialexpensetypeV|, |sys_financialexpensetypeI|, |sys_financialexpensetypeA|, |sys_financialexpensetypeX|, |sys_financialincometypeV|, |sys_financialincometypeI|, |sys_financialincometypeA|, |sys_financialincometypeX|, |sys_financialcompanyunitsV|, |sys_financialcompanyunitsI|, |sys_financialcompanyunitsA|, |sys_financialcompanyunitsX|, |buiformsV|, |buiformsI|, |buiformsA|, |buiformsX|, |chamadaporvozA|, |configconfirmacaoA|, |configrateioV|, |configrateioI|, |configrateioA|, |configrateioX|, |emailsV|, |emailsI|, |emailsA|, |emailsX|, |configimpressosV|, |configimpressosA|, |produtoscategoriasV|, |produtoscategoriasI|, |produtoscategoriasA|, |produtoscategoriasX|, |produtosfabricantesV|, |produtosfabricantesI|, |produtosfabricantesA|, |produtosfabricantesX|, |lctestoqueV|, |lctestoqueI|, |lctestoqueA|, |lctestoqueX|, |produtoslocalizacoesV|, |produtoslocalizacoesI|, |produtoslocalizacoesA|, |produtoslocalizacoesX|, |produtosV|, |produtosI|, |produtosA|, |produtosX|, |conveniosV|, |conveniosI|, |conveniosA|, |conveniosX|, |faturasV|, |guiasV|, |guiasI|, |guiasA|, |guiasX|, |conveniosplanosV|, |conveniosplanosI|, |conveniosplanosA|, |conveniosplanosX|, |repassesV|, |repassesI|, |repassesA|, |repassesX|, |formsaeV|, |formsaeI|, |formsaeA|, |arquivosV|, |arquivosI|, |arquivosA|, |arquivosX|, |atestadosV|, |atestadosI|, |atestadosA|, |atestadosX|, |pacientesV|, |pacientesI|, |pacientesA|, |pacientesX|, |contapacV|, |contapacI|, |contapacX|, |areceberpacienteV|, |areceberpacienteI|, |areceberpacienteA|, |areceberpacienteX|, |diagnosticosV|, |diagnosticosI|, |diagnosticosA|, |diagnosticosX|, |envioemailsI|, |imagensV|, |imagensI|, |imagensA|, |imagensX|, |formslV|, |formslI|, |formslA|, |pedidosexamesV|, |pedidosexamesI|, |pedidosexamesX|, |prescricoesV|, |prescricoesI|, |prescricoesA|, |prescricoesX|, |recibosV|, |recibosI|, |recibosA|, |recibosX|, |contaprofV|, |contaprofI|, |contaprofX|, |profissionaisV|, |profissionaisI|, |profissionaisA|, |profissionaisX|, |relatoriosagendaV|, |relatoriosestoqueV|, |relatoriosfaturamentoV|, |relatoriosfinanceiroV|, |relatoriospacienteV|, |chamadatxtV|, |chamadavozV|, |senhapA|, |usuariosI|, |usuariosA|, |usuariosX|, |agestafinA|, |agestafinX|, |agehorantI|, |altunirectoA|, |localagendaS|, |vacinapacienteV|, |vacinapacienteI|, |vacinapacienteX|, |agendamentoencaixeI|"
 end function
 
 function centralSMS(checado, DataAgendamento, HoraAgendamento, AgendamentoID)
@@ -397,7 +400,7 @@ function treatValZero(Val)
 end function
 
 function treatValTISS(Val)
-	if isnumeric(Val) and Val<>"" then
+	if isnumeric(Val) and Val&""<>"" then
 		Val = formatnumber(Val,2)
 		Val = replace(Val, ".", "")
 		treatValTISS = replace(Val, ",", ".")
@@ -411,6 +414,13 @@ function nullToZero(val)
         val = 0
     end if 
     nullToZero = val
+end function 
+
+function valnullToZero(val)
+    if Val&"" = "" then
+        val = 0
+    end if 
+    valnullToZero = val
 end function 
 
 function treatValNULL(Val)
@@ -924,14 +934,29 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 			%>
 			<div class="input-group">
                 <input type="text" class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%> />
+                <%
+                    ValidaCampoCPF = true
+                    if lcase(session("Table"))="funcionarios" and session("Admin")=0 then
+                        set OmiteCampoSemCPFSQL = db_execute("SELECT * FROM omissaocampos WHERE ((Tipo='F' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR Tipo='C') AND Omitir LIKE '%SemCPF|%'")
+                        if not OmiteCampoSemCPFSQL.eof then
+                            ValidaCampoCPF = false
+                        end if
+                    elseif lcase(session("Table"))="profissionais" and session("Admin")=0 then
+                        set OmiteCampoSemCPFSQL = db_execute("SELECT * FROM omissaocampos WHERE ((Tipo='P' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR (Tipo='E' AND (Grupo LIKE '%|0|%' OR Grupo LIKE '%|"&session("IdInTable")&"|%')) OR Tipo='C') AND Omitir LIKE '%SemCPF|%'")
+                        if not OmiteCampoSemCPFSQL.eof then
+                            ValidaCampoCPF = false
+                        end if
+                    end if
+                    if ValidaCampoCPF <> false then
+                %>
+                    <span class="input-group-addon">
+                    <div class="checkbox-custom checkbox-warning">
+                            <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
 
-                <span class="input-group-addon">
-                   <div class="checkbox-custom checkbox-warning">
-                        <input id="SemCPF-<%=fieldName%>" name="SemCPF" type="checkbox" class="ace" onchange="$('#<%=fieldName%>').attr('required', !$(this).is(':checked')).attr('readonly', $(this).is(':checked'))"  style="font-size: 10px"/>
-
-                        <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
-                    </div>
-                </span>
+                            <label class="checkbox" for="SemCPF-<%=fieldName%>" style="color: #000!important; margin-right: 0px!important; ;font-weight: 500; font-size: 9px;margin-bottom: 0!important;margin-top: 0!important;">Sem CPF</label>
+                        </div>
+                    </span>
+                <% end if %>
             </div>
 
 			<%
@@ -1006,7 +1031,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 		case "memo"
 			response.Write(LabelFor)
 			%>
-			<textarea class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>"<%=additionalTags%>><%=fieldValue%></textarea>
+			<textarea class="form-control <%=sqlOrClass%>" name="<%=fieldName%>" id="<%=fieldName%>" <%=additionalTags%> ><%=fieldValue%></textarea>
 			<%
 		case "palavras"
 			response.Write(LabelFor)
@@ -1063,10 +1088,24 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 <strong>R$</strong>
             <% end if %>
             </span>
-            <input id="<%=fieldName%>" class="form-control input-mask-brl <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
+            <input id="<%=fieldName%>" class="form-control input-mask-brl  <%=sqlOrClass%>" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
              <% if fieldType = "currency" then %>
             </div>
             <% end if %>
+			<%
+		case "porcentagem"
+			response.Write(LabelFor)
+            if fieldValue&"" ="" then
+                fieldValue = 0
+            end if
+            fieldValue = formatnumber(fieldValue,2)
+			%>
+            <div class="input-group">
+            <input id="<%=fieldName%>" class="form-control input-mask-brl sql-mask-2-digits" type="text" style="text-align:right" name="<%=fieldName%>" value="<%=fieldValue%>"<%=additionalTags%>>
+                <span class="input-group-addon">
+                    <strong>%</strong>
+                </span>
+            </div>
 			<%
 		case "select"
 			response.Write(LabelFor)
@@ -1393,7 +1432,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
                 %>
                 <input id="<%= fieldName %>" class="form-control <%=sqlOrClass%>" type="date" value="<%= mydate(fieldValue) %>" name="<%= fieldName %>" data-date-format="dd/MM/yyyy"<%=additionalTags%>>
             <%end if %>
-            <span class="input-group-addon<%if instr(sqlOrClass, "input-sm")>0 then%> input-sm<%end if%>">
+            <span id="iconeCalendar" class="input-group-addon<%if instr(sqlOrClass, "input-sm")>0 then%> input-sm<%end if%>">
             <i class="far fa-calendar bigger-110"></i>
             </span>
             </div>
@@ -2264,6 +2303,51 @@ function autForm(FormID, TipoAut, PreenchedorID)
 	end if
 end function
 
+
+function compartilhamentoFormulario(idprofissional,tipoDeFormulario)
+    if idprofissional&""="0" then
+        compartilhamentoFormulario=0
+    else
+        idProfissional = accountUser(idProfissional)
+        idProfissionalspl = split(idProfissional,"_")
+        idProfissional = idProfissionalspl(1)
+
+
+        select Case tipoDeFormulario
+            case "Prescricao"
+                categoria = 1
+            case "Diagnostico"
+                categoria = 2
+            case "Atestado"
+                categoria = 3
+            case "Pedido"
+                categoria = 4
+            case "I" ' não achei
+                categoria = 5
+            case "A" ' não achei
+                categoria = 6
+            case "PedidosSADT"
+                categoria = 7
+            case "L"
+                categoria = 8
+            case "AE"
+                categoria = 9
+        end select 
+
+        sqlPermissao = "select TipoCompartilhamentoID from prontuariocompartilhamento p where ProfissionalID = "&idprofissional&" AND CategoriaID ="&categoria
+
+        resultado = 0
+
+        set compartilhamento = db_execute(sqlPermissao)
+        if not compartilhamento.eof then
+            resultado = compartilhamento("TipoCompartilhamentoID")
+        end if
+
+        compartilhamentoFormulario = resultado
+    end if
+end function 
+
+
 function formSave(FormID, btnSaveID, AcaoSeguinte)
 	%>
     $("#<%=FormID%>").submit(function() {
@@ -2278,6 +2362,7 @@ function formSave(FormID, btnSaveID, AcaoSeguinte)
 		  if(data.toLowerCase().indexOf("erro") <= 0){
             <%=AcaoSeguinte%>
           }
+          let sucesso = true
         }).fail(function(data) {
             $("#<%=btnSaveID%>").html('<i class="far fa-save"></i> Salvar');
             $("#<%=btnSaveID%>").removeAttr('disabled');
@@ -3442,7 +3527,7 @@ function googleCalendar(Acao, Email, AgendamentoID, ProfissionalID, NomePaciente
 	if Tempo="" or isnull(Tempo) or Tempo="0" or not isnumeric(Tempo) then
 		Tempo=15
 	end if
-	if Acao="I" and Email<>"vca" and NomePaciente<>"" then
+	if Acao="I" and Email<>"vca" and NomePaciente<>"" and Hora&""<>"" then
 		Set objWinHttp = Server.CreateObject("WinHttp.WinHttpRequest.5.1")
 			Inicio = dataGoogle(Data, Hora)
 			HoraFinal = dateadd("n", Tempo, Hora)
@@ -3906,7 +3991,7 @@ function fSysActive(NomeCampo, psysActive, PacienteID)
 end function
 
 function podeExcluir(xCaixaID, xType, xCD, xAccountAssociationIDCredit)
-    if (xCaixaID=session("CaixaID") and aut("|aberturacaixinhaX|") and xType="Pay") or (aut("|contasareceberX|") and xCD="D" and xType="Pay") or (aut("|areceberpacienteX|") and xCD="D" and xAccountAssociationIDCredit=3 and xType="Pay") or (aut("|contasapagarA|") and xCD="C" and xType="Pay") or (aut("|lancamentosX|") and xType="Transfer") then
+    if (xCaixaID=session("CaixaID") and aut("|aberturacaixinhaX|") and xType="Pay") or (aut("|contasareceberX|") and xCD="D" and xType="Pay") or (aut("|areceberpacienteX|") and xCD="D" and xAccountAssociationIDCredit=3 and xType="Pay") or (aut("|contasapagarA|") and xCD="C" and xType="Pay") or (aut("|lancamentosX|") and xType="Transfer")  or (aut("|lancamentosX|") and aut("|movementX|") and xType="CCCred") then
         podeExcluir = true
     else
         podeExcluir = false
@@ -4360,21 +4445,27 @@ End Function
 
 function agendaOcupacoes(ProfissionalID, Data)
 	set ocup = db.execute("select * from agendaocupacoes where ProfissionalID="&ProfissionalID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data")
+    'response.write("select * from agendaocupacoes where ProfissionalID="&ProfissionalID&" and month(Data)="&month(Data)&" and year(Data)="&year(Data)&" order by Data")
 	while not ocup.eof
 		oHLivres = ocup("HLivres")
 		oHAgendados = ocup("HAgendados")
 		oHBloqueados = ocup("HBloqueados")
-		oTotais = oHLivres+oHAgendados+oHBloqueados
-		if oTotais=0 then
-			percOcup=100
-			percLivre = 0
-		else
-			oFator = 100 / oTotais
-			percOcup = cInt( oFator* (oHAgendados+oHBloqueados) )
-			percLivre = cInt( oFator* oHLivres )
-		end if
+
+        'oHLivres = oHLivres - oHBloqueados
+
+        if oHLivres = 0 then
+            alerta =  "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress""></div>"
+        elseif (oHAgendados = 0) and (oHLivres - oHBloqueados > 0)  then 
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres - oHBloqueados & """><div class=""progress-bar bg-success"" style=""width:100%;"" ></div></div>"
+        elseif (oHLivres = oHAgendados) or (oHLivres - oHBloqueados <= 0) then
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres - oHBloqueados &  """><div class=""progress-bar bg-danger"" style=""width:100%;"" ></div></div>"
+        elseif oHLivres > oHAgendados then 
+            alerta = "<div style=""margin:10px 0 0 0!important; height:3px!important"" class=""progress"" title=""Ocupação: "&oHAgendados&"/"&oHLivres - oHBloqueados &  """><div class=""progress-bar bg-warning"" style=""width:100%;"" ></div></div>"
+        end if
+
 		%>
-		$("#prog<%=replace(ocup("Data"), "/", "")%>").html('<% If percOcup>0 Then %><div class="progress-bar progress-bar-danger" style="width: <%=percOcup%>%;"></div><% End If %><%if percLivre>0 then%><div class="progress-bar progress-bar-success" style="width: <%=percLivre%>%;"></div><% End If %>');
+         $("#prog<%=replace(ocup("Data"), "/", "")%>").html('<%=alerta%>');
+         
 		<%
 	ocup.movenext
 	wend
@@ -4862,7 +4953,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             PosicaoE = PosicaoID
             PosicaoS = 0
         elseif Tipo="S" or Tipo="M" then
-            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' AND IFNULL(PacienteID, 0) = "& sqlPacienteID & sqlValidade
+            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' "& sqlValidade
             set posSaida = db.execute(sqlPosSaida)
             'jamais dar saida de uma posicao que nao foi criada previamente
             if not posSaida.eof then
@@ -5759,51 +5850,52 @@ function calcValorProcedimento(ProcedimentoID, TabelaID, UnidadeID, Profissional
         obsLog = obsLog&" valor ("&procValor&")"
         sqlTabelaID = ""
 
-        sqlProcedimentoTabela = "SELECT p.NomeProcedimento, p.Valor as valorOriginal, ptv.id, ptv.Valor, Profissionais, TabelasParticulares, pt.NomeTabela as nomeTabela, pt.id as tabelaIdDoValor, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID /* left join tabelaparticular t2 on cliniccentral.overlap(pt.TabelasParticulares , concat('|',t2.id,'|')) */ join procedimentos p on p.id = ptv.ProcedimentoID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
-        "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&EspecialidadeID&"|%' ) AND "&_
-        "(Profissionais='' OR Profissionais IS NULL OR Profissionais LIKE '%|"&ProfissionalID&"|%' or '"&ProfissionalID&"'='' ) AND "&_
-        "(TabelasParticulares='' OR TabelasParticulares IS NULL OR TabelasParticulares LIKE '%|"&TabelaID&"|%' OR TabelasParticulares LIKE '%|ALL|%' ) AND "&_
-        "(pt.Unidades='' OR pt.Unidades IS NULL OR pt.Unidades LIKE '%|"&UnidadeID&"|%' ) AND "&_
-        "pt.Fim>="&mydatenull(DataReferencia)&" AND pt.Inicio<="&mydatenull(DataReferencia)&" AND pt.sysActive=1 AND pt.Tipo='V' "
-        ultimoPonto=0
+            
+            sqlProcedimentoTabela = "SELECT p.NomeProcedimento, p.Valor as valorOriginal, ptv.id, ptv.Valor, Profissionais, TabelasParticulares, pt.NomeTabela as nomeTabela, pt.id as tabelaIdDoValor, Especialidades FROM procedimentostabelasvalores ptv INNER JOIN procedimentostabelas pt ON pt.id=ptv.TabelaID /* left join tabelaparticular t2 on cliniccentral.overlap(pt.TabelasParticulares , concat('|',t2.id,'|')) */ join procedimentos p on p.id = ptv.ProcedimentoID WHERE ProcedimentoID="&ProcedimentoID&" AND "&_
+            "(Especialidades='' OR Especialidades IS NULL OR Especialidades LIKE '%|"&EspecialidadeID&"|%' ) AND "&_
+            "(Profissionais='' OR Profissionais IS NULL OR Profissionais LIKE '%|"&ProfissionalID&"|%' or '"&ProfissionalID&"'='' ) AND "&_
+            "(TabelasParticulares='' OR TabelasParticulares IS NULL OR TabelasParticulares LIKE '%|"&TabelaID&"|%' OR TabelasParticulares LIKE '%|ALL|%' ) AND "&_
+            "(pt.Unidades='' OR pt.Unidades IS NULL OR pt.Unidades LIKE '%|"&UnidadeID&"|%' ) AND "&_
+            "pt.Fim>="&mydatenull(DataReferencia)&" AND pt.Inicio<="&mydatenull(DataReferencia)&" AND pt.sysActive=1 AND pt.Tipo='V' "
+            ultimoPonto=0
 
-        set ProcedimentoVigenciaSQL = db_execute(sqlProcedimentoTabela)
+            set ProcedimentoVigenciaSQL = db_execute(sqlProcedimentoTabela)
 
-        if not ProcedimentoVigenciaSQL.eof then
+            if not ProcedimentoVigenciaSQL.eof then
 
 
-            tabelaIdDoValor = ProcedimentoVigenciaSQL("tabelaIdDoValor")
-            tabelaNomeDoValor = ProcedimentoVigenciaSQL("nomeTabela") &" #"&tabelaIdDoValor
-            eTabelaParticular = true
-            novoValor = procValor
+                tabelaIdDoValor = ProcedimentoVigenciaSQL("tabelaIdDoValor")
+                tabelaNomeDoValor = ProcedimentoVigenciaSQL("nomeTabela") &" #"&tabelaIdDoValor
+                eTabelaParticular = true
+                novoValor = procValor
 
-            while not ProcedimentoVigenciaSQL.eof
-                estePonto=0
+                while not ProcedimentoVigenciaSQL.eof
+                    estePonto=0
 
-                if instr(ProcedimentoVigenciaSQL("Profissionais"), "|"&ProfissionalID&"|")>0 then
-                    estePonto = estePonto + 1
-                end if
+                    if instr(ProcedimentoVigenciaSQL("Profissionais"), "|"&ProfissionalID&"|")>0 then
+                        estePonto = estePonto + 1
+                    end if
 
-                if instr(ProcedimentoVigenciaSQL("TabelasParticulares"), "|"&TabelaID&"|")>0 then
-                    estePonto = estePonto + 1
-                end if
+                    if instr(ProcedimentoVigenciaSQL("TabelasParticulares"), "|"&TabelaID&"|")>0 then
+                        estePonto = estePonto + 1
+                    end if
 
-                if instr(ProcedimentoVigenciaSQL("Especialidades"), "|"&EspecialidadeID&"|")>0 then
-                    estePonto = estePonto + 1
-                end if
+                    if instr(ProcedimentoVigenciaSQL("Especialidades"), "|"&EspecialidadeID&"|")>0 then
+                        estePonto = estePonto + 1
+                    end if
 
-                if estePonto>=ultimoPonto then
-                    ultimoPonto=estePonto
-                    ptvID = ProcedimentoVigenciaSQL("id")
-                    procValor = ProcedimentoVigenciaSQL("Valor")
-                end if
+                    if estePonto>=ultimoPonto then
+                        ultimoPonto=estePonto
+                        ptvID = ProcedimentoVigenciaSQL("id")
+                        procValor = ProcedimentoVigenciaSQL("Valor")
+                    end if
 
-            ProcedimentoVigenciaSQL.movenext
-            wend
-            ProcedimentoVigenciaSQL.close
-            set ProcedimentoVigenciaSQL=nothing
-            obsLog = obsLog&" novo valor ("&procValor&") referente a procedimentostabelasvalores (id:"&ptvID&")"
-        end if
+                ProcedimentoVigenciaSQL.movenext
+                wend
+                ProcedimentoVigenciaSQL.close
+                set ProcedimentoVigenciaSQL=nothing
+                obsLog = obsLog&" novo valor ("&procValor&") referente a procedimentostabelasvalores (id:"&ptvID&")"
+            end if
     end if
 
     valorCusto = 0
@@ -6431,6 +6523,72 @@ function montaSubqueryBMJ(where)
     end if
 end function
 
+function lancarImposto(invoice,valor,convenio)
+    if valor&"" = "" then
+        valor = 0
+    end if  
+
+    sqlImpostos =   " select                                                            "&chr(13)&_
+                    " 	ia.id,                                                          "&chr(13)&_
+                    " 	i.nome,                                                         "&chr(13)&_
+                    " 	fe.name planoContas_nome,                                       "&chr(13)&_
+                    " 	fe.id planoContas_id,                                           "&chr(13)&_
+                    " 	cc.NomeCentroCusto CentroCusto_nome,                            "&chr(13)&_
+                    " 	cc.id CentroCusto_id,                                           "&chr(13)&_
+                    " 	ia.valor,                                                       "&chr(13)&_
+                    " 	ia.de,                                                          "&chr(13)&_
+                    " 	ia.ate                                                          "&chr(13)&_
+                    " from                                                              "&chr(13)&_
+                    " 	impostos_associacao ia                                          "&chr(13)&_
+                    " 	left join sys_financialexpensetype fe on ia.planoContas = fe.id "&chr(13)&_
+                    " 	left join centrocusto cc on ia.CentroCusto = cc.id              "&chr(13)&_
+                    " 	left join impostos i on ia.imposto = i.id                       "&chr(13)&_
+                    " where                                                             "&chr(13)&_
+                    " 	ia.convenio = "&convenio
+
+    set impostos = db.execute(sqlImpostos)
+
+    descontoTotal = 0
+
+    while not impostos.eof
+            imposto = impostos("valor")
+            if imposto&"" = "" then
+                imposto = 0
+            end if 
+
+            de = impostos("de")
+            ate = impostos("ate")
+            dentroDaRegra = 0
+            if cdbl(valor) >= cdbl(de) and cdbl(valor) <= cdbl(ate) then
+
+
+                dentroDaRegra = 1
+            end if
+            if dentroDaRegra = 1 then
+            
+                valorImposto = formatnumber(((imposto/100) * valor),2)
+                sqlinsertiii = "insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Desconto, Descricao, Executado, sysUser, ProfissionalID, Associacao, CentroCustoID,imposto) values ("& invoice &", 'O', 1, "&impostos("planoContas_id")&", 0, 0 , "&treatvalzero(valorImposto)&", 'Imposto:"&impostos("nome")&"', '', "&session("User")&", 0, 0,"&impostos("CentroCusto_id")&" ,1)"
+                
+                descontoTotal =  descontoTotal + valorImposto
+
+                db_execute(sqlinsertiii)
+
+                sqlgetValueMov = "SELECT Value FROM sys_financialmovement WHERE invoiceid="&invoice
+                set sqlValor =  db_execute(sqlgetValueMov)
+
+                if not sqlValor.eof then
+                    valorAtual = sqlValor("Value")
+                    valorAtual =  valorAtual - valorImposto
+                    sqlupdadeMov = "UPDATE sys_financialmovement SET Value="&valorAtual&" WHERE invoiceid="&invoice
+                    db.execute(sqlupdadeMov)
+                end if 
+            end if 
+        impostos.movenext
+    wend 
+    sqlupdadeInv = "UPDATE sys_financialinvoices SET Value="&descontoTotal&" WHERE id="&invoice
+    db.execute(sqlupdadeInv)
+end function
+
 function confereTabela (tabela)
     sqlConfereTabela = "SELECT count(*) nTabela FROM information_schema.TABLES WHERE (TABLE_SCHEMA = '"&session("banco")&"') AND (TABLE_NAME = '"&tabela&"');"
     set conferir = db.execute(sqlConfereTabela)
@@ -6453,5 +6611,13 @@ function createTable_(I)
 					" 	index `sysUser` (`sysUser`)                                                 			"&chr(13)&_
 					" )                                                                            				"
 		db.execute(sqlCreate)
+end function
+
+function Floor(Number)
+    Floor = Int(Number)
+end function
+
+function Ceil(Number)
+    Ceil = round(Number+0.1)
 end function
 %>

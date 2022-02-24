@@ -12,6 +12,7 @@ Planos = req("Planos")
 Contratados = replace(req("Contratados"),"''","'")
 Procedimentos =  req("Procedimentos")
 Executantes =  req("Executantes")
+CriaInvoice = req("CriaInvoice")
 
 if Unidades="" then
 	Unidades = session("Unidades")
@@ -648,7 +649,7 @@ function geraInvoice(T, V, Incrementar){
 // Fecha o lote
     $.ajax({
 		   type:"POST",
-		   url:"saveLote.asp?Acao=Inserir&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
+		   url:"saveLote.asp?Acao=Inserir&CriaInvoice=1&T=<%=req("T")%>&ConvenioID=<%=req("ConvenioID")%>",
 		   data:$("#frmModal, #guias").serialize(),
 		   success:function(data){
 			   eval(data);

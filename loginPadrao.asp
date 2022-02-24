@@ -129,9 +129,9 @@ if not tryLogin.EOF then
     ExibeChatAtendimento = tryLogin("ExibeChatAtendimento")
     ExibeFaturas = tryLogin("ExibeFaturas")
 
-    ClienteUnimed = instr(Cupom, "UNIMED") > 0
+    ClienteUnimed = instr(Cupom, "UNIMED") > 0 
 
-    if tryLogin("Admin")<>1 then
+    if tryLogin("Admin")<>1 or instr(Cupom, "UNIMED") > 0 or instr(Cupom, "LIVENT") > 0 or instr(Cupom, "B2S") > 0 then
         ExibeFaturas=0
     end if
 

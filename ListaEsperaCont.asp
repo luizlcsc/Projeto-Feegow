@@ -200,7 +200,6 @@ end if
 if req("debug")="1" then
     response.write("<pre>"&sql&"</pre>")
 end if
-dd(sql)
 set veseha=db.execute(sql)'Hora
 if session("Table")="profissionais" then
     set vtotal=db.execute(sqlTotal)'Hora

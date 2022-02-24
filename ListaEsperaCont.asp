@@ -179,7 +179,7 @@ if lcase(session("table"))="profissionais" then
                     ", ( "&_
                     " SELECT count(ap.id) "&_
                     " FROM agendamentosprocedimentos ap "&_
-                    " WHERE ap.agendamentoid = a.id) qtdProcedimentosExtras "&_
+                    " WHERE ap.agendamentoid = age.id) qtdProcedimentosExtras "&_
                     "from agendamentos age "&_
                     "INNER JOIN procedimentos proc ON proc.id=age.TipoCompromissoID "&_
                     "LEFT JOIN tabelaparticular tp on tp.id=age.TabelaParticularID "&_

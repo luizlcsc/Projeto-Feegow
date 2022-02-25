@@ -212,7 +212,7 @@ select case TipoCampoID
 	case 17
 		'memo com CID-BMJ
 		NomeCampo = ""
-		RotuloCampo = "Novo Memo"
+		RotuloCampo = "Novo CID"
 		ValorPadrao = ""
 		MaxCarac = 3
 		Checado = "S"

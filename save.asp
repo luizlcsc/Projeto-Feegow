@@ -8,8 +8,13 @@
 tableName = ref("P")
 id = ref("I")
 
+set getResource = db.execute("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
 
-' vuneravilidade
+if getResource.eof or id&""="0" then
+    Response.write("400")
+    Response.end
+end if
+
 spl = split(request.Form(), "&")
 
 Novo=False
@@ -306,7 +311,6 @@ for spl_i=0 to ubound(spl)
 	inputsCompare = inputsCompare&"|"&spl2(0)&"|"
 next
 'response.Write("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
-set getResource = db.execute("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
 set configuracao = db.execute("select * from sys_config")
 
 if not getResource.EOF then

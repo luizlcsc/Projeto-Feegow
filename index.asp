@@ -1351,8 +1351,17 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								if req("Mod")<>"" then
 								    FileName = "modulos/"&req("Mod") &"/"& FileName
 								end if
+                folderName = replace(Request.ServerVariables("PATH_INFO"),"/index.asp","")
+                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetput/wwwwroot/") & folderName & "/" & FileName
 
-								server.Execute(FileName)
+                set fs=Server.CreateObject("Scripting.FileSystemObject")
+                fileExists = fs.FileExists(FileNameFullPath)
+
+                if not fileExists then
+                  response.write("404: Página não encontrada.")
+                else
+								  server.Execute(FileName)
+                end if
 								%>
 
 								<!-- PAGE CONTENT ENDS -->

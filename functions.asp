@@ -40,9 +40,27 @@ end function
 
 function ref(ColVal)
     val = request.Form(ColVal)
+    val = forceInputInteger(ColVal, val)
     val = strip_tags(val)
 
     ref = clear_ref_req(val, 2)
+end function
+
+function intval(val)
+     if not isnumeric(val) and val<>"N" and val<>"" then
+        val = 0
+    end if
+    intval = val
+end function
+
+function forceInputInteger(colValKey, val)
+    rightSufix = right(colValKey, 2)&""
+    accountIdMulti = left(val, 4)
+
+    if colValKey="I" or (rightSufix="ID" and instr(accountIdMulti,"_")=0) then
+        val=intval(val)
+    end if
+    forceInputInteger=val
 end function
 
 function refHTML(ColVal)
@@ -52,6 +70,7 @@ end function
 
 function req(ColVal)
     val = request.QueryString(ColVal)
+    val = forceInputInteger(ColVal, val)
     val = strip_tags(val)
     req = clear_ref_req(val, 1)
 end function

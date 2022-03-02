@@ -55,7 +55,7 @@ end if
 	    c = 0
 
 	    agends = ""
-        set pCons = db.execute("select a.sysActive, a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&"  ORDER BY a.Data DESC, a.Hora DESC")
+        set pCons = db.execute("select a.Retorno, a.sysActive, a.id, a.rdValorPlano, a.ValorPlano, a.Data, a.Hora, a.StaID, a.Procedimentos, s.StaConsulta, p.NomeProcedimento, eq.NomeEquipamento, c.NomeConvenio, prof.NomeProfissional, esp.Especialidade NomeEspecialidade FROM agendamentos a LEFT JOIN equipamentos eq ON eq.id=a.EquipamentoID LEFT JOIN profissionais prof on prof.id=a.ProfissionalID LEFT JOIN especialidades esp ON esp.id=a.EspecialidadeID or (a.EspecialidadeID is null and prof.EspecialidadeID=esp.id) LEFT JOIN procedimentos p on a.TipoCompromissoID=p.id LEFT JOIN staconsulta s ON s.id=a.StaID LEFT JOIN convenios c on c.id=a.ValorPlano WHERE a.PacienteID="&PacienteID&"  ORDER BY a.Data DESC, a.Hora DESC")
         while not pCons.EOF
 		    c = c+1
 		    if pCons("rdValorPlano")="V" then
@@ -109,6 +109,11 @@ end if
                 classe = "danger"
             end if
 
+            iconRetorno=""
+            if pCons("Retorno") then
+                iconRetorno = "  <i data-toggle=""tooltip"" title=""Consulta retorno"" class=""far fa-undo text-warning pt10""></i>"
+            end if
+
 
             statusIcon = imoon(pCons("StaID"))
             %>
@@ -122,7 +127,8 @@ end if
                 <td><%=left(pCons("NomeProfissional"), 30) %></td>
 				<td><%=left(pCons("NomeEquipamento"), 30) %></td>
                 <td><%=left(pCons("NomeEspecialidade"), 30) %></td>
-                <td><%=left(NomeProcedimento, 30) %></td>
+                <td><%=left(NomeProcedimento, 30) &iconRetorno %>
+                </td>
                 <td><%=Pagto%></td>
                 <td>
                     <div class="btn-group">

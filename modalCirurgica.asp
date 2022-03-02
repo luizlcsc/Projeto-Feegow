@@ -126,9 +126,7 @@ elseif Tipo="Procedimentos" then
 					<%= simpleSelectCurrentAccounts("ProfissionalID"&id, "5, 8", Associacao&"_"&ProfissionalID, " onchange='repasses("&id&")' onchange='abreRateio("&n&")'","") %>
 				</div>
 			<%else%>
-				<% if Associacao=5 then %>
             	<%=quickField("simpleSelect", "ProfissionalID"&id, "Profissional", 3, ProfissionalID, "select id, NomeProfissional from profissionais where sysActive=1", "NomeProfissional", " onchange='repasses("&id&")' onchange='abreRateio("&n&")'")%>
-				<% end if %>
 			<%end if%>
             <%= quickField("datepicker", "Data", "Data", 3, Data, "", "", " required") %>
             <%= quickField("text", "HoraInicio", "Hora In&iacute;cio", 2, HoraInicio, " input-mask-l-time", "", "") %>

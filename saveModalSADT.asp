@@ -199,7 +199,7 @@ elseif Tipo="Procedimentos" then
 
                     sqlInsert = "INSERT INTO tissprofissionaissadt (GuiaID, Sequencial, GrauParticipacaoID, ProfissionalID, CodigoNaOperadoraOuCPF, ConselhoID, DocumentoConselho, UFConselho, CodigoCBO, sysUser,Associacao)" &_
                                                     "VALUES ("&GuiaID&", "&treatvalzero(Sequencial)&", "&DadosDoProfissionalParaAdicionarSQL("GrauParticipacaoID")&", "&DadosDoProfissionalParaAdicionarSQL("ProfissionalID")&", '"&DadosDoProfissionalParaAdicionarSQL("CPF")&"', "&_
-                                                    treatvalzero(DadosDoProfissionalParaAdicionarSQL("ConselhoID"))&", '"&DadosDoProfissionalParaAdicionarSQL("DocumentoConselho")&"', '"&DadosDoProfissionalParaAdicionarSQL("UFConselho")&"', "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("CBOS"))&", "&session("User")&","&Associacao&")"
+                                                    treatvalzero(DadosDoProfissionalParaAdicionarSQL("ConselhoID"))&", '"&DadosDoProfissionalParaAdicionarSQL("DocumentoConselho")&"', '"&DadosDoProfissionalParaAdicionarSQL("UFConselho")&"', "&treatvalzero(DadosDoProfissionalParaAdicionarSQL("CBOS"))&", "&session("User")&","&AssociacaoID&")"
 
 
                     db.execute(sqlInsert )

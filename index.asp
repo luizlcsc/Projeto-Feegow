@@ -1438,7 +1438,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
 
-                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:'<%=Request.QueryString()%>'}, false, false, false, 'md');"  class="btn btn-xs btn-default hidden" data-toggle="tooltip" data-placement="top"   >
+                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:''}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 

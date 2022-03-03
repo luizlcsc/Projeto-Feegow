@@ -120,29 +120,30 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
     else
         radical = "sfi"
     end if
-    if arrayintegracao(2)=1 and radical = "tgs" then 
-        retornaBotaoIntegracaoLaboratorial = ""
+    if arrayintegracao(0)="0" then
+        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
+                                             "<i class=""fa fa-flask""></i> </button></div>"
     else
-        select case arrayintegracao(0)
-            case "0"       
-                retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
-                                                    "<i class=""fa fa-flask""></i> </button></div>"
-        
-            case "1"
-                retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
-                                                    "<i class=""fa fa-flask""></i></button></div>"
-                
-            case "2"
-                if arrayintegracao(2)=1 then
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+        if arrayintegracao(2)=1 and radical = "tgs" then 
+            retornaBotaoIntegracaoLaboratorial = ""
+        else
+            select case arrayintegracao(0)
+                case "1"
+                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
                                                         "<i class=""fa fa-flask""></i></button></div>"
-                else
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
-                                                        "<i class=""fa fa-flask""></i></button></div>"                    
-                end if 
-            case else
-                retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
-        end select  
+                    
+                case "2"
+                    if arrayintegracao(2)=1 then
+                        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                                                            "<i class=""fa fa-flask""></i></button></div>"
+                    else
+                        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                                                            "<i class=""fa fa-flask""></i></button></div>"                    
+                    end if 
+                case else
+                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
+            end select  
+        end if
     end if
 end function 
 

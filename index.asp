@@ -255,7 +255,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/html5shiv.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/respond.min.js"></script>
   <![endif]-->
-  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.12.4.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
   <script src="js/components.js?v=1.1.2"></script>

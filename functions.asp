@@ -57,7 +57,7 @@ function forceInputInteger(colValKey, val)
     rightSufix = right(colValKey, 2)&""
     accountIdMulti = left(val, 4)
 
-    if colValKey="I" or (rightSufix="ID" and instr(accountIdMulti,"_")=0) then
+    if colValKey="I" or (rightSufix="ID" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
         val=intval(val)
     end if
     forceInputInteger=val

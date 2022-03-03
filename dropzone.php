@@ -407,7 +407,7 @@
 							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
 							if( !ajax.success ) errorMsg.textContent = ajax.error;
 						}
-						else alert( 'Error. Please, contact the webmaster!' );
+						else alert( 'Erro ao enviar arquivo. Tente novamente mais tarde.' );
 					};
 
 					ajax.onerror = function()

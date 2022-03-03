@@ -346,12 +346,14 @@ if not getResource.EOF then
 
         elseif getFields("fieldTypeID")=7 then
             if getFields("columnName") = "DiasAvisoValidade" then
-                sqlValue = treatvalnull(refhtml(getFields("columnName")))
+                sqlValue = treatvalnull(ref(getFields("columnName")))
             else
                 sqlValue = valnullToZero(ref(getFields("columnName")))
             end if
+        elseif getFields("fieldTypeID")=2 then
+            sqlValue = "'"&refHtml(getFields("columnName"))&"'"
         else
-            sqlValue = "'"&refhtml(getFields("columnName"))&"'"
+            sqlValue = "'"&ref(getFields("columnName"))&"'"
         end if
 
         IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then

@@ -1,4 +1,4 @@
 <!--#include file="connect.asp"-->
 <%
-response.write(req("AccountID"))
+response.write(req("xss"))
 %>

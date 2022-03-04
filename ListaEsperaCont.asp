@@ -166,10 +166,9 @@ if lcase(session("table"))="profissionais" then
             TriagemProcedimentos = ConfigGeraisSQL("TriagemProcedimentos")
             ProfissionalTriagem="N"
 
-            sqlTriagem = "SELECT IF(conf.TriagemEspecialidades LIKE CONCAT('%',prof.EspecialidadeID,'%'),1,0)EspecialidadeTriagem FROM profissionais prof "&_
+            sqlTriagem = "SELECT IF(conf.TriagemEspecialidades LIKE CONCAT('%|',prof.EspecialidadeID,'|%'),1,0)EspecialidadeTriagem FROM profissionais prof "&_
                                                                              "INNER JOIN sys_config conf  "&_
                                                                              "WHERE prof.id = "&ProfissionalID
-
 'enfermeira ou tec enfermagem
             set ProfissionalTriagemSQL = db.execute(sqlTriagem)
             if not ProfissionalTriagemSQL.eof then

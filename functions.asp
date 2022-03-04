@@ -53,12 +53,34 @@ function intval(val)
     intval = val
 end function
 
+function stringIsNumericArray(str)
+    isValidNumericArray = True
+
+    if instr(str&"",",")>0 then
+        isValidNumericArray = False
+
+        splRef = split(str,",")
+        for i=0 to ubound(splRef)
+            n = trim(splRef(i))
+
+            if not isnumeric(n) then
+                isValidString = False
+            end if
+        next
+    end if
+
+    stringIsArray=isValidString
+end function
+
 function forceInputInteger(colValKey, val)
     rightSufix = lcase(right(colValKey, 2)&"")
     accountIdMulti = left(val, 4)
 
-    if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
-        val=intval(val)
+    if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(val,", ")=0 and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
+        isNumericArray = stringIsNumericArray(val)
+        if not isNumericArray then
+            val=intval(val)
+        end if
     end if
     forceInputInteger=val
 end function

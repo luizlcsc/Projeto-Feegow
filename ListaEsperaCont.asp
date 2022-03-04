@@ -657,6 +657,7 @@ else
 	        <%
         end if
         TotalPacientes = TotalPacientes + 1
+        OutrosProcedimentosStr = ""
 	end if
     veseha.movenext
     wend

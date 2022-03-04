@@ -103,7 +103,7 @@ elseif req("Tipo")="E" then
         set listaPedido = db.execute("select * from pacientespedidostextos where id="&ref("id"))
         if not listaPedido.eof then
             Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong>"
-            Pedido = Pedido &listaPedido("TextoPedido")&"</p>"
+            Pedido = Pedido & listaPedido("TextoPedido")&"</p>"
             TextoFinal = Pedido
         end if
     end if
@@ -118,7 +118,7 @@ TextoFinal = tagsConverte(TextoFinal,"PacienteID_"&req("PacienteID"),"")
 'MANTIVE O CONVERSOR DE TAGS ANTIGO PARA NÃO AFETAR OUTRAS POSSÍVEIS CONVERSÕES.
 TextoFinal = replaceTags(TextoFinal, req("PacienteID"), session("User"), session("UnidadeID"))
 
-
+TextoFinal = unscapeOutput(TextoFinal)
 
 if PrintSpan then
     response.Write("<span style=""font-family:courier new,courier,monospace"">" & TextoFinal & "</span>")

@@ -403,11 +403,16 @@
 						form.classList.remove( 'is-uploading' );
 						if( ajax.status >= 200 && ajax.status < 400 )
 						{
-                            parent.callUpload && parent.callUpload(ajax.responseText, '<?=$_GET['Tipo']?>')
-							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
-							if( !ajax.success ) errorMsg.textContent = ajax.error;
+                            const data = JSON.parse(ajax.response);
+                            if(data.success === false){
+                                alert( `Erro ao enviar arquivo. Tente novamente mais tarde. ` + data.message );   
+                            }else{
+                                parent.callUpload && parent.callUpload(ajax.responseText, '<?=$_GET['Tipo']?>')
+                                form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
+                                if( !ajax.success ) errorMsg.textContent = ajax.error;
+                            }
 						}
-						else alert( 'Error. Please, contact the webmaster!' );
+						else alert( 'Erro ao enviar arquivo. Tente novamente mais tarde.' );
 					};
 
 					ajax.onerror = function()

@@ -1296,13 +1296,6 @@ $("#InativarRegistroTimelineForm").submit(function() {
 });
 
 
-function sendWorklist(ProcedimentoID, FormID){
-    $.get("../feegow_components/diagnext/newworklist", {
-        p:ProcedimentoID, i:FormID, u:<%=session("UnidadeID")%>, user:<%=session("User")%>
-    });
-}
-
-
 function modalInsuranceAttachments(pacienteID, exameID){
     $.post("modalInsuranceAttachments.asp",{
 		   PacienteID:pacienteID,

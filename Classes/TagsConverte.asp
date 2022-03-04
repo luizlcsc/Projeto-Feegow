@@ -517,9 +517,10 @@ function tagsConverte(conteudo,itens,moduloExcecao)
             SET AgendamentosSQL = db.execute(qAgendamentosSQL)
               if not AgendamentosSQL.eof then
                 
-                conteudo = replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
+                conteudo =  replace(conteudo, "[Agendamento.Data]", AgendamentosSQL("Data")&"" )
                 conteudo =  replace(conteudo,"[Agendamento.Especialidade]", AgendamentosSQL("nomeEspecialidade")&"")
                 conteudo =  replace(conteudo,"[Agendamento.Procedimento]", AgendamentosSQL("Procedimentos")&"")
+                conteudo =  replace(conteudo,"[Agendamento.ID]", AgendamentosSQL("id")&"")
 
                 if isnull(AgendamentosSQL("Hora")) then
                     conteudo = replace(conteudo, "[Agendamento.Hora]", "" )

@@ -65,7 +65,7 @@
               </td>
               <td>
                   <% if medkit=1 then %>
-                      <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
+                      <button type="button" onclick="modalEstoque('<%= ItemID %>', '<%= req("I") %>', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
                   <% end if %>
               </td>
               <td width="10%">

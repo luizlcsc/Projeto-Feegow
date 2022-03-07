@@ -485,7 +485,7 @@
 
 	}( document, window, 0 ));
 
-	$("#form-upload").attr("action", parent.domain + "/api/image/uploadAnyFile?tk="+localStorage.getItem('tk'));
+	$("#form-upload").attr("action", parent.domain + "api/image/uploadAnyFile?tk="+localStorage.getItem('tk'));
 
 </script>
 <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="886de5421c6c96677a1a3b09-|49" defer=""></script></body>

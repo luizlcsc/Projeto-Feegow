@@ -22,6 +22,30 @@
       </div>
     </div>
 </div>
+
+<div class="modais-new-prioridades">
+    <div id="modais-new-prioridades-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="margin: 0; padding: 0">
+                <div class="modal-body" style="margin: 0; padding: 0">
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+</div>
+<style>
+#modais-new-prioridades-modal .modal-backdrop{
+    background-color: transparent;
+    background-image: linear-gradient(52deg, #00b4fc47, #17df9359, #00b4fc8f, #17df9382)
+}
+
+#modais-new-prioridades-modal .box-shadow{
+    box-shadow: none;
+}
+</style>
+
+
 <script>
 if("false"!=="<%=session("AutenticadoPHP")%>"){
     authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z",  "<%=session("Partner")%>", "");
@@ -57,4 +81,15 @@ function getNews(onlyUnread) {
         openComponentsModal("/news", false, false, false, false, "lg");
     }
 }
+<%
+if session("Status")="C" then
+%>
+$(document).ready(function() {
+  if (!ModalOpened){
+      getNews(1);
+  }
+});
+<%
+end if
+%>
 </script>

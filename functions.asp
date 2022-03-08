@@ -46,11 +46,17 @@ function ref(ColVal)
     ref = clear_ref_req(val, 2)
 end function
 
-function intval(val)
-     if not isnumeric(val) and val<>"N" and val<>"" then
-        val = 0
+function intval(textVal)
+     if not isnumeric(textVal) and textVal<>"N" and textVal<>"" then
+        textVal = 0
     end if
-    intval = val
+    intval = textVal
+end function
+
+function customLog(logType, message)
+    filename = Request.ServerVariables("SCRIPT_NAME")&"?P="&req("P")
+
+    db.execute("INSERT INTO cliniccentral.custom_log (LicenseID,LogType, FileName, Line, Message) Values ("&LicenseID&", "&logType&", '"&filename&"', 0, '"&message&"')")
 end function
 
 function stringIsNumericArray(str)
@@ -59,7 +65,7 @@ function stringIsNumericArray(str)
     if instr(str&"",",")>0 then
         isValidNumericArray = False
 
-        splRef = split(str,",")
+        splRef = split(replace(str,"|",""),",")
         for i=0 to ubound(splRef)
             n = trim(splRef(i))
 
@@ -73,14 +79,24 @@ function stringIsNumericArray(str)
 end function
 
 function forceInputInteger(colValKey, val)
-    rightSufix = lcase(right(colValKey, 2)&"")
-    accountIdMulti = left(val, 4)
 
-    if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
-        isNumericArray = stringIsNumericArray(val)
+    if val&""<>"" then
+        rightSufix = lcase(right(colValKey, 2)&"")
+        accountIdMulti = left(val, 4)
 
-        if not isNumericArray then
-            val=intval(val)
+        if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
+            isNumericArray = stringIsNumericArray(val)
+
+            if not isNumericArray then
+                forcedIntVal = val
+                forcedIntVal = intval(forcedIntVal)
+
+                if forcedIntVal&""<>val&"" then
+                    call customLog(10, colValKey&": "&val &" changed to "&forcedIntVal)
+                end if
+
+                val=forcedIntVal
+            end if
         end if
     end if
     forceInputInteger=val

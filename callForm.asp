@@ -104,7 +104,7 @@ if not getForm.eof then
 <%end if
 
 
-urlPost = "saveNewForm.asp?A='+A+'&t="&intval(req("t"))&"&p="&intval(req("p"))&"&m="&intval(req("m"))
+urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
 %>
 <script type="text/javascript">
 /*

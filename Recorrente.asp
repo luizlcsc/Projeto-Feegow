@@ -95,7 +95,7 @@ LicencaFinanceiro =  session("Banco")="clinic100003" or session("Banco")="clinic
         <%
         if (aut("contasapagarI") and CD="D") OR (aut("contasareceberI") and CD="C") then
             %>
-            $(".topbar-right").html('<button class="btn btn-sm btn-primary" onclick="$(\'#save\').click()"><i class="far fa-save"></i> Salvar</button>');
+            $(".topbar-right").html('<button class="btn btn-sm btn-primary" onclick="saveRecorrente()"><i class="far fa-save"></i> Salvar</button>');
             <%
         end if
         %>
@@ -402,7 +402,19 @@ function recorrenteLista(){
 
 
 $("#PrimeiroVencto, #Intervalo, #TipoIntervalo").change(function(){
-    recorrenteLista();
+    let dateDeSpt = $("#PrimeiroVencto").val().split('/');
+    let dataPrimeiroVencto = new Date(Number.parseInt(dateDeSpt[2]),Number.parseInt(dateDeSpt[1])-1, Number.parseInt(dateDeSpt[0]));
+    let today = new Date();
+
+    if(dataPrimeiroVencto < today){
+        $("#PrimeiroVencto").val(today.toLocaleDateString());
+        new PNotify({
+            title: 'Data invalida.',
+            text: 'A data do Primeiro Vencimento não pode ser inferior a data atual.',
+            type: 'danger',
+            delay:1000
+        });
+    }
 })
 
 recorrenteLista();
@@ -429,6 +441,10 @@ recorrenteLista();
 
        }, true);
  });
+ function saveRecorrente(){
+     $('#save').click();
+     recorrenteLista();
+ }
  </script>
 <input type="hidden" name="PendPagar" id="PendPagar" />
 

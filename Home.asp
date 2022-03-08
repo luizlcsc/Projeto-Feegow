@@ -849,7 +849,7 @@ end if
     background-image: linear-gradient(52deg, #00b4fc47, #17df9359, #00b4fc8f, #17df9382)
 }
 
-#modais-new-prioridades-modal .box-shadow{
+#modais-new-prioridades-modal .modal-content{
     box-shadow: none;
 }
 </style>

@@ -42,6 +42,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
     ' 0- Não disponibiliza a integração  (cinza)
     ' 1- abre seleção de laboratórios  (vermelho)
     ' 2- abre modal de impressão de etiquetas (verde)
+    ' 3- abre modal de integração de um laboratório especifico
     
     'Verifica se possui o servico adicional habilitado 
     sql = "SELECT max(ServicoID) id FROM cliniccentral.clientes_servicosadicionais cs WHERE cs.LicencaID = '"&replace(session("Banco"),"clinic","")&"' AND  cs.ServicoID in (24,48) AND cs.`Status`=4"
@@ -73,7 +74,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                 select case tabela
                     ' Verifica se existem procedimentos possíveis de serem integrados na conta
                     case "sys_financialinvoices"
-                        sqlTable = "SELECT ii.id "&_
+                        sqlTable = "SELECT distinct lpl.labID "&_
                                     " FROM itensinvoice ii "&_
                                     " INNER JOIN labs_procedimentos_laboratorios lpl ON lpl.procedimentoID = ii.ItemID "&_
                                     " INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -82,7 +83,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                                     " AND proc.IntegracaoPleres = 'S' "&_
                                     " AND proc.sysActive = 1"
                     case "tissguiasadt"
-                        sqlTable =  " SELECT tpg.id qtd "&_
+                        sqlTable =  " SELECT distinct lpl.labID "&_
                                     " FROM tissprocedimentossadt tpg "&_
                                     " INNER JOIN labs_procedimentos_laboratorios lep ON lep.ProcedimentoID = tpg.procedimentoid "&_
                                     " INNER JOIN procedimentos proc ON proc.id = tpg.procedimentoid "&_
@@ -94,21 +95,31 @@ function verificaIntegracaoLaboratorial(tabela, id)
                         exit function                
                 end select 
                 if sqlTable = "" then
-                    verificaIntegracaoLaboratorial = "0|Não foi possível determinar a tabela de origem da integração|" &versaoIl
+                    verificaIntegracaoLaboratorial = "0|Não foi possível determinar a tabela de origem da integração|" &versaoIl&"|0"
                 else
                     set rs4 = db.execute(sqlTable)
-                    if not rs4.eof then
-                        verificaIntegracaoLaboratorial = "1|0|"&versaoIl
+                    totallabs = 0
+                    while not rs4.EOF
+                        labid  = rs4("labid")
+                        totallabs = totallabs +1
+                        rs4.movenext
+                    wend 
+                    if totallabs > 0 then
+                        if totallabs > 1 then
+                            verificaIntegracaoLaboratorial = "1|0|"&versaoIl&"|"&labid 'Possui mais de um laboratórios habilitados para integração 
+                        else
+                            verificaIntegracaoLaboratorial = "3|0|"&versaoIl&"|"&labid 'Possui apenas um laboratório habilitado para integração 
+                        end if 
                     else
-                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial. Verifique se existem ítens executados e se estão todos vinculados a exames no laboratório."&versaoIl 'Não existem procedimentos para integrar
+                        verificaIntegracaoLaboratorial = "0|Não existem procedimentos nesta conta habilitados para Integração laboratorial. Verifique se existem ítens executados e se estão todos vinculados a exames no laboratório.|"&versaoIl&"|0" 'Não existem procedimentos para integrar
                     end if
                 end if
             end if 
         else
-            verificaIntegracaoLaboratorial = "0|Não existem credenciais cadastradas para integração Laboratorial|0" ' Não possui credenciais para integracao
+            verificaIntegracaoLaboratorial = "0|Não existem credenciais cadastradas para integração Laboratorial|0"&"|0" ' Não possui credenciais para integracao
         end if
     else    
-         verificaIntegracaoLaboratorial = "X|0|0" ' Não possui o serviço habilitado
+         verificaIntegracaoLaboratorial = "X|0|0|0" ' Não possui o serviço habilitado
     end if
 end function 
 
@@ -121,8 +132,9 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
         radical = "sfi"
     end if
     if arrayintegracao(0)="0" then
-        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
-                                             "<i class=""fa fa-flask""></i> </button></div>"
+       retornaBotaoIntegracaoLaboratorial = ""
+       ' retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""javascritpt:alert('"&arrayintegracao(1)&"');"" class=""btn btn-secondary btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title="""&arrayintegracao(1)&""">" &_ 
+       '                                      "<i class=""fa fa-flask""></i> </button></div>"
     else
         if arrayintegracao(2)=1 and radical = "tgs" then 
             retornaBotaoIntegracaoLaboratorial = ""
@@ -130,16 +142,18 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
             select case arrayintegracao(0)
                 case "1"
                     retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
-                                                        "<i class=""fa fa-flask""></i></button></div>"
-                    
+                                                         "<i class=""fa fa-flask""></i></button></div>"                    
                 case "2"
                     if arrayintegracao(2)=1 then
                         retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
-                                                            "<i class=""fa fa-flask""></i></button></div>"
+                                                             "<i class=""fa fa-flask""></i></button></div>"
                     else
                         retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
-                                                            "<i class=""fa fa-flask""></i></button></div>"                    
+                                                             "<i class=""fa fa-flask""></i></button></div>"                    
                     end if 
+                case "3"
+                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracao('"&varid&"','"&arrayintegracao(3)&"','0')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
+                                                            "<i class=""fa fa-flask""></i></button></div>"                   
                 case else
                     retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
             end select  

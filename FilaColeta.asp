@@ -24,7 +24,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.8.4/Sortable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.20.0/vuedraggable.umd.min.js"></script>
 <script type="text/javascript">
-    $("#sidebar_left").remove();
-    $("#toggle_sidemenu_l").remove();
+   // $("#sidebar_left").remove();
+   // $("#toggle_sidemenu_l").remove();
     <% response.write(retornaChamadaIntegracaoLaboratorial("fila-coleta")) %>   
 </script>

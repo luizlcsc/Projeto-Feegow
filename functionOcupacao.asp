@@ -20,11 +20,15 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     De = cdate(De)
     Ate = cdate(Ate)
 
-    if license_id=8932 then
-    ' :(
-        db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto IN (0,9) AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1 AND sysUser=1 AND StaID=1;")
-    else
-        db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1;")
+
+    set AgendamentosNaoPagosSQL = db_execute("SELECT GROUP_CONCAT(id) agendamentosNaoPagos FROM agendamentos WHERE FormaPagto = 9 AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1 AND CanalID=1 AND StaID=1;")
+
+    if not AgendamentosNaoPagosSQL.eof then
+        agendamentosNaoPagos = AgendamentosNaoPagosSQL("agendamentosNaoPagos")&""
+
+        if agendamentosNaoPagos<>"" then
+            db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND id in ("&agendamentosNaoPagos&");")
+        end if
     end if
 
     db.execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))

@@ -347,7 +347,7 @@ elseif LinhaID=9 then
 
 sqlNaoPago= sqlNaoPago&"  SELECT mov.InvoiceID, mov.Value ValorTotal, mov.Date, mov.Value-IFNULL(mov.ValorPago, 0) ValorAberto, pac.NomePaciente, proc.NomeProcedimento FROM sys_financialmovement mov "&_
 "LEFT JOIN sys_financialinvoices i ON i.id=mov.InvoiceID LEFT JOIN itensinvoice ii ON ii.InvoiceID=i.id LEFT JOIN pacientes pac ON (pac.id=i.AccountID AND i.AssociationAccountID=3) LEFT JOIN procedimentos proc ON proc.id=ii.ItemID "&_
-"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&"  AND mov.Date="&mydatenull(Data)&" AND mov.CD='C' AND mov.Type='Bill' "
+"WHERE (mov.ValorPago < mov.Value or mov.ValorPago IS NULL) AND mov.UnidadeID="&UnidadeID&"  AND mov.Date="&mydatenull(Data)&" AND mov.CD='C' AND mov.Type='Bill' GROUP BY mov.id"
 
 'sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL) AND CaixaID="&CaixaID&" AND CD='C' AND Type='Bill'"
 
@@ -388,10 +388,21 @@ elseif LinhaID="8.1" or LinhaID="8.2" then
 <tbody>
 <%
 sqlAccount = ""
+
+
+set PlanoContasRepasseSQL = db.execute("SELECT id FROM sys_financialexpensetype WHERE name='Repasses'")
+PlanoContasRepasseID = "-1"
+
+
+if not PlanoContasRepasseSQL.eof then
+    PlanoContasRepasseID = PlanoContasRepasseSQL("id")
+
+end if
+
 if LinhaID="8.1" then
-    sqlAccount = " AND exp.Name='Repasses'"
+    sqlAccount = " AND ii.CategoriaID='"&PlanoContasRepasseID&"'"
 else
-    sqlAccount = " AND exp.Name!='Repasses'"
+    sqlAccount = " AND ii.CategoriaID!='"&PlanoContasRepasseID&"'"
 end if
 
 sqlDespesas = "select ii.id, m.sysUser, SUM(r.Valor) Value, m.AccountAssociationIDDebit, m.AccountIDDebit, m.Date, ii.InvoiceID FROM sys_financialmovement m "&_

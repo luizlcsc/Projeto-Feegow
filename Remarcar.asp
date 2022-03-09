@@ -212,7 +212,7 @@ if Acao="Remarcar" then
         StaID =AgendamentoSQL("StaID")
         sysActive =AgendamentoSQL("sysActive")
 
-        if StaID=22 or StaID=15 or StaID=11 or StaID=16 or StaID=117 or sysActive&""="-1" then
+        if StaID=22 or StaID=15 or StaID=6 or StaID=11 or StaID=16 or StaID=117 or sysActive&""="-1" then
             'duplica agendamento com novo status
             rfTempo=AgendamentoSQL("Tempo")
             rfProcedimento=AgendamentoSQL("TipoCompromissoID")

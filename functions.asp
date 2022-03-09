@@ -60,7 +60,7 @@ end function
 function customLog(logType, message)
     filename = Request.ServerVariables("SCRIPT_NAME")&"?P="&req("P")
 
-    db.execute("INSERT INTO cliniccentral.custom_log (LicenseID,LogType, FileName, Line, Message) Values ("&LicenseID&", "&logType&", '"&filename&"', 0, '"&message&"')")
+    db.execute("INSERT INTO cliniccentral.custom_log (LicenseID,LogType, FileName, Line, Message) Values ("&LicenseID&", "&logType&", '"&filename&"', 0, '"&clear_ref_req(message,2)&"')")
 end function
 
 function stringIsNumericArray(str)

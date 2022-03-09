@@ -550,6 +550,7 @@ function selectCurrentAccounts(id, associations, selectedValue, others)
                     <option value="PRO"<% If selectedValue="PRO" Then %> selected="selected"<% End If %>>PROFISSIONAL EXECUTOR</option>
                     <option value="LAU"<% If selectedValue="LAU" Then %> selected="selected"<% End If %>>PROFISSIONAL LAUDADOR</option>
                     <option value="SOL"<% If selectedValue="SOL" Then %> selected="selected"<% End If %>>PROFISSIONAL SOLICITANTE</option>
+                    <option value="PREP"<% If selectedValue="PREP" Then %> selected="selected"<% End If %>>PROFISSIONAL PRESCRITOR ( PROTOCOLO )</option>
 					<%
 				elseif splAssociations(iiiiii)="00" then
 					%>

@@ -1352,7 +1352,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								    FileName = "modulos/"&req("Mod") &"/"& FileName
 								end if
                 folderName = replace(Request.ServerVariables("PATH_INFO"),"/index.asp","")
-                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetput/wwwwroot/") & folderName & "/" & FileName
+                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetpub/wwwroot/") & folderName & "/" & FileName
 
                 set fs=Server.CreateObject("Scripting.FileSystemObject")
                 fileExists = fs.FileExists(FileNameFullPath)

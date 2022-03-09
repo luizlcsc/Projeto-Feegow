@@ -567,7 +567,7 @@ $(document).ready(function () {
 
         //NECESSÁRIO PARA USAR AS CONFIGURAÇÕES DE CAMPOS OBRIGATORIOS
         <%      
-      set obriga = db.execute("select * from obrigacampos where Tipo='Profissional' and Obrigar like '%|%'")
+      set obriga = db.execute("select * from obrigacampos where Tipo='Profissional' and ( Obrigar is not null or Obrigar <> '')")
       if not obriga.eof then
         Obr = obriga("Obrigar")
         splObr = split(Obr, ", ")

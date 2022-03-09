@@ -72,7 +72,7 @@ if eventoID <> "" then
 
             <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 4, modeloID, "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
             
-            <%= quickfield("text", "LinkPersonalizado", "Link Personalizado", 4, linkPers, "", "", "required") %>
+            <%= quickfield("text", "LinkPersonalizado", "Link Personalizado", 4, linkPers, "", "", "") %>
 
             <%= quickfield("text", "NomeEvento", "Nome do Evento (Tipo)", 4, nomeEvento, "", "", "required") %>
 
@@ -126,7 +126,7 @@ if eventoID = "" then %>
 
             <%= quickfield("simpleSelect", "ModeloID", "Modelo da mensagem", 4, "", "SELECT sys.Descricao 'Nome', sys.id FROM cliniccentral.eventos_whatsapp eveW LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id WHERE eveW.FacebookStatus = 1", "Nome", "required") %>
             
-            <%= quickfield("text", "LinkPersonalizado", "Link Personalizado", 4, "", "", "", "required") %>
+            <%= quickfield("text", "LinkPersonalizado", "Link Personalizado", 4, "", "", "", "") %>
 
             <%= quickfield("text", "NomeEvento", "Nome do Evento (Tipo)", 4, "", "", "", "required") %>
 
@@ -158,7 +158,7 @@ end if
         const modeloID       = $("#ModeloID").val()
         const nomeEvento     = $("#NomeEvento").val()
 
-        if ((linkPers == "") || (statusAgenda == null) || ((intervalo == "") && (antesDepois != 'I')) || (antesDepois == 0) || 
+        if ((statusAgenda == null) || ((intervalo == "") && (antesDepois != 'I')) || (antesDepois == 0) || 
             (paraApenas == 0) || (profissionais == null) || (unidades == null) || (especialidades == null) || 
             (procedimentos == null) || (enviarPara == null) ||(modeloID == 0) || (nomeEvento == "") )
         {

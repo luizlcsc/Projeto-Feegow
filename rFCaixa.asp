@@ -140,12 +140,14 @@ if not l3.eof then
 
 
 'valor sem caixa
-    sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL) AND UnidadeID="&UnidadeID&" AND CaixaID IS NULL AND Date="&mData&" AND CD='C' AND Type='Bill'"
+    if false then
+        sqlNaoPago="SELECT sum(Value-IFNULL(ValorPago, 0)) ValorAberto FROM sys_financialmovement WHERE (ValorPago < Value or ValorPago IS NULL) AND UnidadeID="&UnidadeID&" AND CaixaID IS NULL AND Date="&mData&" AND CD='C' AND Type='Bill'"
 
-    set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
-    if not MovementsNaoPagasSQL.eof then
-        if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
-            RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+        set MovementsNaoPagasSQL = db.execute(sqlNaoPago )
+        if not MovementsNaoPagasSQL.eof then
+            if not isnull(MovementsNaoPagasSQL("ValorAberto")) then
+                RecebimentosNaoExecutados=RecebimentosNaoExecutados + MovementsNaoPagasSQL("ValorAberto")
+            end if
         end if
     end if
 
@@ -232,21 +234,29 @@ vl4 = vl2 - ValorFechamentoInformado
 
 'BLOCO 2
 
-set pDesp = db.execute("select COALESCE(sum(r.Valor),0) Despesas FROM sys_financialmovement m "&_
-"INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
-"INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
-"INNER JOIN rateiorateios r ON r.ItemContaAPagar=ii.id "&_
-"INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
-"WHERE exp.Name='Repasses' AND m.AccountAssociationIDCredit=7 AND r.DataServicoExecucao=m.Date AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
-"")
-DespesasRepasse = pDesp("Despesas")
+set PlanoContasRepasseSQL = db.execute("SELECT id FROM sys_financialexpensetype WHERE name='Repasses'")
+PlanoContasRepasseID = "-1"
+
+if not PlanoContasRepasseSQL.eof then
+    PlanoContasRepasseID = PlanoContasRepasseSQL("id")
+
+    set pDesp = db.execute("select COALESCE(sum(r.Valor),0) Despesas FROM sys_financialmovement m "&_
+    "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
+    "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
+    "INNER JOIN rateiorateios r ON r.ItemContaAPagar=ii.id "&_
+    "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
+    "WHERE ii.CategoriaID="&PlanoContasRepasseID&" AND m.AccountAssociationIDCredit=7 AND r.DataServicoExecucao=m.Date AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+    "")
+    DespesasRepasse = pDesp("Despesas")
+
+end if
 
 
 set pDesp = db.execute("select COALESCE(sum(m.Value),0) Despesas FROM sys_financialmovement m "&_
 "INNER JOIN itensdescontados idesc ON idesc.PagamentoID=m.id "&_
 "INNER JOIN itensinvoice ii ON ii.id=idesc.ItemID "&_
 "INNER JOIN sys_financialexpensetype exp ON exp.id=ii.CategoriaID "&_
-"WHERE exp.Name!='Repasses' AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
+"WHERE ii.CategoriaID!="&PlanoContasRepasseID&" AND m.AccountAssociationIDCredit=7 AND m.AccountAssociationIDDebit NOT IN(1,7) AND NOT ISNULL(m.CaixaID) AND m.Date="& mData &" AND m.Type='Pay' AND m.UnidadeID="& UnidadeID &" "&_
 "")
 OutrasDespesas = pDesp("Despesas")
 
@@ -277,12 +287,14 @@ if not ServicosExecutadosEmOutraDataSQL.eof then
 end if
 
 
-sql = "SELECT SUM(d.TotalDevolucao) TotalDevolucao FROM devolucoes d INNER JOIN sys_financialinvoices i ON i.id=d.invoiceID WHERE "& filtroData("d.sysDate") &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &""
-set DevolucoesSQL = db.execute(sql)
+if false then
+    sql = "SELECT SUM(d.TotalDevolucao) TotalDevolucao FROM devolucoes d INNER JOIN sys_financialinvoices i ON i.id=d.invoiceID WHERE "& filtroData("d.sysDate") &" AND i.CD='C' AND i.CompanyUnitID="& UnidadeID &""
+    set DevolucoesSQL = db.execute(sql)
 
-if not DevolucoesSQL.eof then
-    if not isnull(DevolucoesSQL("TotalDevolucao")) then
-        devolucoes=ccur(DevolucoesSQL("TotalDevolucao"))
+    if not DevolucoesSQL.eof then
+        if not isnull(DevolucoesSQL("TotalDevolucao")) then
+            devolucoes=ccur(DevolucoesSQL("TotalDevolucao"))
+        end if
     end if
 end if
 

@@ -30,6 +30,8 @@ function clear_ref_req (val, escapeQuotes)
         val = replace(val,"&#x7c;", "")
         val = replace(val,"select", "")
         val = replace(val,"SELECT", "")
+        val = replace(val,"sleep", "")
+        val = replace(val,"SLEEP", "")
 
         'if escapeQuotes=1 then
         '    val = replace(val, """", "")
@@ -88,8 +90,9 @@ function forceInputInteger(colValKey, val)
 
         if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
             isNumericArray = stringIsNumericArray(val)
+            isAcceptableValue = val = "undefined" or val = "null" or left(val,1)="|" or right(val,1)="|"
 
-            if not isNumericArray then
+            if not isNumericArray and not isAcceptableValue then
                 forcedIntVal = val
                 forcedIntVal = intval(forcedIntVal)
 

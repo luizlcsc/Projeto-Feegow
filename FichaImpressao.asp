@@ -37,6 +37,10 @@ Rodape = unscapeOutput(Rodape)
 
 set pac = db.execute("select * from pacientes where id="&req("PacienteID"))
 
+if pac.eof then
+  Response.End
+end if
+
 if pac("Sexo")=1 then
 	Sexo="MASCULINO"
 elseif pac("Sexo")=2 then

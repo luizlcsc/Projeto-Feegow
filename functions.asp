@@ -28,6 +28,8 @@ function clear_ref_req (val, escapeQuotes)
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
         val = replace(val,"&#x7c;", "")
+        val = replace(val,"select", "")
+        val = replace(val,"SELECT", "")
 
         'if escapeQuotes=1 then
         '    val = replace(val, """", "")
@@ -60,22 +62,22 @@ function customLog(logType, message)
 end function
 
 function stringIsNumericArray(str)
-    isValidString = True
+    isNumericArray = False
 
     if instr(str&"",",")>0 then
-        isValidNumericArray = False
+        isNumericArray = True
 
         splRef = split(replace(str,"|",""),",")
         for i=0 to ubound(splRef)
             n = trim(splRef(i))
 
             if not isnumeric(n) then
-                isValidString = False
+                isNumericArray = False
             end if
         next
     end if
 
-    stringIsNumericArray=isValidString
+    stringIsNumericArray=isNumericArray
 end function
 
 function forceInputInteger(colValKey, val)

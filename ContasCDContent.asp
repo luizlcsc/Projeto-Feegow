@@ -24,7 +24,7 @@ geraRecorrente(0)
 
 
 
-if req("X")<>"" then
+if req("X")<>"" and req("X")&""<>"0" then
     PodeApagar = True
 
     if req("T")="C" then

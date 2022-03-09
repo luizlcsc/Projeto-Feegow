@@ -134,7 +134,7 @@ end if
                 </select>
                 
             </div>
-            <%= quickField("simpleSelect", "GuiaStatus", "Status", 2, req("GuiaStatus"), "SELECT * FROM cliniccentral.tissguiastatus ORDER BY Status", "Status", " empty") %>
+            <%= quickField("simpleSelect", "GuiaStatusID", "Status", 2, req("GuiaStatusID"), "SELECT * FROM cliniccentral.tissguiastatus ORDER BY Status", "Status", " empty") %>
             <div id="tissplanosguia">
                  <%= quickField("simpleSelect", "PlanoID", "Plano ", 2, req("PlanoID"), "SELECT id, nomeplano from conveniosplanos WHERE false and sysActive = 1 ORDER BY nomeplano ", "nomeplano", " empty") %>
             </div>
@@ -226,11 +226,11 @@ if req("ConvenioID")<>"" and req("T")="GuiaConsulta" or req("T")="guiaconsulta" 
         orderBy = "cast(g.NGuiaPrestador as signed integer) DESC"
     end if
 
-    if req("GuiaStatus")<>"" then
-        if req("GuiaStatus")=null then
-            req("GuiaStatus")="0"
+    if req("GuiaStatusID")<>"" then
+        if req("GuiaStatusID")=null then
+            req("GuiaStatusID")="0"
         end if
-        sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatus")
+        sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatusID")
     end if
 
 	if req("LoteID")<>"" then
@@ -522,11 +522,11 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
         next
         sqlNumero = " and (1=0 "&sqlNumero&")"
     end if
-    if req("GuiaStatus")<>"" then
-        if req("GuiaStatus")=null then
-            req("GuiaStatus")="0"
+    if req("GuiaStatusID")<>"" then
+        if req("GuiaStatusID")=null then
+            req("GuiaStatusID")="0"
         end if
-        sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatus")
+        sqlGuiaStatus = " AND tgs.id = "&req("GuiaStatusID")
     end if
 
 	if req("PacienteID")<>"" and req("PacienteID")<>"0" then

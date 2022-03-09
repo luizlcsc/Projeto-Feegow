@@ -84,7 +84,7 @@ CD = req("T")
 Titulo = "EDIÇÃO DE PROPOSTA"
 
 PropostaID = req("PropostaID")
-if PropostaID="N" or PropostaID&"" = "" then
+if PropostaID="N" or PropostaID&"" = "" or PropostaID&"" = "0" then
 	sqlVie = "select * from "&tableName&" where sysUser="&session("User")&" and sysActive=0"
 	set vie = db_execute(sqlVie)
 	if vie.eof then

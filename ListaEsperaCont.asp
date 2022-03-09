@@ -66,7 +66,7 @@ if not ConfigGeraisSQL.eof then
     ChamarAposPagamento=ConfigGeraisSQL("ChamarAposPagamento")
 end if
 
-if req("Chamar")<>"" then
+if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" then
 
     StaChamando = 5
     'triagem
@@ -99,7 +99,7 @@ if req("Chamar")<>"" then
 end if
 
 'da redirect ao atender
-if req("Atender")<>"" then
+if req("Atender")<>"" and intval(req("Atender"))&"" <> "0" then
     AgendamentoIDAtender = req("Atender")
 	'db_execute("update agendamentos set StaID='3' where StaID = '2' and ProfissionalID = '"&ProfissionalID&"'") -  não muda mais automaticamente para atendido, apenas quando encerra o contador
 	db_execute("update agendamentos set StaID='2', ProfissionalID="&ProfissionalID&" where id = '"&AgendamentoIDAtender&"' AND ProfissionalID = 0")

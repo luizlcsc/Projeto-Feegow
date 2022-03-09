@@ -22,7 +22,7 @@ end function
 
 
 StatusSelectDefault = "<div class='btn-group mb10'><button style='background-color:#fff' class='btn btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'  > <span class='label-status'>var_icon</span>  <i class='fa fa-angle-down icon-on-right'></i></button><ul class='dropdown-menu dropdown-danger'>"
-set StatusSQL=db_execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (101,6)")
+set StatusSQL=db_execute("SELECT id, StaConsulta FROM staconsulta WHERE id IN (1,11,7, 116, 22)")
 while not StatusSQL.eof
 
     StatusSelectDefault = StatusSelectDefault&"<li class='var_active-"&StatusSQL("id")&"'><a data-value='"&StatusSQL("id")&"' onclick=""AlterarStatus('"&StatusSQL("id")&"','var_agendamento-id')"" style='cursor:pointer' class='muda-status'>"&imoon(StatusSQL("id"))& StatusSQL("StaConsulta")&"</a></option>"

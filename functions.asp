@@ -40,7 +40,7 @@ end function
 
 function ref(ColVal)
     val = request.Form(ColVal)
-    val = forceInputInteger(ColVal, val)
+    'val = forceInputInteger(ColVal, val)
     val = strip_tags(val)
 
     ref = clear_ref_req(val, 2)
@@ -56,26 +56,26 @@ end function
 function customLog(logType, message)
     filename = Request.ServerVariables("SCRIPT_NAME")&"?P="&req("P")
 
-    db.execute("INSERT INTO cliniccentral.custom_log (LicenseID,LogType, FileName, Line, Message) Values ("&LicenseID&", "&logType&", '"&filename&"', 0, '"&message&"')")
+    db.execute("INSERT INTO cliniccentral.custom_log (LicenseID,LogType, FileName, Line, Message) Values ("&LicenseID&", "&logType&", '"&filename&"', 0, '"&clear_ref_req(message,2)&"')")
 end function
 
 function stringIsNumericArray(str)
-    isValidString = True
+    isNumericArray = False
 
     if instr(str&"",",")>0 then
-        isValidNumericArray = False
+        isNumericArray = True
 
         splRef = split(replace(str,"|",""),",")
         for i=0 to ubound(splRef)
             n = trim(splRef(i))
 
             if not isnumeric(n) then
-                isValidString = False
+                isNumericArray = False
             end if
         next
     end if
 
-    stringIsNumericArray=isValidString
+    stringIsNumericArray=isNumericArray
 end function
 
 function forceInputInteger(colValKey, val)
@@ -86,8 +86,9 @@ function forceInputInteger(colValKey, val)
 
         if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
             isNumericArray = stringIsNumericArray(val)
+            isAcceptableValue = val = "undefined" or val = "ALL" or val = "null" or (left(val,1)="|" and right(val,1)="|")
 
-            if not isNumericArray then
+            if not isNumericArray and not isAcceptableValue then
                 forcedIntVal = val
                 forcedIntVal = intval(forcedIntVal)
 
@@ -109,7 +110,7 @@ end function
 
 function req(ColVal)
     val = request.QueryString(ColVal)
-    val = forceInputInteger(ColVal, val)
+    'val = forceInputInteger(ColVal, val)
     val = strip_tags(val)
     req = clear_ref_req(val, 1)
 end function

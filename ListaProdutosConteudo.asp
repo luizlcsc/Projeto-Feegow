@@ -142,7 +142,7 @@
                 title = ""
                 addClass="label label-info"
                 DiasAvisoValidade = prod("DiasAvisoValidadeTN")
-                if prod("DiasAvisoValidade")&"" = 0 then
+                if DiasAvisoValidade&"" = "0" then
                     DiasAvisoValidade = prod("DiasAvisoValidadeGeral")
                 end if
 

@@ -1,9 +1,10 @@
 ﻿<!--#include file="connect.asp"-->
 <%
 LaudoID = req("L")
-set l = db.execute("select l.*, p.NomePaciente from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID WHERE l.id="& LaudoID)
+set l = db.execute("select l.*, p.NomePaciente, p.CPF from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID WHERE l.id="& LaudoID)
 if not l.eof then
     NomePaciente = l("NomePaciente")
+    CPFPaciente = l("CPF")
     ProfissionalID = l("ProfissionalID")
     if ProfissionalID&""="" then
         %>
@@ -33,7 +34,8 @@ if ProfissionalID&""<>"" then
             <%= quickfield("timepicker", "HoraEntrega", "Hora", 6, time(), "", "", "") %>
         </div>
         <div class="row mt10">
-            <%= quickfield("text", "Receptor", "Entregue a", 12, NomePaciente, "", "", "") %>
+            <%= quickfield("text", "Receptor", "Entregue a", 8, NomePaciente, "", "", "") %>
+            <%= quickfield("text", "CPFReceptor", "CPF", 4, CPFPaciente, " input-mask-cpf ", "", "") %>
         </div>
     </div>
     <div class="col-md-6">

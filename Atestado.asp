@@ -255,7 +255,8 @@ function TimbradoAtestado(checked){
     	<td height="99%" valign="top" class="conteudo-atestado">
 
             <%= Atestados %>
-            <%= replaceTags(reg("Atestado")&"", reg("PacienteID"), session("User"), session("UnidadeID"))%>
+            <% LimaAspasDuplasAtestado = replace(reg("Atestado")&"","&quot;", """")%>
+            <%= replaceTags(LimaAspasDuplasAtestado, reg("PacienteID"), session("User"), session("UnidadeID"))%>
             <%
             if session("Banco")="clinic4285" then
                 LinkGerado = "https://clinic.feegow.com.br/v7/ValidaAtestado.asp?I="&req("AtestadoID") * 99999 &"&L=AAAW-"&replace(session("Banco"),"clinic","") * 987&"&F=992837772819"

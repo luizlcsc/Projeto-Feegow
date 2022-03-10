@@ -2929,7 +2929,7 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
 	end if
 
 	if ProfissionalID>0 then
-	    set pro = db.execute("select * from profissionais where id="&ProfissionalID)
+	    set pro = db.execute("SELECT e.especialidade, p.* from profissionais p left join especialidades e ON e.id = p.EspecialidadeID WHERE p.id="&ProfissionalID)
         if not pro.EOF then
             set Trat = db.execute("select * from tratamento where id="&treatvalzero(pro("TratamentoID")))
             if not Trat.eof then
@@ -2938,9 +2938,12 @@ function replaceTags(valor, PacienteID, UserID, UnidadeID)
 
             NomeProfissional = Tratamento&" "&pro("NomeProfissional")
             CPFProfissional = pro("CPF")&""
+            ProfissionalEspecialidade = pro("especialidade")&""
 
             valor = replace(valor, ProfissionalTag&"Nome]", NomeProfissional)
             valor = replace(valor, ProfissionalTag&"CPF]", CPFProfissional)
+            valor = replace(valor, ProfissionalTag&"Especialidade]", ProfissionalEspecialidade)
+
             set codigoConselho = db.execute("select * from conselhosprofissionais where id = '"&pro("Conselho")&"'")
             if not codigoConselho.eof then
                 DocumentoProfissional = codigoConselho("codigo")&": "&pro("DocumentoConselho")&"-"&pro("UFConselho")

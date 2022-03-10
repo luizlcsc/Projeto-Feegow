@@ -211,6 +211,24 @@ Texto = ""
     end if 
 end function
 
+function formatCPF(cpf)
+    if cpf&"" <> "" then
+        cpfSemFormatacao = RemoveCaracters(cpf," .-/")
+        TamanhoCPF = Len(cpfSemFormatacao)
+        if TamanhoCPF = 11 then
+            Campo1 = Left(cpfSemFormatacao,3)
+            Campo2 = Mid(cpfSemFormatacao,4,3)
+            Campo3 = Mid(cpfSemFormatacao,7,3)
+            Campo4 = Right(cpfSemFormatacao,2)
+            formatCPF = Campo1&"."&Campo2&"."&Campo3&"-"&Campo4
+        else
+            formatCPF = cpf
+        end if
+    else
+        formatCPF = cpf&""
+    end if
+end function
+
 Function AlteraCaracters(Conteudo,De,Para)
 'EXEMPLO DE USO
 'response.write(AlteraCaracters("Oi. Tudo Bem?",".?",",!"))

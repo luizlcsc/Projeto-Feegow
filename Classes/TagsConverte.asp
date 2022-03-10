@@ -233,7 +233,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
 
                 conteudo = replace(conteudo, "[Paciente.CorIdentificacao]", trim(PacientesSQL("CorIdentificacao")&" ") )
 
-                conteudo = replace(conteudo, "[Paciente.CPF]", trim(PacientesSQL("CPF")&" ") )
+                CPFFormatado = formatCPF(PacientesSQL("CPF")&"")
+                conteudo = replace(conteudo, "[Paciente.CPF]", CPFFormatado)
                 'CONTATOS
                 conteudo = replace(conteudo, "[Paciente.Tel1]", "[Paciente.Telefone]" )
                 conteudo = replace(conteudo, "[Paciente.Telefone]", trim(PacientesSQL("Tel1")&" ") )

@@ -39,7 +39,13 @@ for i=0 to ubound(itens)-1
 
 			if campo = "id" then
 				Id = valor
-			elseif campo = "Name" or campo = "Category" or campo = "Ordem" or campo = "Posicao" then
+			elseif campo = "Name" then
+
+				if sqlUpdateSet <> "" then
+					sqlUpdateSet = sqlUpdateSet & ", "
+				end if
+				sqlUpdateSet = sqlUpdateSet & campo & " = '" & replace(valor,"%2C",",") & "'"			
+			elseif campo = "Category" or campo = "Ordem" or campo = "Posicao" then
 
 				if sqlUpdateSet <> "" then
 					sqlUpdateSet = sqlUpdateSet & ", "

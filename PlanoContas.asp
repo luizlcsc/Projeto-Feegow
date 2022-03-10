@@ -433,7 +433,7 @@ end function
 			let ordem = 0;
 			itens.filter((key,ele)=>{
 				let id = $(ele).attr('data-id')
-				let nome = $(ele).attr('data-nome')
+				let nome = $(ele).attr('data-nome').replaceAll(',','%2C');
 				let posicao = (codCategoriaMae != '' ? (codCategoriaMae + '.') : '') + $(ele).attr('data-ordem')
 				let category = array[id]
 				let rateio = $(ele).attr('data-rateio')

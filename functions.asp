@@ -28,10 +28,6 @@ function clear_ref_req (val, escapeQuotes)
         val = replace(val,"&#x27;", "")
         val = replace(val,"&#x22;", "")
         val = replace(val,"&#x7c;", "")
-        val = replace(val,"select", "")
-        val = replace(val,"SELECT", "")
-        val = replace(val,"sleep", "")
-        val = replace(val,"SLEEP", "")
 
         'if escapeQuotes=1 then
         '    val = replace(val, """", "")

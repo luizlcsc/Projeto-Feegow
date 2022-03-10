@@ -1,7 +1,7 @@
 <tr class="<%=tipoLinha%>linha"<%
     if ultimaDataFatura<>inv("DataFatura") then
         %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <%
-    end if  %>>
+    end if  %>
     <td width="10%" nowrap class="text-center">
         <%
         if tipoLinha="s" then

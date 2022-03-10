@@ -6,8 +6,8 @@ response.Charset = "utf-8"
 response.ContentType = "text/html"
 
 I = req("i")
-ModeloID = req("m")
-PacienteID = req("p")
+ModeloID = intval(req("m"))
+PacienteID = intval(req("p"))
 Tipo = req("t")
 erro = ""
 habilitarVazio = req("v")

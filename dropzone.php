@@ -403,11 +403,16 @@
 						form.classList.remove( 'is-uploading' );
 						if( ajax.status >= 200 && ajax.status < 400 )
 						{
-                            parent.callUpload && parent.callUpload(ajax.responseText, '<?=$_GET['Tipo']?>')
-							form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
-							if( !ajax.success ) errorMsg.textContent = ajax.error;
+                            const data = JSON.parse(ajax.response);
+                            if(data.success === false){
+                                alert( `Erro ao enviar arquivo. Tente novamente mais tarde. ` + data.message );   
+                            }else{
+                                parent.callUpload && parent.callUpload(ajax.responseText, '<?=$_GET['Tipo']?>')
+                                form.classList.add( ajax.statusText == "OK" ? 'is-success' : 'is-error' );
+                                if( !ajax.success ) errorMsg.textContent = ajax.error;
+                            }
 						}
-						else alert( 'Error. Please, contact the webmaster!' );
+						else alert( 'Erro ao enviar arquivo. Tente novamente mais tarde.' );
 					};
 
 					ajax.onerror = function()
@@ -480,7 +485,7 @@
 
 	}( document, window, 0 ));
 
-	$("#form-upload").attr("action", parent.domain + "/api/image/uploadAnyFile?tk="+localStorage.getItem('tk'));
+	$("#form-upload").attr("action", parent.domain + "api/image/uploadAnyFile?tk="+localStorage.getItem('tk'));
 
 </script>
 <script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="886de5421c6c96677a1a3b09-|49" defer=""></script></body>

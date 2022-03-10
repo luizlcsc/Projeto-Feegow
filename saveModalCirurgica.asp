@@ -52,9 +52,16 @@ elseif Tipo="Procedimentos" then
 		else
 			db_execute("update tissprocedimentostabela set Descricao='"&ref("Descricao")&"' where id="&pt("id"))
 		end if
-		splProfissional= split(ref("ProfissionalID"&ItemID),"_")
-		Associacao = splProfissional(0)
-		ProfissionalID = splProfissional(1)
+		ProfissionalID = ref("ProfissionalID"&ItemID)
+
+		if instr(ProfissionalID,",")>0 then
+			splProfissional= split(ProfissionalID,"_")
+			Associacao = splProfissional(0)
+			ProfissionalID = splProfissional(1)
+		else
+			Associacao = "5"
+		end if
+		
 		if ref("gConvenioID")<>"" and ref("gConvenioID")<>"0" then
 		
 		

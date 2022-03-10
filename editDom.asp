@@ -9,6 +9,7 @@ Procedimentos = dom("Procedimentos")
 Formas = dom("Formas")
 Unidades = dom("Unidades")
 Tabelas = dom("Tabelas")
+Protocolos = dom("Protocolos")
 Dias = dom("Dias")
 %>
 
@@ -395,32 +396,70 @@ Dias = dom("Dias")
 
 
                 <div class="row">
-            <div class="col-md-12">
-            <%
-            corBtn = "btn-default"
-            if Dias<>"" then
-                corBtn = "btn-info"
-            end if
-            %>
-                <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divDias').slideToggle()"><i class="far fa-chevron-down"></i> Dias da semana</button>
-            </div>
-        </div>
-            <div class="row pt10" id="divDias" style="display:none">
-                <%
-                dia = 0
-                while dia<7
-                    dia = dia+1
-                    %>
-                    <div class="col-md-4 checkbox-custom checkbox-primary">
-                        <input name="Dias" value="<%= dia %>" id="d<%= dia %>" type="checkbox" <% if instr(Dias, dia)>0 then response.write(" checked ") end if %> /><label for="d<%= dia %>"> <%= weekdayname(dia) %></label>
-                    </div>
+                    <div class="col-md-12">
                     <%
-                wend
-                %>
-            </div>
+                    corBtn = "btn-default"
+                    if Dias<>"" then
+                        corBtn = "btn-info"
+                    end if
+                    %>
+                        <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divDias').slideToggle()"><i class="far fa-chevron-down"></i> Dias da semana</button>
+                    </div>
+                </div>
+                <div class="row pt10" id="divDias" style="display:none">
+                    <%
+                    dia = 0
+                    while dia<7
+                        dia = dia+1
+                        %>
+                        <div class="col-md-4 checkbox-custom checkbox-primary">
+                            <input name="Dias" value="<%= dia %>" id="d<%= dia %>" type="checkbox" <% if instr(Dias, dia)>0 then response.write(" checked ") end if %> /><label for="d<%= dia %>"> <%= weekdayname(dia) %></label>
+                        </div>
+                        <%
+                    wend
+                    %>
+                </div>
+                
             <hr class="short alt" />
 
+            <%
+            if recursoAdicional(37)=4 then
+            %>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <%
+                    corBtn = "btn-default"
+                    if Protocolos<>"" then
+                        corBtn = "btn-info"
+                    end if
+                    %>
+                    <button class="btn btn-block <%=corBtn%> text-left" type="button" onclick="$('#divProts').slideToggle()"><i class="far fa-chevron-down"></i> Protocolos</button>
+                </div>
+            </div>
+            
+            <div class="row pt10" id="divProts" style="display:none">
+                <%
+                sqlPro = "select id, NomeProtocolo from protocolos where sysActive=1 order by NomeProtocolo"
+        
+                set g = db.execute( sqlPro )
+                    while not g.eof
+                        %>
+                        <div class="col-md-4 checkbox-custom checkbox-primary">
+                            <input name="Protocolos" value="<%= "|"& g("id") &"|" %>" id="proc<%= g("id") %>" type="checkbox" <% if instr(Protocolos, "|"&g("id")&"|")>0 then response.write(" checked ") end if %> /><label for="proc<%= g("id") %>"> <%= g("NomeProtocolo") %></label>
+                        </div>
+                        <%
+                    g.movenext
+                    wend
+                    g.close
+                    set g = nothing
+                %>
+            </div>
+
+           <hr class="short alt" />
+           <%
+            end if
+           %>
 
     <div class="row">
         <div class="col-md-12 mt15" style="max-height: 250px; overflow-y: scroll">
@@ -435,9 +474,9 @@ Dias = dom("Dias")
 
 
     </div>
-    <div class="panel-footer">
+    <div class="panel-footer text-right">
         <button class="btn btn-primary"><i class="far fa-save"></i> SALVAR</button>
-</div>
+    </div>
 </form>
 
 <script type="text/javascript">

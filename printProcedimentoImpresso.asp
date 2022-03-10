@@ -22,6 +22,8 @@ if not ImpressosModeloSQL.eof then
     TextoImpresso = tagsConverte(TextoImpresso,"ProfissionalID_"&ProfissionalID&"|PacienteID_"&PacienteID&"|ProcedimentoID_"&ProcedimentoID&"|UnidadeID_"&UnidadeID&"|ProfissionalSolicitanteNome_"&Solicitante,"")
     TextoImpresso  = replaceTags(TextoImpresso, PacienteID, session("User"), UnidadeID)
 
+    TextoImpresso = unscapeOutput(TextoImpresso)
+    
     'BLOCO DO CÓDIGO SENDO ENVIADO PARA O ARUIVO tagsConverte.asp converter as tags
 
     'set prof = db.execute("SELECT NomeProfissional FROM profissionais WHERE id="&treatvalzero(req("ProfissionalID")))

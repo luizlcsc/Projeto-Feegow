@@ -32,6 +32,8 @@ function CalculaCPF(RecebeCPF)
 
     if len(RecebeCPF) <> 11 then
         CalculaCPF = false
+    elseif RecebeCPF = "00000000000" then
+        CalculaCPF = false
     elseif RecebeCPF = "11111111111" then
         CalculaCPF = false
     elseif RecebeCPF = "22222222222" then

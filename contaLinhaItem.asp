@@ -32,14 +32,41 @@
                     if Associacao=0 or isnull(Associacao) then
                         Associacao = 5
                     end if
-                    Executor = left(accountName(Associacao, ProfissionalID)&" ", 15) & " - " & DataExecucao
-                'else
-                '	Executor = "Excluído"
-                'end if
-            else
-                checado = ""
-                Executor = "Não executado"
-            end if
+                    if len(Observacoes)>2 then
+                        response.Write "<em><small>"&Observacoes&"</small></em>"
+                    end if
+				else
+					%>
+					&nbsp;
+					<%
+				end if
+				%>
+              </td>
+              <td>
+                  <% if medkit=1 then %>
+                      <button type="button" onclick="modalEstoque('<%= ItemID %>', '<%= req("I") %>', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
+                  <% end if %>
+              </td>
+              <td width="10%">
+              <%
+			  if tipoLinha="u" then
+			  	%>	
+                Particular
+                <%
+			  end if
+			  %>
+              </td>
+              <td class=" text-right" width="10%">
+			  <%
+			  if tipoLinha="u" then
+			  	response.Write( fn(inv("ValorTotal")) )
+			  else
+			  	response.Write( fn(ii("Valor")) )
+			  end if
+			  %>
+              &nbsp;</td>
+              <td class="text-right" width="20%">
+              <%
 
             if ii("Tipo")="S" or ii("Tipo")="P" or not isnull(DataCancelamento) then
                 if Executado = "C" or not isnull(DataCancelamento) then

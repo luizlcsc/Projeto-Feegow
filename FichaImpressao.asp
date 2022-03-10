@@ -94,7 +94,7 @@ end if
 
 		<link type="text/css" rel="stylesheet" href="assets/js/qtip/jquery.qtip.css" />
 		<link rel="shortcut icon" href="icon_clinic.png" type="image/x-icon" />
-		<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-rqn26AG5Pj86AF4SO72RK5fyefcQ/x32DNQfChxWvbXIyXFePlEktwD18fEz+kQU" crossorigin="anonymous">
 
         <link href="assets/skin/default_skin/css/fgw.css" rel="stylesheet" type="text/css" />
 

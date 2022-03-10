@@ -255,7 +255,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/html5shiv.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/respond.min.js"></script>
   <![endif]-->
-  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.11.1.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.12.4.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
   <script src="js/components.js?v=1.1.2"></script>
@@ -1351,8 +1351,17 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								if req("Mod")<>"" then
 								    FileName = "modulos/"&req("Mod") &"/"& FileName
 								end if
+                folderName = replace(Request.ServerVariables("PATH_INFO"),"/index.asp","")
+                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetpub/wwwroot/") & folderName & "/" & FileName
 
-								server.Execute(FileName)
+                set fs=Server.CreateObject("Scripting.FileSystemObject")
+                fileExists = fs.FileExists(FileNameFullPath)
+
+                if not fileExists then
+                  response.write("404: Página não encontrada.")
+                else
+								  server.Execute(FileName)
+                end if
 								%>
 
 								<!-- PAGE CONTENT ENDS -->
@@ -1438,7 +1447,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
                                 <span class="btn btn-warning btn-xs internetFail" style="display:none">Sua internet parece estar lenta</span>
                             <% END IF %>
 
-                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:'<%=Request.QueryString()%>'}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
+                            <button type="button" onclick=" openComponentsModal('ReportarBug.asp', {tela:'<%=req("P")%>',query:''}, false, false, false, 'md');"  class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="top"   >
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 

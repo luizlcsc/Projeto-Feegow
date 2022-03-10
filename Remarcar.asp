@@ -212,7 +212,7 @@ if Acao="Remarcar" then
         StaID =AgendamentoSQL("StaID")
         sysActive =AgendamentoSQL("sysActive")
 
-        if StaID=22 or StaID=15 or StaID=11 or StaID=16 or StaID=117 or sysActive&""="-1" then
+        if StaID=22 or StaID=15 or StaID=6 or StaID=11 or StaID=16 or StaID=117 or sysActive&""="-1" then
             'duplica agendamento com novo status
             rfTempo=AgendamentoSQL("Tempo")
             rfProcedimento=AgendamentoSQL("TipoCompromissoID")
@@ -265,7 +265,7 @@ if Acao="Remarcar" then
         
             ConsultaID = pultCon("id")
         else
-            sql = "update agendamentos set sysActive='1',EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
+            sql = "update agendamentos set sysActive='1', EquipamentoID="&treatvalnull(EquipamentoID)&", Data="&mydatenull(Data)&", Hora="&mytime(Hora)&", HoraFinal="& mytime(HoraSolFin) &", ProfissionalID="&treatvalzero(ProfissionalID)&", LocalID="&treatvalzero(LocalID)&", Encaixe="&Encaixe&" where id="&session("RemSol")
             db_execute(sql)
             ConsultaID = session("RemSol")
         end if

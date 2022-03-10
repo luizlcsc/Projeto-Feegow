@@ -925,25 +925,26 @@ function DefaultForm(tableName, id)
 			end if
 		end if
 	else
-		'show the form in insert and update mode
-		if id="N" then
-			sqlVie = "select id, sysUser, sysActive from "&tableName&" where sysUser="&session("User")&" and sysActive=0"
-			set vie = db.execute(sqlVie)
-			if vie.eof then
-				db_execute("insert into "&tableName&" (sysUser, sysActive) values ("&session("User")&", 0)")
-				set vie = db.execute(sqlVie)
-			end if
-			response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&Pers)
-		else
-			set data = db.execute("select * from "&tableName&" where id="&id)
-			if data.eof then
-				response.Redirect("?P="&tableName&"&I=N&Pers="&Pers)
-			end if
-		end if
-	
-	
 		set res = db.execute("select * from cliniccentral.sys_resources where tableName='"&tableName&"'")
 		if not res.eof then
+
+			'show the form in insert and update mode
+			if id="N" then
+				sqlVie = "select id, sysUser, sysActive from `"&tableName&"` where sysUser="&session("User")&" and sysActive=0"
+				set vie = db.execute(sqlVie)
+				if vie.eof then
+					db_execute("insert into "&tableName&" (sysUser, sysActive) values ("&session("User")&", 0)")
+					set vie = db.execute(sqlVie)
+				end if
+				response.Redirect("?P="&tableName&"&I="&vie("id")&"&Pers="&Pers)
+			else
+				set data = db.execute("select * from "&tableName&" where id="&id)
+				if data.eof then
+					response.Redirect("?P="&tableName&"&I=N&Pers="&Pers)
+				end if
+			end if
+	
+	
 	
 			if ref("E")="E" then
 	
@@ -1386,6 +1387,8 @@ function DefaultForm(tableName, id)
             </div>
             </div>
 			<%
+		else
+			response.write("404: Recurso não encontrado.")
 		end if
 	end if
 end function

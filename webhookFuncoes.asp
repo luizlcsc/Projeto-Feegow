@@ -57,9 +57,9 @@ validaEventosJoinSQL = ""
 validaEventosWhereSQL = "WHERE ev.sysActive=1                                                                                   "&chr(13)&_                                                                                         
                         "AND ev.Ativo=1                                                                                         "&chr(13)&_
                         "AND (ev.Procedimentos LIKE '%|ALL|%' OR ev.Procedimentos LIKE '%|"& ref("ProcedimentoID") &"|%')       "&chr(13)&_               
-                        "AND (ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
-                        "AND (ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
-                        "AND (ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "&chr(13)&_
+                        "AND (ev.Unidades LIKE '' OR ev.Unidades LIKE '%|ALL|%' OR ev.Unidades LIKE '%|"& AgendamentoUnidadeID &"|%')                  "&chr(13)&_                       
+                        "AND (ev.Especialidades LIKE '' OR ev.Especialidades LIKE '%|ALL|%' OR ev.Especialidades LIKE '%|"& ref("EspecialidadeID") &"|%')    "&chr(13)&_           
+                        "AND (ev.Profissionais LIKE '' OR ev.Profissionais LIKE '%|ALL|%' OR ev.Profissionais LIKE '%|"& ref("ProfissionalID") &"|%')       "&chr(13)&_
                         "AND ("
 
 'ADICIONA FILTROS DE ACORDO COM O SERVIÇO

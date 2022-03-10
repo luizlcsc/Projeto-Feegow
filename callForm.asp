@@ -112,7 +112,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         var $form = $('.tbl');
         var dados = {
             <%
-            set pcampos = db.execute("select id, TipoCampoID from buicamposforms where FormID="&req("m"))
+            set pcampos = db.execute("select id, TipoCampoID from buicamposforms where FormID="&intval(req("m")))
             while not pcampos.eof
                 select case pcampos("TipoCampoID")
                     case 1, 2, 6

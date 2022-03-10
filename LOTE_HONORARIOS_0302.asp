@@ -5,7 +5,11 @@ response.ContentType="text/XML"
 
 RLoteID = replace(req("I"),".xml", "")
 set lote = db.execute("select * from tisslotes where id="&RLoteID)
-set guias = db.execute("select g.*, p.NomePaciente from tissguiahonorarios as g left join pacientes as p on p.id=g.PacienteID where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
+set guias = db.execute("select g.*, p.NomePaciente, COALESCE(l.nomelocal, g.ContratadoLocalNome) ContratadoLocalNome from tissguiahonorarios as g "&_
+"left join locaisexternos as l on l.id=g.LocalExternoID "&_
+"left join pacientes as p on p.id=g.PacienteID "&_
+"where g.LoteID="&lote("id")&" order by g.NGuiaPrestador")
+
 if not guias.eof then
 	RegistroANS = TirarAcento(guias("RegistroANS"))
 	CodigoNaOperadora = TirarAcento(guias("CodigoNaOperadora"))

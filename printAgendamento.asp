@@ -36,6 +36,8 @@ if req("AgendamentoID") then
             'INCLUSÃO DA NOVA FUNÇÃO TAGS | Rafael Maia 02/07/2020
             ModeloImpressaoAgendamento = tagsConverte(ModeloImpressaoAgendamento,"PacienteID_"&Prontuario&"|ProfissionalID_"&ProfissionalID&"|AgendamentoID_"&Agendamento&"|ProcedimentoNome_"&Procedimentos,"")
 
+            ModeloImpressaoAgendamento = unscapeOutput(ModeloImpressaoAgendamento)
+
             response.write(ModeloImpressaoAgendamento)
 
         end if

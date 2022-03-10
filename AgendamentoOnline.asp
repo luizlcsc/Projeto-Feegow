@@ -88,7 +88,7 @@ filtros = getConfAO("filtros")
             <div class="tab-content pn br-n">
                 <div id="layout" class="tab-pane in active">
 
-                <a target="_blank" href="https://agendaonline.feegow.com/v4/?L=<%= MD5(replace(session("Banco"), "clinic", "")) %>">Visualizar agendamento online</a>
+                <a target="_blank" href="https://agendaonline.feegow.com/v7/ao/?L=<%=replace(session("Banco"), "clinic", "") %>">Visualizar agendamento online</a>
 
                     <hr class="short alt">
                     <h2>Estilo</h2>

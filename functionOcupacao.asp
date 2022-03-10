@@ -198,6 +198,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             EspecialidadeID = replace(splrfesp(k), "|","")
             rfEspecialidade = EspecialidadeID
             if ConsiderarEspecialidadeReal and SomenteEspecialidades="" then
+                ZerarEspecialidadeAoFinalDoLoop = True ' :(
                 SomenteEspecialidades = "|"&EspecialidadeID&"|"
             end if
 
@@ -668,6 +669,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
 
                     Data = Data+1
+                    if ZerarEspecialidadeAoFinalDoLoop then
+                        SomenteEspecialidades=""
+                    end if
                 wend
             next
 

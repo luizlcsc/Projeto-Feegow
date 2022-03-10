@@ -313,7 +313,7 @@ if erro="" then
 				camID = ""
 				valID = ""
 			end if
-			sqlInsert = "insert into pacientespropostasoutros ("&camID&" PropostaID, Descricao, Valor, sysActive, sysUser) values ("&valID&" "&PropostaID&", '"&ref("DescricaoOutros"&splInv(i))&"', '"&ref("ValorOutros"&splInv(i))&"', 1, "&session("User")&")"
+			sqlInsert = "insert into pacientespropostasoutros ("&camID&" PropostaID, Descricao, Valor, sysActive, sysUser) values ("&valID&" "&PropostaID&", '"&refHTML("DescricaoOutros"&splInv(i))&"', '"&ref("ValorOutros"&splInv(i))&"', 1, "&session("User")&")"
 			'response.Write("//"&ii&" - "&sqlInsert)
 			db_execute(sqlInsert)
 		next

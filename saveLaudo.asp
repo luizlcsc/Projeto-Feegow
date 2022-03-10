@@ -4,6 +4,10 @@ Texto = ref("Texto")
 StatusID = ref("StatusID")
 Obs = ref("ObsEntrega")
 Receptor = ref("Receptor")
+CPFReceptor = ref("CPFReceptor")
+if CPFReceptor&""<> "" then
+    Receptor = Receptor & " | " & CPFReceptor
+end if
 LaudoID = req("L")
 ProfissionalID = ref("ProfissionalID")
 Associacao=5

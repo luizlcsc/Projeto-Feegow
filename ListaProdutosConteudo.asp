@@ -120,7 +120,7 @@
                 sqlAbaixo = " AND ( (posicaoConjunto>=EstoqueMinimo) OR ( (posicaoUnidade+(posicaoConjunto*ApresentacaoQuantidade)) > EstoqueMinimo) )"
             end if
 '(select Validade from estoqueposicao where ProdutoID=pro.id AND Validade<now() ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1)
-            sqlstring = ("SELECT pro.*, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade < now() AND Quantidade > 0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade, "&_
+            sqlstring = ("SELECT pro.*, COALESCE(pro.DiasAvisoValidade,0) AS DiasAvisoValidadeTN, (select Validade from estoqueposicao where ProdutoID=pro.id AND Validade < now() AND Quantidade > 0 ORDER BY Validade DESC LIMIT 1) Vencido, (select Validade from estoqueposicao where ProdutoID=pro.id "&sqlCampoValDe &" ORDER BY Validade LIMIT 1) Validade, "&_
              "(SELECT ifnull(DiasVencimentoProduto, 5) DiasVencimentoProduto FROM sys_config LIMIT 1) DiasAvisoValidadeGeral FROM ("&_
             " SELECT pro.*, estpos.id PosicaoID, procat.NomeCategoria, profab.NomeFabricante,proloc.NomeLocalizacao "&_
             "FROM produtos pro "&_
@@ -141,8 +141,8 @@
                 disabled = ""
                 title = ""
                 addClass="label label-info"
-                DiasAvisoValidade = prod("DiasAvisoValidade")
-                if prod("DiasAvisoValidade")&"" = "" then
+                DiasAvisoValidade = prod("DiasAvisoValidadeTN")
+                if prod("DiasAvisoValidade")&"" = "0" then
                     DiasAvisoValidade = prod("DiasAvisoValidadeGeral")
                 end if
 

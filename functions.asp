@@ -44,7 +44,7 @@ end function
 
 function ref(ColVal)
     val = request.Form(ColVal)
-    val = forceInputInteger(ColVal, val)
+    'val = forceInputInteger(ColVal, val)
     val = strip_tags(val)
 
     ref = clear_ref_req(val, 2)
@@ -90,7 +90,7 @@ function forceInputInteger(colValKey, val)
 
         if colValKey="I" or colValKey="II" or colValKey="X" or (rightSufix="id" and instr(accountIdMulti,"_")=0 and colValKey<>"selectID") then
             isNumericArray = stringIsNumericArray(val)
-            isAcceptableValue = val = "undefined" or val = "null" or (left(val,1)="|" and right(val,1)="|")
+            isAcceptableValue = val = "undefined" or val = "ALL" or val = "null" or (left(val,1)="|" and right(val,1)="|")
 
             if not isNumericArray and not isAcceptableValue then
                 forcedIntVal = val
@@ -114,7 +114,7 @@ end function
 
 function req(ColVal)
     val = request.QueryString(ColVal)
-    val = forceInputInteger(ColVal, val)
+    'val = forceInputInteger(ColVal, val)
     val = strip_tags(val)
     req = clear_ref_req(val, 1)
 end function

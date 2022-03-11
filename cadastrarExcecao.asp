@@ -96,8 +96,11 @@ else
     %>
 
     <%=quickField("multiple", "Procedimentos", "Procedimentos", 4, Procedimentos, sqlProcedimentos, "NomeProcedimento", "")%>
-
+<%if ProfissionalID > 0 then%>
     <%=quickField("multiple", "Especialidades", "Especialidades", 4, Especialidades, "select id, especialidade from especialidades where sysActive=1 and id in (SELECT EspecialidadeID FROM profissionais WHERE profissionais.id = "&req("ProfissionalID")&" UNION SELECT EspecialidadeID FROM profissionaisespecialidades WHERE profissionaisespecialidades.ProfissionalID = "&req("ProfissionalID")&") order by especialidade", "especialidade", "")%>
+    
+<%end if%>
+
     <%
     sqlConvenios = "select 'P' id, ' PARTICULAR' NomeConvenio UNION ALL select id, NomeConvenio from convenios where sysActive=1 and Ativo='on' AND COALESCE((SELECT CASE WHEN SomenteConvenios LIKE '%|NONE|%' THEN FALSE ELSE NULLIF(SomenteConvenios,'') END FROM profissionais  WHERE id = "&treatvalzero(ProfissionalID)&") LIKE CONCAT('%|',id,'|%'),TRUE) "&franquia("AND COALESCE(cliniccentral.overlap(Unidades,COALESCE(NULLIF('"&Unidades&"',''),'-999')),TRUE)")&" order by NomeConvenio"
     %>

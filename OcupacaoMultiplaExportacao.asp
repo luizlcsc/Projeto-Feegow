@@ -51,12 +51,7 @@ elseif lcase(session("table"))="profissionais" then
      end if
 end if
 
-if session("Banco")="clinic5760" or session("Banco")="clinic6118" or session("Banco")="clinic5968" or session("Banco")="clinic6259" then
-    'sUnidadeID = "|"& session("UnidadeID") &"|"
-    sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal FROM empresa WHERE id=1) UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits WHERE sysActive=1)"
-else
-    sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia)NomeLocal FROM empresa WHERE id=1) UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits WHERE sysActive=1) UNION ALL (SELECT concat('G', id) id, concat('Grupo: ', NomeGrupo) NomeLocal from locaisgrupos where sysActive=1 order by NomeGrupo) UNION ALL (select l.id, CONCAT(l.NomeLocal, IF(l.UnidadeID=0,IFNULL(concat(' - ', e.Sigla), ''),IFNULL(concat(' - ', fcu.Sigla), '')))NomeLocal from locais l LEFT JOIN empresa e ON e.id = IF(l.UnidadeID=0,1,0) LEFT JOIN sys_financialcompanyunits fcu ON fcu.id = l.UnidadeID where l.sysActive=1 order by l.NomeLocal)"
-end if
+sqlAM = "(select CONCAT('UNIDADE_ID',0) as 'id', CONCAT('Unidade: ', NomeFantasia) NomeLocal FROM empresa WHERE id=1) UNION ALL (select CONCAT('UNIDADE_ID',id), CONCAT('Unidade: ', NomeFantasia) FROM sys_financialcompanyunits WHERE sysActive=1)"
 
 if ref("De")="" then
 %>
@@ -106,6 +101,13 @@ else
             <th class="text-center success" >Data</th>
             <th class="text-center success" >Unidade</th>
             <th class="text-center success" >Especialidade</th>
+            <%
+            IF ref("TipoExibicao")="P" THEN
+            %>
+            <th class="text-center success" >Profissional</th>
+            <%
+            END IF
+            %>
             <th class="text-center success" >TOT</th>
             <th class="text-center success" >LIV</th>
             <th class="text-center success" >BLQ</th>
@@ -120,6 +122,7 @@ else
         Ate = cdate(ref("Ate"))
         DataN = De
         Locais = replace(ref("Locais"), "|", "")
+        Especialidades = replace(ref("Especialidade"), "|", "") 
 
         Locais = replace(Locais, "UNIDADE_ID", "")
 
@@ -130,21 +133,40 @@ else
             call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), False)
             UnidadeID = replace(replace(splU(j), "UNIDADE_ID", ""),"|","")
 
+            sqlUnion = ", ( "&_
+                " "&_
+                "SELECT id EspecialidadeID, Especialidade FROM especialidades WHERE id in ("& Especialidades &") ORDER BY Especialidade "&_
+                " "&_
+                ") esp "
+
+            
+            IF ref("TipoExibicao")="P" THEN
+                sqlBusca = " ro.ProfissionalID=prof.ProfissionalID AND ro.EspecialidadeID=prof.EspecialidadeID "
+                sqlUnion = " , ( "&_
+                       "SELECT prof.id ProfissionalID, NomeProfissional, EspecialidadeID, especialidade "&_
+                       "FROM profissionais prof "&_
+                       "LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+                       "WHERE prof.EspecialidadeID in ("&Especialidades&") "&_
+                       "ORDER BY Especialidade, NomeProfissional) prof "
+            else
+                sqlBusca = " ro.EspecialidadeID=esp.EspecialidadeID "
+            END IF
+
         sqlAll = "SELECT *, "&_
                 " "&_
-                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) A,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) A,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=1 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID ) GO,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=1 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&" ) GO,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=2 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID ) GOri,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.GradeOriginal=2 AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&" ) GOri,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID) AND Encaixe=1) E,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('A') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID) AND Encaixe=1) E,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('B') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) AB,  "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao IN('B') AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&" AND ro.StaID NOT IN(11,15) AND NOT ISNULL(ro.StaID)) AB,  "&_
                 "  "&_
-                " (select count(ro.Data) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao='B' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID AND ISNULL(StaID)) VB,  "&_
+                " (select count(ro.Data) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao='B' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&" AND ISNULL(StaID)) VB,  "&_
                 "  "&_
-                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao='V' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND ro.EspecialidadeID=esp.EspecialidadeID) V "&_
+                " (select count(ro.ProfissionalID) from agenda_horarios ro WHERE ro.Data=dts.Data AND ro.Situacao='V' AND ro.sysUser="&session("User")&" AND ro.UnidadeID=und.UnidadeID AND "&sqlBusca&") V "&_
                 "  "&_
                 "  "&_
                 "FROM "&_
@@ -157,11 +179,8 @@ else
                 "SELECT id UnidadeID,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 "&_
                 ") u WHERE u.UnidadeID IN ("& UnidadeID &") "&_
                 ") und  "&_
-                ", ( "&_
-                " "&_
-                "SELECT id EspecialidadeID, Especialidade FROM especialidades WHERE id in ("& replace(ref("Especialidade"), "|", "") &") ORDER BY Especialidade "&_
-                " "&_
-                ") esp"
+                "" & sqlUnion
+
                 set OcupacaoSQL = db.execute(sqlAll)
 
                 while not OcupacaoSQL.eof
@@ -172,6 +191,13 @@ else
                         <th><%=DataN%></th>
                         <th><%=NomeUnidade%></th>
                         <th><%= OcupacaoSQL("Especialidade") %></th>
+                        <%
+                        IF ref("TipoExibicao")="P" THEN
+                        %>
+                        <th><%= OcupacaoSQL("NomeProfissional") %></th>
+                        <%
+                        END IF
+                        %>
                         <%
                         De = cdate(ref("De"))
                         Ate = cdate(ref("Ate"))

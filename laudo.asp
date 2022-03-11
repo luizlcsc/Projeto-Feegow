@@ -353,7 +353,7 @@ function changeTexto(arg){
     });
 
     function saveLaudo(T, print){
-        $.post("saveLaudo.asp?L=<%= LaudoID %>&T="+ T, $("#Texto, #StatusID, #ProfissionalID, #Restritivo, #DataEntrega, #HoraEntrega, #ObsEntrega, #Receptor").serialize(), function(data){
+        $.post("saveLaudo.asp?L=<%= LaudoID %>&T="+ T, $("#Texto, #StatusID, #ProfissionalID, #Restritivo, #DataEntrega, #HoraEntrega, #ObsEntrega, #Receptor, #CPFReceptor").serialize(), function(data){
             eval(data);
             
             if(print){

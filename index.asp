@@ -28,7 +28,9 @@ if session("PastaAplicacaoRedirect")&"" = "" then
   session("PastaAplicacaoRedirect") = licencaConsulta("PastaAplicacao")
 end if
 
-if AppEnv="production" then
+prodVersions = Array("base","main","v8","v7.6")
+
+if AppEnv="production" and in_array(currentVersionFolder, prodVersions) then
   if session("PastaAplicacaoRedirect")<>currentVersionFolder then
     QueryStringParameters = request.QueryString
 

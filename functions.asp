@@ -202,7 +202,6 @@ function dd(variable)
     Response.End
 end function
 
-
 function injection()
 %>
 <script>
@@ -218,5 +217,14 @@ new PNotify({
     Response.End
 end function
 
+Function in_array(element, arr)
+  in_array = False
+  For i=0 To Ubound(arr)
+     If Trim(arr(i)) = Trim(element) Then
+        in_array = True
+        Exit Function      
+     End If
+  Next
+End Function
 
 %>

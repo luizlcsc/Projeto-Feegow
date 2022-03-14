@@ -12,11 +12,5 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
-   // $("#rbtns").html("<a class='btn btn-warning' href='#'>Sincronizar Resultados</a>");
-    getUrl("labs-integration/update-exams?labId=2", {}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+    <% response.write(retornaChamadaIntegracaoLaboratorial("update-exams?labId=2")) %>
 </script>

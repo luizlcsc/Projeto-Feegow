@@ -11,15 +11,8 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
-<script type="text/javascript">
-    
-
-    getUrl("labs-integration/relatorio-sincronizacao", {}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+<script type="text/javascript">    
+    <% response.write(retornaChamadaIntegracaoLaboratorial("relatorio-sincronizacao")) %>
     $(".checkbox-executado").click(function() {
         var checked = $(this).prop("checked");
         var id = $(this).parents("tr").data("id");

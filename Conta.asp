@@ -183,11 +183,6 @@ EliminaNotificacao=0
                         <h1>Informações <small>&raquo; Recebidas no atendimento</small></h1>
                 </div>
 
-
-
-
-
-
         	                <%
 			                set Aviso = db.execute("select distinct FormID from buicamposforms where AvisoFechamento=1")
 			                while not Aviso.eof
@@ -278,7 +273,7 @@ EliminaNotificacao=0
                 </div>
         </div>
         </form>
-
+        <div id="verificacaoIntegracaoLaboratorial" style="float: right;">  </div>
 
 <%'="{"& creditosII &"}"%>
 <%'"{"& GuiasEmitidas &"}"%>
@@ -390,4 +385,31 @@ function btnToggleLoading(target,state, force, waitMessage="Aguarde...") {
       }
   }, timeout);
 }
+
+function verificaServicoIntegracaoLaboratorial()
+{
+   var integracaook = '<span class="badge badge-success">Int. Laboratorial on-line</span>';
+   var integracaooff = '<span class="badge badge-danger">Int. Laboratorial off-line</span>';   
+   $.ajax({
+        type:"POST",
+        url: labServiceURL+"api/labs-integration/verifica-servico",
+        error: function(data){
+            setTimeout(function(){
+                $("#verificacaoIntegracaoLaboratorial").html(integracaooff);
+                $('button[id^="btn-abrir-integracao-"]').prop('disabled', true);
+            }, 500);
+        },
+        success: function(data){
+            setTimeout(function(){
+                $("#verificacaoIntegracaoLaboratorial").html(integracaook);
+                $('button[id^="btn-abrir-integracao-"]').prop('disabled', false); 
+            }, 500);
+        }
+    });
+      
+}
+<% if verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))= "1|2" then %>
+ verificaServicoIntegracaoLaboratorial();
+<% end if %>
+
 </script>

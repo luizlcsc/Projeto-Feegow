@@ -1,5 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
+
+
 <script type="text/javascript">
     $(".crumb-active a").html("Conferência de Amostras");
     $(".crumb-link").removeClass("hidden");
@@ -12,11 +14,5 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
-
-    getUrl("labs-integration/conferencia-de-amostras",{}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+    <% response.write(retornaChamadaIntegracaoLaboratorial("conferencia-de-amostras")) %>
 </script>

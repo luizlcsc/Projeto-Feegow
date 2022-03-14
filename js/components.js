@@ -23,14 +23,17 @@ var api = "./api/";
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
+        labServiceURL = "http://localhost:8001/"
         api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
+        labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
+        labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
 }
@@ -166,14 +169,22 @@ function setModalContent(body, title, closeBtn, saveBtn, params) {
     return $modalComponents;
 }
 
-function getUrl(url, data, callback) {
+function getUrl(url, data, callback,ms = null) {
     if (!data) {
         data = {};
     }
 
 
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
+        if (ms=="integracaolaboratorial")
+        {
+            url = labServiceURL + url;
+        }
+        else
+        {
+            url = domain + url;
+        }
+        
 
     }
 
@@ -263,7 +274,14 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
     $modal.modal("show");
 
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
+        if (params.microservico === 'integracaolaboratorial')
+        {
+            url = labServiceURL + url;
+        }
+        else
+        {
+            url = domain + url;
+        }
     }
 
 	var token="";
@@ -558,3 +576,61 @@ const doApiRequest = async (
     })
 };
 
+
+
+/* FUNÇÕES DA INTEGRAÇÃO LABORATORIAL */
+
+
+function abrirSelecaoLaboratorio(vartabela, varid, versao){
+    if (versao !='2')
+    {
+        openComponentsModal("labs-integration/invoice-lab-select", {invoiceId: varid, itens:0 }, "Integração com Laboratórios", false, false)
+    }
+    else
+    {
+        openComponentsModal("labs-integration/modal-lab-select", {microservico:'integracaolaboratorial', tabela:vartabela, id: varid },'',false,false,'md');
+    }
+}
+
+function abrirSolicitacao(varid, versao,labid){
+    if (versao !='2')
+    {
+       // openComponentsModal("labs-integration/modal-detalhes-solicitacao", {microservico:'x', id: varid },'',false,false,'md');
+       abrirIntegracao(varid,labid,0)
+    }
+    else
+    {
+        openComponentsModal("labs-integration/modal-detalhes-solicitacao", {microservico:'integracaolaboratorial', id: varid },'',false,false,'md');
+    }
+}
+/* FUNÇÃO MANTIDA PARA COMPATIBILIDADE COM A VERSÃO 1 */
+function selecionaLaboratorio() {
+    var labid  = $('#selectLabID :selected').val();
+    var invoiceid = $('#varinvoiceid').val();
+    var itensCount = $('#varitenscount').val();
+
+    abrirIntegracao(invoiceid,labid,itensCount);
+    
+}
+/* FUNÇÃO MANTIDA PARA COMPATIBILIDADE COM A VERSÃO 1 */
+function abrirIntegracao(invoiceId,labid,itenscount) {
+    switch (labid.trim()) {        
+        case '1':
+            openComponentsModal("labs-integration/matrix/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false);
+            break;
+        case '2':
+            openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
+            break;
+        case '3':
+            openComponentsModal("labs-integration/alvaro/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
+            break;
+        case '4':
+            openComponentsModal("labs-integration/hermespardini/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
+            break;
+        default:
+            alert ('Código de Laboratório não implementado');
+        }
+}
+
+
+/* FIM DAS FUNÇÕES DA INTEGRACAO LABORATORIAL */

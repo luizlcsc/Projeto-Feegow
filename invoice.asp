@@ -128,13 +128,6 @@ TabelaID = req("TabelaID")
 
 Rateado = 0
 
-sqlintegracao = " SELECT le.labid, lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-                                        " INNER JOIN cliniccentral.labs_exames le ON le.id = lie.LabExameID "&_
-                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-                       
-set integracao = db_execute(sqlintegracao)
-
 if CD="C" then
 	Titulo = "Contas a Receber"
 	Subtitulo = "Receber de"
@@ -600,93 +593,7 @@ end if
                         end if
                     end if
                 end if
-                %>
-
-
-                <%
-
-                    if recursoAdicional(24)=4 then
-                        set labAutenticacao = db_execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(UnidadeID))
-                        if not labAutenticacao.eof then
-
-                        matrixColor = "warning"
-                        sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-                                        " inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-                                        " WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-                        set soliSQL = db_execute(sqlintegracao)
-                        if not soliSQL.eof then
-                            matrixColor = "success"
-                        end if
-
-                        set executados = db_execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&InvoiceID&" AND Executado!='S'")
-                        set temintegracao = db_execute("select count(*) as temintegracao from itensinvoice ii inner join procedimentos p on ii.ItemId = p.id  where InvoiceID="&InvoiceID&" and p.IntegracaoPleres = 'S'")
-                         
-                         sqllaboratorios = "SELECT lab.id labID, lab.NomeLaboratorio, count(*) total "&_
-                                            " FROM cliniccentral.labs AS lab "&_
-                                            " INNER JOIN labs_procedimentos_laboratorios AS lpl ON (lpl.labID = lab.id) "&_
-                                            " INNER JOIN procedimentos AS proc ON (proc.id  = lpl.procedimentoID) "&_
-                                            " INNER JOIN itensinvoice ii ON (ii.ItemID = proc.id) "&_
-                                            " WHERE proc.TipoProcedimentoID = 3 AND ii.InvoiceID ="&treatvalzero(InvoiceID)&""&_
-                                            "  GROUP BY 1,2 "
-                        set laboratorios = db_execute(sqllaboratorios)
-
-                        
-
-                        totallabs=0
-                        multiploslabs = 0
-                        laboratorioid = 1
-                        contintegracao = 0
-                        NomeLaboratorio = ""
-                        informacao = ""
-                        if  not laboratorios.eof then
-                            while not laboratorios.eof ' recordcount estava retornando -1 então...
-                                totallabs = totallabs +1
-                                laboratorios.movenext
-                            wend 
-                            laboratorios.movefirst
-                            if totallabs > 1 then
-                                multiploslabs = 1
-                                informacao = "<p> Os <strong>PROCEDIMENTOS</strong> desta conta estão vinculados a laboratórios diferentes. Por favor verifique a<strong> CONFIGURAÇÃO DOS PROCEDIMENTOS</strong>. <p>"
-                            else 
-                                laboratorioid = laboratorios("labID")
-                                NomeLaboratorio = laboratorios("NomeLaboratorio")
-                            end if
-                        end if 
-
-                         if not integracao.eof then 
-                            laboratorioid = integracao("labid")
-                            multiploslabs = 0
-                            contintegracao = 1
-                        end if
-                    
-                        if CInt(temintegracao("temintegracao")) > 0 then
-
-                    %>
-                                <script>
-                                setTimeout(function() {
-                                    $("#btn-abrir-modal-pleres").css("display", "none");
-                                }, 1000)
-                                </script>                               
-
-                                <div class="btn-group">
-                                    <% if multiploslabs = 1 then %> 
-                                        <!-- <button type="button" onclick="avisoLaboratoriosMultiplos('<%=informacao%>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
-                                            <i class="far fa-flask"></i>
-                                        </button> -->
-                                        <button type="button" onclick="abrirSelecaoLaboratorio('<%=InvoiceID%>','<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-danger btn-xs" title="Laboratórios Multiplos">
-                                            <i class="far fa-flask"></i>
-                                        </button>
-                                    <% else %> 
-                                        <button type="button" onclick="abrirIntegracao('<%=InvoiceID%>','<%=laboratorioid%>', '<%=CInt(temintegracao("temintegracao")) %>')" class="btn btn-<%=matrixColor%> btn-xs" id="btn-abrir-modal-matrix<%=InvoiceID%>" title="Abrir integração com Laboratório <%=NomeLaboratorio %>">
-                                            <i class="far fa-flask"></i>
-                                        </button>
-                                    <% end if %>
-
-                                </div>
-                        <%
-                            end if
-                        end if
-                    end if
+                                
 
                     if CD="C" then
                         %>

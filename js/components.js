@@ -579,7 +579,10 @@ const doApiRequest = async (
 
 
 /* FUNÇÕES DA INTEGRAÇÃO LABORATORIAL */
-
+function abrirIntegracaov2(tabela,id,labid) 
+{
+    openComponentsModal("labs-integration/modal-integracao", {microservico:'integracaolaboratorial', id: id, labid:labid, tabela:tabela }, false, false);
+}
 
 function abrirSelecaoLaboratorio(vartabela, varid, versao){
     if (versao !='2')

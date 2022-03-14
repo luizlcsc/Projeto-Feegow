@@ -55,9 +55,9 @@ function verificaIntegracaoLaboratorial(tabela, id)
         end if
         'Verifica se a Unidade Possui credencial cadastrada
         if versaoIl = "1" then  
-            sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
-        else
             sqlAutenticacao = "SELECT id FROM labs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
+        else
+            sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"            
         end if 
         set rs2 = db.execute(sqlAutenticacao)
         if not rs2.eof then
@@ -105,7 +105,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                         rs4.movenext
                     wend 
                     if totallabs > 0 then
-                        if totallabs > 1 then
+                        if totallabs > 1 or versaoIl <> "2" then
                             verificaIntegracaoLaboratorial = "1|0|"&versaoIl&"|"&labid 'Possui mais de um laboratórios habilitados para integração 
                         else
                             verificaIntegracaoLaboratorial = "3|0|"&versaoIl&"|"&labid 'Possui apenas um laboratório habilitado para integração 
@@ -152,7 +152,8 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
                                                              "<i class=""fa fa-flask""></i></button></div>"                    
                     end if 
                 case "3"
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracao('"&varid&"','"&arrayintegracao(3)&"','0')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
+                ' abrirIntegracaov2(tabela,id,labid) 
+                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracaov2('"&vartabela&"','"&varid&"','"&arrayintegracao(3)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
                                                             "<i class=""fa fa-flask""></i></button></div>"                   
                 case else
                     retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"

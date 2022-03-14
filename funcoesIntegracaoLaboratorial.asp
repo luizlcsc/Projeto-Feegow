@@ -83,7 +83,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                                     " AND proc.IntegracaoPleres = 'S' "&_
                                     " AND proc.sysActive = 1"
                     case "tissguiasadt"
-                        sqlTable =  " SELECT distinct lpl.labID "&_
+                        sqlTable =  " SELECT distinct lep.labID "&_
                                     " FROM tissprocedimentossadt tpg "&_
                                     " INNER JOIN labs_procedimentos_laboratorios lep ON lep.ProcedimentoID = tpg.procedimentoid "&_
                                     " INNER JOIN procedimentos proc ON proc.id = tpg.procedimentoid "&_

@@ -13,7 +13,7 @@ end if
 <%
 AppEnv = getEnv("FC_APP_ENV", "local")
 WootricToken = getEnv("FC_WOOTRIC_TOKEN", "")
-
+currentVersionFolder = replace(replace(Request.ServerVariables("PATH_INFO"),"index.asp",""),"/","")
 
 
 if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
@@ -22,6 +22,20 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 	end if
 %>
 <!--#include file="connect.asp"-->
+<%
+if session("PastaAplicacaoRedirect")&"" = "" then
+  set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
+  session("PastaAplicacaoRedirect") = licencaConsulta("PastaAplicacao")
+end if
+
+if AppEnv="production" then
+  if session("PastaAplicacaoRedirect")<>currentVersionFolder then
+    QueryStringParameters = request.QueryString
+
+	  response.Redirect("/"&session("PastaAplicacaoRedirect")&"?"&QueryStringParameters)
+  end if
+end if
+%>
 <!DOCTYPE html>
 <html>
 
@@ -325,17 +339,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <script type="text/javascript">
 
-        const pastas =  ['/base/','/main/','/v7-master/','/base-2/'];
-
-        <% 
-          set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
-          licenca = licencaConsulta("PastaAplicacao")
-        %>
+        const pastas =  ['/base/','/main/','/v7.6/'];
 
         const redirVersao = () => {
             try{
-              const licenca = '<%=licenca%>';
-              var PastaAplicacaoRedirect = licenca
+              var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect")%>'
               var __currentPage = window.location.href;
 
               let __force = false;
@@ -1351,8 +1359,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								if req("Mod")<>"" then
 								    FileName = "modulos/"&req("Mod") &"/"& FileName
 								end if
-                folderName = replace(Request.ServerVariables("PATH_INFO"),"/index.asp","")
-                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetpub/wwwroot/") & folderName & "/" & FileName
+                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetpub/wwwroot/") & currentVersionFolder & "/" & FileName
 
                 set fs=Server.CreateObject("Scripting.FileSystemObject")
                 fileExists = fs.FileExists(FileNameFullPath)

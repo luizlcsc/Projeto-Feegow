@@ -110,7 +110,7 @@ if not tryLogin.EOF then
     tipoUsuario =  lcase(tryLogin("tipoUsuario"))
 
     if isnull(PastaAplicacaoRedirect) then
-        PastaAplicacaoRedirect="v7-master"
+        PastaAplicacaoRedirect=getEnv("FC_DEFAULT_VERSION","main")
     end if
     session("PastaAplicacaoRedirect") = PastaAplicacaoRedirect
 

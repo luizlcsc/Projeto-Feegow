@@ -1,7 +1,7 @@
 <tr class="<%=tipoLinha%>linha"<%
     if ultimaDataFatura<>inv("DataFatura") then
         %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <%
-    end if  %>
+    end if  %>>
     <td width="10%" nowrap class="text-center">
         <%
         if tipoLinha="s" then
@@ -64,11 +64,6 @@
        
         %>
     </td>
-    <td>
-        <% if medkit=1 then %>
-            <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
-        <% end if %>
-    </td>
     <td width="10%">
         <%
         if tipoLinha="u" then
@@ -79,15 +74,19 @@
         %>
     </td>
     <td class=" text-right" width="10%">
-    <%
-    if tipoLinha="u" then
-    response.Write( fn(inv("ValorTotal")) )
-    else
-    response.Write( fn(ii("Valor")) )
-    end if
-    %>
-    &nbsp;</td>
-    <td class="text-right" width="20%">
+        <%
+        if tipoLinha="u" then
+        response.Write( fn(inv("ValorTotal")) )
+        else
+        response.Write( fn(ii("Valor")) )
+        end if
+        %>
+        &nbsp;
+    </td>
+    <td  width="20%" colspan =2 class="text-right">
+        <% if medkit=1 then %>
+            <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
+        <% end if %>
         <%
         if recursoAdicional(8)=4 then
             sqlBoletos = "SELECT coalesce(sum(boletos_emitidos.DueDate > now() and StatusID = 1),0) as aberto"&_
@@ -126,5 +125,5 @@
         
         %>
     </td>
-    <td></td>
+    <!--<td></td>-->
 </tr>

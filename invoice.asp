@@ -571,7 +571,7 @@ end if
         <div class="panel-heading">
             <span class="panel-title">Itens <small>&raquo; servi&ccedil;os, produtos e outros</small></span>
             <span class="panel-controls">
-
+                <% response.write(retornaBotaoIntegracaoLaboratorial ("sys_financialinvoices", InvoiceID)) %> 
                 <%
                 if (session("Banco")="clinic5459" or session("Banco")="clinic105") AND AssID=3 then
 
@@ -597,13 +597,14 @@ end if
 
                     if CD="C" then
                         %>
+                        
                         <span class="checkbox-custom checkbox-warning nao-mostrar-caso-pago hidden-xs">
                             <input type="checkbox" name="VariosProcedimentos" id="VariosProcedimentos" value="1">
                             <label for="VariosProcedimentos" id="lblprocedimentos" style="margin-bottom:0px">
                                 Adição Rápida
                             </label>
                         </span>
-
+                        
                         <button type="button" onclick="marcarMultiplosExecutados()" class="btn btn-default btn-sm hidden-xs">
                             <i class="far fa-check-circle"></i> Marcar execução
                         </button>

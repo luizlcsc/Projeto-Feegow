@@ -296,7 +296,7 @@ end if
                         <td width="30%" id="G<%=replace(replace(replace(inc, "|", ""), ";", ""), "/", "") %>"><%=inv("NomeProcedimento") %> </td>
                         <td width="20%"><button type="button" disabled="disabled" class="btn btn-default btn-xs btn-block"><i class="fa fa-check green"></i> <%=left(NomeProfissional&" ", 15) & " - " & inv("DataFatura")  %></button></td>
                         <td width="10%"> </td>
-                        <td width="10%" class="text-right"><%=fn(inv("ValorTotal")) %>&nbsp;&nbsp;  </td>
+                        <td width="10%" class="text-right">&nbsp;&nbsp;  </td>
                         <td width="20%" colspan=2 class="text-right"><%= retornastatusguia(inv("GuiaStatus")) %></td>
                        <!-- <td></td>  -->
                     </tr>

@@ -141,22 +141,22 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
         else
             select case arrayintegracao(0)
                 case "1"
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
+                    retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
                                                          "<i class=""fa fa-flask""></i></button></div>"                    
                 case "2"
                     if arrayintegracao(2)=1 then
-                        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                        retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
                                                              "<i class=""fa fa-flask""></i></button></div>"
                     else
-                        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                        retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
                                                              "<i class=""fa fa-flask""></i></button></div>"                    
                     end if 
                 case "3"
                 ' abrirIntegracaov2(tabela,id,labid) 
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracaov2('"&vartabela&"','"&varid&"','"&arrayintegracao(3)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
+                    retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracaov2('"&vartabela&"','"&varid&"','"&arrayintegracao(3)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
                                                             "<i class=""fa fa-flask""></i></button></div>"                   
                 case else
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
+                    retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
             end select  
         end if
     end if
@@ -172,10 +172,10 @@ function retornaChamadaIntegracaoLaboratorial(link)
                 case "fila-coleta"
                     link = "matrix/work-queue"                    
             end select
-                retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
-                                                        " $("".app"").hide(); " &_
-                                                        " $("".app"").html(data); " &_
-                                                        " $("".app"").fadeIn('slow');}); "
+            retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
+                                                    " $("".app"").hide(); " &_
+                                                    " $("".app"").html(data); " &_
+                                                    " $("".app"").fadeIn('slow');}); "
         else
             retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
                                                     " $("".app"").hide(); " &_

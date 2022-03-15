@@ -51,7 +51,7 @@ select case ref("Tipo")
 
             if not pos.eof then
 
-                TipoUnidade = "U"
+                TipoUnidade = ref("TipoUnidade")
                 TipoUnidadeOriginal = pos("TipoUnidade")
                 ResponsavelOriginal = pos("Responsavel")
                 Responsavel = pos("Responsavel")
@@ -62,14 +62,28 @@ select case ref("Tipo")
                 CBID = pos("CBID")
                 UnidadePagto = pos("TipoVenda")
                 ProdutoID = pos("ProdutoID")
-                Quantidade = 1
+                QuantidadeLote = pos("Quantidade")
+                if QuantidadeLote&"" = "" then
+                    QuantidadeLote = 0
+                else
+                    NumeroQuantidadeLote = replace(replace(QuantidadeLote,".",""),",",".")
+                end if
+                Quantidade = ref("Quantidade")
+                if Quantidade = "" then
+                    Quantidade = 0
+                else
+                    NumeroQuantidade = replace(replace(Quantidade,".",""),",",".")
+                end if
 
                 call LanctoEstoque(0, PosicaoID, ProdutoID, "S", TipoUnidadeOriginal, TipoUnidade, Quantidade, ref("DataAplicacao"), "", Lote, Validade, "", "0.00", UnidadePagto, "Aplicação de vacina", Responsavel, ref("PacienteID"), "", LocalizacaoID, "", "", "eval", CBID, "", Responsavel, LocalizacaoIDOriginal, "", "", "","")
-
-                db_execute("UPDATE vacina_aplicacao SET StatusID = '3', ViaAplicacaoID = '"&ref("ViaAplicacaoID")&"', LadoAplicacao = '"&ref("LadoAplicacao")&"', UnidadeID = '"&ref("UnidadeID")&"', DataAplicacao = '"&ref("DataAplicacao")&"', Observacao = '"&ref("Observacao")&"', UsuarioIDAplicacao = "&session("User")&" WHERE id = "&ref("AplicacaoID"))
-
-                mensagem = "Salvo com sucesso!"
-                tipo = "success"
+                if ccur(QuantidadeLote) >= ccur(Quantidade) then
+                    db_execute("UPDATE vacina_aplicacao SET StatusID = '3', ViaAplicacaoID = '"&ref("ViaAplicacaoID")&"', LadoAplicacao = '"&ref("LadoAplicacao")&"', UnidadeID = '"&ref("UnidadeID")&"', DataAplicacao = '"&ref("DataAplicacao")&"', Observacao = '"&ref("Observacao")&"', UsuarioIDAplicacao = "&session("User")&" WHERE id = "&ref("AplicacaoID"))
+                    mensagem = "Salvo com sucesso!"
+                    tipo = "success"
+                else
+                    mensagem = "Falha ao registrar"
+                    tipo = "error"
+                end if
 
             else
 

@@ -42,7 +42,6 @@ if ref("opt") = "AtualizaLote" then
 <%
 else 
 %>
-
 <div class="modal-header ">
     <div class="row">
         <div class="col-md-8">
@@ -169,6 +168,14 @@ else
                     </div>
                 </div>
             </div>
+            <div class="row" id="DivQuantidade" style="display:none">
+                <%=quickField("text", "Quantidade", "Quantidade", 2, "", " text-right ", "", " min='0' ")%>
+                <div class="col-md-8 d-none"><br>
+                    <label><input class="ace" type="radio" id="TipoUnidadeC" name="TipoUnidade" required="required" value="C"><span class="lbl" id="TipoUnidadeCTexto"> </span></label>
+                    <br>
+                    <label><input class="ace" type="radio" id="TipoUnidadeU" name="TipoUnidade" required="required" value="U"><span class="lbl" id="TipoUnidadeUTexto"> </span></label>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="row">
@@ -224,6 +231,8 @@ else
             AplicacaoID: <%=ref("valor2")%>,
             DataAplicacao: novaDataAplicacao,
             PosicaoID: $("#SelectPosicao").val(),
+            Quantidade:$("#Quantidade").val(),
+            TipoUnidade:$('#DivQuantidade').find('input:radio:checked').val(),
             ViaAplicacaoID: $("#SelectViaAplicacao").val(),
             LadoAplicacao: $("#SelectLadoAplicacao").val(),
             UnidadeID: $("#SelectUnidade").val(),
@@ -232,6 +241,50 @@ else
             pront('timeline.asp?PacienteID=<%=ref("valor1")%>&Tipo=|VacinaPaciente|');
             eval(data);
         });
+    });
+    
+    $("#SelectPosicao").on('change',function(){
+        let EstoquePosicaoID = $("#SelectPosicao").val();
+
+        if(EstoquePosicaoID > 0){
+            $.post("QuantidadeProduto.asp",{
+                EstoquePosicaoID:EstoquePosicaoID,
+            },function(data){
+                if(data.length > 0){
+                    let TipoUnidade = data[0].TipoUnidade
+                    let ApresentacaoNome = data[0].ApresentacaoNome
+                    let ApresentacaoQuantidade = data[0].ApresentacaoQuantidade
+                    let NomeUnidade = data[0].Descricao
+                    if(TipoUnidade == 'C'){
+                        $('#TipoUnidadeC').prop('checked',true);
+                    }else{
+                        $('#TipoUnidadeU').prop('checked',true);
+                    }
+                    $('#TipoUnidadeCTexto').text(` ${ApresentacaoNome} com ${ApresentacaoQuantidade} ${NomeUnidade}(s)`);
+                    $('#TipoUnidadeUTexto').text(` ${NomeUnidade.charAt(0).toUpperCase() + NomeUnidade.slice(1)}(s)`);
+                    $('#Quantidade').val('1,00');
+                    $('#DivQuantidade').show();
+                }
+            });
+        }else{
+            $('#DivQuantidade').hide();
+        }
+    });
+
+    $("#Quantidade").on('change',function(){
+        let valor = $("#Quantidade").val();
+        let valorLimpo = valor.replace(',','').replace('.','')
+        let tamanhoCampo = valorLimpo.length;
+        if(tamanhoCampo == 1){
+            valorLimpo = valorLimpo+'00';
+            tamanhoCampo = 3;
+        }else if(tamanhoCampo == 2){
+            valorLimpo = valorLimpo+'0';
+            tamanhoCampo = 3;
+        }
+        let valorInteiro = valorLimpo.substr(0,(tamanhoCampo-2));
+        let valorPosVirgula = valorLimpo.substr((tamanhoCampo-2), 2);
+        $("#Quantidade").val(valorInteiro+','+valorPosVirgula);
     });
 </script>
 <%

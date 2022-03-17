@@ -143,10 +143,10 @@ end if
                                                 " vsd.Ordem, "&_
                                                 " p.NomeProduto AS Dosagem, "&_
                                                 " vsd.Descricao, "&_
-                                                " va.UsuarioIDAplicacao, "&_
+                                                " va.UsuarioIDAplicacao, va.Lote, va.id AS VacinaAplicacaoID, "&_
                                                 " vps.id AS VacinaPacienteSerieID, "&_
                                                 " va.Observacao AS Observacao, "&_
-                                                " vva.SiglaViaAplicacao, "&_
+                                                " vva.SiglaViaAplicacao, vva.NomeViaAplicacao, "&_
                                                 " (CASE WHEN va.LadoAplicacao = 1 THEN 'Direito' WHEN va.LadoAplicacao = 2 THEN 'Esquerdo' END) AS LadoAplicacao, "&_
                                                 " e.NomeFantasia, "&_
                                                 " DATE_FORMAT(va.DataAplicacao, '%d/%m/%Y') AS DataAplicacao "&_
@@ -199,7 +199,13 @@ end if
                         <td><span class="badge <%=spanClass%>"><%=dosagens("NomeStatus")%></span></td>
                         <td style="text-align: center"><%=dosagens("DataPrevista")%> <p></td>
                         <td style="text-align: center"><%=dosagens("Ordem")%></td>
-                        <td><%=dosagens("Dosagem")%><% if aplicacaoObservacao <> "" then response.write(" <a href='#'> <span class='observacao far fa-info-circle bigger-110' data-toggle='tooltip' data-original-title='"&aplicacaoObservacao&"'></span></a>") end if %></td>
+                        <td><%=dosagens("Dosagem")%>
+                            <% if aplicacaoObservacao <> "" then %>
+                                <a href='#' onclick="modalVacinaPaciente('VacinaPacienteAplicacao.asp?StatusID=<%=dosagens("StatusID")%>&DataAplicacao=<%=dosagens("DataAplicacao")%>&NomeViaAplicacao=<%=dosagens("NomeViaAplicacao")%>&LadoAplicacao=<%=dosagens("LadoAplicacao")%>&Unidade=<%=dosagens("NomeFantasia")%>&Dose=<%=dosagens("Dosagem")%>&Observacao=<%=aplicacaoObservacao%>', <%= PacienteID%>, <%= dosagens("id")%>, '', '');">
+                                    <span class='observacao far fa-info-circle bigger-110' data-toggle='tooltip' data-original-title='<%=aplicacaoObservacao%>'></span>
+                                </a>
+                            <% end if %>
+                        </td>
                         <td style="text-align: center"><%=dosagens("SiglaViaAplicacao")%></td>
                         <td><%=dosagens("LadoAplicacao")%></td>
                         <td><%=dosagens("NomeFantasia")%></td>

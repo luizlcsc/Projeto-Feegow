@@ -217,15 +217,22 @@ function getUrl(url, data, callback,ms = null) {
     });
 }
 
-function postUrl(url, data, callback) {
+function postUrl(url, data, callback,ms = null) {
     if (!data) {
         data = {};
     }
 
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
-
+        if (ms=="integracaolaboratorial")
+        {
+            url = labServiceURL + url;
+        }
+        else
+        {
+            url = domain + url;
+        }
     }
+
 
     var token="";
     if(localStorage.getItem("tk")){

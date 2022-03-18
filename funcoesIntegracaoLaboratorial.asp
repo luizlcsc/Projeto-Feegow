@@ -187,6 +187,8 @@ function retornaChamadaIntegracaoLaboratorial(link)
     end if 
 end function 
 
+
+
 function verificaStatusIntegracaoConta(tabela,id)
     arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(session("UnidadeID")),"|")
     resultado = 0

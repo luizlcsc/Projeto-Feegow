@@ -1,5 +1,5 @@
-﻿<%
-'server.ScriptTimeout = 200
+<%
+server.ScriptTimeout = 300
 d = req("debug")
 if d="1" then
     d=True

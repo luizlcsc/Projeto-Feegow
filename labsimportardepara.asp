@@ -15,10 +15,6 @@ else
 </div>
 
 <script type="text/javascript">
-    getUrl("labs-integration/importar-de-para-view",{}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
+    <% response.write(retornaChamadaIntegracaoLaboratorial("importar-de-para-view")) %>
 </script>
 <% end if %>

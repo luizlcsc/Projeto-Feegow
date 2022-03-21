@@ -6,8 +6,6 @@
     $(".crumb-trail").removeClass("hidden");
 </script>
 <br />
-
-
 <div class="panel">
         <div class="panel-body">
             <div class="app" style="padding-top: 11px;">
@@ -15,13 +13,6 @@
             </div>
         </div>
 </div>
-
 <script type="text/javascript">
-
-    getUrl("labs-integration/LabsConfig", {}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+    <% response.write(retornaChamadaIntegracaoLaboratorial("LabsConfig")) %>
 </script>

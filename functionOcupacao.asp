@@ -1,4 +1,4 @@
-﻿<%
+<%
 server.ScriptTimeout = 200
 d = req("debug")
 if d="1" then

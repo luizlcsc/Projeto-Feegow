@@ -1,5 +1,5 @@
 ﻿<%
-'server.ScriptTimeout = 200
+server.ScriptTimeout = 200
 d = req("debug")
 if d="1" then
     d=True
@@ -27,19 +27,19 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         agendamentosNaoPagos = AgendamentosNaoPagosSQL("agendamentosNaoPagos")&""
 
         if agendamentosNaoPagos<>"" then
-            db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND id in ("&agendamentosNaoPagos&");")
+            db_execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND id in ("&agendamentosNaoPagos&");")
         end if
     end if
 
-    db.execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))
+    db_execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))
     response.Buffer
     profissionais=rfProfissionais
 
     sqlLimitarProfissionais =""
 
-    if User&"" = "" then
+    if User&"" <> "" then
         if lcase(session("table"))="funcionarios" then
-             set FuncProf = db.execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
+             set FuncProf = db_execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
              if not FuncProf.EOF then
              profissionaisExibicao=FuncProf("Profissionais")
                 if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
@@ -49,7 +49,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
              end if
 
         elseif lcase(session("table"))="profissionais" then
-             set FuncProf = db.execute("SELECT AgendaProfissionais FROM profissionais WHERE id="&session("idInTable"))
+             set FuncProf = db_execute("SELECT AgendaProfissionais FROM profissionais WHERE id="&session("idInTable"))
              if not FuncProf.EOF then
              profissionaisExibicao=FuncProf("AgendaProfissionais")
                 if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
@@ -68,7 +68,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                    "SELECT EspecialidadeID FROM profissionaisespecialidades WHERE ProfissionalID IN ("&rfProfissionais&") "&_
                    ") t"
 
-        set ProfissionalSQL = db.execute(sqlEsp2)
+        set ProfissionalSQL = db_execute(sqlEsp2)
         if not ProfissionalSQL.eof then
             refEspecialidade=ProfissionalSQL("EspecialidadeID")&""
         end if
@@ -83,7 +83,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         sqlProcFiltro = "select ifnull(OpcoesAgenda, 0) OpcoesAgenda, SomenteProfissionais, SomenteEquipamentos, SomenteEspecialidades, SomenteLocais, EquipamentoPadrao from procedimentos where id="&ProcedimentoID
 
 
-        set proc = db.execute(sqlProcFiltro)
+        set proc = db_execute(sqlProcFiltro)
         if not proc.eof then
 
             OpcoesAgenda=proc("OpcoesAgenda")
@@ -141,8 +141,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             end if
 
             if SomenteEspecialidades&"" <> "" then
-                set GroupConcat = db.execute("SET SESSION group_concat_max_len = 1000000;")
-                set profesp = db.execute("select group_concat(pro.id) Profissionais from profissionais pro LEFT JOIN profissionaisespecialidades pe on pe.ProfissionalID=pro.id where pro.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &") or pe.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &")")
+                set GroupConcat = db_execute("SET SESSION group_concat_max_len = 1000000;")
+                set profesp = db_execute("select group_concat(pro.id) Profissionais from profissionais pro LEFT JOIN profissionaisespecialidades pe on pe.ProfissionalID=pro.id where pro.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &") or pe.EspecialidadeID IN("& replace(SomenteEspecialidades, "|", "") &")")
 
                 sqlEspecialidades = ""
                 if not profesp.eof then
@@ -176,7 +176,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     end if
 
     if ProcedimentoID<>"" then
-        set EspecialidadesPermitidasNoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+        set EspecialidadesPermitidasNoProcedimentoSQL = db_execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
         if not EspecialidadesPermitidasNoProcedimentoSQL.eof then
             ProcedimentoSomenteEspecialidades = EspecialidadesPermitidasNoProcedimentoSQL("SomenteEspecialidades")
         end if
@@ -255,32 +255,33 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         sqlProfissionais = " AND p.id IN ("& replace(rfProfissionais, "|", "") &") "
                     else
 
-                    've se deve seprar por paciente
-                         sqlProfissionais =""
-                        if lcase(session("table"))="funcionarios" then
-                             set FuncProf = db.execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
-                             if not FuncProf.EOF then
-                                profissionaisExibicao=FuncProf("Profissionais")
-                                if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
-                                    profissionaisExibicao = replace(profissionaisExibicao, "|", "")
-                                    if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
-                                        sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
+                        if User&"" <> "" then
+                        've se deve seprar por paciente
+                            sqlProfissionais =""
+                            if lcase(session("table"))="funcionarios" then
+                                set FuncProf = db_execute("SELECT Profissionais FROM funcionarios WHERE id="&session("idInTable"))
+                                if not FuncProf.EOF then
+                                    profissionaisExibicao=FuncProf("Profissionais")
+                                    if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
+                                        profissionaisExibicao = replace(profissionaisExibicao, "|", "")
+                                        if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
+                                            sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
+                                        end if
                                     end if
                                 end if
-                             end if
-                        elseif lcase(session("table"))="profissionais" then
-                             set FuncProf = db.execute("SELECT AgendaProfissionais FROM profissionais WHERE id="&session("idInTable"))
-                             if not FuncProf.EOF then
-                                profissionaisExibicao=FuncProf("AgendaProfissionais")
-                                if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
-                                    profissionaisExibicao = replace(profissionaisExibicao, "|", "")
-                                    if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
-                                        sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
+                            elseif lcase(session("table"))="profissionais" then
+                                set FuncProf = db_execute("SELECT AgendaProfissionais FROM profissionais WHERE id="&session("idInTable"))
+                                if not FuncProf.EOF then
+                                    profissionaisExibicao=FuncProf("AgendaProfissionais")
+                                    if not isnull(profissionaisExibicao) and profissionaisExibicao<>"" then
+                                        profissionaisExibicao = replace(profissionaisExibicao, "|", "")
+                                        if profissionaisExibicao<>"" and profissionaisExibicao&""<>"0" then
+                                            sqlProfissionais = " AND p.id IN ("&profissionaisExibicao&")"
+                                        end if
                                     end if
                                 end if
-                             end if
+                            end if
                         end if
-
                     end if
 
                     if rfProfissionais<>"" then
@@ -309,7 +310,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     sql = replace(sql, "[DiaSemana]", DiaSemana)
 
                     '-> BUSCANDO SE TEM GRADE
-                    set comGrade = db.execute( sql )
+                    set comGrade = db_execute( sql )
                     if comGrade.eof then
                         %>
                         <%
@@ -333,7 +334,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                         end if
 
                         if ProcedimentoID<>"" then
-                            set EspecialidadesPermitidasNoProcedimentoSQL = db.execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
+                            set EspecialidadesPermitidasNoProcedimentoSQL = db_execute("SELECT SomenteEspecialidades FROM procedimentos WHERE id="&treatvalzero(ProcedimentoID))
                             if not EspecialidadesPermitidasNoProcedimentoSQL.eof then
                                 ProcedimentoSomenteEspecialidades = EspecialidadesPermitidasNoProcedimentoSQL("SomenteEspecialidades")
                             end if
@@ -353,9 +354,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                         Hora = cdate("00:00")
                         '!!!X
-                        set Horarios = db.execute("select ass.intervalo, ass.LocalID, ass.Procedimentos, ass.id, ass.HoraDe, ass.HoraA, ass.ProfissionalID, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, Especialidades, '' Horarios, ass.Compartilhar Compartilhada from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" "&sqlUnidadesHorarios & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by HoraDe")
+                        set Horarios = db_execute("select ass.intervalo, ass.LocalID, ass.Procedimentos, ass.id, ass.HoraDe, ass.HoraA, ass.ProfissionalID, l.UnidadeID, '0' TipoGrade, '0' GradePadrao, '' Procedimentos, Especialidades, '' Horarios, ass.Compartilhar Compartilhada from assperiodolocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" "&sqlUnidadesHorarios & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by HoraDe")
                         if Horarios.EOF then
-                            set Horarios = db.execute("select ass.Especialidades, ass.intervalo, ass.FrequenciaSemanas, ass.InicioVigencia, ass.LocalID, ass.Procedimentos, ass.id, ass.HoraDe, ass.HoraA, ass.ProfissionalID, ass.TipoGrade, l.UnidadeID, '1' GradePadrao, Horarios, ass.Compartilhada from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by ass.HoraDe")
+                            set Horarios = db_execute("select ass.Especialidades, ass.intervalo, ass.FrequenciaSemanas, ass.InicioVigencia, ass.LocalID, ass.Procedimentos, ass.id, ass.HoraDe, ass.HoraA, ass.ProfissionalID, ass.TipoGrade, l.UnidadeID, '1' GradePadrao, Horarios, ass.Compartilhada from assfixalocalxprofissional ass LEFT JOIN locais l on l.id=ass.LocalID where ass.ProfissionalID="&ProfissionalID&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) "&sqlUnidadesHorarios & sqlProcedimentosGrade& sqlGradeEspecialidade &" order by ass.HoraDe")
                         end if
                         sqlInsertV = ""
                         EspecialidadesGrade=""
@@ -431,7 +432,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                                         Bloqueia = ""
                                         if Procedimentos<>"" and session("RemSol")<>"" then
-                                            set procRem = db.execute("select TipoCompromissoID from agendamentos where id="& session("RemSol"))
+                                            set procRem = db_execute("select TipoCompromissoID from agendamentos where id="& session("RemSol"))
                                             if not procRem.eof then
                                                 if instr(Procedimentos, "|"& procRem("TipoCompromissoID") &"|")=0 then
                                                     Bloqueia = "S"
@@ -477,7 +478,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             if sqlInsertV<>"" then
                                 sqlInsertV = right(sqlInsertV, len(sqlInsertV)-1)
                                 sqlI ="insert into agenda_horarios (sysUser, Data, Hora, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, TipoGrade, GradeID, GradeOriginal,ExibeAgendamentoOnline) VALUES "& sqlInsertV
-                                db.execute(sqlI)
+
+                                db_execute(sqlI)
                             end if
 
                             IF 1 THEN
@@ -487,8 +489,12 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 whereEspecialidadesAgendamentos = " AND a.EspecialidadeID="&EspecialidadeID
                             end if
 
-                            set comps=db.execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_
+                            set comps=db_execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_
                             "where a.ProfissionalID="&ProfissionalID&" and a.Data="&mydatenull(Data) & whereLocaisUnidades &whereEspecialidadesAgendamentos &" and a.sysActive=1 order by Hora")
+
+                            sqlInsertCompromissos = ""
+                            deleteHorariosAgendamento = ""
+
                             while not comps.EOF
                                 HoraComp = HoraToID(comps("Hora"))
                                 EspecialidadeIDAgendada = comps("EspecialidadeID")
@@ -503,7 +509,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                                 'soma o tempo dos procedimentos anexos
                                 if VariosProcedimentos<>"" and instr(VariosProcedimentos, ",") then
-                                    set ProcedimentosAnexosTempoSQL = db.execute("SELECT sum(Tempo)Tempo, sum(IF(rdValorPlano='V',ValorPlano,0))Valor FROM agendamentosprocedimentos WHERE Tempo IS NOT NULL AND AgendamentoID="&comps("id"))
+                                    set ProcedimentosAnexosTempoSQL = db_execute("SELECT sum(Tempo)Tempo, sum(IF(rdValorPlano='V',ValorPlano,0))Valor FROM agendamentosprocedimentos WHERE Tempo IS NOT NULL AND AgendamentoID="&comps("id"))
                                     if not ProcedimentosAnexosTempoSQL.eof then
                                         if not isnull(ProcedimentosAnexosTempoSQL("Tempo")) then
                                             Tempo = Tempo + ccur(ProcedimentosAnexosTempoSQL("Tempo"))
@@ -555,9 +561,11 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
                                 StaID = comps("StaID")
                                 if StaID<>11 and StaID<>22 and LiberaInsert then
-                                    sqlDel = "DELETE FROM agenda_horarios WHERE sysUser="& treatvalzero(session("User")) &" AND Situacao='V' AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(Horario) &" AND "& mytime(HoraFinal)
+                                    
                                     'response.write( sqlDel &"<br>")
-                                    db.execute( sqlDel )
+                                    'db_execute( sqlDel )
+                                    deleteHorariosAgendamento = deleteHorariosAgendamento & " OR (Hora BETWEEN "&mytime(Horario) &" AND "& mytime(HoraFinal)&") "
+
                                 end if
 
 								if instr(txtGradeOriginal, "|"& ft(Horario) &"|")>0 AND StaID<>11 AND StaID<>22 then
@@ -567,30 +575,36 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 									GradeOriginal = "NULL"
 								end if
 
+                                'todo: tentar de implementar update em massa
+                                if 0 then
+                                    sqlGradeExcecao = "select id, Compartilhar from assperiodolocalxprofissional where  '"&horario&"' BETWEEN HoraDe  AND HoraA  AND  " & mydatenull(Data) & " BETWEEN DataDe AND DataA  AND ProfissionalID=" &treatvalnull(ProfissionalID) & " ORDER BY 1  "
+                                    set GradeExcecaoSQL = db_execute(sqlGradeExcecao)
 
-                                sqlGradeExcecao = "select id, Compartilhar from assperiodolocalxprofissional where  '"&horario&"' BETWEEN HoraDe  AND HoraA  AND  " & mydatenull(Data) & " BETWEEN DataDe AND DataA  AND ProfissionalID=" &treatvalnull(ProfissionalID) & " ORDER BY 1  "
-                                set GradeExcecaoSQL = db.execute(sqlGradeExcecao)
+                                    sqlGradeId=""
+                                    ExibeAgendamentoOnline=1
 
-                                sqlGradeId=""
-                                ExibeAgendamentoOnline=1
+                                    if not GradeExcecaoSQL.eof then
+                                        GradeID = GradeExcecaoSQL("id")*-1
+                                        sqlGradeId = ", GradeID="&treatvalnull(GradeID)
 
-                                if not GradeExcecaoSQL.eof then
-                                    sqlGradeId = ", GradeID="&treatvalnull(GradeExcecaoSQL("id")*-1)
-                                    if GradeExcecaoSQL("Compartilhar")="S" then
-                                        ExibeAgendamentoOnline=1
-                                    else
-                                        ExibeAgendamentoOnline=0
-                                    end if
-                                else
-                                    sqlGradePadrao0 = "select id, Compartilhada from assfixalocalxprofissional where DiaSemana = " & DiaSemana & " AND HoraDe <= " & mytime(horario) & " AND HoraA >= "  &  mytime(horario) &  " AND ( (InicioVigencia <= " &mydatenull(Data)& " OR InicioVigencia IS NULL) AND (FimVigencia >= " &mydatenull(Data)& " OR FimVigencia  IS NULL) )  AND ProfissionalID=" &treatvalzero(ProfissionalID)& " ORDER BY 1 "
-                                    set GradePadraoSQL = db.execute(sqlGradePadrao0)
-
-                                    if not GradePadraoSQL.eof then
-                                        sqlGradeId = ", GradeID="&treatvalnull(GradePadraoSQL("id"))
-                                        if GradePadraoSQL("Compartilhada")="S" then
+                                        if GradeExcecaoSQL("Compartilhar")="S" then
                                             ExibeAgendamentoOnline=1
                                         else
                                             ExibeAgendamentoOnline=0
+                                        end if
+                                    else
+                                        sqlGradePadrao0 = "select id, Compartilhada from assfixalocalxprofissional where DiaSemana = " & DiaSemana & " AND HoraDe <= " & mytime(horario) & " AND HoraA >= "  &  mytime(horario) &  " AND ( (InicioVigencia <= " &mydatenull(Data)& " OR InicioVigencia IS NULL) AND (FimVigencia >= " &mydatenull(Data)& " OR FimVigencia  IS NULL) )  AND ProfissionalID=" &treatvalzero(ProfissionalID)& " ORDER BY 1 "
+                                        set GradePadraoSQL = db_execute(sqlGradePadrao0)
+
+                                        if not GradePadraoSQL.eof then
+                                            GradeID=GradePadraoSQL("id")
+                                            sqlGradeId = ", GradeID="&treatvalnull(GradeID)
+
+                                            if GradePadraoSQL("Compartilhada")="S" then
+                                                ExibeAgendamentoOnline=1
+                                            else
+                                                ExibeAgendamentoOnline=0
+                                            end if
                                         end if
                                     end if
                                 end if
@@ -598,26 +612,40 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
 
                             if LiberaInsert then
-                                db.execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", ExibeAgendamentoOnline="&treatvalzero(ExibeAgendamentoOnline)&",Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal & sqlGradeId)
-                            '                            set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
+                                sqlInsertCompromissos = sqlInsertCompromissos & ", ("&treatvalzero(comps("id"))&", "&treatvalzero(session("User"))&", "&mydatenull(Data)&" ,"&mytime(Horario)&", "&StaID&", 'A', "&treatvalzero(ProfissionalID)&", "&EspecialidadeID&", "&treatvalzero(LocalID) &", "&treatvalzero(UnidadeID) &", "&treatvalzero(ExibeAgendamentoOnline)&", "&treatvalnull(comps("Encaixe"))&", "&GradeOriginal&", "&treatvalnull(GradeID) &" ) " 
+                                'db_execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", ExibeAgendamentoOnline="&treatvalzero(ExibeAgendamentoOnline)&",Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal & sqlGradeId)
+                            '                            set vcaPL = db_execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
                             '                            if vcaPL.eof then
-                            '                                set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
+                            '                                set vcaPL = db_execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
                             '                            end if
                             '                            while not vcaPL.eof
                             '                                if ft(vcaPL("Hora"))=ft(comps("Hora")) and ( StaID<>11 and StaID<>22) ) then
-                            '                                    db.execute("update agenda_horarios SET StaID="& StaID &", Situacao='A' WHERE")
+                            '                                    db_execute("update agenda_horarios SET StaID="& StaID &", Situacao='A' WHERE")
                             '                                end if
                             '                            vcaPL.movenext
                             '                            wend
                             '                            vcaPL.close
                             '                            set vcaPL = nothing
                                 else
-                                    db.execute("UPDATE agenda_horarios SET Situacao='A',Encaixe="&treatvalnull(comps("Encaixe"))&",AgendamentoID="&treatvalzero(comps("id"))&" where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Hora="& mytime(Horario) &" AND Situacao='V' AND ProfissionalID="& treatvalzero(ProfissionalID) &" and EspecialidadeID="& EspecialidadeID)
+                                    db_execute("UPDATE agenda_horarios SET Situacao='A',Encaixe="&treatvalnull(comps("Encaixe"))&",AgendamentoID="&treatvalzero(comps("id"))&" where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Hora="& mytime(Horario) &" AND Situacao='V' AND ProfissionalID="& treatvalzero(ProfissionalID) &" and EspecialidadeID="& EspecialidadeID)
                                 end if
                             comps.movenext
                             wend
                             comps.close
                             set comps = nothing
+                            
+                            if sqlInsertCompromissos<>"" then
+                                sqlInsertCompromissos = right(sqlInsertCompromissos, len(sqlInsertCompromissos)-1)
+                                db_execute("INSERT INTO agenda_horarios (AgendamentoID, sysUser, Data, Hora, StaID, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, ExibeAgendamentoOnline, Encaixe, GradeOriginal, GradeID) VALUES " &sqlInsertCompromissos )
+                            end if  
+
+                            if deleteHorariosAgendamento<>"" then
+                                sqlDel = "DELETE FROM agenda_horarios WHERE sysUser="& treatvalzero(session("User")) &" AND Situacao='V' AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" "&_
+                                " AND (0 "&deleteHorariosAgendamento&")"
+                                db_execute(sqlDel)
+                            end if
+
+                            
                         END IF
 
     if ProfissionalID&""="" then
@@ -627,7 +655,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     end if
     bloqueioSql = "select c.HoraDe, c.HoraA, c.Profissionais, c.id from compromissos c where (c.ProfissionalID='"& ProfissionalID &"' or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"& ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
    ' response.Write( bloqueioSql )
-    set bloq = db.execute(bloqueioSql)
+    set bloq = db_execute(bloqueioSql)
 
     while not bloq.EOF
 
@@ -646,7 +674,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         end if
 
         sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&",Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
-        db.execute( sqlUP )
+        db_execute( sqlUP )
 
         HBloqueados = HBloqueados + 1
 

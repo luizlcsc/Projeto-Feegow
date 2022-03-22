@@ -119,7 +119,14 @@ if MC="" then
         sql = "select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod"
         set dist = db.execute(sql)
     else
-        sql = "select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) ORDER BY lu.Nome, pm.PaymentMethod"
+        sql = "select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit, pac.CPF Identificacao, pac.NomePaciente NomeConta "&_
+        "FROM sys_financialmovement m  "&_
+        "LEFT JOIN caixa cx ON cx.id=m.CaixaID  "&_
+        "LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID  "&_
+        "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser  "&_
+        "LEFT JOIN pacientes pac on pac.id=m.AccountIDCredit AND m.AccountAssociationIDCredit=3 "&_
+        "WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) ORDER BY lu.Nome, pm.PaymentMethod"
+        
         set dist = db.execute(sql)
     end if
     'response.write(sql)
@@ -137,11 +144,12 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="<% if DetalharEntradas="S" then %>8<%else%>5<% end if %>"><%= Titulo %></th>
+            <th colspan="<% if DetalharEntradas="S" then %>9<%else%>6<% end if %>"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
             <th >Forma</th>
             <th >Descrição</th>
+            <th >Identificação</th>
 
             <%
             if DetalharEntradas="S" then
@@ -163,6 +171,15 @@ if not dist.eof then
     while not dist.eof
         Executantes=""
         NomeTabela=""
+        Descricao=""
+        Identificacao=""
+
+        if FieldExists(dist, "NomeConta") then
+            if dist("NomeConta")&""<>"" then
+                Descricao = dist("NomeConta")&""
+                Identificacao = dist("Identificacao")&""
+            end if
+        end if
 
         if MC="" then
             if DetalharEntradas="S" then
@@ -178,7 +195,10 @@ if not dist.eof then
                         nroNFe = desc("nroNFe")
                     end if
                 end if
-                Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit"))
+
+                if Descricao="" then
+                    Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit"))
+                end if
                 Procedimentos = "<a style='cursor:pointer' onclick=""window.open('./?P=Invoice&Pers=1&CD=C&I="& desc("InvoiceID") &"')"" >"& Procedimentos &"</code> "
 
             else
@@ -201,7 +221,11 @@ if not dist.eof then
                         nroNFe = desc("nroNFe")
                     end if
                 end if
-                Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit")) & nroNFe
+
+                if Descricao="" then
+                    Descricao = accountName(dist("AccountAssociationIDCredit"), dist("AccountIDCredit"))
+                end if
+                Descricao = Descricao & nroNFe
             else
                 set soma = db.execute("select sum(Value) Total from sys_financialmovement where CaixaID="& session("CaixaID") &" AND PaymentMethodID='"& dist("PaymentMethodID") &"' AND ((AccountAssociationIDDebit=7 AND AccountIDDebit="& session("CaixaID") &" AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15)))")
                 if not soma.eof then
@@ -230,6 +254,7 @@ if not dist.eof then
         <tr>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
+            <td><%= Identificacao %></td>
             <%
             if DetalharEntradas="S" then
             %>
@@ -414,9 +439,26 @@ Debito = 0
 Titulo = "SAÍDAS"
 Classe = "warning"
 if MC="" then
-    sql = "select m.name,m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod"
+    sql = "select m.name,m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit, COALESCE(forn.NomeFornecedor, prof.NomeProfissional) NomeConta,  COALESCE(forn.CPF, prof.CPF) Identificacao  "&_
+    "FROM sys_financialmovement m  "&_
+    "LEFT JOIN caixa cx ON cx.id=m.CaixaID  "&_
+    "LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID  "&_
+    "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser  "&_
+    "LEFT JOIN fornecedores forn ON forn.id= m.AccountIDDebit AND m.AccountAssociationIDDebit=2 "&_
+    "LEFT JOIN profissionais prof ON prof.id= m.AccountIDDebit AND m.AccountAssociationIDDebit=5 "&_
+    "WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.Date="& mData &"  "&_
+    "AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod"
 else
-    sql  = "select m.name, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) AND m.CaixaID="& session("CaixaID") &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) ORDER BY lu.Nome, pm.PaymentMethod"
+    sql  = "select m.name, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit, COALESCE(forn.NomeFornecedor, prof.NomeProfissional) NomeConta,  COALESCE(forn.CPF, prof.CPF) Identificacao "&_
+    "FROM sys_financialmovement m "&_
+    "LEFT JOIN caixa cx ON cx.id=m.CaixaID "&_
+    "LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID "&_
+    "LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser "&_
+    "LEFT JOIN fornecedores forn ON forn.id= m.AccountIDDebit AND m.AccountAssociationIDDebit=2 "&_
+    "LEFT JOIN profissionais prof ON prof.id= m.AccountIDDebit AND m.AccountAssociationIDDebit=5 "&_
+    "WHERE m.AccountAssociationIDCredit=7 AND m.AccountIDCredit=cx.id AND m.AccountAssociationIDDebit NOT IN(1,7) "&_
+    "AND m.CaixaID="& session("CaixaID") &" AND NOT ISNULL(m.CaixaID) AND NOT ISNULL(m.PaymentMethodID) "&_
+    "ORDER BY lu.Nome, pm.PaymentMethod"
 end if
 'response.write(sql)
 set dist = db.execute(sql)
@@ -426,18 +468,32 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="4"><%= Titulo %></th>
+            <th colspan="5"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
             <th width="20%">Forma</th>
-            <th width="35%">Descrição</th>
+            <th width="25%">Descrição</th>
+            <th width="10%">Identificação</th>
             <th width="35%">Usuário</th>
             <th width="10">Valor</th>
         </tr>
     <tbody>
     <%
     while not dist.eof
-        Descricao = accountName(dist("AccountAssociationIDDebit"), dist("AccountIDDebit"))
+        Descricao=""
+        Identificacao=""
+
+        if FieldExists(dist, "NomeConta") then
+            if dist("NomeConta")&""<>"" then
+                Descricao = dist("NomeConta")&""
+                Identificacao = dist("Identificacao")&""
+            end if
+        end if
+
+        if Descricao="" then
+            Descricao = accountName(dist("AccountAssociationIDDebit"), dist("AccountIDDebit"))
+        end if
+
         Valor = dist("Value")
         select case dist("PaymentMethodID")
             case 1
@@ -459,6 +515,7 @@ if not dist.eof then
         <tr>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
+            <td><%= Identificacao %></td>
             <td><%= dist("Nome") %></td>
             <td class="text-right">R$ <%= fn(Valor) %></td>
         </tr>

@@ -296,8 +296,8 @@ end if
   <script src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew/adapters/jquery.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/js/list.min.js"></script>
+  <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/vendor/wootric/wootric-sdk.js"></script>
   
 
   <%
@@ -1810,8 +1810,8 @@ hash_chat: 'FFCHAT01'
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
   <!-- Notificações (Alerts, Confirms, etc)  -->
-  <script src="./vendor/plugins/pnotify/pnotify.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/pnotify/pnotify.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/pnotify/pnotify.confirm.min.js"></script>
 
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
@@ -1820,7 +1820,7 @@ hash_chat: 'FFCHAT01'
     <!-- old sms -->
     	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
-		<script src="./assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -2769,7 +2769,7 @@ end if
  gtag('config', 'UA-54670639-4');
 </script>
 
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.feegow.com/feegowclinic-v7/vendor/sweetalert/sweetalert2@11.js"></script>
 <script>
 
 function chatNotificacao(titulo, mensagem) {

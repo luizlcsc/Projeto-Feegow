@@ -1,8 +1,4 @@
 <%
-if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("banco")="clinic5760" then
-'    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
-end if
-
 if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     QueryStringParameters = request.QueryString
 

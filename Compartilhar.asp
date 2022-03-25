@@ -57,7 +57,7 @@ else
                     'xx
                     IF vca("Autoriza")="S" THEN
                     %>
-                    <em class="text-success"><i class="far fa-check-circle text-success"></i> Aceite declarado por <%= nameInTable(vca("sysUser")) &" em "& vca("sysDate") %></em><br>
+                    <em class="text-success"><i class="far fa-check-circle text-success"></i> Autorização concedida por <%= nameInTable(vca("sysUser")) &" em "& vca("sysDate") %></em><br>
                     <%
                     ELSE
                     %>

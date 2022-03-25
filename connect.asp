@@ -3598,6 +3598,7 @@ executeInReadOnly = False
     if tipoLog = "select" then
         executeInReadOnly = True
     end if
+
     if executeInReadOnly and False then
         set db_execute = dbReadOnly.execute(sqlStatement)
     else

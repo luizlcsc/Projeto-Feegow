@@ -2,10 +2,24 @@
 <%
 'variaveis estão no arquivo timeline.asp
 CareTeam = getConfig("ExibirCareTeam")
+ExigirAutorizacaoAcessoProntuario = getConfig("ExigirAutorizacaoAcessoProntuario")
+PacienteAutorizaAcesso = True
+
 sysActiveRecords = "1"
 if showInactive="1" then
     sysActiveRecords = "1,-1"
 end if
+
+IF ExigirAutorizacaoAcessoProntuario&""="1" or 1 THEN
+    set ConfigCompartilhamentoSQL = db.execute("SELECT Autoriza FROM compartilhar WHERE PacienteID="&PacienteID&" ORDER BY id DESC LIMIT 1")
+    PacienteAutorizaAcesso = False
+    
+    if not ConfigCompartilhamentoSQL.eof then
+        IF ConfigCompartilhamentoSQL("Autoriza")="S" THEN
+            PacienteAutorizaAcesso=True
+        END IF
+    end if
+END IF
 
 'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
 'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
@@ -192,12 +206,18 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 PermissaoArquivo=true
             end if
 
+
             if typename(preen)="Recordset" then
                 if not preen.eof then
                     if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
                         PermissaoArquivo = true
                     end if 
                 end if
+            end if
+
+            if not PacienteAutorizaAcesso and cstr(session("User"))<>ti("sysUser")&"" then
+                PermissaoArquivo=false
+                MotivoPermissaoArquivo = "O paciente não forneceu permissão de acesso ao prontuário."
             end if
 
             if not PermissaoArquivo then
@@ -211,7 +231,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
                 %>
             <div class="timeline-item <%=hiddenRegistro%>">
-                <div class="timeline-icon hidden-xs">
+                <div title="<%=MotivoPermissaoArquivo%>" class="timeline-icon hidden-xs">
                     <span class="far fa-lock text-danger"></span>
                 </div>
                 <div class="panel">

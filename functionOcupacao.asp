@@ -26,7 +26,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     if not AgendamentosNaoPagosSQL.eof then
         agendamentosNaoPagos = AgendamentosNaoPagosSQL("agendamentosNaoPagos")&""
 
-        if agendamentosNaoPagos<>"" then
+        if agendamentosNaoPagos<>"" and license_id&"" <> "7211" then
             db_execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND id in ("&agendamentosNaoPagos&");")
         end if
     end if

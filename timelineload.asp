@@ -10,7 +10,7 @@ if showInactive="1" then
     sysActiveRecords = "1,-1"
 end if
 
-IF ExigirAutorizacaoAcessoProntuario&""="1" or 1 THEN
+IF ExigirAutorizacaoAcessoProntuario&""="1" THEN
     set ConfigCompartilhamentoSQL = db.execute("SELECT Autoriza FROM compartilhar WHERE PacienteID="&PacienteID&" ORDER BY id DESC LIMIT 1")
     PacienteAutorizaAcesso = False
     

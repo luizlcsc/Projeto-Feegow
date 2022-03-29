@@ -484,7 +484,7 @@
     </li>
     <%
         end if
-        if aut("|honorarios|")=1 then
+        if aut("|honorariosV|")=1 then
     %>
     <li <% If req("P")="Honorarios" Then %> class="active"<% End If %>>
         <a href="./?P=Honorarios&Pers=1">

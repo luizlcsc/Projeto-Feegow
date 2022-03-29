@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
+
 <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
 <script type="text/javascript">
     $(".crumb-active a").html("Relacionamento de Procedimentos");
@@ -38,13 +39,7 @@ select Case idLab
     case 4
      labnome = "hermespardini"
 End Select
+response.write(retornaChamadaIntegracaoLaboratorial(labnome&"/proc-relation")) 
 %>
-    getUrl("labs-integration/<%=labnome %>/proc-relation", {
-        input: "<%=Input%>", labid:"<%=idLab%>"
-    }, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+   
 </script>

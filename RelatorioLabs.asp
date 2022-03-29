@@ -12,11 +12,5 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
-
-    getUrl("labs-integration/invoice-report",{}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
-
+    <% response.write(retornaChamadaIntegracaoLaboratorial("invoice-report")) %>
 </script>

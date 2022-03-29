@@ -2,10 +2,6 @@
 
     set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&treatvalzero(InvoiceID))
     'Caso exista alguma integração para este ítem desabilitar o botão
-    sqlintegracao = " SELECT lia.id, lie.StatusID FROM labs_invoices_amostras lia "&_
-				" inner JOIN labs_invoices_exames lie ON lia.id = lie.AmostraID "&_
-				" WHERE lia.InvoiceID = "&treatvalzero(InvoiceID)&" AND lia.ColetaStatusID <> 5 "
-    set integracaofeita = db.execute(sqlintegracao)
 
     ExecutantesTipos = "5, 8, 2"
     if session("Banco")="clinic6118" then
@@ -18,7 +14,7 @@
     	<input type="hidden" name="AtendimentoID<%=id%>" id="AtendimentoID<%=id%>" value="<%=AtendimentoID%>">
     	<input type="hidden" name="AgendamentoID<%=id%>" id="AgendamentoID<%=id%>" value="<%=AgendamentoID%>">
 		<%=quickField("text", "Quantidade"&id, "", 4, Quantidade, " text-right disable", "", " required onkeyup=""recalc($(this).attr('id'))"""&disabled)%><input type="hidden" name="inputs" value="<%= id %>">
-        <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" />
+        <input type="hidden" name="Tipo<%=id %>" value="<%=Tipo %>" /> 
     </td>
         <%
         if Tipo="S" then
@@ -224,9 +220,6 @@
         <td><%=quickField("text", "Acrescimo"&id, "", 4, fn(Acrescimo), " input-mask-brl text-right disable", "", " data-acrescimo='"&fn(Acrescimo)&"' onkeyup=""recalc($(this).attr('id'))""")%></td>
     <% end if %>
 
-
-
-
     <td class="text-right" data-valor="<%= fn( Subtotal) %>" id="sub<%=id%>" nowrap>R$ <%= fn( Subtotal) %></td>
     <td><button
     <% if id<0 then %>
@@ -253,7 +246,7 @@
             end if
         end if
 
-        if not integracaofeita.eof then
+        if retintegracaofeita = 1 then
             PodeExcluirItem = False
         end if
 

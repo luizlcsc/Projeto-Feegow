@@ -25,9 +25,9 @@ if lcase(session("Table"))="profissionais" then
 end if
 
 sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
-             " FROM profissionais p " &_
-             " WHERE sysActive AND ativo='on'  " &_
-             " ORDER BY NomeProfissional "
+                    " FROM profissionais p " &_
+                    " WHERE sysActive AND ativo='on'  " &_
+                    " ORDER BY NomeProfissional "
 %>
 
 
@@ -59,40 +59,38 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
 
         </div>
     </div>
-    
 
+    <div class="panel">
+        <div class="panel-heading">
+        <span class="panel-title">
+            <span class="fa fa-table"></span>Lista de Laudos Laboratoriais</span>
+        <div class="pull-right">
 
-<div class="panel">
-    <div class="panel-heading">
-      <span class="panel-title">
-        <span class="far fa-table"></span>Lista de Laudos Laboratoriais</span>
-      <div class="pull-right">
-
-      </div>
+        </div>
+        </div>
+        <div class="panel-body pn" id="divListaLaudos">
+            
+        </div>
     </div>
-    <div class="panel-body pn" id="divListaLaudos">
-        
-    </div>
-</div>
-<script type="text/javascript">
-    function buscalaudos()
-    {
-        $("#divListaLaudos").html('<table width="100%"><tbody><TR><TD style="text-align: center;"><i style="text-align: center; margin: 30px;" class="far fa-spin fa-spinner"></i></TD></TR></tbody></table>');
-        var id  = $("#id").val();
-        var datade = $("#De").val();
-        var dataate = $("#Ate").val();
-        var tipodata = $("#TipoData").val();
-        var unidade = $("#Unidades").val();
-        var profissional = $("#ProfissionalID").val();
-        var status = $("#Status").val();
-        var paciente = $("#PacienteID").val();
-        postUrl("labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidade:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
-            $("#divListaLaudos").hide();
-            $("#divListaLaudos").html(data);
-            $("#divListaLaudos").fadeIn('slow');
-        });
-    }
+    <script type="text/javascript">
+        function buscalaudos()
+        {
+            $("#divListaLaudos").html('<table width="100%"><tbody><TR><TD style="text-align: center;"><i style="text-align: center; margin: 30px;" class="fa fa-spin fa-spinner"></i></TD></TR></tbody></table>');
+            var id  = $("#id").val();
+            var datade = $("#De").val();
+            var dataate = $("#Ate").val();
+            var tipodata = $("#TipoData").val();
+            var unidade = $("#Unidades").val();
+            var profissional = $("#ProfissionalID").val();
+            var status = $("#Status").val();
+            var paciente = $("#PacienteID").val();
+            postUrl("labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidade:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
+                $("#divListaLaudos").hide();
+                $("#divListaLaudos").html(data);
+                $("#divListaLaudos").fadeIn('slow');
+            });
+        }
 
-</script>
+    </script>
 
 

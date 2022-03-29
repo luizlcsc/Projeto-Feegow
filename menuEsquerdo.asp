@@ -31,7 +31,7 @@ select case lcase(req("P"))
                     </div>
                 </form>
             </div>
-        </li>
+        </li>  
 
 
 <%
@@ -1134,11 +1134,23 @@ end if
         <li>
             <a  href="?P=Laudos&Pers=1"><span class="far fa-file-text"></span> <span class="sidebar-title">Laudos</span></a>
         </li>
-        <%  if recursoAdicional(24)=4 then %>
-        <li>
-            <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
-        </li>
-        <% end if %>
+        <% 
+        arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
+        if arrayintegracao(0) = "1" then 
+            if arrayintegracao(1) = "1" then
+                %>
+                <li>
+                    <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) </span></a>
+                </li>
+                <%
+            else
+                %>
+                <li>
+                    <a  href="?P=laudosLab&Pers=1"><span class="far fa-flask"></span> <span class="sidebar-title">Laudos Laboratoriais (Integração) <span class="label label-system label-xs fleft">Novo</span></span></a>
+                </li>
+                <%
+            end if
+        end if  %>
         <li class="hidden">
             <a  href="?P=Frases&Pers=0"><span class="far fa-paragraph"></span> <span class="sidebar-title">Cadastro de frases </span></a>
         </li>
@@ -1958,39 +1970,39 @@ end if
         </li>
         <%end if%>
         <%if aut("relatoriospacienteperfilV")=1 then %>
-        <li>
-            <a href="#" class="accordion-toggle menu-open">
-                <span class="far fa-user"></span>
-                <span class="sidebar-title"> Pacientes </span>
+            <li>
+                <a href="#" class="accordion-toggle menu-open">
+                    <span class="far fa-user"></span>
+                    <span class="sidebar-title"> Pacientes </span>
 
-                <span class="caret"></span>
-            </a>
+                    <span class="caret"></span>
+                </a>
 
-            <ul class="nav sub-nav">
-                <li>
-                    <a href="javascript:callReport('rpPerfil');">
-                                            <i class="far fa-double-angle-right"></i>
-                                            Por Perfil
-                                        </a>
-                </li>
+                <ul class="nav sub-nav">
+                    <li>
+                        <a href="javascript:callReport('rpPerfil');">
+                                                <i class="far fa-double-angle-right"></i>
+                                                Por Perfil
+                                            </a>
+                    </li>
 
 
-                <li class="hidden">
-                    <a href="javascript:callReport('CadastrosEfetuadosPorPeriodo');">
-                        <i class="far fa-double-angle-right"></i>
-                        Por Data de Cadastro
-                    </a>
-                </li>
+                    <li class="hidden">
+                        <a href="javascript:callReport('CadastrosEfetuadosPorPeriodo');">
+                            <i class="far fa-double-angle-right"></i>
+                            Por Data de Cadastro
+                        </a>
+                    </li>
 
-                <li class="hidden">
-                    <a href="javascript:callReport('rpSatisfacao');">
-                        <i class="far fa-double-angle-right"></i>
-                        Satisfação dos Pacientes <span class="label label-system label-xs fleft">Novo</span>
-                    </a>
-                </li>
+                    <li class="hidden">
+                        <a href="javascript:callReport('rpSatisfacao');">
+                            <i class="far fa-double-angle-right"></i>
+                            Satisfação dos Pacientes <span class="label label-system label-xs fleft">Novo</span>
+                        </a>
+                    </li>
 
-            </ul>
-        </li>
+                </ul>
+            </li>
         <%end if%>
         <li class="open hidden">
             <a href="#" class="dropdown-toggle">
@@ -2027,6 +2039,20 @@ end if
         <li>
             <a href="#" class="accordion-toggle menu-open">
                 <span class="far fa-calendar"></span>
+                <span class="sidebar-title"> Integração Laboratorial </span>
+                <span class="caret"></span>
+            </a>
+            <% 
+                if verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))="1|1" or verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))="1|2" then
+                    %>   
+                    <!--#include file="menuRelatoriosIntegracaoLaboratorial.asp"-->
+                    <% 
+                end if 
+            %>
+        </li>
+        <li>
+            <a href="#" class="accordion-toggle menu-open">
+                <span class="far fa-calendar"></span>
                 <span class="sidebar-title"> Agenda </span>
 
                 <span class="caret"></span>
@@ -2036,64 +2062,38 @@ end if
                 <%
                 if aut("|agendaV|")=1 or lcase(session("Table"))="profissionais" then
                 %>
+                    <li>
+                        <a href="#" onClick="callReport('DetalhesAtendimentos');">
+                            <i class="far fa-double-angle-right"></i>
+                            Agendamentos e Atendimentos
+                        </a>
+                    </li>
+                    <li class="hidden">
+                        <a href="#" onClick="callReport('rpAgendamentos');">
+                            <i class="far fa-double-angle-right"></i>
+                            Consultas e Retornos
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="#" onClick="callReport('DetalhesAtendimentos');">
-                        <i class="far fa-double-angle-right"></i>
-                        Agendamentos e Atendimentos
-                    </a>
-                </li>
-                <li class="hidden">
-                    <a href="#" onClick="callReport('rpAgendamentos');">
-                        <i class="far fa-double-angle-right"></i>
-                        Consultas e Retornos
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" onClick="callReport('OcupacaoMultipla');">
-                        <i class="far fa-double-angle-right"></i>
-                        Taxa de Ocupação
-                    </a>
-                </li>
-                <%
-                if recursoAdicional(35)=4 then
-                %>
-                <li>
-                    <a href="#" onClick="callReport('UraReport');">
-                        <i class="far fa-double-angle-right"></i>
-                        Relatório URA
-                    </a>
-                </li>
-                <%
-                end if
-                if recursoAdicional(24)=4 then
-                    set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-                    if not labAutenticacao.eof then
+                    <li>
+                        <a href="#" onClick="callReport('OcupacaoMultipla');">
+                            <i class="far fa-double-angle-right"></i>
+                            Taxa de Ocupação
+                        </a>
+                    </li>
+                    <%
+                    if recursoAdicional(35)=4 then
                     %>
-                <li>
-                    <a href="#" onClick="callReport('RelatorioLabs');">
-                        <i class="far fa-double-angle-right"></i>
-                        Mapa Laboratório
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onClick="callReport('ConferenciadeAmostras');">
-                        <i class="far fa-double-angle-right"></i>
-                        Conferência de Amostras
-                    </a>
-                </li>
-                <li>
-                    <a href="#" onClick="callReport('RelatorioRecoletas');">
-                        <i class="far fa-double-angle-right"></i>
-                        Relatório de Recoletas
-                    </a>
-                </li>
-
-                <%
-                end if
+                    <li>
+                        <a href="#" onClick="callReport('UraReport');">
+                            <i class="far fa-double-angle-right"></i>
+                            Relatório URA
+                        </a>
+                    </li>
+                    <%
                     end if
                 end if
+               
                 
                 if aut("|relatoriosagendaV|")=1 then
                 %>
@@ -2567,25 +2567,6 @@ end if
                 <i class="far fa-history"></i>
                  Logs
             </button>
-            <%
-                if recursoAdicional(24)=4 and LaudoID<>"" then
-                    set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-                    if not labAutenticacao.eof then
-                        sql = "SELECT ls.InvoiceID, ls.labid FROM labs_solicitacoes ls INNER JOIN laudos l ON ls.InvoiceID = l.IDTabela WHERE l.Tabela = 'sys_financialinvoices' and l.id ="&LaudoID
-                        set solicInfo = db.execute(sql)
-                        if not solicInfo.eof then
-                            InvoiceID = solicInfo("InvoiceID")
-                            labid = solicInfo("labid")
-            %>
-            <button type="button" id="syncInvoiceResultsButton" class="btn btn-primary btn-sm" onclick="javascript:syncLabResult([<%=InvoiceID%>],<%=labid%>)">
-                            <i class="far fa-flask"></i>
-                             Sincronizar resultados 
-                        </button>
-            <%
-                        end if
-                    end if
-                end if
-            %>
         </li>
 
         <%
@@ -2688,58 +2669,7 @@ end if
             telas.close
             set telas = nothing
     end if
-    case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs"
-        if recursoAdicional(24) = 4 and Aut("labsconfigintegracao") = 1 then
-    %>
-    <li>
-        <a href="?P=labscadastrocredenciais&Pers=1"><span class="far fa-users"></span> <span class="sidebar-title">Cadastro de Credenciais</span></a>
-    </li>
-<!--    <li>-->
-<!--        <a href="#"><span class="far fa-exchange"></span> <span class="sidebar-title">Sincronização de Resultados</span></a>-->
-<!--        -->
-<!--    </li>-->
-    <li>
-        <a href="?P=labsconfigintegracao&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Implantação de Laboratórios</span></a>
-    </li>
-    <li>
-        <a href="?P=labslistagemexames&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Listagem de exames</span></a>
-    </li>
-    <li>
-        <a href="?P=labslistagemprocedimentos&Pers=1"><span class="far fa-list "></span> <span class="sidebar-title">Listagem de procedimentos</span></a>
-    </li>
-    <li>
-        <a href="?P=labsimportardepara&Pers=1"><span class="far fa-download"></span> <span class="sidebar-title">Importar De/Para</span></a>
-    </li>
 
-    <%
-        set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE UnidadeID="&treatvalzero(session("UnidadeID")))
-        if not labAutenticacao.eof then
-        %>
-        
-        <li>
-            <a> <span class="far fa-link"></span> <span class="sidebar-title">Relacionamento laboratório</span> </a>
-        </li>
-        <li>                
-        <%
-            sqllabs = "SELECT distinct l.id, l.NomeLaboratorio "&_
-                      " FROM cliniccentral.labs l "&_
-                      " INNER JOIN labs_autenticacao la ON la.LabID = l.id"
-            set dadoslab = db.execute(sqllabs)
-            while not dadoslab.eof
-            %>
-            <li>
-                <a  href="?P=DeParaLabs&Pers=1&labid=<%=dadoslab("id")%>">
-                    &nbsp;&nbsp;&nbsp;<span class="far fa-angle-double-right"></span> <span class="sidebar-title" title="Procedimentos <=> Exames (<%=dadoslab("NomeLaboratorio")%>)"><%=dadoslab("NomeLaboratorio")%></span>
-                </a>
-            </li>
-            <% 
-            dadoslab.movenext
-            wend
-        %>
-        </li>
-        <%
-        end if
-    end if
     case "programasdesaude", "programasdesaudetipos"
     %>
     <li>
@@ -2757,6 +2687,8 @@ end if
     <li>
         <a href="?P=email_modelos&Pers=0"><span class="far fa-envelope"></span> <span class="sidebar-title">Modelos de e-mail</span></a>
     </li>
+
+    <!--#include file="menuIntegracaoLaboratorial.asp"-->
     <%
 end select
 

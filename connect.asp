@@ -1,6 +1,5 @@
 ﻿<!--#include file="functions.asp"-->
 <!--#include file="Classes/Connection.asp"-->
-
 <%
 Session.Timeout=600
 session.LCID=1046
@@ -1121,7 +1120,7 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
             <option value="<%=vazio%>">Selecione</option>
             <%
 			end if
-			set doSql = db.execute(sqlOrClass)
+			set doSql = db_execute(sqlOrClass)
 			while not doSql.EOF
 '				response.Write(cstr(doSql("id"))&"="&fieldValue)
 				%><option value="<%=doSql("id")%>"<% If doSql("id")=fieldValue or cstr(doSql("id"))=fieldValue Then %> selected="selected"<% End If %>><%=doSql(""&columnToShow&"")%></option>
@@ -3587,6 +3586,7 @@ function db_execute(txt)
 executeInReadOnly = False
 
     sqlStatement = txt
+    'response.write(sqlStatement)
 
     if sqlStatement&""<>"" then
         tipoLog = split(sqlStatement, " ")(0)
@@ -3621,9 +3621,6 @@ function gravaRepasse(SN, DominioID, ItemInvoiceID, ItemGuiaID, ProfissionalID)
 	end if
 
 	if SN=true or SN="S" then
-
-
-
 		'response.Write("Gravando as funcoes deste item invoice<br>")
 		set func = db.execute("select * from rateiofuncoes where DominioID="&DominioID)
 		while not func.eof
@@ -6272,15 +6269,15 @@ function verificaBloqueioConta(lockTypeId, accountTypeId, AccountId, UnidadeId, 
         datafechamento= arrayDatapagamento(2)&"-"&arrayDatapagamento(1)&"-"&arrayDatapagamento(0)
     end if
 
-    AccountId = replace(AccountId,"'","")
-    UnidadeId = replace(UnidadeId,"'","")
+    AccountId = replace(AccountId&"","'","")
+    UnidadeId = replace(UnidadeId&"","'","")
     datafechamento = replace(datafechamento,"'","")
     sql = " SELECT COUNT(id) as qtd " &_
           " FROM sys_financiallockaccounts fla " &_
           " WHERE date(fla.data ) >= date('"&datafechamento&"') " &_
-          " AND fla.UnidadeId = "&UnidadeId&" " &_
-          " AND fla.sysactive = 1 " &_
-          " -- AND fla.sysuserConfirmacao IS NOT null "
+          " AND fla.UnidadeId = "&treatValNULL(UnidadeId)&" " &_
+          " AND fla.sysactive = 1 " '&_
+         ' " -- AND fla.sysuserConfirmacao IS NOT null "
     set quant = db.execute(sql)
     if not quant.eof then
         if quant("qtd") <> "0" then
@@ -6368,11 +6365,11 @@ function invoicePaga(invoiceID)
  
     invoicePaga =false
  
-set dadosInvoice = db.execute("SELECT SUM(m.ValorPago) valorPago, i.Value "&_
-" FROM sys_financialinvoices i"&_
-" JOIN sys_financialmovement m ON m.InvoiceID = i.id "&_
-" WHERE i.id = "&invoiceID&_
-"")
+set dadosInvoice = db.execute(  "SELECT SUM(m.ValorPago) valorPago, i.Value "&_
+                                " FROM sys_financialinvoices i"&_
+                                " JOIN sys_financialmovement m ON m.InvoiceID = i.id "&_
+                                " WHERE i.id = "&invoiceID&_
+                                "")
 
 if not dadosInvoice.eof then
 if dadosInvoice("valorPago") => dadosInvoice("Value") then
@@ -6626,3 +6623,4 @@ function Ceil(Number)
     Ceil = round(Number+0.1)
 end function
 %>
+<!--#include file="funcoesIntegracaoLaboratorial.asp"-->

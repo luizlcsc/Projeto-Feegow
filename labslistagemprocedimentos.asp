@@ -15,10 +15,6 @@ else
 </div>
 
 <script type="text/javascript">
-    getUrl("labs-integration/listagem-procedimentos-view",{}, function(data) {
-        $(".app").hide();
-        $(".app").html(data);
-        $(".app").fadeIn('slow');
-    });
+    <% response.write(retornaChamadaIntegracaoLaboratorial("listagem-procedimentos-view")) %>
 </script>
 <% end if %>

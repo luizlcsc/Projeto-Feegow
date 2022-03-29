@@ -350,7 +350,7 @@ if not getResource.EOF then
             else
                 sqlValue = valnullToZero(ref(getFields("columnName")))
             end if
-        elseif getFields("fieldTypeID")=2 then
+        elseif getFields("fieldTypeID")=2 or getFields("fieldTypeID")=21  then
             sqlValue = "'"&refHtml(getFields("columnName"))&"'"
         else
             sqlValue = "'"&ref(getFields("columnName"))&"'"

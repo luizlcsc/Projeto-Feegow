@@ -1,4 +1,4 @@
-﻿<%
+<%
 server.ScriptTimeout = 200
 d = req("debug")
 if d="1" then
@@ -25,8 +25,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     if not AgendamentosNaoPagosSQL.eof then
         agendamentosNaoPagos = AgendamentosNaoPagosSQL("agendamentosNaoPagos")&""
 
-        if agendamentosNaoPagos<>"" then
-            db.execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND id in ("&agendamentosNaoPagos&");")
+        if agendamentosNaoPagos<>"" and license_id&"" <> "7211" then
+            db_execute("UPDATE agendamentos SET sysActive = -1 WHERE FormaPagto = 9 AND id in ("&agendamentosNaoPagos&");")
         end if
     end if
 

@@ -1,4 +1,4 @@
 <%
-db.close
-Set db = nothing
+ db.close
+ Set db = nothing
 %>

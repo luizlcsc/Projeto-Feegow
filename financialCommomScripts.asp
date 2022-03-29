@@ -236,53 +236,6 @@ function changeComponentsModalFooter(footer) {
 }
 
 
-function abrirPleres(invoiceId) {
-    openComponentsModal("labs-integration/pleres/exam-status", { I: invoiceId }, "Integração Pleres", false)
-}
 
-function abrirMatrix(invoiceId, labid = 1) {
-    openComponentsModal("labs-integration/matrix/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false)
-}
 
-function abrirDiagBrasil(invoiceId,labid,itenscount) {
-    openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false)
-}
 
-function abrirIntegracao(invoiceId,labid,itenscount) {
-    switch (labid.trim()) {        
-        case '1':
-            openComponentsModal("labs-integration/matrix/invoice-exams", {invoiceId: invoiceId, labid:labid }, false, false);
-            break;
-        case '2':
-            openComponentsModal("labs-integration/diagbrasil/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
-            break;
-        case '3':
-            openComponentsModal("labs-integration/alvaro/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
-            break;
-        case '4':
-            openComponentsModal("labs-integration/hermespardini/invoice-exams", {invoiceId: invoiceId, labid:labid, itens:itenscount }, false, false);
-            break;
-        default:
-            alert ('Código de Laboratório não implementado');
-        }
-}
-
-function abrirSelecaoLaboratorio(invoiceId,itenscount){
-    openComponentsModal("labs-integration/invoice-lab-select", {invoiceId: invoiceId, itens:itenscount }, "Integração com Laboratórios", false, false)
-}
-
-function avisoLaboratoriosMultiplos(informacao) {
-    $('#modalAlertaMultiploText').html(informacao); 
-    $('#modalAlertaMultiplo').modal('toggle');
-}
-
-function selecionaLaboratorio() {
-     var labid  = $('#selectLabID :selected').val();
-     var invoiceid = $('#varinvoiceid').val();
-     var itensCount = $('#varitenscount').val();
-
-     abrirIntegracao(invoiceid,labid,itensCount);
-    // if (labid ==1) { abrirMatrix(invoiceid, labid);  }
-    // if (labid ==2) { abrirDiagBrasil(invoiceid,labid,itensCount); }
-     
-}

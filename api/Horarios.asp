@@ -31,7 +31,7 @@ if not LicenseSQL.eof then
     %>
 <!--#include file="../connect.asp"-->
     <%
-    call ocupacao(data_inicio, data_fim, especialidades, procedimentoId, profissionais1, convenioId, unidades, False)
+    call ocupacao(data_inicio, data_fim, especialidades, procedimentoId, profissionais1, convenioId, unidades, True)
 
     if get_payload="true" then
         set HorariosSQL = dbclient.execute("SELECT * FROM agenda_horarios WHERE sysUser=0 ORDER BY Data, ProfissionalID, Hora")

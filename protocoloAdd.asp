@@ -58,6 +58,16 @@ if Tipo = "ciapAdd" then
         db.execute("insert into pacientestags SET FormID="& FormID &", CampoID="& CampoID &", TagID="& ID*(-1) &", sysUser="& session("User"))
     else
         db.execute("insert into pacientesciap (CiapID, FormID, CampoID, sysUser) values ("& ID &", "& FormID &", "& CampoID &", "& session("User") &")")
+        set PacientesCiapSQL = db.execute("SELECT LAST_INSERT_ID() as Last")
+        set Cid10SQL = db.execute("SELECT c.id, c.Descricao "&_
+                                    " FROM cliniccentral.tesauro t "&_
+                                    " LEFT JOIN cliniccentral.cid10 c ON c.codigo = REPLACE(t.CID10_Cd1,'.','') "&_
+                                    " WHERE t.id="&ID)
+        if not Cid10SQL.eof then
+            CidID = Cid10SQL("id")
+            DescricaoCid10 = Cid10SQL("Descricao")
+            db.execute("insert into pacientesdiagnosticos (PacienteID, PacientesCiapID, FormID, CidID, Descricao, sysUser, sysActive) values ("& PacienteID &", '"& PacientesCiapSQL("last") &"', FormID="& FormID &", "& CidID &", '"& DescricaoCid10 &"', "& session("User") &", '-1')")
+        end if
     end if
     %>
     protList('ciapList', <%= FormID %>, <%= CampoID %>, '');
@@ -96,6 +106,7 @@ elseif Tipo = "ciapList" then
                 db.execute("delete from pacientestags where id="& replace(Comm, "X-", ""))
             else
                 db.execute("delete from pacientesciap where id="& replace(Comm, "X", ""))
+                db.execute("delete from pacientesdiagnosticos where PacientesCiapID="& replace(Comm, "X", ""))
             end if
         elseif left(Comm, 1)="U" then
             splU = split(replace(Comm, "U", ""), "_")
@@ -103,7 +114,7 @@ elseif Tipo = "ciapList" then
         end if
     end if
     sqlBmj = montaSubqueryBMJ("bmj.codcid10 = t.CID10_Cd1")
-    set pc = db.execute("select pc.id, pc.StatusID, pc.DataEntrada, pc.DataSaida, pc.Hospital, t.Termo, t.CID10_Cd1, " & sqlBmj & " bmj_link FROM pacientesciap pc LEFT JOIN cliniccentral.tesauro t ON t.id=pc.CiapID WHERE pc.FormID="& FormID &" AND pc.CampoID="& CampoID &_
+    set pc = db.execute("select pc.id, pc.StatusID, pc.DataEntrada, pc.DataSaida, pc.Hospital, c.Descricao as Termo, t.CID10_Cd1, " & sqlBmj & " bmj_link FROM pacientesciap pc LEFT JOIN cliniccentral.tesauro t ON t.id=pc.CiapID LEFT JOIN cliniccentral.cid10 c ON c.codigo = REPLACE(t.CID10_Cd1,'.','') WHERE pc.FormID="& FormID &" AND pc.CampoID="& CampoID &_
         " UNION ALL "&_
                         "select pt.id, '', NULL, NULL, NULL, t.Tag, 'Tag', '' bmj_link FROM pacientestags pt LEFT JOIN tags t ON t.id=pt.TagID WHERE pt.FormID="& FormID &" AND pt.CampoID="& CampoID)
 

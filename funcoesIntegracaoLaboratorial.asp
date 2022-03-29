@@ -55,9 +55,9 @@ function verificaIntegracaoLaboratorial(tabela, id)
         end if
         'Verifica se a Unidade Possui credencial cadastrada
         if versaoIl = "1" then  
-            sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
-        else
             sqlAutenticacao = "SELECT id FROM labs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"
+        else
+            sqlAutenticacao = "SELECT id FROM slabs_autenticacao sla WHERE sla.UnidadeID = '"&session("UnidadeID")&"' and sla.sysactive = 1"            
         end if 
         set rs2 = db.execute(sqlAutenticacao)
         if not rs2.eof then
@@ -83,7 +83,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                                     " AND proc.IntegracaoPleres = 'S' "&_
                                     " AND proc.sysActive = 1"
                     case "tissguiasadt"
-                        sqlTable =  " SELECT distinct lpl.labID "&_
+                        sqlTable =  " SELECT distinct lep.labID "&_
                                     " FROM tissprocedimentossadt tpg "&_
                                     " INNER JOIN labs_procedimentos_laboratorios lep ON lep.ProcedimentoID = tpg.procedimentoid "&_
                                     " INNER JOIN procedimentos proc ON proc.id = tpg.procedimentoid "&_
@@ -105,7 +105,7 @@ function verificaIntegracaoLaboratorial(tabela, id)
                         rs4.movenext
                     wend 
                     if totallabs > 0 then
-                        if totallabs > 1 then
+                        if totallabs > 1 or versaoIl <> "2" then
                             verificaIntegracaoLaboratorial = "1|0|"&versaoIl&"|"&labid 'Possui mais de um laboratórios habilitados para integração 
                         else
                             verificaIntegracaoLaboratorial = "3|0|"&versaoIl&"|"&labid 'Possui apenas um laboratório habilitado para integração 
@@ -141,21 +141,22 @@ function retornaBotaoIntegracaoLaboratorial (vartabela, varid)
         else
             select case arrayintegracao(0)
                 case "1"
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
+                    retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSelecaoLaboratorio('"&vartabela&"','"&varid&"','"&arrayintegracao(2)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&") "">" &_
                                                          "<i class=""fa fa-flask""></i></button></div>"                    
                 case "2"
                     if arrayintegracao(2)=1 then
-                        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                        retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&varid&"','"&arrayintegracao(2)&"','"&arrayintegracao(3)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
                                                              "<i class=""fa fa-flask""></i></button></div>"
                     else
-                        retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
+                        retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirSolicitacao('"&arrayintegracao(1)&"','"&arrayintegracao(2)&"')"" class=""btn btn-success btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Ver detalhes da Integração (v."&arrayintegracao(2)&")""> "&_
                                                              "<i class=""fa fa-flask""></i></button></div>"                    
                     end if 
                 case "3"
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracao('"&varid&"','"&arrayintegracao(3)&"','0')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
+                ' abrirIntegracaov2(tabela,id,labid) 
+                    retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""><button type=""button"" style=""margin-right:5px;"" onclick=""abrirIntegracaov2('"&vartabela&"','"&varid&"','"&arrayintegracao(3)&"')"" class=""btn btn-danger btn-xs"" id=""btn-abrir-integracao-"&radical&varid&""" title=""Abrir Integração Laboratorial (v."&arrayintegracao(2)&")""> "&_
                                                             "<i class=""fa fa-flask""></i></button></div>"                   
                 case else
-                    retornaBotaoIntegracaoLaboratorial = "<div id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
+                    retornaBotaoIntegracaoLaboratorial = "<div style=""z-index: 999;"" id=""div-btn-abrir-integracao-"&radical&varid&""" class=""btn-group""> </div>"
             end select  
         end if
     end if
@@ -171,10 +172,10 @@ function retornaChamadaIntegracaoLaboratorial(link)
                 case "fila-coleta"
                     link = "matrix/work-queue"                    
             end select
-                retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
-                                                        " $("".app"").hide(); " &_
-                                                        " $("".app"").html(data); " &_
-                                                        " $("".app"").fadeIn('slow');}); "
+            retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
+                                                    " $("".app"").hide(); " &_
+                                                    " $("".app"").html(data); " &_
+                                                    " $("".app"").fadeIn('slow');}); "
         else
             retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
                                                     " $("".app"").hide(); " &_

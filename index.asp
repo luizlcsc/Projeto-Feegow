@@ -1,8 +1,4 @@
 <%
-if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("banco")="clinic5760" then
-'    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
-end if
-
 if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     QueryStringParameters = request.QueryString
 
@@ -13,7 +9,7 @@ end if
 <%
 AppEnv = getEnv("FC_APP_ENV", "local")
 WootricToken = getEnv("FC_WOOTRIC_TOKEN", "")
-
+currentVersionFolder = replace(replace(Request.ServerVariables("PATH_INFO"),"index.asp",""),"/","")
 
 
 if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
@@ -22,6 +18,22 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 	end if
 %>
 <!--#include file="connect.asp"-->
+<%
+if session("PastaAplicacaoRedirect")&"" = "" then
+  set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
+  session("PastaAplicacaoRedirect") = licencaConsulta("PastaAplicacao")
+end if
+
+prodVersions = Array("base","main","v8","v7.6")
+
+if AppEnv="production" and in_array(currentVersionFolder, prodVersions) then
+  if session("PastaAplicacaoRedirect")<>currentVersionFolder then
+    QueryStringParameters = request.QueryString
+
+	  response.Redirect("/"&session("PastaAplicacaoRedirect")&"?"&QueryStringParameters)
+  end if
+end if
+%>
 <!DOCTYPE html>
 <html>
 
@@ -258,7 +270,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.12.4.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?v=1.1.2"></script>
+  <script src="js/components.js?v=1.1.3"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -280,8 +292,8 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
   <script src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew/adapters/jquery.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/js/list.min.js"></script>
+  <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/vendor/wootric/wootric-sdk.js"></script>
   
 
   <%
@@ -325,17 +337,11 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 
   <script type="text/javascript">
 
-        const pastas =  ['/base/','/main/','/v7-master/','/base-2/'];
-
-        <% 
-          set licencaConsulta = db.execute("select PastaAplicacao from cliniccentral.licencas where id = "&replace(session("Banco"), "clinic", "")) 
-          licenca = licencaConsulta("PastaAplicacao")
-        %>
+        const pastas =  ['/base/','/main/','/v7.6/'];
 
         const redirVersao = () => {
             try{
-              const licenca = '<%=licenca%>';
-              var PastaAplicacaoRedirect = licenca
+              var PastaAplicacaoRedirect = '<%=session("PastaAplicacaoRedirect")%>'
               var __currentPage = window.location.href;
 
               let __force = false;
@@ -1351,8 +1357,7 @@ if req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
 								if req("Mod")<>"" then
 								    FileName = "modulos/"&req("Mod") &"/"& FileName
 								end if
-                folderName = replace(Request.ServerVariables("PATH_INFO"),"/index.asp","")
-                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetpub/wwwroot/") & folderName & "/" & FileName
+                FileNameFullPath = getEnv("FC_SRC_PATH","c://inetpub/wwwroot/") & currentVersionFolder & "/" & FileName
 
                 set fs=Server.CreateObject("Scripting.FileSystemObject")
                 fileExists = fs.FileExists(FileNameFullPath)
@@ -1801,8 +1806,8 @@ hash_chat: 'FFCHAT01'
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
   <!-- Notificações (Alerts, Confirms, etc)  -->
-  <script src="./vendor/plugins/pnotify/pnotify.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/pnotify/pnotify.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/pnotify/pnotify.confirm.min.js"></script>
 
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
@@ -1811,7 +1816,7 @@ hash_chat: 'FFCHAT01'
     <!-- old sms -->
     	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
-		<script src="./assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -2760,7 +2765,7 @@ end if
  gtag('config', 'UA-54670639-4');
 </script>
 
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.feegow.com/feegowclinic-v7/vendor/sweetalert/sweetalert2@11.js"></script>
 <script>
 
 function chatNotificacao(titulo, mensagem) {

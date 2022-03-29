@@ -1,9 +1,9 @@
 <!--#include file="connect.asp"-->
 <%
-response.write( session("Banco") )
+'response.write( session("Banco") )
 
 if session("banco")<>"" then
-	response.Write("select * from cliniccentral.licencasusuarios where Email=(select Email from cliniccentral.licencasusuarios WHERE id="&session("User")&") AND LicencaID="&req("LicID"))
+	'response.Write("select * from cliniccentral.licencasusuarios where Email=(select Email from cliniccentral.licencasusuarios WHERE id="&session("User")&") AND LicencaID="&req("LicID"))
 	set vcaOE = db.execute("select * from cliniccentral.licencasusuarios where Email=(select Email from cliniccentral.licencasusuarios WHERE id="&session("User")&") AND LicencaID="&req("LicID"))
 
     set FranquiaCodigoSQL = db.execute("SELECT Cupom FROM cliniccentral.licencas WHERE Franquia='P' AND id="&treatvalzero(session("Franquia")))

@@ -114,6 +114,8 @@ if Acao="Repetir" then
 		rfPaciente=DadosConsulta("PacienteID")
 		rfStaID=1
 		rfLocal=DadosConsulta("LocalID")
+		rfEspecialidade=DadosConsulta("EspecialidadeID")
+		rfTabelaParticularID=DadosConsulta("TabelaParticularID")
 		
 		rfProfissionalID = ProfissionalID
 		rfNotas=ref("Notas")
@@ -134,7 +136,7 @@ if Acao="Repetir" then
 		HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 		ConsultaID="0"
-		db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, PlanoID, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfPlanoID&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
+		db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, PlanoID, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser, EspecialidadeID, TabelaParticularID) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfPlanoID&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&", "&treatvalnull(rfEspecialidade)&", "&treatvalnull(rfTabelaParticularID)&")")
 		set pultCon=db.execute("select id, ProfissionalID, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
 		'procedimentos
 		

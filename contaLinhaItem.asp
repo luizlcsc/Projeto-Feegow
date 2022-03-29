@@ -1,7 +1,7 @@
 <tr class="<%=tipoLinha%>linha"<%
     if ultimaDataFatura<>inv("DataFatura") then
         %> data-datafatura="<%=mydatejunto(inv("DataFatura")) %>" <%
-    end if  %>
+    end if  %>>
     <td width="10%" nowrap class="text-center">
         <%
         if tipoLinha="s" then
@@ -64,11 +64,6 @@
        
         %>
     </td>
-    <td>
-        <% if medkit=1 then %>
-            <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
-        <% end if %>
-    </td>
     <td width="10%">
         <%
         if tipoLinha="u" then
@@ -79,52 +74,58 @@
         %>
     </td>
     <td class=" text-right" width="10%">
-    <%
-    if tipoLinha="u" then
-    response.Write( fn(inv("ValorTotal")) )
-    else
-    response.Write( fn(ii("Valor")) )
-    end if
-    %>
-    &nbsp;</td>
-    <td class="text-right" width="20%">
         <%
-        if recursoAdicional(8)=4 then
-            sqlBoletos = "SELECT coalesce(sum(boletos_emitidos.DueDate > now() and StatusID = 1),0) as aberto"&_
-                        "       ,coalesce(sum(now() > boletos_emitidos.DueDate and StatusID <> 3),0) as vencido"&_
-                        "       ,coalesce(sum(StatusID  = 3),0) as pago"&_
-                        "       ,COUNT(*) as totalboletos"&_
-                        " FROM sys_financialinvoices"&_
-                        " JOIN boletos_emitidos ON boletos_emitidos.InvoiceID = sys_financialinvoices.id"&_
-                        " WHERE TRUE"&_
-                        " AND boletos_emitidos.InvoiceID = "&inv("id")
-            set Boletos = db.execute(sqlBoletos)
-            BoletoHtml = ""
-            IF (Boletos("aberto") > "0") THEN
-                BoletoHtml = " <i class='far fa-barcode text-primary'></i> "
-            END IF
-
-            IF (Boletos("vencido") > "0") THEN
-                BoletoHtml = " <i class='far fa-barcode text-danger'></i> "
-            END IF
-        %>
-        <%=BoletoHtml%>
-        <%
-        end if
         if tipoLinha="u" then
-            response.write(retornaBotaoIntegracaoLaboratorial ("sys_financialinvoices", InvoiceID))                     
+        response.Write( fn(inv("ValorTotal")) )
+        else
+        response.Write( fn(ii("Valor")) )
         end if
-        set mov = db_execute("select id, ifnull(ValorPago, 0) ValorPago, Value, Date, CD, CaixaID from sys_financialmovement where InvoiceID="&inv("id")&" AND Type='Bill' ORDER BY Date")
-        set executados = db_execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")
-                        
-        while not mov.eof
-            response.Write( btnParcela(mov("id"), mov("ValorPago"), mov("Value"), mov("Date"), mov("CD"), mov("CaixaID")) )
-            mov.movenext
-        wend
-        mov.close
-        set mov=nothing
+        %>
+        &nbsp;
+    </td>
+    <td  width="20%" colspan =2 class="text-right">
+        
+        <%
+        if tipoLinha="u" then
+            if medkit=1 then 
+                %>
+                <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
+                <% 
+            end if 
+            if recursoAdicional(8)=4 then
+                sqlBoletos = "SELECT coalesce(sum(boletos_emitidos.DueDate > now() and StatusID = 1),0) as aberto"&_
+                            "       ,coalesce(sum(now() > boletos_emitidos.DueDate and StatusID <> 3),0) as vencido"&_
+                            "       ,coalesce(sum(StatusID  = 3),0) as pago"&_
+                            "       ,COUNT(*) as totalboletos"&_
+                            " FROM sys_financialinvoices"&_
+                            " JOIN boletos_emitidos ON boletos_emitidos.InvoiceID = sys_financialinvoices.id"&_
+                            " WHERE TRUE"&_
+                            " AND boletos_emitidos.InvoiceID = "&inv("id")
+                set Boletos = db.execute(sqlBoletos)
+                BoletoHtml = ""
+                IF (Boletos("aberto") > "0") THEN
+                    BoletoHtml = " <i class='far fa-barcode text-primary'></i> "
+                END IF
+
+                IF (Boletos("vencido") > "0") THEN
+                    BoletoHtml = " <i class='far fa-barcode text-danger'></i> "
+                END IF
+            %>
+            <%=BoletoHtml%>
+            <%
+            end if        
+            response.write(retornaBotaoIntegracaoLaboratorial ("sys_financialinvoices", InvoiceID))  
+            set mov = db_execute("select id, ifnull(ValorPago, 0) ValorPago, Value, Date, CD, CaixaID from sys_financialmovement where InvoiceID="&inv("id")&" AND Type='Bill' ORDER BY Date")
+            set executados = db_execute("select count(*) as totalexecutados from itensinvoice where InvoiceID="&inv("id")&" AND Executado!='S'")                            
+            while not mov.eof
+                response.Write( btnParcela(mov("id"), mov("ValorPago"), mov("Value"), mov("Date"), mov("CD"), mov("CaixaID")) )
+                mov.movenext
+            wend
+            mov.close
+            set mov=nothing
+        end if
         
         %>
     </td>
-    <td></td>
+    <!--<td></td>-->
 </tr>

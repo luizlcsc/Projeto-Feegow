@@ -1,3 +1,4 @@
+<!--#include file="connectCentral.asp"-->
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
 <div class="app" style="padding-top: 11px;">
@@ -14,14 +15,14 @@
 
     if recursoAdicional(1) = 4 then    
         SQLTV = "SELECT ct.id FROM cliniccentral.chamadas_tv ct WHERE ct.LicencaID="&licencaID
-        set validaSQLTV = db.execute(SQLTV)
+        set validaSQLTV = dbc.execute(SQLTV)
         if validaSQLTV.eof then         
-            db_execute("INSERT INTO cliniccentral.chamadas_tv(LicencaID, Diretorio, ChamadaRecepcao, TemplateID, BipID, Imagens, Intervalo, Opcoes, Ativo, Obs, Cor1, Cor2, Cor3, CorFundo, Logo, Video) VALUES ("&licencaID&", NULL, b'0', 1, 1, NULL, 15, '[""NomeLocal"",""ChamadaPorVoz"",""PreConsulta"",""PosConsulta"",""UltimasSenhas"",""videoMudo""]', 1, NULL, 'ff0000', 'ffffff', 'df5640', 'b4ebf0', NULL, NULL)")
+            dbc.execute("INSERT INTO cliniccentral.chamadas_tv(LicencaID, Diretorio, ChamadaRecepcao, TemplateID, BipID, Imagens, Intervalo, Opcoes, Ativo, Obs, Cor1, Cor2, Cor3, CorFundo, Logo, Video) VALUES ("&licencaID&", NULL, b'0', 1, 1, NULL, 15, '[""NomeLocal"",""ChamadaPorVoz"",""PreConsulta"",""PosConsulta"",""UltimasSenhas"",""videoMudo""]', 1, NULL, 'ff0000', 'ffffff', 'df5640', 'b4ebf0', NULL, NULL)")
         end if    
     
         validaVersaoSQL = "SELECT ctvt.versao FROM cliniccentral.chamadas_tv ctv LEFT JOIN cliniccentral.chamadas_tv_templates ctvt ON ctvt.id=ctv.TemplateID WHERE ctv.LicencaID="&licencaID
 
-        set validaVersao = db.execute(validaVersaoSQL)
+        set validaVersao = dbc.execute(validaVersaoSQL)
         if not validaVersao.eof then 
             if validaVersao("versao") = 2 then
                 versao = "settingsV2"

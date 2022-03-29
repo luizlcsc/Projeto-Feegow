@@ -54,8 +54,8 @@ if ref("Profissionais")<>"" then
 						if NOT Horarios.eof then
 							%>
 							<tr><th class="primary">
-								<input type="checkbox" name="ProfissionaisChecados" value="<%= ProfissionalID %>" id="honorario_<%= ProfissionalID %>">
-								<label for="honorario_<%= ProfissionalID %>"><%= nameInAccount("5_"& ProfissionalID) %></label>
+								<input type="checkbox" name="ProfissionaisChecados" value="<%= ProfissionalID& "_"&Data %>" id="honorario_<%= ProfissionalID & "_"&Data %>">
+								<label for="honorario_<%= ProfissionalID & "_"&Data %>"><%= nameInAccount("5_"& ProfissionalID) %></label>
 							</th><tr>
 							<%
 								%>

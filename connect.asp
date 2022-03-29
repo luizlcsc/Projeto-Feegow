@@ -2305,7 +2305,7 @@ end function
 
 
 function compartilhamentoFormulario(idprofissional,tipoDeFormulario)
-    if idprofissional&""="0" then
+    if idprofissional&""="0" or instr(idProfissional,"_")=0 then
         compartilhamentoFormulario=0
     else
         idProfissional = accountUser(idProfissional)
@@ -2769,6 +2769,9 @@ function replateTagsPaciente(valor,PacienteID)
                         Tag = Coluna
                 end select
                 val = trim(val&" ")
+                if Tag = "Cpf" or Tag = "CPF" then
+                    Val = formatCPF(Val&"")
+                end if
                 valor = replace(valor, "[Paciente."&Tag&"]", Val)
             rec.movenext
             wend
@@ -2778,7 +2781,11 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Idade]", idade(pac("Nascimento")))
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
-            valor = replace(valor, "[Paciente.Prontuario]", pac("id"))
+            Prontuario = pac("id")
+            if getConfig("AlterarNumeroProntuario") = 1 then
+                Prontuario = pac("idImportado")
+            end if
+            valor = replace(valor, "[Paciente.Prontuario]", Prontuario)
 
             'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
             valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1")&"")
@@ -2794,7 +2801,8 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Matricula]", trim(pac("Matricula1")&" ") )
             valor = replace(valor, "[Paciente.Validade]", trim(pac("Validade1")&" ") )
             valor = replace(valor, "[Paciente.Email]", trim(pac("Email1")&" ") )
-            valor = replace(valor, "[Paciente.Cpf]", trim(pac("CPF")&" ") )
+            CPFFormatado = formatCPF(pac("CPF")&"")
+            valor = replace(valor, "[Paciente.Cpf]", CPFFormatado)
             valor = replace(valor, "[Paciente.Telefone]", trim(pac("Cel1")&" ") )
 
             if not ResponsavelSQL.eof then
@@ -3305,7 +3313,7 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		end if
 		if recurso="pacientes" then
 			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn-sensitive-action btn btn-sm btn-default hidden-xs'><i class='far fa-print'></i></button> "
-			'rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
+			rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
 		end if
 		rbtns = rbtns & "<a title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='far fa-history'></i></a> "
 		'rbtns = rbtns & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"
@@ -3598,6 +3606,7 @@ executeInReadOnly = False
     if tipoLog = "select" then
         executeInReadOnly = True
     end if
+
     if executeInReadOnly and False then
         set db_execute = dbReadOnly.execute(sqlStatement)
     else

@@ -484,7 +484,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                             whereEspecialidadesAgendamentos=""
 
                             if ConsiderarEspecialidadeReal then
-                                whereEspecialidadesAgendamentos = " AND a.EspecialidadeID="&EspecialidadeID
+                                whereEspecialidadesAgendamentos = " AND (a.EspecialidadeID="&EspecialidadeID&" OR a.EspecialidadeID IS NULL)"
                             end if
 
                             set comps=db.execute("select a.EspecialidadeID, a.id, a.Data, a.Hora, a.LocalID, a.ProfissionalID, a.StaID, a.Encaixe, a.Tempo from agendamentos a " & joinLocaisUnidades &_

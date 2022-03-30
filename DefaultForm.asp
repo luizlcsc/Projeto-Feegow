@@ -474,11 +474,19 @@ function DefaultForm(tableName, id)
 							end if
 							if lcase(tableName)="pacientes" and aut("agendaV")=1 then
 								ordersNull = ordersNull&"{ ""bSortable"": false },{ ""bSortable"": false },"
+								
+								ExibirPrazoRetornoBuscaPaciente = getConfig("ExibirPrazoRetornoBuscaPaciente") or true
+
 								%>
 								<th width="100">Propostas</th>
 								<th width="100" class="hidden-xs" nowrap>&Uacute;lt. Agend.</th>
 								<th width="100" class="hidden-xs" nowrap>Pr&oacute;x. Agend.</th>
 								<%
+								if ExibirPrazoRetornoBuscaPaciente then
+									%>
+									<th width="100" class="hidden-xs" nowrap>Prazo retorno</th>
+									<%
+								end if
 							end if
 							if req("P")="buiforms" then
 								%>
@@ -683,6 +691,11 @@ function DefaultForm(tableName, id)
 								<td class="pn hidden-xs" id="calendarH<%=reg("id")%>"></td>
 								<td class="pn hidden-xs" id="calendar<%=reg("id")%>"></td>
 								<%
+								if ExibirPrazoRetornoBuscaPaciente then
+									%>
+									<td class="pn hidden-xs" id="calendarPrazoRetorno<%=reg("id")%>"></td>
+									<%
+								end if
 							end if
 							if req("P")="buiforms" then
 							set conta = db.execute("select count(*) total from buiformspreenchidos where sysActive=1 AND ModeloID="&reg("id"))
@@ -787,6 +800,7 @@ function DefaultForm(tableName, id)
 					prop.close
 					set prop = nothing
 
+
 					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data>=date(now()) and not isnull(Hora) and a.sysActive = 1 group by a.PacienteID order by a.Data, a.Hora")
 					while not age.eof
 						Hora = age("Hora")
@@ -801,9 +815,14 @@ function DefaultForm(tableName, id)
 					age.close
 					set age=nothing
 
-					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a LEFT JOIN profissionais p on p.id=a.ProfissionalID where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data desc, a.Hora desc limit 1")
+					UltAgendamentoIds = ""
+
+					set age = db.execute("select a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a "&_
+					"LEFT JOIN profissionais p on p.id=a.ProfissionalID "&_
+					"where a.PacienteID in ("&calendars&") and a.Data<date(now()) and not isnull(a.Hora) order by a.PacienteID, a.Data desc, a.Hora desc  LIMIT 1")
 
 					while not age.eof
+						UltAgendamentoIds = UltAgendamentoIds&","&age("id")
 						%>
 						$("#calendarH<%=age("PacienteID")%>").html( $("#calendarH<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-alert btn-alt btn-gradient item-active mn tooltip-info" data-original-title="Profissional &raquo; <%=age("NomeProfissional")%>"><i class="far fa-calendar"></i> <%=age("Data")%> - <%=formatdatetime(age("Hora"),4)%></button>');
 						<%
@@ -811,6 +830,24 @@ function DefaultForm(tableName, id)
 					wend
 					age.close
 					set age=nothing
+
+					if ExibirPrazoRetornoBuscaPaciente then
+						
+						set age = db.execute("select DATE_ADD(a.Data, INTERVAL proc.DiasRetorno DAY) PrazoRetorno, a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a "&_
+						"LEFT JOIN profissionais p on p.id=a.ProfissionalID "&_
+						"LEFT JOIN procedimentos proc on proc.id=a.TipoCompromissoID "&_
+						"where a.StaID=3 AND a.id IN (0"&UltAgendamentoIds&") AND (proc.DiasRetorno !='' AND proc.DiasRetorno IS NOT NULL)")
+
+						while not age.eof
+							%>
+							$("#calendarPrazoRetorno<%=age("PacienteID")%>").html( $("#calendarPrazoRetorno<%=age("PacienteID")%>").html() + '<button data-rel="tooltip" type="button" onClick="location.href=\'./?P=Agenda-1&Pers=1&AgendamentoID=<%=age("id")%>\';" class="btn btn-xs btn-alert btn-alt btn-gradient item-active mn tooltip-info" data-original-title="<%=age("PrazoRetorno")%>"><i class="far fa-undo"></i> <%=age("PrazoRetorno")%></button>');
+							<%
+						age.movenext
+						wend
+						age.close
+						set age=nothing
+					end if
+
 					response.Write("</script>")
 				end if
 			

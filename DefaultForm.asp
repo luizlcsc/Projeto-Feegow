@@ -475,7 +475,7 @@ function DefaultForm(tableName, id)
 							if lcase(tableName)="pacientes" and aut("agendaV")=1 then
 								ordersNull = ordersNull&"{ ""bSortable"": false },{ ""bSortable"": false },"
 								
-								ExibirPrazoRetornoBuscaPaciente = getConfig("ExibirPrazoRetornoBuscaPaciente") or true
+								ExibirPrazoRetornoBuscaPaciente = getConfig("ExibirPrazoRetornoBuscaPaciente")
 
 								%>
 								<th width="100">Propostas</th>

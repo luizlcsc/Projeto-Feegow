@@ -174,19 +174,15 @@ function getUrl(url, data, callback,ms = null) {
         data = {};
     }
 
-
+    var d = domain;
+	
     if (url.indexOf(".asp") === -1) {
-        if (ms=="integracaolaboratorial")
+        if (ms)
         {
-            url = labServiceURL + url;
+	    d = getMicroserviceDomain(ms)
         }
-        else
-        {
-            url = domain + url;
-        }
-        
-
     }
+    url = d + url;
 
 	var token="";
 	if(localStorage.getItem("tk")){
@@ -265,24 +261,31 @@ function openModal(data, title, closeBtn, saveBtn, modalSize) {
     setModalContent(data, title, closeBtn, saveBtn);
 }
 
+function getMicroserviceDomain(ms){
+	if(ms === 'integracaolaboratorial')
+	{
+	    return labServiceURL;
+	}
+	
+	return false;
+}
+
 function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
     if (!modalSize) {
         modalSize = "lg";
     }
+    var d = domain;
 
     var $modal = getModal(true, modalSize, modalWidth);
     $modal.modal("show");
 
     if (url.indexOf(".asp") === -1) {
-        if (params.microservico === 'integracaolaboratorial')
+        if (typeof(params) === 'object' && params.microservico != '')
         {
-            url = labServiceURL + url;
-        }
-        else
-        {
-            url = domain + url;
+	    d = getMicroserviceDomain(params.microservico)
         }
     }
+    url = d + url;
 
 	var token="";
 	if(localStorage.getItem("tk")){

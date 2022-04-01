@@ -174,9 +174,11 @@ function getUrl(url, data, callback,ms = null) {
         data = {};
     }
 
-    var d = domain;
+    var d = "";
 	
     if (url.indexOf(".asp") === -1) {
+        d = domain;
+	    
         if (ms)
         {
 	    d = getMicroserviceDomain(ms)
@@ -274,12 +276,14 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
     if (!modalSize) {
         modalSize = "lg";
     }
-    var d = domain;
+    var d = "";
 
     var $modal = getModal(true, modalSize, modalWidth);
     $modal.modal("show");
 
     if (url.indexOf(".asp") === -1) {
+	d = domain;
+
         if (typeof(params) === 'object' && params.microservico)
         {
 	    d = getMicroserviceDomain(params.microservico)

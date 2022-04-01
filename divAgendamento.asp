@@ -1533,36 +1533,58 @@ function gravaWorklist () {
 }
 
 var saveAgenda = function(){
-        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
-        //$("#btnSalvarAgenda").attr('disabled', 'disabled');
+    $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
+    //$("#btnSalvarAgenda").attr('disabled', 'disabled');
+    $("#btnSalvarAgenda").prop("disabled", true);
+
+    $.post("saveAgenda.asp", $("#formAgenda").serialize())
+    .done(function(data) {
+        //$("#btnSalvarAgenda").removeAttr('disabled');
+        eval(data);
+        $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+        $("#btnSalvarAgenda").prop("disabled", false);
+        crumbAgenda();
+        gravaWorklist();
+
+        // Reconhecimento facial
+        // A cada criação de agendamento deve-se incluir o rosto do paciente na coleção de rostos daquela unidade referente ao dia daquele agendamento.
+        // Exemplo: "105_0_20220321", refere-se a uma coleção da licença 105, unidade 0 e dia 21/03/2022.
+
+        const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
+        const unidadeId = parseInt('<%=session("UnidadeID")%>');
+        const usuarioId = $("#PacienteID").val();
+        const usuarioTipo = 'pacientes';
+        const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
+
+        console.log('Criando coleção diária...')
+        createDailyCollection({ unidadeId, colecaoNomeSufixo }) //components.js
+            .then(() => {
+                console.log('Inserindo imagem com rosto na coleção diária...') 
+                insertImageWithFaceInCollection({ licencaId, unidadeId, usuarioId, usuarioTipo, colecaoNomeSufixo }) //components.js
+                    .then(() => 'Coleção diária criada e imagem com rosto inserida com sucesso!')
+                    .catch((error) => console.error('Erro ao inserir rosto em coleção', error))
+            })
+            .catch((error) => console.error('Erro ao criar coleção de rostos', error))
+
+        // fim Reconhecimento facial
+    })
+
+    .fail(function(err){
         $("#btnSalvarAgenda").prop("disabled", true);
-
-        $.post("saveAgenda.asp", $("#formAgenda").serialize())
-        .done(function(data){
-            //$("#btnSalvarAgenda").removeAttr('disabled');
-            eval(data);
-            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-            $("#btnSalvarAgenda").prop("disabled", false);
-            crumbAgenda();
-            gravaWorklist();
-        })
-
-        .fail(function(err){
-            $("#btnSalvarAgenda").prop("disabled", true);
-            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+        showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
 
 
-            gtag('event', 'erro_500', {
-                'event_category': 'erro_agenda',
-                'event_label': "Erro ao salvar agendamento."
-            });
+        gtag('event', 'erro_500', {
+            'event_category': 'erro_agenda',
+            'event_label': "Erro ao salvar agendamento."
         });
+    });
 
-        if(typeof callbackAgendaFiltros === "function"){
-            callbackAgendaFiltros();
-            crumbAgenda();
-        }
+    if(typeof callbackAgendaFiltros === "function"){
+        callbackAgendaFiltros();
+        crumbAgenda();
     }
+}
 
 async function submitAgendamento(check) {
 

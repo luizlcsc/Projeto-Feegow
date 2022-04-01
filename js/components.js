@@ -18,21 +18,25 @@ if(window.location.href.indexOf('sandbox') > 0){
 }
 
 var domain = null;
+var domainApiRest = null;
 var api = "./api/";
 
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
+        domainApiRest = "http://localhost:9002/";
         labServiceURL = "http://localhost:8001/"
         api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
+        domainApiRest = "https://api.feegow.com/rest/";
         labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
+        domainApiRest = "https://api.feegow.com/rest/";
         labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
@@ -465,7 +469,7 @@ function replicarRegistro(id,tabela){
 
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {
     let response = false;
-    let enpoint = domain + "file/perfil/uploadPerfilFile";
+    let endpoint = domain + "file/perfil/uploadPerfilFile";
 
     if (contentType === "form") {
         let objct = new FormData();
@@ -476,7 +480,7 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
         objct.append('folder_name', "Perfil");
 
         response = await $.ajax({
-            url: enpoint,
+            url: endpoint,
             type: 'POST',
             processData: false,
             contentType: false,
@@ -488,7 +492,7 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     }else{
 
         response = await jQuery.ajax({
-            url: enpoint,
+            url: endpoint,
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(content),
@@ -510,6 +514,71 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     }
 
     return response;
+}
+
+/**
+ * Cria uma coleção de rostos (para reconhecimento facial usando AWS Rekognition).
+ * O parâmetro "colecaoNomeSufixo" pode ser qualquer string mas, 
+ * no caso de reconhecimento facial de pacientes em agendamentos, 
+ * deve-se usar uma data no formato "20220331" referente à data do agendamento.
+ * 
+ * O id da licença será extraído do token e o nome ficará no formato:
+ * "[licencaId]" ou
+ * "[licencaId]_[unidadeId]" ou
+ * "[licencaId]_[colecaoNomeSufixo]" ou
+ * "[licencaId]_[unidadeId]_[colecaoNomeSufixo]
+ * 
+ * Não é possível criar uma coleção com o mesmo nome de outra coleção.
+ * 
+ * @param {number} unidadeId Id da unidade que é concatenado ao nome da coleção.
+ * @param {string} colecaoNomeSufixo Sufixo à ser concatenado ao nome da coleção.
+ * @returns {object} { success: boolean, content: { aws: object, feegow: object } }
+ * 
+ * Caso a coleção já exista, retornará "sucess" = true, 
+ * no objeto "aws" retornará uma mensagem informando que já existe e
+ * no objeto "feegow" retornará essa coleção que já existe.
+ */
+const createDailyCollection = ({ unidadeId, colecaoNomeSufixo }) => {
+    return fetch(domainApiRest + "reconhecimento-facial/colecoes", {
+        "method": "POST",
+        "headers": {
+            "accept": "*/*",
+            "content-type": "application/json; charset=UTF-8",
+            "Authorization": `Bearer ${localStorage.getItem('tk')}`
+        },
+        "body": JSON.stringify({
+            unidadeId: unidadeId,
+            sufixo: colecaoNomeSufixo
+        })
+    });
+}
+
+/**
+ * Insere uma imagem com rosto em uma coleção de rostos (para reconhecimento facial usando AWS Rekognition).
+ * 
+ * Não é possível inserir um rosto em uma licença que não seja a mesma do token do usuário.
+ * 
+ * @param {number | string} licencaId Id da licença do usuário.
+ * @param {number | string} unidadeId Id da unidade que é concatenado ao nome da coleção.
+ * @param {string} colecaoNomeSufixo Sufixo à ser concatenado ao nome da coleção.
+ * @param {number} usuarioId Id do paciente, profissional ou funcionário.
+ * @param {string} usuarioTipo Deve ser "pacientes", "profissionais" ou "funcionarios".
+ * @returns {object} { success: boolean, content: { aws: object, feegow: object } }
+ */
+const insertImageWithFaceInCollection = ({ licencaId, unidadeId, colecaoNomeSufixo, usuarioId, usuarioTipo }) => {
+    return fetch(domainApiRest + `reconhecimento-facial/colecoes/${licencaId}_${unidadeId}_${colecaoNomeSufixo}/rostos`, {
+        "method": "POST",
+        "headers": {
+            "accept": "*/*",
+            "content-type": "application/json; charset=UTF-8",
+            "Authorization": `Bearer ${localStorage.getItem('tk')}`
+        },
+        "body": JSON.stringify({
+            pacienteId: usuarioTipo === 'pacientes' ? usuarioId : undefined,
+            profissionalId: usuarioTipo === 'profissionais' ? usuarioId : undefined,
+            funcionarioId: usuarioTipo === 'funcionarios' ? usuarioId : undefined,
+        })
+    });
 }
   
 const recordLog = async (

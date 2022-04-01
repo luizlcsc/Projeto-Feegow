@@ -284,7 +284,7 @@ function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, m
     $modal.modal("show");
 
     if (url.indexOf(".asp") === -1) {
-        if (typeOf(params) === 'object' && params.microservico != '')
+        if (typeof(params) === 'object' && params.microservico != '')
         {
 	    d = getMicroserviceDomain(params.microservico)
         }

@@ -270,7 +270,7 @@ end if
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.12.4.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?v=1.1.5"></script>
+  <script src="js/components.js?v=1.1.6"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>

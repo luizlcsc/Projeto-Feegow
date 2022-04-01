@@ -174,19 +174,15 @@ function getUrl(url, data, callback,ms = null) {
         data = {};
     }
 
-
+    var d = domain;
+	
     if (url.indexOf(".asp") === -1) {
-        if (ms=="integracaolaboratorial")
+        if (ms)
         {
-            url = labServiceURL + url;
+	    d = getMicroserviceDomain(ms)
         }
-        else
-        {
-            url = domain + url;
-        }
-        
-
     }
+    url = d + url;
 
 	var token="";
 	if(localStorage.getItem("tk")){

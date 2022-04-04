@@ -1532,6 +1532,32 @@ function gravaWorklist () {
     end if%>
 }
 
+function saveReconhecimentoFacial(){
+    <% if recursoAdicional(17)=4 then %>
+    // Reconhecimento facial
+    // A cada criação de agendamento deve-se incluir o rosto do paciente na coleção de rostos daquela unidade referente ao dia daquele agendamento.
+    // Exemplo: "105_0_20220321", refere-se a uma coleção da licença 105, unidade 0 e dia 21/03/2022.
+
+    const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
+    const unidadeId = parseInt('<%=session("UnidadeID")%>');
+    const usuarioId = $("#PacienteID").val();
+    const usuarioTipo = 'pacientes';
+    const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
+
+    console.log('Criando coleção diária...')
+    createDailyCollection({ unidadeId, colecaoNomeSufixo }) //components.js
+        .then(() => {
+            console.log('Inserindo imagem com rosto na coleção diária...') 
+            insertImageWithFaceInCollection({ licencaId, unidadeId, usuarioId, usuarioTipo, colecaoNomeSufixo }) //components.js
+                .then(() => 'Coleção diária criada e imagem com rosto inserida com sucesso!')
+                .catch((error) => console.error('Erro ao inserir rosto em coleção', error))
+        })
+        .catch((error) => console.error('Erro ao criar coleção de rostos', error))
+
+    // fim Reconhecimento facial
+    <% end if %>
+}
+
 var saveAgenda = function(){
     $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
     //$("#btnSalvarAgenda").attr('disabled', 'disabled');
@@ -1543,30 +1569,13 @@ var saveAgenda = function(){
         eval(data);
         $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
         $("#btnSalvarAgenda").prop("disabled", false);
-        crumbAgenda();
-        gravaWorklist();
 
-        // Reconhecimento facial
-        // A cada criação de agendamento deve-se incluir o rosto do paciente na coleção de rostos daquela unidade referente ao dia daquele agendamento.
-        // Exemplo: "105_0_20220321", refere-se a uma coleção da licença 105, unidade 0 e dia 21/03/2022.
+        processosPosAgendamento = ["crumbAgenda", "gravaWorklist", "saveReconhecimentoFacial"];
 
-        const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
-        const unidadeId = parseInt('<%=session("UnidadeID")%>');
-        const usuarioId = $("#PacienteID").val();
-        const usuarioTipo = 'pacientes';
-        const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
+        processosPosAgendamento.forEach(function(element, index, array){
+            window[element]();
+        });
 
-        console.log('Criando coleção diária...')
-        createDailyCollection({ unidadeId, colecaoNomeSufixo }) //components.js
-            .then(() => {
-                console.log('Inserindo imagem com rosto na coleção diária...') 
-                insertImageWithFaceInCollection({ licencaId, unidadeId, usuarioId, usuarioTipo, colecaoNomeSufixo }) //components.js
-                    .then(() => 'Coleção diária criada e imagem com rosto inserida com sucesso!')
-                    .catch((error) => console.error('Erro ao inserir rosto em coleção', error))
-            })
-            .catch((error) => console.error('Erro ao criar coleção de rostos', error))
-
-        // fim Reconhecimento facial
     })
 
     .fail(function(err){

@@ -2867,7 +2867,9 @@ end if
 <script src="assets/js/whatsApp/whatsAppStatus.js?cache_prevent=9"></script>
 <% END IF %>
 
-
+<% 
+FC_FIREBASE_API_KEY =getEnv("FC_FIREBASE_API_KEY","")
+IF FC_FIREBASE_API_KEY<>"" THEN%>
 <script type="module">
   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
@@ -2878,7 +2880,7 @@ end if
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyA83gO5zncZL-7cGN6p7lw6zxamEj5wP_E",
+    apiKey: "<%=FC_FIREBASE_API_KEY%>",
     authDomain: "feegow-software-clinico.firebaseapp.com",
     databaseURL: "https://feegow-software-clinico.firebaseio.com",
     projectId: "feegow-software-clinico",
@@ -2892,3 +2894,4 @@ end if
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
+<% END IF %>

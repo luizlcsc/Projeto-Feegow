@@ -1,5 +1,5 @@
 <!--#include file="connect.asp"-->
-
+<!--#include file="Classes/Environment.asp"-->
 <% server.execute("preXML.asp") %>
 
 <%
@@ -146,7 +146,8 @@ end function
             end if
 
             Set objXML = Server.CreateObject("Microsoft.XMLDOM")
-            objXML.load("C:\inetpub\wwwroot\v7\xml-retorno\"& Arquivo)
+            path = getEnv("FC_SRC_PATH","C://inetput/wwwroot/")&"temp"
+            objXML.load(path&"\xml-retorno\"& Arquivo)
 
             if objXML.getElementsByTagName("ansTISS:registroANS").length>0 then
                 tipoTransacao = objXML.getElementsByTagName("ansTISS:tipoTransacao")(0).text

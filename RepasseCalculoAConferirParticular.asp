@@ -728,7 +728,7 @@ end if
                         "left join (SELECT s.id, s.NomeProfissional FROM (SELECT CONCAT('0_', id) id, NomeEmpresa NomeProfissional FROM empresa "&_
                         "UNION ALL SELECT CONCAT('5_', id) id, NomeProfissional FROM profissionais "&_
                         "UNION ALL SELECT CONCAT('8_', id) id, NomeProfissional FROM profissionalexterno ) s) s on s.id = i.ProfissionalSolicitante "&_
-                        "WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Associacao>0 AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & sqlUnidades & " ORDER BY ii.DataExecucao"
+                        "WHERE ii.DataExecucao BETWEEN "& mydatenull(De) &" and "& mydatenull(Ate)&" AND ii.Executado='"&ExecutadoStatus&"' AND ii.Associacao>0 AND ii.Tipo='S' and i.AssociationAccountID=3 "&ContaProfissional & sqlProcedimento & sqlUnidades & " ORDER BY ii.DataExecucao, pac.NomePaciente"
             end if
 
             if reqf("DEBUG")="1" then

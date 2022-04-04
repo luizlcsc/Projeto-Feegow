@@ -1545,10 +1545,26 @@ function saveReconhecimentoFacial(){
     const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
 
     console.log('Criando coleção diária...')
-    createDailyCollection({ unidadeId, colecaoNomeSufixo }) //components.js
+    
+    callRestApi({ 
+            params: {
+                unidadeId: unidadeId, 
+                sufixo: colecaoNomeSufixo
+            },
+            path: "reconhecimento-facial/colecoes",
+            method: "POST"
+        }) //components.js
         .then(() => {
             console.log('Inserindo imagem com rosto na coleção diária...') 
-            insertImageWithFaceInCollection({ licencaId, unidadeId, usuarioId, usuarioTipo, colecaoNomeSufixo }) //components.js
+            callRestApi({ 
+                params: {
+                    pacienteId: usuarioTipo === 'pacientes' ? usuarioId : undefined,
+                    profissionalId: usuarioTipo === 'profissionais' ? usuarioId : undefined,
+                    funcionarioId: usuarioTipo === 'funcionarios' ? usuarioId : undefined,
+                },
+                path: `reconhecimento-facial/colecoes/${licencaId}_${unidadeId}_${colecaoNomeSufixo}/rostos`,
+                method: "POST"
+            })
                 .then(() => 'Coleção diária criada e imagem com rosto inserida com sucesso!')
                 .catch((error) => console.error('Erro ao inserir rosto em coleção', error))
         })

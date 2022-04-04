@@ -18,21 +18,25 @@ if(window.location.href.indexOf('sandbox') > 0){
 }
 
 var domain = null;
+var domainApiRest = null;
 var api = "./api/";
 
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
+        domainApiRest = "http://localhost:9002/";
         labServiceURL = "http://localhost:8001/"
         api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
+        domainApiRest = "https://api.feegow.com/rest/";
         labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
+        domainApiRest = "https://api.feegow.com/rest/";
         labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
@@ -472,7 +476,7 @@ function replicarRegistro(id,tabela){
 
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {
     let response = false;
-    let enpoint = domain + "file/perfil/uploadPerfilFile";
+    let endpoint = domain + "file/perfil/uploadPerfilFile";
 
     if (contentType === "form") {
         let objct = new FormData();
@@ -483,7 +487,7 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
         objct.append('folder_name', "Perfil");
 
         response = await $.ajax({
-            url: enpoint,
+            url: endpoint,
             type: 'POST',
             processData: false,
             contentType: false,
@@ -495,7 +499,7 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     }else{
 
         response = await jQuery.ajax({
-            url: enpoint,
+            url: endpoint,
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(content),
@@ -517,6 +521,18 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     }
 
     return response;
+}
+
+const callRestApi = ({ params, method, path }) => {
+    return fetch(domainApiRest + path, {
+        "method": method,
+        "headers": {
+            "accept": "*/*",
+            "content-type": "application/json; charset=UTF-8",
+            "Authorization": `Bearer ${localStorage.getItem('tk')}`
+        },
+        "body": JSON.stringify(params)
+    });
 }
   
 const recordLog = async (

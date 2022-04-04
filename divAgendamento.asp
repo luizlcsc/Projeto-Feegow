@@ -1533,36 +1533,41 @@ function gravaWorklist () {
 }
 
 var saveAgenda = function(){
-        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
-        //$("#btnSalvarAgenda").attr('disabled', 'disabled');
-        $("#btnSalvarAgenda").prop("disabled", true);
+    $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
+    //$("#btnSalvarAgenda").attr('disabled', 'disabled');
+    $("#btnSalvarAgenda").prop("disabled", true);
 
-        $.post("saveAgenda.asp", $("#formAgenda").serialize())
-        .done(function(data){
-            //$("#btnSalvarAgenda").removeAttr('disabled');
-            eval(data);
-            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-            $("#btnSalvarAgenda").prop("disabled", false);
-            crumbAgenda();
-            gravaWorklist();
-        })
+    $.post("saveAgenda.asp", $("#formAgenda").serialize())
+    .done(function(data) {
+        //$("#btnSalvarAgenda").removeAttr('disabled');
+        eval(data);
+        $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+        $("#btnSalvarAgenda").prop("disabled", false);
 
-        .fail(function(err){
-            $("#btnSalvarAgenda").prop("disabled", true);
-            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+        processosPosAgendamento = ["crumbAgenda", "gravaWorklist"];
 
-
-            gtag('event', 'erro_500', {
-                'event_category': 'erro_agenda',
-                'event_label': "Erro ao salvar agendamento."
-            });
+        processosPosAgendamento.forEach(function(element, index, array){
+            window[element]();
         });
 
-        if(typeof callbackAgendaFiltros === "function"){
-            callbackAgendaFiltros();
-            crumbAgenda();
-        }
+    })
+
+    .fail(function(err){
+        $("#btnSalvarAgenda").prop("disabled", true);
+        showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+
+
+        gtag('event', 'erro_500', {
+            'event_category': 'erro_agenda',
+            'event_label': "Erro ao salvar agendamento."
+        });
+    });
+
+    if(typeof callbackAgendaFiltros === "function"){
+        callbackAgendaFiltros();
+        crumbAgenda();
     }
+}
 
 async function submitAgendamento(check) {
 

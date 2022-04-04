@@ -738,7 +738,7 @@ $(document).ready(function () {
 </script>
 <%
 if getConfig("LembreteFormulario")=1 and device()="" then
-    set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&PacienteID)
+    set lembrarme = db.execute("select bfl.* from buiformslembrarme bfl JOIN buiformspreenchidos bfp ON bfp.id=bfl.FormID where bfp.sysUser="&session("User")&" AND bfl.PacienteID="&PacienteID)
     if not lembrarme.EOF then
         %>
         <script type="text/javascript">

@@ -10,7 +10,7 @@ for i=0 to ubound(splProf)
 
 	'response.write("<br>Prof.: "& ProfissionalID &"<br>")
 
-	sqlInv = "insert into sys_financialinvoices (AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate) values("& ProfissionalID &", 5, 0, 1, 'BRL', 0, 1, 'm', 'D', 1, "&session("User")&", curdate())"
+	sqlInv = "insert into sys_financialinvoices (AccountID, AssociationAccountID, Value, Tax, Currency, CompanyUnitID, Recurrence, RecurrenceType, CD, sysActive, sysUser, sysDate) values("& ProfissionalID &", 5, 0, 1, 'BRL', "&session("UnidadeID")&", 1, 'm', 'D', 1, "&session("User")&", curdate())"
 	'response.write( sqlInv )
 	db.execute( sqlInv )
 	set pult = db.execute("select id from sys_financialinvoices where sysUser="& session("User") &" order by id desc limit 1")

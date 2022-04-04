@@ -132,15 +132,16 @@ if req("X")<>"" and req("X")&""<>"0" then
         vcaII.close
         set vcaII=nothing
 
-        db.execute("INSERT INTO itensinvoice_removidos SELECT `id`,`InvoiceID`,`Tipo`,`Quantidade`,`CategoriaID`,`ItemID`,`ValorUnitario`,`Desconto`,`Descricao`,`Executado`,`DataExecucao`,`HoraExecucao`,`GrupoID`,`AgendamentoID`,`sysUser`,`sysDate`,`ProfissionalID`,`EspecialidadeID`,`HoraFim`,`Acrescimo`,`AtendimentoID`,`Associacao`,`CentroCustoID`,`OdontogramaObj`,`PacoteID`,`DHUp`,`GeradoAutomaticamente`,now() FROM itensinvoice WHERE InvoiceID = "&req("X"))
+        db_execute("INSERT INTO itensinvoice_removidos SELECT `id`,`InvoiceID`,`Tipo`,`Quantidade`,`CategoriaID`,`ItemID`,`ValorUnitario`,`Desconto`,`Descricao`,`Executado`,`DataExecucao`,`HoraExecucao`,`GrupoID`,`AgendamentoID`,`sysUser`,`sysDate`,`ProfissionalID`,`EspecialidadeID`,`HoraFim`,`Acrescimo`,`AtendimentoID`,`Associacao`,`CentroCustoID`,`OdontogramaObj`,`PacoteID`,`DHUp`,`GeradoAutomaticamente`,now() FROM itensinvoice WHERE InvoiceID = "&req("X"))
         'db_execute("delete from itensinvoice where InvoiceID="& req("X"))
-        db.execute("UPDATE itensinvoice SET ValorUnitarioOld=ValorUnitario, ValorUnitario=0, Desconto=0, Acrescimo=0 WHERE InvoiceID="& req("X"))
+        db_execute("DELETE ih FROM iihonorarios ih JOIN itensinvoice ii ON ii.id=ih.ItemInvoiceID WHERE ii.InvoiceID="&req("X"))
+        db_execute("UPDATE itensinvoice SET ValorUnitarioOld=ValorUnitario, ValorUnitario=0, Desconto=0, Acrescimo=0 WHERE InvoiceID="& req("X"))
         db_execute("UPDATE propostas SET StaID=3 WHERE InvoiceID="&req("X"))
         db_execute("UPDATE solicitacao_compra SET InvoiceID=null WHERE InvoiceID="&req("X"))
 
-        db.execute("INSERT INTO sys_financialmovement_removidos SELECT `id`,`Name`,`AccountAssociationIDCredit`,`AccountIDCredit`,`AccountAssociationIDDebit`,`AccountIDDebit`,`PaymentMethodID`,`Value`,`Date`,`CD`,`Type`,`Obs`,`Currency`,`Rate`,`MovementAssociatedID`,`InvoiceID`,`InstallmentNumber`,`sysUser`,`ValorPago`,`CaixaID`,`ChequeID`,`UnidadeID`,`sysDate`,`ConciliacaoID`,`CodigoDeBarras`,`CategoryID`,`DHUp`,now() FROM sys_financialmovement WHERE InvoiceID = "&req("X"))
+        db_execute("INSERT INTO sys_financialmovement_removidos SELECT `id`,`Name`,`AccountAssociationIDCredit`,`AccountIDCredit`,`AccountAssociationIDDebit`,`AccountIDDebit`,`PaymentMethodID`,`Value`,`Date`,`CD`,`Type`,`Obs`,`Currency`,`Rate`,`MovementAssociatedID`,`InvoiceID`,`InstallmentNumber`,`sysUser`,`ValorPago`,`CaixaID`,`ChequeID`,`UnidadeID`,`sysDate`,`ConciliacaoID`,`CodigoDeBarras`,`CategoryID`,`DHUp`,now() FROM sys_financialmovement WHERE InvoiceID = "&req("X"))
         db_execute("delete from sys_financialmovement where InvoiceID="&req("X"))
-        db.execute("INSERT INTO tissguiasinvoice_removidos SELECT `id`,`ItemInvoiceID`,`InvoiceID`,`GuiaID`,`TipoGuia`,`DHUp`,now() FROM tissguiasinvoice WHERE InvoiceID = "&req("X"))
+        db_execute("INSERT INTO tissguiasinvoice_removidos SELECT `id`,`ItemInvoiceID`,`InvoiceID`,`GuiaID`,`TipoGuia`,`DHUp`,now() FROM tissguiasinvoice WHERE InvoiceID = "&req("X"))
         db_execute("delete from tissguiasinvoice where InvoiceID="&req("X"))
 
         'Apagar a devolução

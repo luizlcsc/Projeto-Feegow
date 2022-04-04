@@ -2866,3 +2866,32 @@ end if
 <% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
 <script src="assets/js/whatsApp/whatsAppStatus.js?cache_prevent=9"></script>
 <% END IF %>
+
+<% 
+FC_FIREBASE_API_KEY =getEnv("FC_FIREBASE_API_KEY","")
+IF FC_FIREBASE_API_KEY<>"" THEN%>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "<%=FC_FIREBASE_API_KEY%>",
+    authDomain: "feegow-software-clinico.firebaseapp.com",
+    databaseURL: "https://feegow-software-clinico.firebaseio.com",
+    projectId: "feegow-software-clinico",
+    storageBucket: "feegow-software-clinico.appspot.com",
+    messagingSenderId: "594612638261",
+    appId: "1:594612638261:web:e2b7bdeef63cca1c8a177c",
+    measurementId: "G-B70MMEKG33"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+<% END IF %>

@@ -66,7 +66,7 @@ if Tipo = "ciapAdd" then
         if not Cid10SQL.eof then
             CidID = Cid10SQL("id")
             DescricaoCid10 = Cid10SQL("Descricao")
-            db.execute("insert into pacientesdiagnosticos (PacienteID, PacientesCiapID, FormID, CidID, Descricao, sysUser, sysActive) values ("& PacienteID &", '"& PacientesCiapSQL("last") &"', FormID="& FormID &", "& CidID &", '"& DescricaoCid10 &"', "& session("User") &", '-1')")
+            db.execute("insert into pacientesdiagnosticos (PacienteID, PacientesCiapID, FormID, CidID, Descricao, sysUser, sysActive) values ("& PacienteID &", '"& PacientesCiapSQL("last") &"', "& FormID &", "& CidID &", '"& DescricaoCid10 &"', "& session("User") &", '-1')")
         end if
     end if
     %>

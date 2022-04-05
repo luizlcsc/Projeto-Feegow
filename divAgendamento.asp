@@ -1537,38 +1537,34 @@ function saveReconhecimentoFacial(){
     // Reconhecimento facial
     // A cada criação de agendamento deve-se incluir o rosto do paciente na coleção de rostos daquela unidade referente ao dia daquele agendamento.
     // Exemplo: "105_0_20220321", refere-se a uma coleção da licença 105, unidade 0 e dia 21/03/2022.
-
-    const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
-    const unidadeId = parseInt('<%=session("UnidadeID")%>');
-    const usuarioId = $("#PacienteID").val();
-    const usuarioTipo = 'pacientes';
-    const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
-
-    console.log('Criando coleção diária...')
     
-    callRestApi({ 
+    const dateParts = $("#Data").val().split('/')
+    const day = dateParts[0]
+    const month = dateParts[1]
+    const year = dateParts[2]
+    const now = new Date()
+
+    // se o agendamento estiver sendo criado para o dia atual, insere o rosto do paciente na coleção do dia
+    if (now.getDate() == day && now.getMonth() + 1 == month && now.getFullYear() == year) {
+
+        const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
+        const unidadeId = parseInt('<%=session("UnidadeID")%>');
+        const usuarioId = $("#PacienteID").val();
+        const usuarioTipo = 'pacientes';
+        const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
+
+        console.log(`Inserindo imagem com rosto (${usuarioId} - ${usuarioTipo}) em coleção diária (${licencaId}_${unidadeId}_${colecaoNomeSufixo})`) 
+
+        callRestApi({
+            method: "POST",
+            path: `reconhecimento-facial/colecoes/${licencaId}_${unidadeId}_${colecaoNomeSufixo}/rostos`,
             params: {
-                unidadeId: unidadeId, 
-                sufixo: colecaoNomeSufixo
-            },
-            path: "reconhecimento-facial/colecoes",
-            method: "POST"
-        }) //components.js
-        .then(() => {
-            console.log('Inserindo imagem com rosto na coleção diária...') 
-            callRestApi({ 
-                params: {
-                    pacienteId: usuarioTipo === 'pacientes' ? usuarioId : undefined,
-                    profissionalId: usuarioTipo === 'profissionais' ? usuarioId : undefined,
-                    funcionarioId: usuarioTipo === 'funcionarios' ? usuarioId : undefined,
-                },
-                path: `reconhecimento-facial/colecoes/${licencaId}_${unidadeId}_${colecaoNomeSufixo}/rostos`,
-                method: "POST"
-            })
-                .then(() => 'Coleção diária criada e imagem com rosto inserida com sucesso!')
-                .catch((error) => console.error('Erro ao inserir rosto em coleção', error))
+                pacienteId: usuarioTipo === 'pacientes' ? usuarioId : undefined,
+                profissionalId: usuarioTipo === 'profissionais' ? usuarioId : undefined,
+                funcionarioId: usuarioTipo === 'funcionarios' ? usuarioId : undefined,
+            }
         })
-        .catch((error) => console.error('Erro ao criar coleção de rostos', error))
+    }
 
     // fim Reconhecimento facial
     <% end if %>

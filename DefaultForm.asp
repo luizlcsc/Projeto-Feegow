@@ -833,10 +833,12 @@ function DefaultForm(tableName, id)
 
 					if ExibirPrazoRetornoBuscaPaciente then
 						
-						set age = db.execute("select DATE_ADD(a.Data, INTERVAL proc.DiasRetorno DAY) PrazoRetorno, a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a "&_
-						"LEFT JOIN profissionais p on p.id=a.ProfissionalID "&_
-						"LEFT JOIN procedimentos proc on proc.id=a.TipoCompromissoID "&_
-						"where a.StaID=3 AND a.id IN (0"&UltAgendamentoIds&") AND (proc.DiasRetorno !='' AND proc.DiasRetorno IS NOT NULL)")
+						set age = db.execute("SELECT sp_retornaultimodiaretorno(a.PacienteID) PrazoRetorno, a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional "&_
+											" FROM agendamentos a "&_
+											" LEFT JOIN profissionais p ON p.id=a.ProfissionalID "&_
+											" LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
+											" WHERE a.StaID=3 AND a.PacienteID IN ("&calendars&") AND (proc.DiasRetorno !='' AND proc.DiasRetorno IS NOT NULL) "&_
+											" and sp_retornaultimodiaretorno(a.PacienteID) = DATE_ADD(a.Data, INTERVAL proc.DiasRetorno DAY)")
 
 						while not age.eof
 							%>

@@ -1456,7 +1456,7 @@ end if
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>

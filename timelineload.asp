@@ -209,8 +209,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
             if typename(preen)="Recordset" then
                 if not preen.eof then
-                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
-                        PermissaoArquivo = true
+                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 0 then
+                        PermissaoArquivo = False
                     end if 
                 end if
             end if

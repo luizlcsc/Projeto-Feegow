@@ -37,7 +37,11 @@ else
             <h4 class="modal-title">Compartilhar Dados do Prontu&aacute;rio</h4>
         </div>
         <div class="modal-body">
+            <%
+            IF aut("|aceitecompartilhamentodadospacienteA|") THEN
+            %>
 	        <div class="clearfix form-actions">
+                
                 <div title='Autoriza' class='mn hidden-xs' style='float:left'>
                     <div class='switch switch-info switch-inline'>
                         <input value='S' <% if Autoriza="S" then %> checked <% end if %> name='Autoriza' id='AceitePaciente' type='checkbox' />
@@ -46,13 +50,14 @@ else
                     Paciente autoriza o compartilhamento de seus dados médicos com os profissionais da clínica.
                 </div>
             </div>
+            <div class="row">
+                <hr>
+            </div>
+            <%
+            END IF
+            %>
             <%
             if not vca.eof then
-                %>
-                <div class="row">
-                    <hr>
-                </div>
-                <%
                 while not vca.eof 
                     'xx
                     IF vca("Autoriza")="S" THEN
@@ -68,14 +73,23 @@ else
                 wend
                 vca.close
                 set vca=nothing
+            else
+                %>
+                Não existem aceites de compartilhamento para este paciente.
+                <%
             end if
             %>
         </div>
-
+        <%
+        IF aut("|aceitecompartilhamentodadospacienteA|") THEN
+        %>
         <div class="modal-footer no-margin-top">
 	        <button class="btn btn-sm btn-success pull-right" id="btnShare" type="button"><i class="far fa-share-alt"></i> Autorizar</button>
     
         </div>
+        <%
+        END IF
+        %>
         <input type="hidden" name="Share" value="Share" />
     </form>
     <script>

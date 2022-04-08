@@ -21,6 +21,6 @@ if not CodigoSQL.eof then
         responseJson("{""success"": true,""message"":""Código validado com sucesso.""}")
     END IF
 else
-    responseJson("{""success"": false,message:""Operação inválida.""}")
+    responseJson("{""success"": false,""message"":""Operação inválida.""}")
 end if
 %>

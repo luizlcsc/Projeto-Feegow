@@ -191,6 +191,14 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                     PermissaoArquivo = permissaoSplit(0)
                 end if
             end if
+            
+            if typename(preen)="Recordset" then
+                if not preen.eof then
+                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 0 then
+                        PermissaoArquivo = False
+                    end if 
+                end if
+            end if
 
             if cstr(session("User"))=ti("sysUser")&"" then
                 PermissaoArquivo = true
@@ -204,15 +212,6 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
             ' que pertence ao Care Team do paciente, permitindo a exibição
             if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
                 PermissaoArquivo=true
-            end if
-
-
-            if typename(preen)="Recordset" then
-                if not preen.eof then
-                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 0 then
-                        PermissaoArquivo = False
-                    end if 
-                end if
             end if
 
             if not PacienteAutorizaAcesso and cstr(session("User"))<>ti("sysUser")&"" then

@@ -3305,7 +3305,9 @@ function header(recurso, titulo, hsysActive, hid, hPers, hPersList)
 		end if
 		if recurso="pacientes" then
 			rbtns = rbtns & "<button title='Imprimir Ficha' type='button' id='btnFicha' class='btn-sensitive-action btn btn-sm btn-default hidden-xs'><i class='far fa-print'></i></button> "
-			rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
+            IF aut("|aceitecompartilhamentodadospacienteV|") THEN
+			    rbtns = rbtns & "<button title='Compartilhar Dados' type='button' id='btnCompartilhar' class='btn btn-sm btn-default hidden-xs'><i class='far fa-share-alt'></i></button> "
+            END IF
 		end if
 		rbtns = rbtns & "<a title='Histórico de Alterações' href='javascript:log()' class='btn btn-sm btn-default hidden-xs'><i class='far fa-history'></i></a> "
 		'rbtns = rbtns & "<script>function log(){$('#modal-table').modal('show');$.get('DefaultLog.asp?R="&recurso&"&I="&hid&"', function(data){$('#modal').html(data);})}</script>"

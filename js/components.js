@@ -446,8 +446,8 @@ function showMessageDialog(message, messageType, title, delay=3000) {
     });
 }
 
-function authenticate(u, l = false, cupom="") {
-    getUrl("auth", {l: l,_u: u, _p: cupom}, function(data) {
+function authenticate(u, l = false, cupom="",franquia="") {
+    getUrl("auth", {l: l,_u: u, _p: cupom,_f:franquia}, function(data) {
         if(data.success==true){
             $.post("confAut.asp", data);
 

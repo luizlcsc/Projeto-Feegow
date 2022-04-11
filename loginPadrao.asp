@@ -401,14 +401,13 @@ if not tryLogin.EOF then
             end if
 
             
-            if request.Cookies("UID")<>User then
-                'caso o usuario se altere, reseta alguns cookies
-                
+            if request.Cookies("UID")<>session("User") then
+                'caso o usuario se altere, reseta alguns 
                 response.Cookies("FormIds|AE|") = ""
                 response.Cookies("FormIds|L|") = ""
             end if
 
-            response.Cookies("UID") = User
+            response.Cookies("UID") = session("User")
 
             if ref("Lembrarme")="S" then
                 response.Cookies("User") = User

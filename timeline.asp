@@ -279,6 +279,7 @@ select case Tipo
                 </span>
 
                 <div class="panel-controls">
+                    <button type="button" class="btn btn-default hidden-xs btn-sensitive-action" onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>', true)" title="Recarregar lista de formulários" ><i class="far fa-refresh"></i> </button>
                     <%
                     set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
                     restoreVisible = "none"
@@ -322,8 +323,8 @@ select case Tipo
                         end if
                     else
                     %>
-                    <div class="btn-group btn-block">
-                        <button onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>')" type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <div class="btn-group btn-block btn-group-insert-form">
+                        <button onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>')" type="button" class="btn btn-primary btn-block dropdown-toggle " data-toggle="dropdown" aria-expanded="false">
                             <i class="far fa-plus"></i> <%=rotuloBotao %>
                             <span class="caret ml5"></span>
                         </button>
@@ -1477,6 +1478,10 @@ function loadFormOptions(tipo, pacienteId, force = false){
         $.get("modulos/forms/LoadFormsByUser.asp", {Tipo:tipo, PacienteID: pacienteId, force: force ? 1 : 0, EspecialidadeID: '<%=EspecialidadeIDUsuario%>', EmAtendimento:'<%=EmAtendimento%>'}, function(data){
             $("#list-form-options").html(data);
             $('[data-toggle=tooltip]').tooltip();
+
+            if(force){
+                $(".btn-group-insert-form").addClass("open");
+            }
 
             formsLoaded=true;
         });

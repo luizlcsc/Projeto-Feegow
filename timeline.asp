@@ -1474,7 +1474,7 @@ var formsLoaded = false;
 function loadFormOptions(tipo, pacienteId, force = false){
     if(!formsLoaded || force){
 
-        $.get("modulos/forms/LoadFormsByUser.asp", {Tipo:tipo, PacienteID: pacienteId, force: force ? 1 : 0, EspecialidadeID: '<%=EspecialidadeIDUsuario%>'}, function(data){
+        $.get("modulos/forms/LoadFormsByUser.asp", {Tipo:tipo, PacienteID: pacienteId, force: force ? 1 : 0, EspecialidadeID: '<%=EspecialidadeIDUsuario%>', EmAtendimento:'<%=EmAtendimento%>'}, function(data){
             $("#list-form-options").html(data);
             $('[data-toggle=tooltip]').tooltip();
 

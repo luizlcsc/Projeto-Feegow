@@ -4,6 +4,7 @@ PacienteID=req("PacienteID")
 Tipo=req("Tipo")
 EspecialidadeID=req("EspecialidadeID")
 ForceLoadForms = req("force")&"" = "1"
+EmAtendimento = req("EmAtendimento")
 
 CookieId = "FormIds"&Tipo
 

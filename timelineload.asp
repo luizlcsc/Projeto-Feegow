@@ -97,7 +97,7 @@ end if
 
     if instr(Tipo, "|Pedido|")>0 then
         sqlPedido = " union all (select 0, ppd.id, '', sysUser, '', 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) and ")&" sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, '', 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then

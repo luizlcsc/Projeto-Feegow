@@ -8,6 +8,13 @@ end if
 OcultarBtn=req("OcultarBtn")
 FormularioNaTimeline=getConfig("FormularioNaTimeline")
 
+if session("table")="profissionais" then
+    set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
+    if not esp.eof then
+        EspecialidadeIDUsuario = esp("EspecialidadeID")
+    end if
+end if
+
 
 if req("X")<>"" then
     if req("Tipo")="|Prescricao|" then
@@ -301,80 +308,35 @@ select case Tipo
             <div class="panel-body" style="overflow: inherit!important;">
 
                 <div class="col-md-3">
-                        <%
-                         if False then
-                             set UltimosFormsSQL = db.execute("SELECT GROUP_CONCAT(DISTINCT ModeloID) modelos FROM ( "&_
-                             "SELECT bp.ModeloID, COUNT(bp.id) qtd from buiformspreenchidos bp join buiforms b on b.id=ModeloID WHERE bp.DataHora >= DATE_SUB(NOW(), INTERVAL 30 DAY) and bp.sysUser="&session("User")&" and   "&sqlForm&"  "&_
-                             "GROUP BY bp.ModeloID "&_
-                             "ORDER BY qtd desc "&_
-                             "LIMIT 5 "&_
-                             ")t ")
+                    <%
+                    FormIds = request.Cookies("FormIds")&""
 
-                            if not UltimosFormsSQL.eof then
-                                favoritos = UltimosFormsSQL("modelos")
-                                if favoritos<> "" then
-                                    sqlOrderFavoritos = " IF(id in ("&favoritos&"),0,1),"
-                                end if
-                            end if
+
+                    if isnumeric(FormIds) then
+                        set FormSQL = db.execute("SELECT id,Nome from buiforms WHERE id IN ("&FormIds&") ")
+
+                        if not FormSQL.eof then
+                    %>
+                     <button type="button" class="btn btn-primary btn-block" <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%> <% if EmAtendimento=1 then%> onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%= FormSQL("id") %>, 'N', '');"<% end if %>><i class="far fa-plus"></i> <%= FormSQL("Nome") %></button>
+                    <%
                         end if
+                    else
+                    %>
+                    <div class="btn-group btn-block">
+                        <button onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>')" type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="far fa-plus"></i> <%=rotuloBotao %>
+                            <span class="caret ml5"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" id="list-form-options">
 
+                            <li class="text-center" ><a
+                            href="#" ><i class="far fa-circle-o-notch fa-spin"></i> </a> </li>
 
-                        sqlBuiforms = "select Nome,id from buiforms where sysActive=1 and "& sqlForm &" order by "&sqlOrderFavoritos&" Nome"
-                        nForms = 0
-			            set forms = db.execute(sqlBuiforms)
-			            while not forms.eof
-				            if autForm(forms("id"), "IN", "") then
-                                nForms = nForms+1
-                                idFormUnico = forms("id")
-                                nomeFormUnico = forms("Nome")
-                            end if
-			            forms.movenext
-			            wend
-			            forms.close
-			            set forms = nothing
-
-			            set forms = db.execute(sqlBuiforms)
-
-                        if nForms<>1 then %>
-                        <div class="btn-group btn-block">
-                            <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <i class="far fa-plus"></i> <%=rotuloBotao %>
-                                <span class="caret ml5"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <%
-
-			                while not forms.eof
-				                if autForm(forms("id"), "IN", "") then
-
-				                    badgeFavorito = ""
-
-				                    if instr(favoritos, forms("id")) then
-				                        badgeFavorito = " <i class='fas fa-star text-warning'></i>"
-                                    end if
-
-                                %>
-                                <li  <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%>><a  <% if EmAtendimento=1 then%>
-                                href="#" onclick="iPront('<%=replace(Tipo, "|", "") %>', '<%=PacienteID%>', '<%=forms("id")%>', 'N', '');" <% end if %>><i class="far fa-plus"></i> <%=forms("Nome")%> <%=badgeFavorito%></a> </li>
-                                <%
-				                end if
-			                forms.movenext
-			                wend
-			                forms.close
-			                set forms = nothing
-			                if aut("buiformsI") and session("Banco")<>"clinic522" then
-                                %>
-                                <li class="divider"></li>
-                                <li><a href="./?P=buiforms&Pers=Follow"><i class="far fa-cog"></i> Gerenciar modelos de <%=lcase(subTitulo) %></a></li>
-                                <%
-			                end if
-                                %>
-                            </ul>
-                        </div>
-                        
-                    <% else %>
-                        <button type="button" class="btn btn-primary btn-block" <% if EmAtendimento=0 then%>disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right"<% end if%> <% if EmAtendimento=1 then%> onclick="iPront('<%=replace(Tipo, "|", "") %>', <%=PacienteID%>, <%= idFormUnico %>, 'N', '');"<% end if %>><i class="far fa-plus"></i> <%= nomeFormUnico %></button>
-                    <% end if %>
+                        </ul>
+                    </div>
+                    <%
+                    end if
+                    %>
                 </div>
                 <%
                     if tipo="|L|" then
@@ -1407,6 +1369,8 @@ function excluirSerie(id) {
         pront("timeline.asp?EspecialidadeId="+especialidadesID+"&L="+L+"&PacienteID="+PacienteId+"&Tipo="+tipo+prof);
     }
 
+    var $request;
+
     $(document).ready(function() {
         try{
 
@@ -1431,7 +1395,11 @@ function excluirSerie(id) {
                 if(!final && !Carregando){
                     Carregando = true;
                     $(".load-wrapp").show();
-                    $.get("timelineloadmore.asp",{
+                    if ($request != null){ 
+                        $request.abort();
+                        $request = null;
+                    }
+                    var $request = $.get("timelineloadmore.asp",{
                         Tipo: tipoarquivo,
                         PacienteID:'<%=PacienteID%>',
                         loadMore : newloadMore,
@@ -1501,4 +1469,17 @@ function prontPrint(tipo, id){
         "modal-lg");
 }
 
+
+var formsLoaded = false;
+function loadFormOptions(tipo, pacienteId, force = false){
+    if(!formsLoaded || force){
+
+        $.get("modulos/forms/LoadFormsByUser.asp", {Tipo:tipo, PacienteID: pacienteId, force: force ? 1 : 0, EspecialidadeID: '<%=EspecialidadeIDUsuario%>'}, function(data){
+            $("#list-form-options").html(data);
+            $('[data-toggle=tooltip]').tooltip();
+
+            formsLoaded=true;
+        });
+    }
+}
 </script>

@@ -400,6 +400,16 @@ if not tryLogin.EOF then
                 dbc.execute("update cliniccentral.licencas set ultimoBackup=NOW() where id="& tryLogin("LicencaID"))
             end if
 
+            
+            if request.Cookies("UID")<>User then
+                'caso o usuario se altere, reseta alguns cookies
+                
+                response.Cookies("FormIds|AE|") = ""
+                response.Cookies("FormIds|L|") = ""
+            end if
+
+            response.Cookies("UID") = User
+
             if ref("Lembrarme")="S" then
                 response.Cookies("User") = User
                 Response.Cookies("User").Expires = Date() + 365

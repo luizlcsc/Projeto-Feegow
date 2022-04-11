@@ -111,17 +111,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     if instr(Tipo, "|Arquivos|")>0 then
         sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
+
+    if instr(Tipo, "|Encaminhamentos|")>0 then
+         sqlEncaminhamentos = "union all(select 0, pe.id, '', pe.profissionalemissorid, 'Encaminhamentos', IF(pe.MemedID IS NULL, 'Encaminhamento', 'Encaminhamento Memed'), 'fa-file-archive-o', 'success', `dataHora`, pe.descricao, s.id, pe.sysactive, pe.MemedID from encaminhamentos AS pe LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pe.id AND s.tipo = 'ENCAMINHAMENTOS' LEFT JOIN especialidades esp ON esp.id=pe.especialidadeid WHERE PacienteID="&PacienteID&" AND pe.sysactive = 1) "
+    end if
                  cont=0
 
-    sql = "select t.*, esp.Especialidade, lu.Nome UserName from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
-                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
-                ") t "&sqlProf&" "&_
-                " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUser "&_
-                " LEFT JOIN sys_users su ON su.id=lu.id "&_
-                " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
-                " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
-                "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-    'response.write(sql)
+    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
+                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos & sqlEncaminhamentos &_
+                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
+    ' response.write(sql)
              set ti = db.execute( sql )
              
              while not ti.eof
@@ -163,13 +162,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 			                    icone = "lock"
 		                    end if
 
-                            if preen("preenchedor")&""="" or preen("preenchedor")&""="0" or not HasRegraCompartilhamento then
-                                CompartilhamentoOk = True
-                            else
-                                CompartilhamentoOk = compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1
-                            end if
-
-                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or CompartilhamentoOk then
+                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
                                 exibe = 1
                             else
                                 exibe = 0
@@ -339,7 +332,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             end if
 
                             ' Botões Prescrição Memed
-                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido") then
+                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido" or ti("Tipo")="Encaminhamentos") then
                                 sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
                                 set rsMemed = db.execute(sqlMemed)
                             %>
@@ -690,12 +683,17 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                             <%
                             response.Write("<small>" & unscapeOutput(ti("Conteudo")) & "</small>")
                         end if
-                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
+                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas", "Encaminhamentos"
                             if ti("MemedID")<>"" then
+                                if ti("Tipo") = "Encaminhamentos" then
+                                    tipoMemed = "encaminhamento"
+                                else
+                                    tipoMemed = "prescricao"
+                                end if
                                 sqlPrescricaoMemed = "SELECT pm.tipo, pm.nome, pm.descricao, pm.posologia, pm.quantidade, pm.unit, pm.composicao " &_
                                                      "FROM memedv2_prescricoes p " &_
                                                      "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
-                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'prescricao'"
+                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo ='"&tipoMemed&"'"
                                 set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
                                 memedCount = 1
                                 %>

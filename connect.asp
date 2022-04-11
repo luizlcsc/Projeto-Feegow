@@ -2259,7 +2259,7 @@ FUNCTION stripHTML(strHTML)
   Set objRegExp = Nothing
 END FUNCTION
 
-function autForm(FormID, TipoAut, PreenchedorID, EspecialidadeID)
+function autForm(FormID, TipoAut, PreenchedorID, EspecialidadeIDUsuario)
 	autForm = false
     sqlFiltraTipo = ""
 
@@ -2272,10 +2272,13 @@ function autForm(FormID, TipoAut, PreenchedorID, EspecialidadeID)
 	set perm = db.execute("select * from buipermissoes where FormID="&FormID & sqlFiltraTipo)
 	set countPerm = db.execute("select id from buipermissoes where FormID="&FormID)
 
-	if session("table")="profissionais" and EspecialidadeID&"" = "" then
-	    set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
+	if session("table")="profissionais" and EspecialidadeIDUsuario&"" = "" then
+	    set esp = db.execute("select p.EspecialidadeID, pe.EspecialidadeID EspecialidadeID2 from profissionais p LEFT JOIN profissionaisespecialidades pe ON pe.ProfissionalID=p.id  where p.id="&session("idInTable")&" and not isnull(p.EspecialidadeID) and not p.EspecialidadeID=0 GROUP BY p.id")
         if not esp.eof then
-            EspecialidadeIDPreenchedor = esp("EspecialidadeID")
+            EspecialidadeIDUsuario = esp("EspecialidadeID")
+            if not isnull(esp("EspecialidadeID2")) then
+                EspecialidadeIDUsuario = EspecialidadeIDUsuario & ","&esp("EspecialidadeID2")
+            end if
         end if
     end if
     TipoAutArray = split(TipoAut, ",")
@@ -2304,9 +2307,15 @@ function autForm(FormID, TipoAut, PreenchedorID, EspecialidadeID)
                             autForm = true
                         end if
                         if autForm=false and perm("Tipo")="E" then
-                            if instr(perm("Grupo"), "|"&EspecialidadeIDPreenchedor&"|")>0 then
-                                autForm = true
-                            end if
+                            arrayEspecialidades = split(EspecialidadeIDUsuario,",")
+
+                            for j=0 to ubound(arrayEspecialidades)
+                                EspecialidadeIDPerm = arrayEspecialidades(j)
+                                
+                                if instr(perm("Grupo"), "|"&EspecialidadeIDPerm&"|")>0 then
+                                    autForm = true
+                                end if
+                            next
                         end if
                     end if
                 end if

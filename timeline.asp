@@ -8,13 +8,17 @@ end if
 OcultarBtn=req("OcultarBtn")
 FormularioNaTimeline=getConfig("FormularioNaTimeline")
 
+
 if session("table")="profissionais" then
-    set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
+    set esp = db.execute("select p.EspecialidadeID, pe.EspecialidadeID EspecialidadeID2 from profissionais p LEFT JOIN profissionaisespecialidades pe ON pe.ProfissionalID=p.id  where p.id="&session("idInTable")&" and not isnull(p.EspecialidadeID) and p.EspecialidadeID!=0 GROUP BY p.id")
+
     if not esp.eof then
         EspecialidadeIDUsuario = esp("EspecialidadeID")
+        if not isnull(esp("EspecialidadeID2")) then
+            EspecialidadeIDUsuario = EspecialidadeIDUsuario & ","&esp("EspecialidadeID2")
+        end if
     end if
 end if
-
 
 if req("X")<>"" then
     if req("Tipo")="|Prescricao|" then

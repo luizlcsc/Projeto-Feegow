@@ -2,16 +2,7 @@
 <!--#include file="modal.asp"-->
 <style>
 .horarios-hidden{
-      filter: blur(6px);
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0;
 }
 </style>
 <br />

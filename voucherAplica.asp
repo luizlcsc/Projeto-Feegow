@@ -55,13 +55,16 @@ if Voucher<>"" then
                 TipoValor = vca("TipoValor")
 
                 for i=0 to ubound(spl)
+                    Valor = 0
                     if GruposProcedimentos<>"" then
                         set proc = db.execute("select GrupoID from procedimentos where id="& ref("ItemID"& spl(i)))
                         if not proc.eof then
                             GrupoID = proc("GrupoID")
                         end if
                     end if
+                    
                     if instr(GruposProcedimentos, "|"& GrupoID &"|")>0 or instr(Procedimentos, "|"& ref("ItemID"& spl(i)) &"|")>0 or instr(Pacotes, "|"& ref("PacoteID"& spl(i)) &"|")>0 then
+                        Valor = vca("Valor")
                         if TipoValor="V" then
                             Desconto = Valor
                         else

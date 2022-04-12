@@ -878,7 +878,7 @@ $(function () {
     if(!$("#Foto").is(':focusable')){
       $("#Foto").prop("required", false);
     }
-  }, 650);
+  }, 1750);
 })
 
 

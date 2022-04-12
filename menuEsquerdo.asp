@@ -962,48 +962,31 @@ end if
 		        if aut("formsae")=1 then
 		            %>
 		            <li class="checkStatus">
-                    <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|Encaminhamentos|`);'>
-                    <span class="fa fa-line-chart bigger-110"></span>
-                    <span class="sidebar-title">Linha do tempo</span>
-                    <span class="sidebar-title-tray">
-                      <span class="label label-xs bg-primary"></span>
-                    </span>
+                        <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|Encaminhamentos|`);'>
+                        <span class="fa fa-line-chart bigger-110"></span>
+                        <span class="sidebar-title">Linha do tempo</span>
+                        <span class="sidebar-title-tray">
+                            <span class="label label-xs bg-primary"></span>
+                        </span>
+                        </a>
+                    </li>
+
                     <%
                     set certiDidital = db.execute("SELECT * FROM cliniccentral.digitalcertificates where UsuarioID = "&session("User")&" and LicencaID = "&replace(session("Banco"), "clinic", "")&" and sysActive = 1")
 
                     if not certiDidital.eof then
-                        %>
-                        <ul>
-                            <li class="checkStatus">
-                                <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`, this);'>
-                                    <span class="far fa-shield"></span>
-                                    <span class="sidebar-title">Assinatura digital
-                                        <span class="label label-system label-xs fleft">Novo</span>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
+                    %>
+                        <li class="checkStatus">
+                            <a data-toggle="tab" class="tab menu-aba-pacientes-assinatura-digital"  id="abaAssinarturaDigital" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|AssinaturaDigital|`, this);'>
+                                <span class="far fa-shield"></span>
+                                <span class="sidebar-title">Assinatura digital
+                                    <span class="label label-system label-xs fleft">Novo</span>
+                                </span>
+                            </a>
+                        </li>
                         <%
                     end if
                 end if
-                %>
-                </li>
-                <%
-                if aut("formsae")=1 then
-                    %>
-                    <li class="checkStatus">
-                        <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|`, this);'>
-                            <span class="far fa-book-medical bigger-110"></span>
-                            <span class="sidebar-title">Linha do tempo</span>
-                            <span class="sidebar-title-tray">
-                            <span class="label label-xs bg-primary"></span>
-                            </span>
-
-                        </a>
-                    </li>
-                    <%
-                end if
-
                 if aut("imagens")=1 then
                     %>
                     <li class="checkStatus">

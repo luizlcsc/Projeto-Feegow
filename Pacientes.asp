@@ -1295,7 +1295,6 @@ $(".form-control").change(function(){
 
 
 
-<!--#include file="disconnect.asp"-->
 
 <%
     if req("Agenda")="" then
@@ -1310,26 +1309,10 @@ $(".form-control").change(function(){
 end if
 %>
 
-<!-- 23/08/2021 -->
-<!-- CAL-517 Normalização de municípios no cadastro de pacientes -->
-
-<style>
-    .mb-2 {
-        margin-bottom: .5rem !important   
-    }
-    .mb-3 {
-        margin-bottom: 1rem !important
-    }
-    .mb-4 {
-        margin-bottom: 1.5rem !important
-    }
-    div.switch label:after {
-        height: 23px !important
-    }
-</style>
 
 <script>
-    $(document).ready(() => {
+    const initEnderecoV2 = () => {
+
 
         const cepDiv            = $('#qfcep');
         let cepInput            = $('#Cep');
@@ -1504,6 +1487,16 @@ end if
         cnsLabel.attr('data-rel', 'tooltip');
         cnsLabel.attr('data-placement', 'right');
         cnsLabel.attr('data-original-title', 'Cartão Nacional de Saúde');
+    }
+
+    $(document).ready(() => {
+        <%
+        if getConfig("UtilizarEnderecoEstruturado") then
+        %>
+        initEnderecoV2();
+        <%
+        end if
+        %>
     });
         
     function setAddressFields(cep) {
@@ -1837,3 +1830,4 @@ end if
 </script>
 
 <!-- FIM CAL-517 Normalização de municípios no cadastro de pacientes -->
+<!--#include file="disconnect.asp"-->

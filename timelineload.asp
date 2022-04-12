@@ -54,16 +54,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, sp_sysUserName(fp.sysUser), 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '','' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, sp_sysUserName(fp.sysUser), 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '','' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
     end if
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
-            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, sp_sysUserName(sysUser), 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID,'' from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
         end if
     end if
 
@@ -76,8 +76,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
         sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
 
-        sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
-                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'', d.sysActive, '' "&_
+        sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, sp_sysUserName(d.sysUser), 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
+                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'', d.sysActive, '','' "&_
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
                          "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
@@ -86,41 +86,41 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, pa.id, '', sysUser, 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, sp_sysUserName(sysUser), 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '','' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
     end if
 
      if instr(Tipo, "|Tarefas|")>0 then
-        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, ta.sysActive, '' FROM tarefas ta "&_
+        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, sp_sysUserName(ta.sysuser), 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, ta.sysActive, '','' FROM tarefas ta "&_
                     " INNER JOIN tarefasmsgs tm ON tm.TarefaID = ta.id "&_
                     " WHERE ta.solicitantes LIKE ',3_"&PacienteID&"%') "
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) and ")&" sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, sp_sysUserName(sysUser), 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID,'' from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) and ")&" sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, sp_sysUserName(sysUser), 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '','' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then
-        sqlProtocolos = " union all (select 0, po.id, '', sysUser, 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in ("&sysActiveRecords&") AND po.PacienteID="&PacienteID&") "
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, sp_sysUserName(sysUser), 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '','' from pacientesprotocolos po WHERE po.sysActive in ("&sysActiveRecords&") AND po.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
-        sqlImagens = " union all (select 0, '0', Tipo, '0', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlImagens = " union all (select 0, '0', Tipo, '0', '' ,'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '','' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', '' ,'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '','' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
 
     if instr(Tipo, "|Encaminhamentos|")>0 then
-         sqlEncaminhamentos = "union all(select 0, pe.id, '', pe.profissionalemissorid, 'Encaminhamentos', IF(pe.MemedID IS NULL, 'Encaminhamento', 'Encaminhamento Memed'), 'fa-file-archive-o', 'success', `dataHora`, pe.descricao, s.id, pe.sysactive, pe.MemedID from encaminhamentos AS pe LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pe.id AND s.tipo = 'ENCAMINHAMENTOS' LEFT JOIN especialidades esp ON esp.id=pe.especialidadeid WHERE PacienteID="&PacienteID&" AND pe.sysactive = 1) "
+         sqlEncaminhamentos = "union all(select 0, pe.id, '', pe.profissionalemissorid, sp_sysUserName(pe.profissionalemissorid), 'Encaminhamentos', IF(pe.MemedID IS NULL, 'Encaminhamento', 'Encaminhamento Memed'), 'file-archive-o', 'success', `dataHora`, pe.descricao, s.id, pe.sysactive, pe.MemedID,esp.especialidade from encaminhamentos AS pe LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pe.id AND s.tipo = 'ENCAMINHAMENTOS' LEFT JOIN especialidades esp ON esp.id=pe.especialidadeid WHERE PacienteID="&PacienteID&" AND pe.sysactive = 1) "
     end if
                  cont=0
 
-    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
+    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser,'' UserName ,'' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID,'' especialidade limit 0) "&_
                 sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos & sqlEncaminhamentos &_
                 ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-    ' response.write(sql)
+    'response.write(sql)
              set ti = db.execute( sql )
              
              while not ti.eof

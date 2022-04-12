@@ -11,6 +11,7 @@ ColCV = req("Col")
 
 if Salvar="1" then
    db.execute("UPDATE `buiformspreenchidos` SET sysActive=1 WHERE id="&FormID)
+   db.execute("UPDATE `pacientesdiagnosticos` SET sysActive=1 WHERE FormID="&FormID)
    %>
     new PNotify({
         title: 'Atendimento salvo',

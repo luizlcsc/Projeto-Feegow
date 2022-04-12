@@ -29,14 +29,14 @@ select case Tipo
                 Txt = replace(Txt, spl(i), " ")
             next
             Termo = replace(Txt, " ", "%")
-            sqlCidCiap = " select '1' numero, t.id, t.CID10_Cd1, t.Termo from cliniccentral.tesauro t where t.CID10_Cd1<>'' AND (t.Termo LIKE '%"& right(Termo, 10) &"%' or t.CID10_Cd1 LIKE '%"& right(Termo, 10) &"%')"&_
+            sqlCidCiap = " select '1' numero, t.id, t.CID10_Cd1, c.Descricao from cliniccentral.tesauro t LEFT JOIN cliniccentral.cid10 c ON c.codigo = REPLACE(t.CID10_Cd1,'.','') where t.CID10_Cd1<>'' AND (t.Termo LIKE '%"& right(Termo, 10) &"%' or t.CID10_Cd1 LIKE '%"& right(Termo, 10) &"%')"&_
                 " UNION ALL "&_
-                " select '2' numero, t.id, t.CID10_Cd1, t.Termo from cliniccentral.tesauro t where t.CID10_Cd1<>'' AND t.Termo LIKE '%"& right(Termo, 7) &"%'"
+                " select '2' numero, t.id, t.CID10_Cd1, c.Descricao from cliniccentral.tesauro t LEFT JOIN cliniccentral.cid10 c ON c.codigo = REPLACE(t.CID10_Cd1,'.','') where t.CID10_Cd1<>'' AND t.Termo LIKE '%"& right(Termo, 7) &"%'"
         end if
 
         if sqlCidCiap<>"" or sqlTags<>"" then
-            sql = "select id, numero, CID10_Cd1, Termo from ("& sqlCidCiap & sqlUNION & sqlTags &") tab GROUP BY CID10_Cd1 ORDER BY numero, CID10_Cd1 LIMIT 50"
-            'response.write( sql )
+            sql = "select id, numero, CID10_Cd1, Descricao as Termo from ("& sqlCidCiap & sqlUNION & sqlTags &") tab GROUP BY CID10_Cd1 ORDER BY numero, CID10_Cd1 LIMIT 50"
+            ' response.write( sql )
             set ciap = db.execute( sql )
             if not ciap.eof then
                 %>

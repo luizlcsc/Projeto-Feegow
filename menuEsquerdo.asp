@@ -2042,8 +2042,9 @@ end if
                 <span class="sidebar-title"> Integração Laboratorial </span>
                 <span class="caret"></span>
             </a>
-            <% 
-                if verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))="1|1" or verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))="1|2" then
+            <%                 
+                verificacaoLaboratorio = verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))
+                if verificacaoLaboratorio="1|1|1" or verificacaoLaboratorio="1|2|1" then
                     %>   
                     <!--#include file="menuRelatoriosIntegracaoLaboratorial.asp"-->
                     <% 

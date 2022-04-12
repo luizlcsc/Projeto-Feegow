@@ -201,7 +201,18 @@ else
             ProfissionalIDAntigo=profissionalAntigoSQL("ProfissionalID")
         end if
 
-        db.execute("update agendamentos set Data="& mydatenull(ref("NovaData")) &", ProfissionalID="& ref("NovoProfissionalID") &" where id in("& ref("agMassa") &")")
+        set GradeSQL = db.execute("SELECT LocalID FROM assfixalocalxprofissional WHERE ProfissionalID="&ref("NovoProfissionalID")&" AND DAYOFWEEK("& mydatenull(ref("NovaData"))&")=DiaSemana AND CURDATE() BETWEEN COALESCE(InicioVigencia,CURDATE()) AND COALESCE(FimVigencia,CURDATE()) ")
+
+        if not GradeSQL.eof then
+            LocalID = GradeSQL("LocalID")
+        else
+            set ExcecaoSQL = db.execute("SELECT LocalID FROM assperiodolocalxprofissional WHERE "&mydatenull(ref("NovaData"))&" BETWEEN DataDe AND DataA AND ProfissionalID="&ref("NovoProfissionalID"))
+            if not ExcecaoSQL.eof then
+                LocalID = ExcecaoSQL("LocalID")
+            end if
+        end if
+
+        db.execute("update agendamentos set Data="& mydatenull(ref("NovaData")) &", ProfissionalID="& ref("NovoProfissionalID") &", LocalID="&treatvalzero(LocalID)&" where id in("& ref("agMassa") &")")
 
         call agendaUnificada("update", ref("agMassa"), ProfissionalIDAntigo)
     end if

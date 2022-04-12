@@ -182,7 +182,9 @@ end if
 		    <h4>Agendamentos excluídos</h4>
 		    <%
 		    end if
+            response.Buffer
 		    while not logs.eof
+                response.Flush()
 			    %>
 
                 <div class="panel panel-default" style="margin-bottom: 5px !important;">

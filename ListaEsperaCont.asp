@@ -757,4 +757,22 @@ else
     </tbody>
   </table>
 <%end if%>
+<% if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" then %>
+<script>
+fetch('http://localhost:3000/send',{
+         method:"POST",
+         headers: {
+                "Authorization":localStorage.getItem("tk"),
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+         },
+         body:JSON.stringify({
+                                 "service":"toten",
+                                 "data": {"call": "next"}
+                             })
+      }).then(() => {
+
+      })
+</script>
+<% end if %>
 <!--#include file = "disconnect.asp"-->

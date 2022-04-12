@@ -767,11 +767,9 @@ fetch('http://localhost:3000/send',{
                 'Content-Type': 'application/json'
          },
          body:JSON.stringify({
-                                 "service":"toten",
+                                 "service":"panel",
                                  "data": {"call": "next"}
                              })
-      }).then(() => {
-
       })
 </script>
 <% end if %>

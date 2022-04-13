@@ -116,7 +116,7 @@ end if
 Classe = "success"
 if MC="" then
     if DetalharEntradas="" then
-        sql = "select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod"
+        sql = "select concat( ifnull(count(m.id), 0), ' lançamento(s)' ) Descricao, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID FROM sys_financialmovement m LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialcurrentaccounts ca ON ca.id=cx.ContaCorrenteID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser WHERE m.Date="& mData &" AND m.UnidadeID="& UnidadeID &" AND NOT ISNULL(m.CaixaID) AND ((AccountAssociationIDDebit=7 AND AccountIDDebit=cx.id AND AccountAssociationIDCredit NOT IN(1, 7)) OR (PaymentMethodID IN(8,9,4,15))) AND ca.Empresa=m.UnidadeID GROUP BY pm.PaymentMethod, m.CaixaID ORDER BY lu.Nome, pm.PaymentMethod"
         set dist = db.execute(sql)
     else
         sql = "select m.id, pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, m.Value, m.AccountAssociationIDCredit, m.AccountIDCredit, pac.CPF Identificacao, pac.NomePaciente NomeConta "&_
@@ -518,7 +518,7 @@ if not dist.eof then
             case 15
                 Pix = Pix+Valor
         end select
-        set cat = db.execute("select group_concat(DISTINCT ifnull(Descricao, '') SEPARATOR ', ') Descricao, group_concat(ex.Name) planoContas from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialexpensetype ex ON ex.id=ii.CategoriaID WHERE idesc.PagamentoID="& dist("id")&" ")
+        set cat = db.execute("select group_concat(DISTINCT ifnull(Descricao, '') SEPARATOR ', ') Descricao, group_concat(DISTINCT ex.Name) planoContas from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialexpensetype ex ON ex.id=ii.CategoriaID WHERE idesc.PagamentoID="& dist("id")&" ")
         Descricao = "<code>"& dist("name") &" - " & cat("Descricao") &"</code>"
         PlanoContas = cat("planoContas")&""
         %>
@@ -569,6 +569,76 @@ else
         " LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser LEFT JOIN sys_financialcurrentaccounts cc ON cc.id=cx.ContaCorrenteID "&_
         " WHERE m.AccountAssociationIDDebit=1 AND m.AccountAssociationIDCredit=7 AND m.CaixaID="& session("CaixaID") &" ORDER BY lu.Nome, pm.PaymentMethod")
 end if
+if not dist.eof then
+%>
+
+<table class="table table-striped table-hover table-bordered table-condensed">
+    <thead>
+        <tr class="<%= Classe %>">
+            <th colspan="4"><%= Titulo %></th>
+        </tr>
+        <tr class="<%= Classe %>">
+            <th width="20%">Forma</th>
+            <th width="35%">Descrição</th>
+            <th width="35%">Usuário</th>
+            <th width="10">Valor</th>
+        </tr>
+    <tbody>
+    <%
+    while not dist.eof
+        Descricao = accountName(dist("AccountAssociationIDDebit"), dist("AccountIDDebit"))
+        Valor = dist("Value")
+        select case dist("PaymentMethodID")
+            case 1
+                Dinheiro = Dinheiro+Valor
+            case 2
+                Cheque = Cheque+Valor
+            case 8
+                Credito = Credito+Valor
+            case 9
+                Debito = Debito+Valor
+            case 4
+                Boleto = Boleto+Valor
+            case 15
+                Pix = Pix+Valor
+        end select
+        %>
+        <tr>
+            <td><%= dist("PaymentMethod") %></td>
+            <td><%= Descricao %></td>
+            <td><%= dist("Nome") %></td>
+            <td class="text-right">R$ <%= fn(Valor) %></td>
+        </tr>
+        <%
+    dist.movenext
+    wend
+    dist.close
+    set dist = nothing
+
+    Balanco = Balanco+Valor
+    %>
+    </tbody>
+</table>
+    <% call linhaTotais(Dinheiro, Cheque, Credito, Debito, Boleto, Pix, Titulo, Classe)
+end if 
+
+
+Dinheiro = 0
+Cheque = 0
+Credito = 0
+Debito = 0
+Titulo = "TRANSFERÊNCIAS DE ENTRADAS"
+Classe = "warning"
+if MC="" then
+    set dist = db.execute("select pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m "&_
+        " LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser LEFT JOIN sys_financialcurrentaccounts cc ON cc.id=cx.ContaCorrenteID "&_
+        " WHERE m.AccountAssociationIDDebit=7 AND m.AccountAssociationIDCredit=1 AND m.Date="& mData &" AND cc.Empresa="& UnidadeID &" ORDER BY lu.Nome, pm.PaymentMethod")
+else
+    set dist = db.execute("select pm.PaymentMethod, m.PaymentMethodID, lu.Nome, m.CaixaID, (m.Value*-1) Value, m.AccountAssociationIDDebit, m.AccountIDDebit FROM sys_financialmovement m "&_
+        " LEFT JOIN caixa cx ON cx.id=m.CaixaID LEFT JOIN sys_financialpaymentmethod pm ON pm.id=m.PaymentMethodID LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=cx.sysUser LEFT JOIN sys_financialcurrentaccounts cc ON cc.id=cx.ContaCorrenteID "&_
+        " WHERE m.AccountAssociationIDDebit=7 AND m.AccountAssociationIDCredit=1 AND m.CaixaID="& session("CaixaID") &" ORDER BY lu.Nome, pm.PaymentMethod")
+end if
+
 if not dist.eof then
 %>
 

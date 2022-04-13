@@ -286,7 +286,7 @@ select case Tipo
                     <%
                     IF aut("|formsaeI|") THEN
                     %>
-                    <button type="button" class="btn btn-default hidden-xs btn-sensitive-action" onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>', true)" title="Recarregar lista de formulários" ><i class="far fa-refresh"></i> </button>
+                    <button type="button" class="btn btn-default hidden-xs" onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>', true)" title="Recarregar lista de formulários" ><i class="far fa-refresh"></i> </button>
                     <%
                     END IF
                     

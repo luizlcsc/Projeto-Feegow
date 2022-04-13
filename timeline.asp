@@ -283,8 +283,13 @@ select case Tipo
                 </span>
 
                 <div class="panel-controls">
+                    <%
+                    IF aut("|formsaeI|") THEN
+                    %>
                     <button type="button" class="btn btn-default hidden-xs btn-sensitive-action" onclick="loadFormOptions('<%=Tipo%>', '<%=PacienteID%>', true)" title="Recarregar lista de formulários" ><i class="far fa-refresh"></i> </button>
                     <%
+                    END IF
+                    
                     set exe = db.execute("select * from buiformspreenchidos bfp join buiforms bf on bf.id=bfp.ModeloID where bfp.sysActive <> 1 "&formTipo &" and bfp.PacienteID="&pacienteID)
                     restoreVisible = "none"
                     if not exe.eof then

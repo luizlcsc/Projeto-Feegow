@@ -8,12 +8,17 @@ IF ref("Rechamar") = "1" THEN
     response.write("true")
 END IF
 
-configExibirNaSalaDeEspera = getConfig("ExibirEquipamentoNaSalaDeEspera")
+ExibirEquipamentoNaSalaDeEspera = getConfig("ExibirEquipamentoNaSalaDeEspera")
+ExibirHorarioSalaEspera =getConfig("ExibirHorarioSalaEspera") or lcase(session("table"))<>"profissionais"
 OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Paciente"
 Ordens="HoraSta, Hora, pac.Nascimento ASC"
 splOrdensNome=split(OrdensNome, ", ")
 unidadesBloqueioAtendimento = getConfig("BloquearAtendimentoMediantePagamento")
 OmitirEncaixeGrade = getConfig("OmitirEncaixeGrade")
+
+if not ExibirHorarioSalaEspera then
+    classHorarios = "horarios-hidden"
+end if
 
 Ordem="Hora"
 StatusExibir=req("StatusExibir")
@@ -135,7 +140,7 @@ if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
 else
     'triagem
     sqlSalaDeEspera = ""
-    if configExibirNaSalaDeEspera = 0 then
+    if ExibirEquipamentoNaSalaDeEspera = 0 then
         sqlSalaDeEspera  = " a.ProfissionalID !=0 and "
     end if
 
@@ -471,8 +476,8 @@ else
         statusIcon = imoon(Sta)
         %>
     <tr <%= fLinha %>>
-    <td nowrap <%= rowspan %> ><%=statusIcon%> <%=Hora%></td>
-    <td <%= rowspan %> ><%= HoraSta %></td>
+    <td class="<%=classHorarios%>" nowrap <%= rowspan %> ><%=statusIcon%> <%=Hora%></td>
+    <td class="<%=classHorarios%>" <%= rowspan %> ><%= HoraSta %></td>
     <%
 
     %>
@@ -482,8 +487,8 @@ else
         'if not veSePre.EOF then
 			'<img src="checked.jpg" />
 		'end if%>
-		<%if veseha("Encaixe")=1 and OmitirEncaixeGrade=0 then%><span class="label label-alert ml5">Encaixe </span><%end if%>
-		<%if veseha("Primeira")=1 then%><span class="label label-info ml5">Primeira vez</span><%end if%>
+		<%if veseha("Encaixe")=1 and OmitirEncaixeGrade=0 then%><span class="label label-alert ml5 <%=classHorarios%>">Encaixe </span><%end if%>
+		<%if veseha("Primeira")=1 then%><span class="label label-info ml5 <%=classHorarios%>">Primeira vez</span><%end if%>
 		<<%=tagPaciente%> href="./?P=Pacientes&Pers=1&I=<%=veseha("PacienteID")%>" <%=cssAdicionl%>><%=Nome%></<%=tagPaciente%>><br />
 		<small><%=Notas%></small></td>
         <td><%=IdadeAbreviada(DataNascimento)%></td>

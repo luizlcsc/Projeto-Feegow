@@ -168,7 +168,11 @@ if not dist.eof then
     <tbody>
     <%
     Valor = 0
+
+    response.Buffer
     while not dist.eof
+        response.Flush()
+
         Executantes=""
         NomeTabela=""
         Descricao=""
@@ -468,11 +472,13 @@ if not dist.eof then
 <table class="table table-striped table-hover table-bordered table-condensed">
     <thead>
         <tr class="<%= Classe %>">
-            <th colspan="5"><%= Titulo %></th>
+            <th colspan="7"><%= Titulo %></th>
         </tr>
         <tr class="<%= Classe %>">
             <th width="20%">Forma</th>
-            <th width="25%">Descrição</th>
+            <th width="10%">Descrição</th>
+            <th width="10%">Conta</th>
+            <th width="10%">Plano de contas</th>
             <th width="10%">Identificação</th>
             <th width="35%">Usuário</th>
             <th width="10">Valor</th>
@@ -480,21 +486,24 @@ if not dist.eof then
     <tbody>
     <%
     while not dist.eof
-        Descricao=""
+        NomeConta=""
         Identificacao=""
 
         if FieldExists(dist, "NomeConta") then
             if dist("NomeConta")&""<>"" then
-                Descricao = dist("NomeConta")&""
+                NomeConta = dist("NomeConta")&""
                 Identificacao = dist("Identificacao")&""
             end if
         end if
 
-        if Descricao="" then
-            Descricao = accountName(dist("AccountAssociationIDDebit"), dist("AccountIDDebit"))
+        Valor = dist("Value")
+        PlanoContas = ""
+        
+
+        if NomeConta="" then
+            NomeConta = accountName(dist("AccountAssociationIDDebit"), dist("AccountIDDebit"))
         end if
 
-        Valor = dist("Value")
         select case dist("PaymentMethodID")
             case 1
                 Dinheiro = Dinheiro+Valor
@@ -509,12 +518,15 @@ if not dist.eof then
             case 15
                 Pix = Pix+Valor
         end select
-        set cat = db.execute("select group_concat(ifnull(Descricao, '') SEPARATOR ', ') Descricao from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID WHERE idesc.PagamentoID="& dist("id"))
-        Descricao = "<code>"& dist("name") &" - " & cat("Descricao") &"</code>"& Descricao 
+        set cat = db.execute("select group_concat(DISTINCT ifnull(Descricao, '') SEPARATOR ', ') Descricao, group_concat(ex.Name) planoContas from itensdescontados idesc LEFT JOIN itensinvoice ii ON ii.id=idesc.ItemID LEFT JOIN sys_financialexpensetype ex ON ex.id=ii.CategoriaID WHERE idesc.PagamentoID="& dist("id")&" ")
+        Descricao = "<code>"& dist("name") &" - " & cat("Descricao") &"</code>"
+        PlanoContas = cat("planoContas")&""
         %>
         <tr>
             <td><%= dist("PaymentMethod") %></td>
             <td><%= Descricao %></td>
+            <td><%= NomeConta %></td>
+            <td><%= PlanoContas %></td>
             <td><%= Identificacao %></td>
             <td><%= dist("Nome") %></td>
             <td class="text-right">R$ <%= fn(Valor) %></td>

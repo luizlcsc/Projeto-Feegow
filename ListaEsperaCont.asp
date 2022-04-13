@@ -759,7 +759,7 @@ else
 <%end if%>
 <% if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" then %>
 <script>
-fetch('http://localhost:3000/send',{
+fetch('<%=getEnv("APP_SOCKET", "")%>/send',{
          method:"POST",
          headers: {
                 "Authorization":localStorage.getItem("tk"),

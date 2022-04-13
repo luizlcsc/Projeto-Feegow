@@ -42,6 +42,7 @@ if eventoID <> "" then
                     "   eve.sysUser = '"+sysUser+"', eve.LinkPersonalizado = '"+linkPers+"' WHERE eve.id = "+eventoID
 
     db.execute(updateEventoSQL)
+    tpOperacao = "E"
 end if
 
 if eventoID = "" then
@@ -53,10 +54,16 @@ if eventoID = "" then
                     "   '"+procedimentos+"', '"+enviarPara+"', 1, '"+sysUser+"', 1)                                                         "
 
     db.execute(insertEventoSQL)
+    tpOperacao = "I"
     
 elseif deleteEvento = 1 then
     deletarEventoSQL = "UPDATE eventos_emailsms eve SET eve.sysActive = -1 WHERE eve.id = "+eventoID
     db.execute(deletarEventoSQL)
+    tpOperacao = "X"
 end if
+
+
+'****** ADICIONANDO LOG DE OPERAÇÃO *******
+db_execute("insert into log (I, Operacao, recurso, colunas, valorAnterior, valorAtual, sysUser) values ("&eventoID&", '"&tpOperacao&"', 'evento_whatsapp', '', '', '', "&sysUser&")")
 
 %>

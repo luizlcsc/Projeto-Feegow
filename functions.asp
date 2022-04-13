@@ -194,6 +194,8 @@ function dd(variable)
 
         description = description&str&chr(13)&"]"
 
+    elseif isnull(variable) then
+        description="NULL"
     else
         description = variable
     end if

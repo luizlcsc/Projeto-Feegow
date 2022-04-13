@@ -121,7 +121,7 @@ if FormID<>"N" then
 		        DataHora=date()
 		    end if
 
-			if (autForm(ModeloID, "AO", "")=true and preen("sysUser")<>session("User")) or (autForm(ModeloID, "AP", "")=true and preen("sysUser")=session("User")) OR (formatdatetime(DataHora,2)=formatdatetime(date(),2) and preen("sysUser")=session("User") ) then
+			if (autForm(ModeloID, "AO", "","")=true and preen("sysUser")<>session("User")) or (autForm(ModeloID, "AP", "","")=true and preen("sysUser")=session("User")) OR (formatdatetime(DataHora,2)=formatdatetime(date(),2) and preen("sysUser")=session("User") ) then
 				negadoX = "N"
 			else
 				negadoX = "S"

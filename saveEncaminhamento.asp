@@ -25,7 +25,7 @@ end if
 		else
 			src="printEncaminhamento.asp?TipoEncaminhamento=Encaminhamento&PacienteID="&ref("PacienteID")&"&EncaminhamentoID="&reg("id")&"&EspecialidadeId="&ref("EspecialidadeID")
 		end if
-        if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
+        if false  then 'forca utilizacao do printEncaminhamento.asp
 		%>
 
         <object style="width:100%; height: 600px;" id="ImpressaoEncaminhamento" width="800" data="" type="text/html"></object>

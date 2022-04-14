@@ -493,7 +493,11 @@ end if
                                             if pcampos("TipoCampoID")=9 then
                                                 Valor = ""
                                             else
-                                                Valor = trim(reg(""&pcampos("id")&"")&"")
+                                                if FieldExists(reg,""&pcampos("id")&"") then
+                                                    Valor = trim(reg(""&pcampos("id")&"")&"")
+                                                else
+                                                    Valor = ""
+                                                end if
                                             end if
                                             select case pcampos("TipoCampoID")
                                                 case 3

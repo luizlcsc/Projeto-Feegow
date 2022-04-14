@@ -654,7 +654,7 @@ $(".mainTab").click(function(){
 	//$("#save").removeClass("hidden");
 });
 $(".tab").click(function(){
-	$("#DadosComplementares").slideUp();
+	$("#DadosComplementares").fadeOut();
 	$("#divAvatar").removeClass("col-md-2");
 	$("#divAvatar").addClass("col-md-1");
 	$("#divDisplayUploadFoto").css("display", "none");

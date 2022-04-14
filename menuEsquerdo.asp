@@ -761,7 +761,7 @@ end if
                     <li class="checkStatus">
                         <a data-toggle="tab" class="tab menu-aba-pacientes-laudos-formularios" href="#resumoclinico" onclick="loadResumoClinico()">
                             <span class="far fa-heart bigger-110"></span>
-                            <span class="sidebar-title">Resultado de Exames</span>
+                            <span class="sidebar-title">Resumo Clínico</span>
                             <span class="sidebar-title-tray">
                             <span class="label label-xs bg-primary" id="totallf"></span>
                             </span>

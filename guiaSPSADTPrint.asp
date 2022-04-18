@@ -244,24 +244,7 @@ while not GuiaSQL.eof
     GasesMedicinais=guia("GasesMedicinais")
     if isnull(GasesMedicinais) then GasesMedicinais=0 end if
     TotalGeral=guia("TotalGeral")
-    if isnull(TotalGeral) then TotalGeral=0 end if
-    set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&guia("id"))
-
-    if not vcaAnexa.EOF then
-      if AutoPrintAnexa&""="1" then
-          server.Execute("GuiaAnexa.asp")
-      else
-      %>
-      <script>
-      window.parent.anexa();
-      </script>
-      <div class="imprimirGuia">
-          <button type="button" onclick="location.href='GuiaAnexa.asp?I=<%= guia("id") %>'">IMPRIMIR GUIA ANEXA</button>
-      </div>
-      <%
-      end if
-    end if
-  end if
+    
   %>
 
 
@@ -887,6 +870,27 @@ while not GuiaSQL.eof
     </table>
   </div>
 <%
+  if isnull(TotalGeral) then TotalGeral=0 end if
+      set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&guia("id"))
+
+      if not vcaAnexa.EOF then
+        if AutoPrintAnexa&""="1" then
+            %>
+          <!--#include file="GuiaAnexa.asp"-->
+            <%
+        else
+        %>
+        <script>
+        window.parent.anexa();
+        </script>
+        <div class="imprimirGuia">
+            <button type="button" onclick="location.href='printGuiaAnexa.asp?I=<%= guia("id") %>'">IMPRIMIR GUIA ANEXA</button>
+        </div>
+        <%
+        end if
+      end if
+    end if
+    
 GuiaSQL.movenext
 wend
 GuiaSQL.close

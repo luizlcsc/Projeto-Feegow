@@ -42,6 +42,7 @@ body{
 <%
 LoteID = req("LoteID")&""
 TipoExibicao = req("TipoExibicao")
+AutoPrintAnexa = getConfig("AutoPrintGuiaAnexa")
 
 whereGuias = " AND id="&req("I")
 if isnumeric(LoteID) then
@@ -245,7 +246,11 @@ while not GuiaSQL.eof
     TotalGeral=guia("TotalGeral")
     if isnull(TotalGeral) then TotalGeral=0 end if
     set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&guia("id"))
+
     if not vcaAnexa.EOF then
+      if AutoPrintAnexa&""="1" then
+          server.Execute("GuiaAnexa.asp")
+      else
       %>
       <script>
       window.parent.anexa();
@@ -254,6 +259,7 @@ while not GuiaSQL.eof
           <button type="button" onclick="location.href='GuiaAnexa.asp?I=<%= guia("id") %>'">IMPRIMIR GUIA ANEXA</button>
       </div>
       <%
+      end if
     end if
   end if
   %>

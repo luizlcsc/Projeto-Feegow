@@ -13,6 +13,9 @@
 .linha {
 	height:12px;
 }
+.guia-anexa-content{
+    page-break-after: always;
+}
 </style>
 <link rel="stylesheet" type="text/css" media="all" href="assets/css/tiss.css" />
 </head>
@@ -134,6 +137,7 @@ if not guia.eof then
 end if
 %>
 <body>
+	<div class="guia-anexa-content">
 	<table cellpading="0" class="campo" bgcolor="white" cellspacing="0" width="100%">
         <tr>
             <td>
@@ -299,6 +303,7 @@ end if
 		</tr>
 	</table>
 	<div style="page-break-after:avoid;font-size:1;margin:0;border:0;"><span style="visibility: hidden;">&nbsp;</span></div>
+	</div>
 </body>
 </html>
 <script>

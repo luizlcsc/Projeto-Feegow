@@ -1,5 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
+LoteID = req("LoteID")
+
 if req("T")="GuiaConsulta" then
 	src = "GuiaConsultaPrint"
 elseif req("T")="GuiaSADT" then
@@ -39,7 +41,7 @@ end if
     <div class="row">
         <div class="col-md-12">
         <%
-		src = src&".asp?I="&req("I")
+		src = src&".asp?I="&req("I")&"&LoteID="&LoteID
 		%>
         <iframe width="100%" height="600px" src="<%=src%>" id="GuiaTISS" name="GuiaTISS" frameborder="0"></iframe>
         </div>

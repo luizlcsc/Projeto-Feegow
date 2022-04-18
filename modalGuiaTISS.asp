@@ -34,7 +34,7 @@ end if
     <%if req("T")="EspelhoConta" then%>
         <h4 class="modal-title">Impress&atilde;o &raquo; Espelho de Conta</h4>
     <%else%>
-        <h4 class="modal-title">Impress&atilde;o de Guia<span id="btnAnexa" style="visibility:hidden"> &raquo; <a class="btn btn-xs btn-info" href="GuiaAnexa.asp?I=<%=req("I")%>" target="GuiaTISS">Imprimir Guia Anexa de Outras Despesas</a></span></h4>
+        <h4 class="modal-title">Impress&atilde;o de Guia<span id="btnAnexa" style="visibility:hidden"> &raquo; <a class="btn btn-xs btn-info" href="printGuiaAnexa.asp?I=<%=req("I")%>" target="GuiaTISS">Imprimir Guia Anexa de Outras Despesas</a></span></h4>
     <%end if%>
 </div>
 <div class="modal-body">

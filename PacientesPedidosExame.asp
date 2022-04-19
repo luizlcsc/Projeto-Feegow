@@ -162,7 +162,7 @@ var listagemDeGrupos = <% response.write(recordToJSON(db.execute("SELECT id,Nome
                                 <label class='titulodesc '><%=ProcedimentosPedidoSQL("NomeProcedimento")%> <i class='ml20 mt5 btn-xs btn btn-info far fa-comment'> </i></label>
                                     <%
                                         styleText = "display:none;"
-                                        obsText = ProcedimentosPedidoSQL("Observacoes")
+                                        obsText = trim(ProcedimentosPedidoSQL("Observacoes")&"")
                                         if obsText <> "" then
                                             styleText = ""
                                         end if

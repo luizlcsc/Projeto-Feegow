@@ -2259,43 +2259,67 @@ FUNCTION stripHTML(strHTML)
   Set objRegExp = Nothing
 END FUNCTION
 
-function autForm(FormID, TipoAut, PreenchedorID)
+function autForm(FormID, TipoAut, PreenchedorID, EspecialidadeIDUsuario)
 	autForm = false
-	set perm = db.execute("select * from buipermissoes where FormID="&FormID)
+    sqlFiltraTipo = ""
 
-	if session("table")="profissionais" then
-	    set esp = db.execute("select EspecialidadeID from profissionais where id="&session("idInTable")&" and not isnull(EspecialidadeID) and not EspecialidadeID=0")
-        if not esp.eof then
-            EspecialidadeIDPreenchedor = esp("EspecialidadeID")
-        end if
+    if lcase(session("table"))="funcionarios" then
+        sqlFiltraTipo = " AND Tipo IN ('F')"
+    else 
+        sqlFiltraTipo = " AND Tipo IN ('E', 'P')"
     end if
 
-	if perm.eof then
+	set perm = db.execute("select * from buipermissoes where FormID="&FormID & sqlFiltraTipo)
+	set countPerm = db.execute("select id from buipermissoes where FormID="&FormID)
+
+	if session("table")="profissionais" and EspecialidadeIDUsuario&"" = "" then
+	    set esp = db.execute("select p.EspecialidadeID, pe.EspecialidadeID EspecialidadeID2 from profissionais p LEFT JOIN profissionaisespecialidades pe ON pe.ProfissionalID=p.id  where p.id="&session("idInTable")&" and not isnull(p.EspecialidadeID) and not p.EspecialidadeID=0 GROUP BY p.id")
+        if not esp.eof then
+            EspecialidadeIDUsuario = esp("EspecialidadeID")
+            if not isnull(esp("EspecialidadeID2")) then
+                EspecialidadeIDUsuario = EspecialidadeIDUsuario & ","&esp("EspecialidadeID2")
+            end if
+        end if
+    end if
+    TipoAutArray = split(TipoAut, ",")
+
+	if countPerm.eof then
         if session("table")="profissionais" then
             autForm = true
 
         end if
 	else
 		while not perm.eof
-			if instr(perm("Permissoes"), TipoAut)>0 then
-				if lcase(session("table"))="funcionarios" then
-					if perm("Tipo")="F" and (instr(perm("Grupo"), "|"&session("idInTable")&"|")>0 or instr(perm("Grupo"), "|0|")>0) then
-						autForm = true
-					end if
-				elseif lcase(session("table"))="profissionais" then
-					if perm("Tipo")="P" and (instr(perm("Grupo"), "|"&session("idInTable")&"|")>0 or instr(perm("Grupo"), "|0|")>0) then
-						autForm = true
-					end if
-					if perm("Tipo")="E" and instr(perm("Grupo"), "|0|")>0 then
-						autForm = true
-					end if
-					if autForm=false and perm("Tipo")="E" then
-                        if instr(perm("Grupo"), "|"&EspecialidadeIDPreenchedor&"|")>0 then
+
+            for i=0 to ubound(TipoAutArray)
+                TipoAut=TipoAutArray(i)
+                
+                if instr(perm("Permissoes"), TipoAut)>0 then
+                    if lcase(session("table"))="funcionarios" then
+                        if perm("Tipo")="F" and (instr(perm("Grupo"), "|"&session("idInTable")&"|")>0 or instr(perm("Grupo"), "|0|")>0) then
                             autForm = true
                         end if
-					end if
-				end if
-			end if
+                    elseif lcase(session("table"))="profissionais" then
+                        if perm("Tipo")="P" and (instr(perm("Grupo"), "|"&session("idInTable")&"|")>0 or instr(perm("Grupo"), "|0|")>0) then
+                            autForm = true
+                        end if
+                        if perm("Tipo")="E" and instr(perm("Grupo"), "|0|")>0 then
+                            autForm = true
+                        end if
+                        if autForm=false and perm("Tipo")="E" then
+                            arrayEspecialidades = split(EspecialidadeIDUsuario,",")
+
+                            for j=0 to ubound(arrayEspecialidades)
+                                EspecialidadeIDPerm = arrayEspecialidades(j)
+                                
+                                if instr(perm("Grupo"), "|"&EspecialidadeIDPerm&"|")>0 then
+                                    autForm = true
+                                end if
+                            next
+                        end if
+                    end if
+                end if
+            next
 		perm.movenext
 		wend
 		perm.close
@@ -2303,49 +2327,6 @@ function autForm(FormID, TipoAut, PreenchedorID)
 	end if
 end function
 
-
-function compartilhamentoFormulario(idprofissional,tipoDeFormulario)
-    if idprofissional&""="0" or instr(idProfissional,"_")=0 then
-        compartilhamentoFormulario=0
-    else
-        idProfissional = accountUser(idProfissional)
-        idProfissionalspl = split(idProfissional,"_")
-        idProfissional = idProfissionalspl(1)
-
-
-        select Case tipoDeFormulario
-            case "Prescricao"
-                categoria = 1
-            case "Diagnostico"
-                categoria = 2
-            case "Atestado"
-                categoria = 3
-            case "Pedido"
-                categoria = 4
-            case "I" ' não achei
-                categoria = 5
-            case "A" ' não achei
-                categoria = 6
-            case "PedidosSADT"
-                categoria = 7
-            case "L"
-                categoria = 8
-            case "AE"
-                categoria = 9
-        end select 
-
-        sqlPermissao = "select TipoCompartilhamentoID from prontuariocompartilhamento p where ProfissionalID = "&idprofissional&" AND CategoriaID ="&categoria
-
-        resultado = 0
-
-        set compartilhamento = db_execute(sqlPermissao)
-        if not compartilhamento.eof then
-            resultado = compartilhamento("TipoCompartilhamentoID")
-        end if
-
-        compartilhamentoFormulario = resultado
-    end if
-end function 
 
 
 function formSave(FormID, btnSaveID, AcaoSeguinte)

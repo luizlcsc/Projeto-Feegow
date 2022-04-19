@@ -4,6 +4,10 @@
 CareTeam = getConfig("ExibirCareTeam")
 ExigirAutorizacaoAcessoProntuario = getConfig("ExigirAutorizacaoAcessoProntuario")
 PacienteAutorizaAcesso = True
+recursoUnimed = recursoAdicional(12)
+urlbmj = getConfig("urlbmj")
+SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
+MemedHabilitada = getConfig("MemedHabilitada")
 
 sysActiveRecords = "1"
 if showInactive="1" then
@@ -21,10 +25,6 @@ IF ExigirAutorizacaoAcessoProntuario&""="1" THEN
     end if
 END IF
 
-'ALTER TABLE `buiformspreenchidos`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `sysActive`
-'ALTER TABLE `buiforms`	ADD COLUMN `Prior` TINYINT NULL DEFAULT '0' AFTER `Versao`
-recursoUnimed = recursoAdicional(12)
-urlbmj = getConfig("urlbmj")
 
 set HasRegraCompartilhamentoSQL = db.execute("SELECT COALESCE(count(id),0)qtd FROM prontuariocompartilhamento WHERE sysActive=1")
 HasRegraCompartilhamento = True
@@ -35,13 +35,13 @@ if not HasRegraCompartilhamentoSQL.eof then
     end if
 end if
 
+
 sqlFilterEspecialidade = ""
 
 if EspecialidadeID<>"" then
     sqlFilterEspecialidade = " AND COALESCE(cliniccentral.overlap(CONCAT('|',NULLIF('"&EspecialidadeID&"',''),'|'),f.Especialidade),TRUE) "
 end if
 
-SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
     SqlLimit = "limit "&loadMore&","&MaximoLimit
 
@@ -54,16 +54,16 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if 
 
     if instr(Tipo, "|AE|")>0 then
-    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, sp_sysUserName(fp.sysUser), 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '','' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
+    	sqlAE = " union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, fp.Autorizados, 'AE', f.Nome, 'bar-chart', 'info', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE f.Tipo IN(1, 2) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
     end if
 
     if instr(Tipo, "|L|")>0 then
-        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, sp_sysUserName(fp.sysUser), 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '','' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
+        sqlL = 	" union all (select fp.Prior, fp.id, fp.ModeloID, fp.sysUser, fp.Autorizados, 'L', f.Nome, 'align-left', 'primary', fp.DataHora, f.Tipo,'', fp.sysActive, '' from buiformspreenchidos fp LEFT JOIN buiforms f on f.id=fp.ModeloID WHERE (f.Tipo IN(3, 4, 0) or isnull(f.Tipo)) AND (fp.sysActive IN("&sysActiveRecords&") OR fp.sysActive IS NULL) AND PacienteID="&PacienteID&" "&sqlFilterEspecialidade&" ) "
     end if
 
     if aut("prescricoesV")>0 or session("Admin") = 1 then
         if instr(Tipo, "|Prescricao|")>0 then
-            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, sp_sysUserName(sysUser), 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID,'' from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
+            sqlPrescricao = " union all (select 0, pp.id, ControleEspecial, sysUser, '', 'Prescricao', IF(pp.MemedID IS NULL, 'Prescrição', 'Prescrição Memed'), 'flask', 'warning', `Data`, Prescricao,s.id, pp.sysActive, pp.MemedID from pacientesprescricoes AS pp LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pp.id AND s.tipo = 'PRESCRICAO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
         end if
     end if
 
@@ -76,8 +76,8 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 
         sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
 
-        sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, sp_sysUserName(d.sysUser), 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
-                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'', d.sysActive, '','' "&_
+        sqlDiagnostico = " union all (SELECT 0, d.id, '', d.sysUser, '', 'Diagnostico', 'Hipótese Diagnóstica', 'stethoscope', 'dark', d.DataHora, "&_
+                         "   CONCAT('<b>', IFNULL(cid.Codigo,''), ' - ', IFNULL(cid.Descricao,''), '</b><br>', "&sqlBmj&",'<br>',"&sqlTnm&",''),'', d.sysActive, '' "&_
                          "   FROM pacientesdiagnosticos d "&_
                          "   LEFT JOIN cliniccentral.cid10 cid ON cid.id=d.CidID "&_
                          "   LEFT JOIN pacientesdiagnosticos_tnm tnm ON d.id = tnm.PacienteDiagnosticosID "&_
@@ -86,43 +86,44 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
     end if
 
     if instr(Tipo, "|Atestado|")>0 then
-        sqlAtestado = " union all (select 0, pa.id, '', sysUser, sp_sysUserName(sysUser), 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '','' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
+        sqlAtestado = " union all (select 0, pa.id, '', sysUser, '', 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
     end if
 
      if instr(Tipo, "|Tarefas|")>0 then
-        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, sp_sysUserName(ta.sysuser), 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, ta.sysActive, '','' FROM tarefas ta "&_
+        sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, '', 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, ta.sysActive, '' FROM tarefas ta "&_
                     " INNER JOIN tarefasmsgs tm ON tm.TarefaID = ta.id "&_
                     " WHERE ta.solicitantes LIKE ',3_"&PacienteID&"%') "
     end if
 
     if instr(Tipo, "|Pedido|")>0 then
-        sqlPedido = " union all (select 0, ppd.id, '', sysUser, sp_sysUserName(sysUser), 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID,'' from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) and ")&" sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
-        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, sp_sysUserName(sysUser), 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '','' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
+        sqlPedido = " union all (select 0, ppd.id, '', sysUser, '', 'Pedido', IF(ppd.MemedID IS NULL, 'Pedido de Exame', 'Pedido de Exame Memed'), 'hospital-o', 'system', `Data`, concat(PedidoExame, '<br>', IFNULL(Resultado, '')),s.id, ppd.sysActive, ppd.MemedID from pacientespedidos ppd LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = ppd.id AND s.tipo = 'PEDIDO_EXAME' WHERE "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) and ")&" sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&" AND IDLaudoExterno IS NULL) "
+        sqlPedido = sqlPedido & " union all (select 0, id, '', sysUser, '', 'PedidosSADT', 'Pedido SP/SADT', 'hospital-o', 'system', sysDate, IndicacaoClinica,'', sysActive, '' from pedidossadt WHERE sysActive in ("&sysActiveRecords&") and PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Protocolos|")>0 then
-        sqlProtocolos = " union all (select 0, po.id, '', sysUser, sp_sysUserName(sysUser), 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '','' from pacientesprotocolos po WHERE po.sysActive in ("&sysActiveRecords&") AND po.PacienteID="&PacienteID&") "
+        sqlProtocolos = " union all (select 0, po.id, '', sysUser, '', 'Protocolos', 'Protocolos', 'file-text', 'success', `Data`, '', '', po.sysActive, '' from pacientesprotocolos po WHERE po.sysActive in ("&sysActiveRecords&") AND po.PacienteID="&PacienteID&") "
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
-        sqlImagens = " union all (select 0, '0', Tipo, '0', '' ,'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '','' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlImagens = " union all (select 0, '0', Tipo, '0', '', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', '' ,'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '','' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
-    end if
-
-    if instr(Tipo, "|Encaminhamentos|")>0 then
-         sqlEncaminhamentos = "union all(select 0, pe.id, '', pe.profissionalemissorid, sp_sysUserName(pe.profissionalemissorid), 'Encaminhamentos', IF(pe.MemedID IS NULL, 'Encaminhamento', 'Encaminhamento Memed'), 'file-archive-o', 'success', `dataHora`, pe.descricao, s.id, pe.sysactive, pe.MemedID,esp.especialidade from encaminhamentos AS pe LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pe.id AND s.tipo = 'ENCAMINHAMENTOS' LEFT JOIN especialidades esp ON esp.id=pe.especialidadeid WHERE PacienteID="&PacienteID&" AND pe.sysactive = 1) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', '', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
     end if
                  cont=0
 
-    sql = "select t.* from ( (select 0 Prior, '' id, '' Modelo, '' sysUser,'' UserName ,'' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID,'' especialidade limit 0) "&_
-                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos & sqlEncaminhamentos &_
-                ") t "&sqlProf&" ORDER BY Prior DESC, DataHora DESC "&SqlLimit
+    sql = "select t.*, lower(su.table) UserType , esp.Especialidade, lu.Nome UserName from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Autorizados, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
+                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
+                ") t "&sqlProf&" "&_
+                " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUser "&_
+                " LEFT JOIN sys_users su ON su.id=lu.id "&_
+                " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
+                " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
+                "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
     'response.write(sql)
              set ti = db.execute( sql )
-             
+
              while not ti.eof
                 
                  Ano = year(ti("DataHora"))
@@ -139,86 +140,98 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                 'response.write( abreAno )
 
                 cont = cont + 1
-                exibe = 1
+
+                PreenchedorID = ti("sysUser")
+                ModeloID = ti("Modelo")
+                FormUsersAutorizados = ti("Autorizados")&""
+                PreenchedorTipoUsuario = ti("UserType")&""
+
+                'booleanos que definem a permissao do arquivo
+                RegisterHasCareTeam = Null
+                PreenchedorAllowsVisualization = Null
+                PreenchedorAllowsVisualizationPerDocument = Null
+                PreenchedorIsOwnUser = cstr(session("User"))=ti("sysUser")&""
+                PreenchedorIsProfissional = PreenchedorTipoUsuario="profissionais"
+                FormAutorizaUser = Null
+
+                RegistroIsRestrito = False
 
 
                 if ti("Tipo")="AE" or ti("Tipo")="L" then
-                	if ti("Tipo")="L" then
-		                sqlTipo = " and (buiforms.Tipo=3 or buiforms.Tipo=4 or buiforms.Tipo=0 or isnull(buiforms.Tipo))"
-	                else
-		                sqlTipo = " and (buiforms.Tipo=1 or buiforms.Tipo=2)"
-	                end if
 
-                    sqlPreen = "select buiformspreenchidos.id idpreen, buiforms.Nome, buiformspreenchidos.ModeloID, buiformspreenchidos.Autorizados, buiformspreenchidos.sysUser preenchedor, buiformspreenchidos.PacienteID, buiformspreenchidos.DataHora, buiforms.* from buiformspreenchidos left join buiforms on buiformspreenchidos.ModeloID=buiforms.id where buiformspreenchidos.id="& ti("id") &" order by buiformspreenchidos.DataHora desc, id desc"
-
-                    set preen = db.execute(sqlPreen)
-
-
-                    if not preen.eof then
-	                    if preen("preenchedor")=session("User") or preen("Autorizados")="|ALL|" or isnull(preen("Autorizados")) then
-		                    if preen("Autorizados")="|ALL|" or isnull(preen("Autorizados")) then
-			                    icone = "unlock"
-		                    else
-			                    icone = "lock"
-		                    end if
-
-                            if (autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User")) or compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 1 then
-                                exibe = 1
-                            else
-                                exibe = 0
-                            end if
+                    if PreenchedorIsOwnUser or FormUsersAutorizados="|ALL|" or FormUsersAutorizados="" then
+                        if FormUsersAutorizados<>"|ALL|" and FormUsersAutorizados<>"" then
+                            RegistroIsRestrito = True
                         end if
+
+                        FormAutorizaUser = autForm(ModeloID, "VO,AO", "", EspecialidadeIDUsuario)=true
                     end if
                 end if
+
+
+                if RegistroIsRestrito then
+                    icone = "lock"
+                else
+                    icone = "unlock"
+                end if
+
                 if true then
-             %>
-            <%
-            PermissaoArquivo = true
 
-            if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" and ti("sysUser")&""<>"0" then
-                'logica de compartilhamento de prontuario, e arquivos
-                'verifica permissão para acesso dos arquivos
-                permissao = VerificaProntuarioCompartilhamento(ti("sysUser"), ti("Tipo"), ti("id"))
-                if permissao <> "" then
-                    permissaoSplit = split(permissao,"|")
-                    PermissaoArquivo = permissaoSplit(0)
-                end if
-            end if
+                    PermissaoArquivo = true
+
+                    if not PreenchedorIsOwnUser then
+                        if not isnull(ti("sysUser")) and ti("sysUser")&""<>"1" and ti("sysUser")&""<>"0" and PreenchedorIsProfissional then
+                            'logica de compartilhamento de prontuario, e arquivos
+                            'verifica permissão para acesso dos arquivos
+                            permissao = VerificaProntuarioCompartilhamento(ti("sysUser"), ti("Tipo"), ti("id"), PreenchedorTipoUsuario)
+                            if permissao <> "" then
+                                permissaoSplit = split(permissao,"|")
+                                PreenchedorAllowsVisualizationPerDocument = permissaoSplit(0)
+                            end if
+                        end if
+                        
+                        if HasRegraCompartilhamento then
+                            PreenchedorAllowsVisualization = compartilhamentoFormulario(PreenchedorID,ti("Tipo"))
+                        end if
+
+                        ' Verifica se o registro foi feito por um profissional
+                        ' que pertence ao Care Team do paciente, permitindo a exibição
+                        if CareTeam&""="1" then
+                            RegisterHasCareTeam = autCareTeam(ti("sysUser"), PacienteID)
+                        end if
+                    end if
+
+                    if not PacienteAutorizaAcesso then
+                        PermissaoArquivo=false
+                        MotivoPermissaoArquivo = "O paciente não forneceu permissão de acesso ao prontuário."
+                    end if
+                    
+                    if FormAutorizaUser = False then
+                        PermissaoArquivo=false
+                        MotivoPermissaoArquivo = "O usuário não está habilitado para este formulário."
+                    end if
+                    
+                    if PreenchedorAllowsVisualization = False then
+                        PermissaoArquivo=false
+                        MotivoPermissaoArquivo = "O preenchedor não concedeu acesso a este restrito."
+                    end if
+
+                    if PreenchedorAllowsVisualizationPerDocument = False then
+                        PermissaoArquivo=false
+                        MotivoPermissaoArquivo = "O acesso a este registro está restrito."
+                    end if
+
+                    if PreenchedorIsOwnUser then
+                        PermissaoArquivo = true
+                    end if
+
+                    if not PermissaoArquivo then
             
-            if typename(preen)="Recordset" then
-                if not preen.eof then
-                    if compartilhamentoFormulario(preen("preenchedor"),ti("Tipo")) = 0 then
-                        PermissaoArquivo = False
-                    end if 
-                end if
-            end if
+                        hiddenRegistro = ""
 
-            if cstr(session("User"))=ti("sysUser")&"" then
-                PermissaoArquivo = true
-            end if
-
-            if exibe=0 then
-                PermissaoArquivo=false
-            end if
-
-            ' Verifica se o registro foi feito por um profissional
-            ' que pertence ao Care Team do paciente, permitindo a exibição
-            if (autCareTeam(ti("sysUser"), PacienteID)) and CareTeam&""="1" then
-                PermissaoArquivo=true
-            end if
-
-            if not PacienteAutorizaAcesso and cstr(session("User"))<>ti("sysUser")&"" then
-                PermissaoArquivo=false
-                MotivoPermissaoArquivo = "O paciente não forneceu permissão de acesso ao prontuário."
-            end if
-
-            if not PermissaoArquivo then
-    
-                hiddenRegistro = ""
-
-                if SinalizarFormulariosSemPermissao&""<>"1" then
-                    hiddenRegistro = " hidden "
-                end if
+                        if SinalizarFormulariosSemPermissao&""<>"1" then
+                            hiddenRegistro = " hidden "
+                        end if
 
 
                 %>
@@ -336,7 +349,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
                                 set rsMemed = db.execute(sqlMemed)
                             %>
-                                <% if getConfig("MemedHabilitada")=1 and cstr(session("User"))=ti("sysUser")&"" then %>
+                                <% if MemedHabilitada=1 and cstr(session("User"))=ti("sysUser")&"" then %>
                                     <button class="btn" onclick="viewPrescricaoMemed(<%=ti("MemedID")%>, '<%=rsMemed("tipo")%>')">
                                         Reutilizar
                                     </button>
@@ -480,7 +493,11 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                             if pcampos("TipoCampoID")=9 then
                                                 Valor = ""
                                             else
-                                                Valor = trim(reg(""&pcampos("id")&"")&"")
+                                                if FieldExists(reg,""&pcampos("id")&"") then
+                                                    Valor = trim(reg(""&pcampos("id")&"")&"")
+                                                else
+                                                    Valor = ""
+                                                end if
                                             end if
                                             select case pcampos("TipoCampoID")
                                                 case 3
@@ -794,7 +811,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                     'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão da imagem
                                     podever = true
                                     if not autCareTeam(im("sysUser"), PacienteID) then
-                                        permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                        permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"), PreenchedorTipoUsuario)
                                         if permissao <> "" then
                                             permissaoSplit = split(permissao,"|")
                                             podever = permissaoSplit(0)
@@ -831,7 +848,7 @@ SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
                                 podever = true
                                 'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo
                                 if not autCareTeam(im("sysUser"), PacienteID) then
-                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"))
+                                    permissao = VerificaProntuarioCompartilhamento(im("sysUser"), ti("Tipo"), im("id"), PreenchedorTipoUsuario)
                                     if permissao <> "" then
                                         permissaoSplit = split(permissao,"|")
                                         podever = permissaoSplit(0)

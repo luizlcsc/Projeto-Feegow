@@ -957,11 +957,9 @@ end if
                     </a>
                 </li>
                 <% end if
-                if recursoAdicional(20) = 4  then
-
-		        if aut("formsae")=1 then
-		            %>
-		            <li class="checkStatus">
+                if aut("formsae")=1 then
+                    %>
+                    <li class="checkStatus">
                         <a data-toggle="tab" class="tab menu-aba-pacientes-linha-do-tempo" id="abaTimeline" href="#pront" onclick='pront(`timeline.asp?PacienteID=<%=req("I")%>&Tipo=|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|Tarefas|Encaminhamentos|`);'>
                         <span class="fa fa-line-chart bigger-110"></span>
                         <span class="sidebar-title">Linha do tempo</span>
@@ -970,8 +968,9 @@ end if
                         </span>
                         </a>
                     </li>
-
-                    <%
+                <%
+                end if
+                if recursoAdicional(20) = 4  then
                     set certiDidital = db.execute("SELECT * FROM cliniccentral.digitalcertificates where UsuarioID = "&session("User")&" and LicencaID = "&replace(session("Banco"), "clinic", "")&" and sysActive = 1")
 
                     if not certiDidital.eof then
@@ -1123,7 +1122,6 @@ end if
                 %>
             </li>
             <%
-        end if
         end if
     case "laudos" , "frases", "laudoslab"
         %>

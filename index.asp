@@ -2604,7 +2604,7 @@ end if
 
 
                 if("false"==="<%=session("AutenticadoPHP")%>"){
-                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z", "<%=session("Partner")%>");
+                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z", "<%=session("Partner")%>","<%=session("Franquia")%>");
                 }else{
 					if(localStorage.getItem("tk")){
 						$.ajaxSetup({

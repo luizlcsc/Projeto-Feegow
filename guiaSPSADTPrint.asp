@@ -872,7 +872,7 @@ end if
   </div>
 <%
   if isnull(TotalGeral) then TotalGeral=0 end if
-      set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&guia("id"))
+      set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&GuiaID)
 
       if not vcaAnexa.EOF then
         if AutoPrintAnexa&""="1" then
@@ -885,7 +885,7 @@ end if
         window.parent.anexa();
         </script>
         <div class="imprimirGuia">
-            <button type="button" onclick="location.href='printGuiaAnexa.asp?I=<%= guia("id") %>'">IMPRIMIR GUIA ANEXA</button>
+            <button type="button" onclick="location.href='printGuiaAnexa.asp?I=<%= GuiaID %>'">IMPRIMIR GUIA ANEXA</button>
         </div>
         <%
         end if

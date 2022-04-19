@@ -59,6 +59,7 @@ while not GuiaSQL.eof
   GuiaID = GuiaSQL("id")
   
   if TipoExibicao="Pedido" then
+      GuiaID = 0
       db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
       set procs = db.execute("select pps.*, ps.ConvenioID, pac.ConvenioID1, pac.ConvenioID2, pac.ConvenioID3, ps.PacienteID, ps.ProfissionalID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Matricula2, pac.Matricula3, pac.Validade1, ps.`Data` from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
       if not procs.EOF then

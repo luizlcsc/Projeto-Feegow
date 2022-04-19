@@ -9,7 +9,7 @@ IF ref("Rechamar") = "1" THEN
 END IF
 
 ExibirEquipamentoNaSalaDeEspera = getConfig("ExibirEquipamentoNaSalaDeEspera")
-ExibirHorarioSalaEspera =getConfig("ExibirHorarioSalaEspera") or lcase(session("table"))<>"profissionais"
+ExibirHorarioSalaEspera =getConfig("ExibirHorarioSalaEspera")=1 or lcase(session("table"))<>"profissionais"
 OrdensNome="Hor&aacute;rio Agendado, Hor&aacute;rio de Chegada, Idade do Paciente"
 Ordens="HoraSta, Hora, pac.Nascimento ASC"
 splOrdensNome=split(OrdensNome, ", ")

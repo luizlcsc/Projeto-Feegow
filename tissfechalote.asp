@@ -86,6 +86,9 @@ end if
             <%=quickfield("simpleSelect", "Executantes", "Executantes", 3, Executantes, "select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " empty")%>
         </div>
         <br>
+        <%
+        if getConfig("UtilizarEnderecoEstruturado") then
+        %>
         <div class="row" style="display: flex; align-items: flex-end;">
             <div class="col-md-2">
                 <label>País</label><br />
@@ -160,9 +163,23 @@ end if
                     <strong>Guias encontradas:</strong> <span id="encontradas">0</span><br>
                     <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>
                 </div>
-                <button type="button" class="btn btn-md btn-success" onClick="fechalote()"><i class="fa fa-archive"></i> Fechar Lote</button>
             </div>
         </div>
+        <%
+        else
+        %>
+            <div class="col-md-9">
+                <!-- empty for spacing -->
+            </div>
+            <div class="col-md-3" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Guias encontradas:</strong> <span id="encontradas">0</span><br>
+                    <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>
+                </div>
+            </div>
+        <%
+        end if
+        %>
 
     </div>
     </div>

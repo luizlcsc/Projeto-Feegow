@@ -244,7 +244,7 @@ while not GuiaSQL.eof
     GasesMedicinais=guia("GasesMedicinais")
     if isnull(GasesMedicinais) then GasesMedicinais=0 end if
     TotalGeral=guia("TotalGeral")
-    
+end if
   %>
 
 
@@ -889,7 +889,7 @@ while not GuiaSQL.eof
         <%
         end if
       end if
-    end if
+    
     
 GuiaSQL.movenext
 wend

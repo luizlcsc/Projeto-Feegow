@@ -1,5 +1,8 @@
 <!--#include file="connect.asp"-->
 <%
+
+response.Buffer
+
 moduloCallCenter = recursoAdicional(41)&""="4"
 
 IF req("reload") <> "" THEN
@@ -150,6 +153,8 @@ if Acao="" then
 
 		set itens=db.execute("select * from itensproposta where PropostaID="&PropostaID&" ORDER BY Ordem,id")
 		while not itens.eof
+			response.Flush()
+			
 			conta = conta+itens("Quantidade") 
 			Desconto = itens("Desconto")
 			if not isnull(itens("ValorUnitario")) or itens("ValorUnitario")<>"" then

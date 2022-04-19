@@ -1310,6 +1310,9 @@ end if
 %>
 
 
+<%
+if getConfig("UtilizarEnderecoEstruturado") then
+%>
 <script>
     const initEnderecoV2 = () => {
 
@@ -1490,13 +1493,7 @@ end if
     }
 
     $(document).ready(() => {
-        <%
-        if getConfig("UtilizarEnderecoEstruturado") then
-        %>
         initEnderecoV2();
-        <%
-        end if
-        %>
     });
         
     function setAddressFields(cep) {
@@ -1828,6 +1825,9 @@ end if
         });
     }
 </script>
+<%
+end if
+%>
 
 <!-- FIM CAL-517 Normalização de municípios no cadastro de pacientes -->
 <!--#include file="disconnect.asp"-->

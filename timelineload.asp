@@ -69,10 +69,12 @@ end if
 
 
     if instr(Tipo, "|Diagnostico|")>0 then
-
-        sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
-                 " FROM cliniccentral.cid10_bmj bmj" &_
-                 " WHERE bmj.cid10ID = cid.id),'') "
+        sqlBmj="''"
+        if urlbmj&""<>"" and urlbmj&""<>"0" then
+            sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
+                    " FROM cliniccentral.cid10_bmj bmj" &_
+                    " WHERE bmj.cid10ID = cid.id),'') "
+        end if
 
         sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
 

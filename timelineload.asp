@@ -69,10 +69,12 @@ end if
 
 
     if instr(Tipo, "|Diagnostico|")>0 then
-
-        sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
-                 " FROM cliniccentral.cid10_bmj bmj" &_
-                 " WHERE bmj.cid10ID = cid.id),'') "
+        sqlBmj="''"
+        if urlbmj&""<>"" and urlbmj&""<>"0" then
+            sqlBmj = " IFNULL((SELECT GROUP_CONCAT(DISTINCT CONCAT('<BR><strong>BMJ:</strong> <a href=""[linkbmj]/',bmj.codbmj,'""  target=""_blank""  class=""badge badge-primary"">',if(bmj.PortugueseTopicTitle='0',bmj.TopicTitle,bmj.PortugueseTopicTitle),'</a>') SEPARATOR ' ') " &_
+                    " FROM cliniccentral.cid10_bmj bmj" &_
+                    " WHERE bmj.cid10ID = cid.id),'') "
+        end if
 
         sqlTnm = "CONCAT(IFNULL(d.Descricao, ''), '<br>', IFNULL(tnm.Descricao, ''))"
 
@@ -345,7 +347,7 @@ end if
                             end if
 
                             ' Botões Prescrição Memed
-                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido") then
+                            if ti("MemedID")<>"" and (ti("Tipo")="Prescricao" or ti("Tipo")="Pedido" or ti("Tipo")="Encaminhamentos") then
                                 sqlMemed = "SELECT * FROM memedv2_prescricoes WHERE memed_id = '" & ti("MemedID") & "'"
                                 set rsMemed = db.execute(sqlMemed)
                             %>
@@ -700,12 +702,17 @@ end if
                             <%
                             response.Write("<small>" & unscapeOutput(ti("Conteudo")) & "</small>")
                         end if
-                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas"
+                    case "Diagnostico", "Prescricao", "Atestado", "Tarefas", "Encaminhamentos"
                             if ti("MemedID")<>"" then
+                                if ti("Tipo") = "Encaminhamentos" then
+                                    tipoMemed = "encaminhamento"
+                                else
+                                    tipoMemed = "prescricao"
+                                end if
                                 sqlPrescricaoMemed = "SELECT pm.tipo, pm.nome, pm.descricao, pm.posologia, pm.quantidade, pm.unit, pm.composicao " &_
                                                      "FROM memedv2_prescricoes p " &_
                                                      "INNER JOIN memedv2_prescricoes_medicamentos pm ON pm.prescricao_id = p.id " &_
-                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo = 'prescricao'"
+                                                     "WHERE p.memed_id = '" & ti("MemedID") & "' AND p.tipo ='"&tipoMemed&"'"
                                 set rsPrescricaoMemed = db.execute(sqlPrescricaoMemed)
                                 memedCount = 1
                                 %>

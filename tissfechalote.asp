@@ -84,12 +84,102 @@ end if
                 </select>
             </div>
             <%=quickfield("simpleSelect", "Executantes", "Executantes", 3, Executantes, "select id, NomeProfissional from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", " empty")%>
-
-            <div class="col-md-2"><br>
-                <strong>Guias encontradas:</strong> <span id="encontradas">0</span>.<br>
-                <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>.
+        </div>
+        <br>
+        <%
+        if getConfig("UtilizarEnderecoEstruturado") then
+        %>
+        <div class="row" style="display: flex; align-items: flex-end;">
+            <div class="col-md-2">
+                <label>País</label><br />
+                <select id="PaisID" name="PaisID" onchange="$('#EstadoID').val(0).change();" class="form-control">
+                    <option selected value="">Todos</option>
+                    <option value="1">Brasil</option>
+                    <option value="0">Outros</option>
+                </select>
+                <script>
+                    $(document).ready(() => {
+                        const paisId = '<%=Pais%>';
+                        $('#PaisID').val(paisId).change();
+                    })
+                </script>
+            </div>
+            <div class="col-md-2">
+                <label>Estado</label><br/>
+                <select id="EstadoID" name="EstadoID" onchange="$('#CidadeID').val(0).change(); setCitiesSelect();" class="form-control">
+                    <option selected value="">Todos</option>
+                    <option value="1" >AC</option>
+                    <option value="2" >AL</option>
+                    <option value="3" >AM</option>
+                    <option value="4" >AP</option>
+                    <option value="5" >BA</option>
+                    <option value="6" >CE</option>
+                    <option value="7" >DF</option>
+                    <option value="8" >ES</option>
+                    <option value="9" >GO</option>
+                    <option value="10" >MA</option>
+                    <option value="11" >MG</option>
+                    <option value="12" >MS</option>
+                    <option value="13" >MT</option>
+                    <option value="14" >PA</option>
+                    <option value="15" >PB</option>
+                    <option value="16" >PE</option>
+                    <option value="17" >PI</option>
+                    <option value="18" >PR</option>
+                    <option value="19" >RJ</option>
+                    <option value="20" >RN</option>
+                    <option value="21" >RO</option>
+                    <option value="22" >RR</option>
+                    <option value="23" >RS</option>
+                    <option value="24" >SC</option>
+                    <option value="25" >SE</option>
+                    <option value="26" >SP</option>
+                    <option value="27" >TO</option>
+                </select>
+                <script>
+                    $(document).ready(() => {
+                        const estadoId = '<%=Estado%>';
+                        $('#EstadoID').val(estadoId).change();
+                    })
+                </script>
+            </div>
+            <div class="col-md-2">
+                <label>Cidade</label><br/>
+                <select id="CidadeID" name="CidadeID" class="form-control">
+                    <option selected value="">Todas</option>
+                </select>
+                <script>
+                    $(document).ready(() => {
+                        const cidadeId = '<%=Cidade%>';
+                        setTimeout(() => $('#CidadeID').val(cidadeId).change(), 1000);
+                    })
+                </script>
+            </div>
+            <div class="col-md-3">
+                <!-- empty for spacing -->
+            </div>
+            <div class="col-md-3" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Guias encontradas:</strong> <span id="encontradas">0</span><br>
+                    <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>
+                </div>
             </div>
         </div>
+        <%
+        else
+        %>
+            <div class="col-md-9">
+                <!-- empty for spacing -->
+            </div>
+            <div class="col-md-3" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Guias encontradas:</strong> <span id="encontradas">0</span><br>
+                    <strong>Guias selecionadas:</strong> <span id="selecionadas">0</span>
+                </div>
+            </div>
+        <%
+        end if
+        %>
 
     </div>
     </div>
@@ -686,4 +776,53 @@ jQuery(function() {
       searching: false
   });
 });
+
+</script>
+
+<!-- CAL-514 Adição de filtro de país, estado e cidade no fechamento de lote de guias TISS -->
+<script>
+
+    $(document).ready(() => {
+        onChangeGuiaTipo();
+    });
+
+    function onChangeGuiaTipo() {
+        if ($('#T').val() == 'GuiaHonorarios') {
+            $('#PaisID').prop('disabled', true);
+            $('#EstadoID').prop('disabled', true);
+            $('#CidadeID').prop('disabled', true);
+        } else {
+            $('#PaisID').prop('disabled', false);
+            $('#EstadoID').prop('disabled', false);
+            $('#CidadeID').prop('disabled', false);
+        }
+    }
+
+    function getCitiesFromEstado(estadoSigla) {
+        return new Promise((resolve, _reject) => {
+            getUrl(`ibge/get-cities-from-estado-by-sigla/${estadoSigla}`, {}, (cidades) => resolve(cidades));
+        });
+    }
+
+    function setCitiesSelect(estadoSigla) {
+        if (!estadoSigla)
+            estadoSigla = $('#EstadoID option:selected').html();
+        if (!estadoSigla || estadoSigla == '')
+            return;
+        estadoSigla = estadoSigla.toUpperCase();
+        
+        $('#Estado').val(estadoSigla);
+        getCitiesFromEstado(estadoSigla).then((cidades) => {
+            const cidadesSelect = $(
+                `<select id="CidadeID" name="CidadeID" class="form-control">
+                    <option selected value="">Todas</option>
+                </select>`);
+            for (const cidade of cidades) {
+                const nome = cidade['Cidade'];
+                const feegowId = cidade['id'];
+                cidadesSelect.append(`<option value="${feegowId}">${nome}</option>`);
+            }
+            $('#CidadeID').replaceWith(cidadesSelect[0].outerHTML)
+        });
+    }
 </script>

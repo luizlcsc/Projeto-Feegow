@@ -511,7 +511,25 @@ function completaProcedimentoNew(id, ConvenioID)
                                     maximumFractionDigits: 2
                                    }));
 
-    $("#TabelaID").val("<%=Valores("TabelaID")%>");
+	<% 
+	if Valores("TabelaID") < 0 then
+		set codigotabela = db.execute("SELECT * FROM tabelasconvenios tc INNER JOIN tabelasconveniosprocedimentos tcp ON tc.id = tcp.TabelaConvenioID WHERE tcp.Codigo = " & Valores("CodigoProcedimento"))
+		if not codigotabela.eof then
+	%>		
+			$("#TabelaID").val("<%=codigotabela("CodigoTabela")%>");
+	<%	
+		else
+	%> 
+			$("#TabelaID").val("<%=Valores("TabelaID")%>");
+	<%
+		end if
+	else
+	%> 
+		$("#TabelaID").val("<%=Valores("TabelaID")%>");
+	<%			
+	end if 
+	%>
+
     $("#Descricao").val("<%=Valores("DescricaoTabela")%>");
     $("#CodigoProcedimento").val("<%=Valores("CodigoProcedimento")%>");
 

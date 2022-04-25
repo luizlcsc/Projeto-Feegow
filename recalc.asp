@@ -129,7 +129,6 @@ next
 
 %>
 $("#total").html("R$ <%=fn(Total)%>");
-$("#Valor").val("<%=fn(Total)%>");
 
 <%
 par = split(ParcelasID, ", ")

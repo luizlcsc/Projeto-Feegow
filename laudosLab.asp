@@ -98,8 +98,8 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
                      <%
                     else
                      %>
-                        postUrl("api/labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidadeid:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
-                                    $("#divListaLaudos").hide();
+                        getUrl("api/labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidadeid:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
+                                   // $("#divListaLaudos").hide();
                                     $("#divListaLaudos").html(data);
                                     $("#divListaLaudos").fadeIn('slow');
                                 },'integracaolaboratorial');

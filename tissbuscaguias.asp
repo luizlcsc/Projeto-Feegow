@@ -96,11 +96,11 @@ end if
         	    <label>Tipo de Guia</label><br />
         	    <select name="T" id="T" class=" form-control" required>
             	    <option value="">Selecione</option>
-            	    <option value="GuiaConsulta"<%if request.QueryString("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
-                    <option value="GuiaSADT"<%if request.QueryString("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
-                    <option value="GuiaHonorarios"<%if request.QueryString("T")="GuiaHonorarios" then%> selected="selected"<%end if%>>Guia de Honorários Individuais</option>
-                    <option value="GuiaInternacao"<%if request.QueryString("T")="GuiaInternacao" then%> selected="selected"<%end if%>>Guia de Solicitação de Internação</option>
-                    <option value="GuiaQuimioterapia"<%if request.QueryString("T")="GuiaQuimioterapia" then%> selected="selected"<%end if%>>Guia de Solicitação de Quimioterapia</option>
+            	    <option value="GuiaConsulta"<%if req("T")="GuiaConsulta" then%> selected="selected"<%end if%>>Guia de Consulta</option>
+                    <option value="GuiaSADT"<%if req("T")="GuiaSADT" then%> selected="selected"<%end if%>>Guia de SP/SADT</option>
+                    <option value="GuiaHonorarios"<%if req("T")="GuiaHonorarios" then%> selected="selected"<%end if%>>Guia de Honorários Individuais</option>
+                    <option value="GuiaInternacao"<%if req("T")="GuiaInternacao" then%> selected="selected"<%end if%>>Guia de Solicitação de Internação</option>
+                    <option value="GuiaQuimioterapia"<%if req("T")="GuiaQuimioterapia" then%> selected="selected"<%end if%>>Guia de Solicitação de Quimioterapia</option>
                 </select>
             </div>
             <%= quickField("simpleSelect", "ConvenioID", "Conv&ecirc;nio", 3, req("ConvenioID"), "select * from Convenios where Ativo='on' and sysActive=1 order by NomeConvenio", "NomeConvenio", "onchange=""tissplanosguia(this.value)"" empty="""" required=""required""") %>
@@ -534,8 +534,8 @@ elseif req("ConvenioID")<>"" and (req("T")="GuiaSADT" or req("T")="guiasadt" or 
 	end if
 
 	if req("T")="GuiaSADT" or req("T")="guiasadt" or req("T")="GuiaInternacao" or req("T")="GuiaQuimioterapia" then
-        if request.QueryString("DataDe")<>"" and isdate(request.QueryString("DataDe")) then
-            sqlDataDe = " and date(g.DataSolicitacao)>='"&mydate(request.QueryString("DataDe"))&"'"
+        if req("DataDe")<>"" and isdate(req("DataDe")) then
+            sqlDataDe = " and date(g.DataSolicitacao)>='"&mydate(req("DataDe"))&"'"
         end if
         if req("DataAte")<>"" and isdate(req("DataAte")) then
             sqlDataAte = " and date(g.DataSolicitacao)<='"&mydate(req("DataAte"))&"'"

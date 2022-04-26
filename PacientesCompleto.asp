@@ -195,14 +195,27 @@ end if
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
             <div class="col-md-1">
                 <label for="Estrangeiro">Estrangeiro</label>
-                   <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
-                                             <% IF reg("Estrangeiro") = "1" THEN %>
-                                               checked
-                                             <% END IF %>
-                                             name="Estrangeiro" id="Estrangeiro" value="1" />
-                                            <label class="checkbox" for="Estrangeiro"> </label>
-                                        </div>
+                <div style="
+                            border: 1px solid #dddddd;
+                            border-radius: 6px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            height: 32px;">
+                    <% IF reg("Estrangeiro") = "1" THEN %>
+                        <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">SIM</span>
+                    <% ELSE %>
+                        <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">NÃO</span>
+                    <% END IF %>
+                    <div class="checkbox-custom checkbox-primary">
+                        <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
+                            <% IF reg("Estrangeiro") = "1" THEN %>
+                            checked
+                            <% END IF %>
+                            name="Estrangeiro" id="Estrangeiro" value="1"/>
+                        <label class="checkbox" for="Estrangeiro" style="margin-top: 0.3rem; margin-right: 0;"> </label>
+                    </div>
+                </div>
             </div>
             <%
                 mask = " input-mask-cpf "
@@ -738,7 +751,7 @@ $(document).ready(function () {
 </script>
 <%
 if getConfig("LembreteFormulario")=1 and device()="" then
-    set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&PacienteID)
+    set lembrarme = db.execute("select bfl.* from buiformslembrarme bfl JOIN buiformspreenchidos bfp ON bfp.id=bfl.FormID where bfp.sysUser="&session("User")&" AND bfl.PacienteID="&PacienteID)
     if not lembrarme.EOF then
         %>
         <script type="text/javascript">
@@ -878,7 +891,7 @@ $(function () {
     if(!$("#Foto").is(':focusable')){
       $("#Foto").prop("required", false);
     }
-  }, 650);
+  }, 1750);
 })
 
 

@@ -1532,37 +1532,80 @@ function gravaWorklist () {
     end if%>
 }
 
-var saveAgenda = function(){
-        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
-        //$("#btnSalvarAgenda").attr('disabled', 'disabled');
-        $("#btnSalvarAgenda").prop("disabled", true);
+function saveReconhecimentoFacial(){
+    <% if recursoAdicional(17)=4 then %>
+    // Reconhecimento facial
+    // A cada criação de agendamento deve-se incluir o rosto do paciente na coleção de rostos daquela unidade referente ao dia daquele agendamento.
+    // Exemplo: "105_0_20220321", refere-se a uma coleção da licença 105, unidade 0 e dia 21/03/2022.
+    
+    const dateParts = $("#Data").val().split('/')
+    const day = dateParts[0]
+    const month = dateParts[1]
+    const year = dateParts[2]
+    const now = new Date()
 
-        $.post("saveAgenda.asp", $("#formAgenda").serialize())
-        .done(function(data){
-            //$("#btnSalvarAgenda").removeAttr('disabled');
-            eval(data);
-            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-            $("#btnSalvarAgenda").prop("disabled", false);
-            crumbAgenda();
-            gravaWorklist();
+    // se o agendamento estiver sendo criado para o dia atual, insere o rosto do paciente na coleção do dia
+    if (now.getDate() == day && now.getMonth() + 1 == month && now.getFullYear() == year) {
+
+        const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
+        const unidadeId = parseInt('<%=session("UnidadeID")%>');
+        const usuarioId = $("#PacienteID").val();
+        const usuarioTipo = 'pacientes';
+        const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
+
+        console.log(`Inserindo imagem com rosto (${usuarioId} - ${usuarioTipo}) em coleção diária (${licencaId}_${unidadeId}_${colecaoNomeSufixo})`) 
+
+        callRestApi({
+            method: "POST",
+            path: `reconhecimento-facial/colecoes/${licencaId}_${unidadeId}_${colecaoNomeSufixo}/rostos`,
+            params: {
+                pacienteId: usuarioTipo === 'pacientes' ? usuarioId : undefined,
+                profissionalId: usuarioTipo === 'profissionais' ? usuarioId : undefined,
+                funcionarioId: usuarioTipo === 'funcionarios' ? usuarioId : undefined,
+            }
         })
+    }
 
-        .fail(function(err){
-            $("#btnSalvarAgenda").prop("disabled", true);
-            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+    // fim Reconhecimento facial
+    <% end if %>
+}
 
+var saveAgenda = function(){
+    $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
+    //$("#btnSalvarAgenda").attr('disabled', 'disabled');
+    $("#btnSalvarAgenda").prop("disabled", true);
 
-            gtag('event', 'erro_500', {
-                'event_category': 'erro_agenda',
-                'event_label': "Erro ao salvar agendamento."
-            });
+    $.post("saveAgenda.asp", $("#formAgenda").serialize())
+    .done(function(data) {
+        //$("#btnSalvarAgenda").removeAttr('disabled');
+        eval(data);
+        $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+        $("#btnSalvarAgenda").prop("disabled", false);
+
+        processosPosAgendamento = ["crumbAgenda", "gravaWorklist", "saveReconhecimentoFacial"];
+
+        processosPosAgendamento.forEach(function(element, index, array){
+            window[element]();
         });
 
-        if(typeof callbackAgendaFiltros === "function"){
-            callbackAgendaFiltros();
-            crumbAgenda();
-        }
+    })
+
+    .fail(function(err){
+        $("#btnSalvarAgenda").prop("disabled", true);
+        showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+
+
+        gtag('event', 'erro_500', {
+            'event_category': 'erro_agenda',
+            'event_label': "Erro ao salvar agendamento."
+        });
+    });
+
+    if(typeof callbackAgendaFiltros === "function"){
+        callbackAgendaFiltros();
+        crumbAgenda();
     }
+}
 
 async function submitAgendamento(check) {
 

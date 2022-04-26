@@ -1,8 +1,4 @@
 <%
-if request.ServerVariables("SERVER_NAME")="clinic.feegow.com.br" and session("banco")="clinic5760" then
-'    response.Redirect("http://clinic4.feegow.com.br/v7/?P=Login")
-end if
-
 if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     QueryStringParameters = request.QueryString
 
@@ -274,7 +270,7 @@ end if
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.12.4.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?v=1.1.3"></script>
+  <script src="js/components.js?v=1.1.7"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -296,8 +292,8 @@ end if
   <script src="https://cdn.feegow.com/feegowclinic-v7/ckeditornew/adapters/jquery.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/footable/js/footable.all.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/vue-2.5.17.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
-  <script type="text/javascript" src="https://cdn.wootric.com/wootric-sdk.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/js/list.min.js"></script>
+  <script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/vendor/wootric/wootric-sdk.js"></script>
   
 
   <%
@@ -1460,7 +1456,7 @@ end if
                               <span class="far fa-bug"></span> Reportar bug
                             </button>
 
-                            <% IF (session("Admin")="1") and (req("P")="Home") THEN
+                            <% IF (session("Admin")="1") and (req("P")="Home") and False THEN
                                 TemRecursoWhatsApp= recursoAdicional(31)=4
                                 if TemRecursoWhatsApp then
                             %>
@@ -1810,8 +1806,8 @@ hash_chat: 'FFCHAT01'
   <script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/demo/widgets.js"></script>
 
   <!-- Notificações (Alerts, Confirms, etc)  -->
-  <script src="./vendor/plugins/pnotify/pnotify.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/2.1.0/pnotify.confirm.min.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/pnotify/pnotify.js"></script>
+  <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/pnotify/pnotify.confirm.min.js"></script>
 
 
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/ladda/ladda.min.js"></script>
@@ -1820,7 +1816,7 @@ hash_chat: 'FFCHAT01'
     <!-- old sms -->
     	<script type="text/javascript" src="https://cdn.feegow.com/feegowclinic-v7/assets/js/qtip/jquery.qtip.js"></script>
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/typeahead-bs2.min.js"></script>
-		<script src="./assets/js/jquery.maskMoney.js" type="text/javascript"></script>
+		<script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery.maskMoney.js" type="text/javascript"></script>
 
 		<!-- page specific plugin scripts -->
 		<script src="https://cdn.feegow.com/feegowclinic-v7/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
@@ -2608,7 +2604,7 @@ end if
 
 
                 if("false"==="<%=session("AutenticadoPHP")%>"){
-                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z", "<%=session("Partner")%>");
+                    authenticate("-<%= session("User") * (9878 + Day(now())) %>Z", "-<%= replace(session("Banco"), "clinic", "") * (9878 + Day(now())) %>Z", "<%=session("Partner")%>","<%=session("Franquia")%>");
                 }else{
 					if(localStorage.getItem("tk")){
 						$.ajaxSetup({
@@ -2769,7 +2765,7 @@ end if
  gtag('config', 'UA-54670639-4');
 </script>
 
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.feegow.com/feegowclinic-v7/vendor/sweetalert/sweetalert2@11.js"></script>
 <script>
 
 function chatNotificacao(titulo, mensagem) {
@@ -2869,4 +2865,33 @@ end if
 %>
 <% IF (session("Admin")="1") and (req("P")="Home") and TemRecursoWhatsApp THEN %>
 <script src="assets/js/whatsApp/whatsAppStatus.js?cache_prevent=9"></script>
+<% END IF %>
+
+<% 
+FC_FIREBASE_API_KEY =getEnv("FC_FIREBASE_API_KEY","")
+IF FC_FIREBASE_API_KEY<>"" THEN%>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "<%=FC_FIREBASE_API_KEY%>",
+    authDomain: "feegow-software-clinico.firebaseapp.com",
+    databaseURL: "https://feegow-software-clinico.firebaseio.com",
+    projectId: "feegow-software-clinico",
+    storageBucket: "feegow-software-clinico.appspot.com",
+    messagingSenderId: "594612638261",
+    appId: "1:594612638261:web:e2b7bdeef63cca1c8a177c",
+    measurementId: "G-B70MMEKG33"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 <% END IF %>

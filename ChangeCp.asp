@@ -81,6 +81,9 @@ if session("banco")<>"" then
 		wend
 		outrosUsers.close
 		set outrosUsers=nothing
+
+		response.Cookies("FormIds|AE|") = ""
+		response.Cookies("FormIds|L|") = ""
 	
 		db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
 		session("SelecionarLicenca") = 0

@@ -1,5 +1,4 @@
-﻿<!--#include file="connect.asp"-->
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta http-equiv="Cache-Control" content="no-cache">
@@ -13,11 +12,13 @@
 .linha {
 	height:12px;
 }
+.guia-anexa-content{
+    page-break-after: always;
+}
 </style>
 <link rel="stylesheet" type="text/css" media="all" href="assets/css/tiss.css" />
 </head>
 <%
-GuiaID = req("I")
 set guia = db.execute("select g.*, cons.TISS as ConselhoProfissionalSolicitanteTISS from tissguiasadt as g left join conselhosprofissionais as cons on cons.id=g.ConselhoProfissionalSolicitanteID where g.id="&GuiaID)
 if not guia.eof then
 	set conv = db.execute("select * from convenios where id="&guia("ConvenioID"))
@@ -134,6 +135,7 @@ if not guia.eof then
 end if
 %>
 <body>
+	<div class="guia-anexa-content">
 	<table cellpading="0" class="campo" bgcolor="white" cellspacing="0" width="100%">
         <tr>
             <td>
@@ -299,6 +301,7 @@ end if
 		</tr>
 	</table>
 	<div style="page-break-after:avoid;font-size:1;margin:0;border:0;"><span style="visibility: hidden;">&nbsp;</span></div>
+	</div>
 </body>
 </html>
 <script>
@@ -306,4 +309,3 @@ end if
 	window.addEventListener("afterprint", function(event) { window.close(); });
 	window.onafterprint();
 </script>
-<!--#include file="disconnect.asp"-->

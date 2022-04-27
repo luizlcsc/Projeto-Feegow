@@ -5762,7 +5762,7 @@ end function
 
 
 function recursoAdicional(RecursoAdicionalID)
-    recursoAdicionalCookie = Request.Cookies("recurso-adicional-"&RecursoAdicionalID)
+    recursoAdicionalCookie = Request.Cookies("ra-"&RecursoAdicionalID)
     if recursoAdicionalCookie<>"" then
         recursoAdicional = cInt(recursoAdicionalCookie)
     else
@@ -5777,8 +5777,8 @@ function recursoAdicional(RecursoAdicionalID)
             end if
         end if
 
-        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID)=Status
-        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID).Expires = Date() + 1
+        Response.Cookies("ra-"&RecursoAdicionalID)=Status
+        Response.Cookies("ra-"&RecursoAdicionalID).Expires = Date() + 1
         recursoAdicional=Status
     end if
 end function

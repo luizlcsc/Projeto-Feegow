@@ -224,17 +224,17 @@ function postUrl(url, data, callback,ms = null) {
         data = {};
     }
 
+    var d = "";
+	
     if (url.indexOf(".asp") === -1) {
-        if (ms=="integracaolaboratorial")
+        d = domain;
+	    
+        if (ms)
         {
-            url = labServiceURL + url;
-        }
-        else
-        {
-            url = domain + url;
+	    d = getMicroserviceDomain(ms)
         }
     }
-
+    url = d + url
 
     var token="";
     if(localStorage.getItem("tk")){

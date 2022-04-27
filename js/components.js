@@ -219,15 +219,22 @@ function getUrl(url, data, callback,ms = null) {
     });
 }
 
-function postUrl(url, data, callback) {
+function postUrl(url, data, callback,ms = null) {
     if (!data) {
         data = {};
     }
 
+    var d = "";
+	
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
-
+        d = domain;
+	    
+        if (ms)
+        {
+	    d = getMicroserviceDomain(ms)
+        }
     }
+    url = d + url
 
     var token="";
     if(localStorage.getItem("tk")){

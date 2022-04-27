@@ -119,6 +119,26 @@ if True then
             end if
         end if
 
+        '---> Verifica se for sem CPF e aplica regra de configuração Obrigar preenchimento de responsável financeiro caso não tenha CPF
+        if getConfig("ObrigarPreenchimentoResponsavelFinanceiroSemCpf") = 0 then
+            if ref("SemCPF") = "on" or ref("SemCPF") = "on, on" then
+                msg = "Obrigatório preenchimento de responsável financeiro caso não tenha CPF"
+                set PacientesRelativosSQL = db.execute("SELECT id FROM pacientesrelativos WHERE PacienteID = "&ref("I"))
+                if not PacientesRelativosSQL.eof then
+                    PacientesRelativo = PacientesRelativosSQL("id")
+                    if ref("CPFParente-PacientesRelativos-"&PacientesRelativo)&"" = "" then
+                        if ref("SemCPF") = "on, on" then
+                            erro = "Obrigatório CPF do Responsável."
+                        else
+                            erro = msg
+                        end if
+                    end if
+                else
+                    erro = msg
+                end if
+            end if
+        end if
+        
         '--->Verificar TEL duplicado
 
         if session("Banco")="clinic6118" and 1=2 then

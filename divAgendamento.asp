@@ -353,16 +353,16 @@ else
 end if
 
 'verificar convenios pelo local e pela unidade
-mUnidadeID = session("UnidadeID")
-if LocalID <> 0 then
+UnidadeID = session("UnidadeID")
+if LocalID&"" <> "0" then
     set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&treatvalzero(LocalID))
     if not sqlUnidadeID.eof then
-        mUnidadeID = sqlUnidadeID("UnidadeID")
+        UnidadeID = sqlUnidadeID("UnidadeID")
     end if
 end if
 
 if Convenios = "Todos" then
-    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='' or unidades is null or unidades=0)"
+    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&UnidadeID&"|%' or unidades ='' or unidades is null or unidades=0)"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
     if not conveniosexibir2.eof then
         ExibirConvenios = conveniosexibir2("exibir")
@@ -375,7 +375,7 @@ else
  if Convenios <> "Nenhum" then
     sqlconveniosexibir2 = "SELECT GROUP_CONCAT('|',id,'|') naoexibir"&_
                         " FROM convenios"&_
-                        " WHERE sysActive=1 AND unidades not LIKE'%|"&mUnidadeID&"|%' and unidades <> ''"
+                        " WHERE sysActive=1 AND unidades not LIKE'%|"&UnidadeID&"|%' and unidades <> ''"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
 
     if not conveniosexibir2.eof then
@@ -683,7 +683,7 @@ end if
                 if session("Banco")="clinic6102" or session("Banco")="clinic6118" then
                     tabelaRequired=" required "
                 end if
-                call quickField("simpleSelect", "ageTabela", "Tabela", 2, ageTabela, "select id, NomeTabela from tabelaparticular where Ativo='on' AND sysActive=1 and (Unidades like '' or Unidades = "&session("UnidadeID")&" or Unidades like '%|"& session("UnidadeID") &"|%') order by NomeTabela", "NomeTabela", " empty no-select2  onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); });"" "&tabelaRequired&" "&fieldReadonly)
+                call quickField("simpleSelect", "ageTabela", "Tabela", 2, ageTabela, "select id, NomeTabela from tabelaparticular where Ativo='on' AND sysActive=1 and (Unidades like '' or Unidades = "&UnidadeID&" or Unidades like '%|"& UnidadeID &"|%') order by NomeTabela", "NomeTabela", " empty no-select2  onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); });"" "&tabelaRequired&" "&fieldReadonly)
             end if
 
             if getConfig("ExibirCampoCanal")=1 then
@@ -1450,11 +1450,6 @@ $(".abaAgendamento").click(function(){
 function setAgendamentoHeaders() {
     <%
 
-        set LocalUnidadeSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(LocalID))
-        if not LocalUnidadeSQL.eof then
-            UnidadeID = LocalUnidadeSQL("UnidadeID")
-        end if
-
         set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
         if not UnidadeSQL.eof then
             NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
@@ -1504,7 +1499,7 @@ var checkmultiplos = '<%= getConfig("RealizarCheckinMultiplosProcedimentos") %>'
 function checkinMultiplo()
 {
     let pacienteid = $("#PacienteID").val();
-    let unidadeid = '<%=session("UnidadeID")%>';
+    let unidadeid = '<%=UnidadeID%>';
     let agendamentoID = '<%=req("id")%>';
     $.get("checkinmultiplo.asp",{
         PacienteID:pacienteid,
@@ -1548,7 +1543,7 @@ function saveReconhecimentoFacial(){
     if (now.getDate() == day && now.getMonth() + 1 == month && now.getFullYear() == year) {
 
         const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
-        const unidadeId = parseInt('<%=session("UnidadeID")%>');
+        const unidadeId = parseInt('<%=UnidadeID%>');
         const usuarioId = $("#PacienteID").val();
         const usuarioTipo = 'pacientes';
         const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
@@ -1702,7 +1697,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    //let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
+    //let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
     var data    = new Date();
     var hora    = data.getHours();          // 0-23
     var min     = data.getMinutes();        // 0-59

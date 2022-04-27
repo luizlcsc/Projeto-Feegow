@@ -354,7 +354,7 @@ end if
 
 'verificar convenios pelo local e pela unidade
 UnidadeID = session("UnidadeID")
-if LocalID <> 0 then
+if LocalID&"" <> "0" then
     set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&treatvalzero(LocalID))
     if not sqlUnidadeID.eof then
         UnidadeID = sqlUnidadeID("UnidadeID")

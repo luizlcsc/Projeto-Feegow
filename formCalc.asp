@@ -14,6 +14,7 @@ if not pCampo.eof then
     FormID = pCampo("FormID")
     set pCampos = db.execute("select id, Formula from buicamposforms where Formula like '%["& NomeCampo &"]%' and FormID="& FormID )
     while not pCampos.eof
+        on error resume next
         Formula = replace(replace(replace(pCampos("Formula")&"", chr(13), ""), chr(10), ""), " ", "")
         Calculo = Formula
 

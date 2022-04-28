@@ -5777,8 +5777,11 @@ function recursoAdicional(RecursoAdicionalID)
             end if
         end if
 
+
+        On Error Resume Next
         Response.Cookies("ra-"&RecursoAdicionalID)=Status
         Response.Cookies("ra-"&RecursoAdicionalID).Expires = Date() + 1
+        On Error Goto 0
         recursoAdicional=Status
     end if
 end function

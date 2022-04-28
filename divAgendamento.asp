@@ -2094,7 +2094,7 @@ function liberar(Usuario , senha , id){
 function toRequired(){
     $(document).ajaxComplete(function(){
 <%
-        set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and Obrigar like '%|%'")
+        set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and ( Obrigar is not null or Obrigar <> '')")
         if not obriga.eof then
             Obr = obriga("Obrigar")
             splObr = split(Obr, ", ")

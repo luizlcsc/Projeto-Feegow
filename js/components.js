@@ -667,3 +667,19 @@ function abrirIntegracao(invoiceId,labid,itenscount) {
 
 
 /* FIM DAS FUNÇÕES DA INTEGRACAO LABORATORIAL */
+
+const toggleBtnLoading = (btnSelector) => {
+    const $el = $(btnSelector);
+    const $elIcon = $el.find("i");
+    let isLoading = $el.data("data-loading") === "true";
+
+    if(isLoading){
+        $el.attr("disabled", false);
+        $el.data("data-loading", "false");
+        $elIcon.removeClass("fa-circle-o-notch fa-spin");
+    }else{
+        $el.data("data-loading", "true");
+        $el.attr("disabled", true);
+        $elIcon.addClass("fa-circle-o-notch fa-spin");
+    }
+}

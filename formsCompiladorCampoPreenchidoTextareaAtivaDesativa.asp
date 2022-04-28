@@ -262,7 +262,7 @@ $(function() {
 				checks.close
 				set checks = nothing
 				%></select><%
-	  	case 8'textarea
+	  	case 8,17'textarea
 			%><div style="padding-bottom:4px"><label class="campoLabel"><%=RotuloCampo%></label></div>
 
             <textarea class="campoInput form-control" id="input_<%=CampoID%>"<%if negadoX="S" then%> readonly <% End If %> data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" tabindex="<%=Ordem%>"><%=ValorPadrao%></textarea>

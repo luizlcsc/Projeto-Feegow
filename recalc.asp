@@ -129,7 +129,9 @@ next
 
 %>
 $("#total").html("R$ <%=fn(Total)%>");
-
+if($("#idDivInvoice #Valor").lenght > 0){
+    $("#idDivInvoice #Valor").val("<%=fn(Total)%>");
+}
 <%
 par = split(ParcelasID, ", ")
 for j=0 to ubound(par)

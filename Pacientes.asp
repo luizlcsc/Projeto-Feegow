@@ -1055,7 +1055,7 @@ if($("#DadosAlterados").val()=="S"){
 	  return message;
 }
 	};
-$(".form-control").change(function(){
+$("#content .form-control").change(function(){
 	$("#DadosAlterados").val("S");
 });
 </script>

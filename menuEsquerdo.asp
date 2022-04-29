@@ -734,7 +734,7 @@ end if
                     <%server.Execute("atender.asp")%>
                 </div>
             </li>
-            <li>
+            <li class="active">
                 <a data-toggle="tab" class="mainTab menu-aba-pacientes-dados-principais" href="#Dados">
                     <span class="blue far fa-user bigger-110"></span>
                     <span class="sidebar-title">Dados Principais</span>

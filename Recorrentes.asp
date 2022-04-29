@@ -123,7 +123,7 @@ end if
                             ActionExcluir = " href=""javascript:if(confirm('Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.'))location.href='./?P=Recorrentes&T="&req("T") &"&Pers=1&List=1&X="&fixa("id") &"';"" "
 
                             if Account<>"" then
-                                ActionExcluir = " href='#' onclick='ajxContent(""Recorrentes"", ""0&T="&req("T")&"&List=1&X="&fixa("id") &"&AccountID="&Account&""", 1, ""div-receita-recorrente"")'"
+                                ActionExcluir = " href='#' onclick='if(confirm(""Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.""))ajxContent(""Recorrentes"", ""0&T="&req("T")&"&List=1&X="&fixa("id") &"&AccountID="&Account&""", 1, ""div-receita-recorrente"")'"
                             end if
                         %>
                         <a <%=ActionExcluir%> class="btn btn-xs btn-danger"><i class="far fa-remove"></i></a>

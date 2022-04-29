@@ -330,6 +330,7 @@ function contaLoadTab(page, params){
     
     let file = null;
     let $content = null;
+    let method = "GET";
 
     if(page === "nao-faturados"){
         file = "TabNaoFaturados.asp";
@@ -337,12 +338,13 @@ function contaLoadTab(page, params){
     }else if(page === "extrato-direto"){
         file = "ExtratoDireto.asp";
         $content = $("#ExtratoDireto");
+        method="POST"
     }else if(page === "receita-fixa"){
         file = "Recorrentes.asp";
         $content = $("#div-receita-recorrente");
     }
 
-    $.get(file, params, function(data){
+    $.ajax(method, file, params, function(data){
         $content.html(data);
     });
 

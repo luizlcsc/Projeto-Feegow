@@ -872,24 +872,41 @@ end if
   </div>
 <%
   if isnull(TotalGeral) then TotalGeral=0 end if
-      set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&GuiaID)
+  if isnumeric(LoteID) then
+    if AutoPrintAnexa&""="1" then
+      %>
+      <!--#include file="GuiaAnexa.asp"-->
+      <%
+    else
+      %>
+      <script>
+      window.parent.anexa();
+      </script>
+      <div class="imprimirGuia">
+          <button type="button" onclick="location.href='printGuiaAnexa.asp?L=<%= LoteID %>'">IMPRIMIR GUIAS ANEXAS DO LOTE</button>
+      </div>
+      <%
+    end if
+  else
+    set vcaAnexa = db.execute("select * from tissguiaanexa where GuiaID="&GuiaID)
 
-      if not vcaAnexa.EOF then
-        if AutoPrintAnexa&""="1" then
-            %>
-          <!--#include file="GuiaAnexa.asp"-->
-            <%
-        else
-        %>
-        <script>
-        window.parent.anexa();
-        </script>
-        <div class="imprimirGuia">
-            <button type="button" onclick="location.href='printGuiaAnexa.asp?I=<%= GuiaID %>'">IMPRIMIR GUIA ANEXA</button>
-        </div>
-        <%
-        end if
+    if not vcaAnexa.EOF then
+      if AutoPrintAnexa&""="1" then
+          %>
+        <!--#include file="GuiaAnexa.asp"-->
+          <%
+      else
+      %>
+      <script>
+      window.parent.anexa();
+      </script>
+      <div class="imprimirGuia">
+          <button type="button" onclick="location.href='printGuiaAnexa.asp?I=<%= GuiaID %>'">IMPRIMIR GUIA ANEXA</button>
+      </div>
+      <%
       end if
+    end if
+  end if
     
     
 GuiaSQL.movenext

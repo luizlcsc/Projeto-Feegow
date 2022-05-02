@@ -5,7 +5,7 @@
 <script>
 <% END IF %>
 <%
-    if (session("admin")=0) THEN
+    if (session("admin")=0 or not session("ExibeFaturas")) THEN
         response.end
     END IF
 
@@ -30,7 +30,7 @@
            "            AND coalesce(sys_financialmovement.Value <> sys_financialmovement.ValorPago,true);                 "
     'sql = "SELECT DATE('2019-01-10') AS Date,'https://faturas.iugu.com/30cd3220-9d30-4bb6-a216-e86b83c0a548-3053' AS InvoiceURL,1 abrirModal "
 %>
-var boletosPendentes= <%=recordToJSON(dbc.execute(sql)) %>
+var boletosPendentes= <%=recordToJSON(dbc.execute(sql)) %>;
 localStorage.setItem("cobrancaBoleto",JSON.stringify(boletosPendentes));
 
 function openModalCobranca(){
@@ -77,3 +77,4 @@ function openModalCobranca(){
 if(boletosPendentes && boletosPendentes.length > 0){
     openModalCobranca();
 }
+</script>

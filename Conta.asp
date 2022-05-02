@@ -344,8 +344,13 @@ function contaLoadTab(page, params){
         $content = $("#div-receita-recorrente");
     }
 
-    $.ajax(method, file, params, function(data){
-        $content.html(data);
+    $.ajax({
+        type: method,
+        url: file,
+        data: params,
+        success: function(data){
+            $content.html(data);
+        }
     });
 
 }

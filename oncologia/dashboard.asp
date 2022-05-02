@@ -50,7 +50,7 @@
         $(".crumb-active a").html("Protocolos");
         $(".crumb-link").removeClass("hidden");
         $(".crumb-link").addClass("hidden");
-        $(".crumb-icon").addClass("hidden");
+        $(".crumb-icon a span").addClass("hidden");
     }
 
     const maximize = () =>{

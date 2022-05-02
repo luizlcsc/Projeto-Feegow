@@ -427,6 +427,16 @@ var validar = false;
 
 function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
 
+    <%
+    if device()<>"" then
+    %>
+    if(Acao == "PreEncerrar"){
+        fecharSubmenu();
+    }
+    <%
+    end if
+    %>
+
     var atenderF = () => {
         $.ajax({
         		type:"POST",

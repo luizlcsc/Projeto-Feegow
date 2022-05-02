@@ -729,7 +729,7 @@ end if
         if isnumeric(req("I")) and req("I")<>"" then
             %>
             <li class="sidebar-label pt20"></li>
-            <li class="row sidebar-stat tray-bin stretch hidden-xs">
+            <li class="row sidebar-stat tray-bin stretch ">
                 <div class="fs11 col-md-12" id="divContador">
                     <%server.Execute("atender.asp")%>
                 </div>

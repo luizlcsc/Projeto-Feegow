@@ -1231,7 +1231,7 @@ end if
             </div>
             <script type="text/javascript">
                 function abrirSubmenu() {
-                  $( "#submenu" ).animate({
+                  $( "#submenu" ).addClass("submenu-open").animate({
                     "margin-right": "0",
                   }, 400, function() {
                     // Animation complete.
@@ -1239,7 +1239,7 @@ end if
                   $("#cortina").css("display", "block");
                 }
                 function fecharSubmenu() {
-                  $( "#submenu" ).animate({
+                  $( "#submenu" ).removeClass("submenu-open").animate({
                     "margin-right": "-260px",
                   }, 400, function() {
                     // Animation complete.
@@ -1913,6 +1913,13 @@ function ajxContent(P, I, Pers, Div, ParametrosAdicionais){
 		{
 			//alert(data);
 			$("#"+Div).html(data);
+            <%
+            if device()<>"" then
+            %>
+            fecharSubmenu();
+            <%
+            end if
+            %>
 		}
 	});
 }

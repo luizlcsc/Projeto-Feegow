@@ -331,11 +331,12 @@ elseif Tipo="Procedimentos" then
            if not ProdutoValorSQL.eof then
                 while not ProdutoValorSQL.eof
                     Valor = ProdutoValorSQL("Valor")
+                    ValorNovo = Valor + (CalculaFatorDeflatorInflator(ConvenioID, ProcedimentoID, ProdutoValorSQL("ProdutoID")) * Valor)
                     Quantidade = ProdutoValorSQL("Quantidade") * ref("Quantidade")
-                    ValorTotalProduto = Quantidade *  Valor
+                    ValorTotalProduto = Quantidade *  ValorNovo
 
-                    if Valor > 0 then
-                        sqlExecute = "insert into tissguiaanexa (GuiaID, CD, Data, HoraInicio, HoraFim, ProdutoID, TabelaProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao) values ("&GuiaID&", "&treatvalzero(ProdutoValorSQL("CD"))&", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", "&treatvalzero(ProdutoValorSQL("ProdutoID"))&", "&treatvalzero(ProdutoValorSQL("TabelaID"))&", '"&ProdutoValorSQL("Codigo")&"', "&treatvalzero(Quantidade)&", "&treatvalzero(ProdutoValorSQL("ApresentacaoUnidade"))&", '1', "&treatvalzero(Valor)&", "&treatvalzero(ValorTotalProduto)&", '"&ProdutoValorSQL("RegistroANVISA")&"', '"&ProdutoValorSQL("CodigoNoFabricante")&"', '"&ProdutoValorSQL("AutorizacaoEmpresa")&"', '"&rep(ProdutoValorSQL("NomeProduto"))&"')"
+                    if ValorNovo > 0 then
+                        sqlExecute = "insert into tissguiaanexa (GuiaID, CD, Data, HoraInicio, HoraFim, ProdutoID, TabelaProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao) values ("&GuiaID&", "&treatvalzero(ProdutoValorSQL("CD"))&", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", "&treatvalzero(ProdutoValorSQL("ProdutoID"))&", "&treatvalzero(ProdutoValorSQL("TabelaID"))&", '"&ProdutoValorSQL("Codigo")&"', "&treatvalzero(Quantidade)&", "&treatvalzero(ProdutoValorSQL("ApresentacaoUnidade"))&", '1', "&treatvalzero(ValorNovo)&", "&treatvalzero(ValorTotalProduto)&", '"&ProdutoValorSQL("RegistroANVISA")&"', '"&ProdutoValorSQL("CodigoNoFabricante")&"', '"&ProdutoValorSQL("AutorizacaoEmpresa")&"', '"&rep(ProdutoValorSQL("NomeProduto"))&"')"
                         db.execute(sqlExecute)
                     end if
                 ProdutoValorSQL.movenext
@@ -518,4 +519,24 @@ elseif Tipo="Despesas" then
 		atualizaTabela("tissoutrasdespesas", "tissoutrasdespesas.asp?I=<%=GuiaID%>");
 		<%
 end if
+
+function CalculaFatorDeflatorInflator(ConvenioID,ProcedimentoID,ProdutoID)
+
+          FatorDeflatorInflator = 0
+
+          sqlDeflatorInflator = "SELECT tipo, valor FROM conveniosmodificadores where ConvenioID= " & ConvenioID & " AND procedimentos LIKE CONCAT('%|'," & ProcedimentoID & ",'|%') " &_
+                                " AND produtos LIKE CONCAT('%|'," & ProdutoID & ",'|%') " 
+
+          set DeflatorInflator = db.execute(sqlDeflatorInflator)
+
+          if not DeflatorInflator.eof then
+            FatorDeflatorInflator = (DeflatorInflator("tipo") * (DeflatorInflator("valor")/100))
+          end if 
+
+          DeflatorInflator.close
+          set DeflatorInflator = nothing
+
+          CalculaFatorDeflatorInflator = FatorDeflatorInflator
+end function
+
 %>

@@ -102,7 +102,7 @@ else
         'while not u.eof
         splU = split(ref("Locais"), ", ")
         for j=0 to Ubound(splU)
-            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), False)    
+            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), True)    
             UnidadeID = replace(replace(splU(j), "UNIDADE_ID", ""), "|", "")
 		    if UnidadeID="0" then
 			    set un = db.execute("select NomeFantasia from empresa")
@@ -163,11 +163,18 @@ else
                 </thead>
             <%
             'set distEsp = db.execute("SELECT DISTINCT esp.Especialidade, ro.EspecialidadeID FROM agenda_horarios ro LEFT JOIN especialidades esp ON esp.id=ro.EspecialidadeID ORDER BY esp.Especialidade")
-
+            Especialidades = replace(ref("Especialidade"), "|", "")
+            
             if ref("TipoExibicao")="E" THEN
                 set prof = db.execute("SELECT id EspecialidadeID, Especialidade, null NomeProfissional FROM especialidades WHERE id IN("& replace(ref("Especialidade"), "|", "") &") ORDER BY Especialidade")
             else
-                set prof = db.execute("SELECT p.id ProfissionalID, esp.especialidade, esp.id EspecialidadeID, p.NomeProfissional FROM profissionais p LEFT JOIN especialidades esp ON esp.id=p.EspecialidadeID WHERE EspecialidadeID IN("& replace(ref("Especialidade"), "|", "") &") ORDER BY esp.especialidade, NomeProfissional")
+                set prof = db.execute("SELECT p.id ProfissionalID, esp.especialidade, esp.id EspecialidadeID, p.NomeProfissional "&_
+                "FROM profissionais p "&_
+                "LEFT JOIN profissionaisespecialidades pe ON pe.ProfissionalID=p.id "&_
+                "LEFT JOIN especialidades esp ON esp.id=p.EspecialidadeID or pe.EspecialidadeID=esp.id "&_
+                "WHERE p.Ativo='on' AND esp.id IN ("& Especialidades &") "&_
+                "ORDER BY esp.especialidade, NomeProfissional")
+
             end if
 
             while not prof.eof
@@ -198,9 +205,9 @@ else
 
                                     
                         if ref("TipoExibicao")="E" THEN
-                            sqlBusca = " AND ro.EspecialidadeID="& treatvalnull(prof("EspecialidadeID")) &" "
+                            sqlBusca = " AND ro.EspecialidadeID IN ("& prof("Especialidades") &") "
                         else
-                            sqlBusca = " AND ro.ProfissionalID="& treatvalnull(prof("ProfissionalID")) &" "
+                            sqlBusca = " AND ro.ProfissionalID="& treatvalnull(prof("ProfissionalID")) &" AND ro.EspecialidadeID IN ("& prof("EspecialidadeID") &")"
                         end if
 
 						sqlConta = "select "&_

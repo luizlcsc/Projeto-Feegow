@@ -120,10 +120,16 @@ end if
 		splAccount = split(ref("AccountID"), "_")
 		AccountAssociationID = splAccount(0)
 		AccountID = splAccount(1)
+
+        DataSaldo = dateadd("d",-1,ref("DateFrom"))
+        Balance = accountBalanceData(ref("AccountID"), DataSaldo) * -1
+
 		sqlAcc = " AND ((m.AccountAssociationIDCredit="&AccountAssociationID&" and m.AccountIDCredit="&AccountID&") or (m.AccountAssociationIDDebit="&AccountAssociationID&" and m.AccountIDDebit="&AccountID&")) "
 	else
-		sqlAcc = " AND m.`Date`>="&mydatenull(session("DateFrom"))&" AND m.`Date`<="&mydatenull(session("DateTo"))&" AND m.`Type` IN('Pay','Tranfer') "
+		sqlAcc = "  AND m.`Type` IN('Pay','Tranfer') "
 	end if
+
+	sqlAcc = sqlAcc & " AND m.`Date`>="&mydatenull(session("DateFrom"))&" AND m.`Date`<="&mydatenull(session("DateTo"))&" "
 
 	sqlLancadoPor = ""
 	if ref("LancadoPor")&""<>"0" and ref("LancadoPor")&""<>"" then
@@ -162,7 +168,6 @@ end if
     else
 		if ref("AccountID")<>"" and ref("AccountID")<>"0" then
 			sqlDataPraFrente = " AND m.`Date`>="& mydatenull(ref("DateFrom")) &" "
-			SaldoAnterior = accountBalancePerDate(ref("AccountID"), 0, dateadd("d", -1, ref("DateFrom")))
 		end if
 		sqlGM = "select m.*, lu.Nome, fb.BankName, pm.PaymentMethod from sys_financialMovement m  "&_
 		"LEFT JOIN cliniccentral.licencasusuarios lu on lu.id=m.sysUser  "&_
@@ -170,6 +175,7 @@ end if
         "left join sys_financialpaymentmethod pm on pm.id = m.PaymentMethodID  "&_
 		"left join sys_financialbanks fb on fb.id = sf.Bank where 1=1 "& sqlAcc & sqlLancadoPor & sqlUnidades & sqlCD & sqlFormas & sqlDataPraFrente &" order by m.Date, m.id"
     end if
+
     set getMovement = db.execute( sqlGM )
 
 
@@ -436,7 +442,7 @@ end if
 			if ExibiuPrimeiraLinha="N" and ScreenType="Statement" then
 				%>
 				<tr>
-                	<th class="saldo-anterior-td" colspan="6">SALDO ANTERIOR</th>
+                	<th class="saldo-anterior-td" colspan="8">SALDO ANTERIOR</th>
 
 					<% 
 					If (AccountAssociationID=1 or AccountAssociationID=7) and ScreenType="Statement" Then 

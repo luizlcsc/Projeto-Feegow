@@ -29,7 +29,7 @@ on error resume next
 set formCD = db.execute("select * from buiforms where Tipo=5 and sysActive=1")
 while not formCD.eof
     set reg = db.execute("select * from `_"& formCD("id") &"` where PacienteID="& req("I"))
-    if autForm(formCD("id"), "IN", "") = true then
+    if autForm(formCD("id"), "IN", "", "") = true then
     %>
     <div class="panel">
         <div class="panel-heading">

@@ -36,7 +36,7 @@ if aut("contasareceber")=1 and aut("contasapagar")=1 and aut("movement")=1 then
             SaldoGeral = SaldoGeral+Saldo
         end if
         %>
-        <div class="col-xs-3">
+        <div class="col-md-3 col-xs-4 card-conta-corrente">
             <div class=" img-thumbnail" style="padding-left:10px; width: 100%">
                 <div class="icon-current-account"><i class="fal fa-university"></i></div>
 

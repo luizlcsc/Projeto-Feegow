@@ -41,7 +41,7 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
                 <!--<%=quickfield("simpleSelect", "ProfissionalID", "Profissional", 3, ProfissionalID, sqlProfissionais, "NomeProfissional", "") %>
                 <input type="hidden" name="ProfissionalID" value="<%=ProfissionalID%>">                   -->
                  <% 
-                    IF session("UnidadeID") = 0 THEN
+                    IF session("UnidadeID") = 0 or  session("Admin")= 1 THEN
                         response.write(quickField("empresaMultiIgnore", "Unidades", "Unidades", 3, "", "", "", ""))
                     END IF                    
                 %>
@@ -84,11 +84,32 @@ sqlProfissionais = "SELECT p.id, p.NomeProfissional " &_
             var profissional = $("#ProfissionalID").val();
             var status = $("#Status").val();
             var paciente = $("#PacienteID").val();
-            postUrl("labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidade:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
-                $("#divListaLaudos").hide();
-                $("#divListaLaudos").html(data);
-                $("#divListaLaudos").fadeIn('slow');
-            });
+            <%
+                verificaAcesso = verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))
+                arrayintegracao = split(verificaAcesso,"|")
+                if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
+                    if arrayintegracao(1) = 1 then 'Verica a versao da integracao
+                     %> 
+                        postUrl("labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidade:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
+                                    $("#divListaLaudos").hide();
+                                    $("#divListaLaudos").html(data);
+                                    $("#divListaLaudos").fadeIn('slow');
+                                });
+                     <%
+                    else
+                     %>
+                        getUrl("api/labs-integration/listar-laudos",{id:id,datade:datade, dataate:dataate, tipodata:tipodata, unidadeid:unidade, profissional:profissional, status:status, paciente:paciente}, function(data) {
+                                   // $("#divListaLaudos").hide();
+                                    $("#divListaLaudos").html(data);
+                                    $("#divListaLaudos").fadeIn('slow');
+                                },'integracaolaboratorial');
+                     <%   
+                    end if 
+                else
+                    %><span> Esta licença não está habilitada para integração laboratorial </span> <% 
+                end if 
+            
+            %>            
         }
 
     </script>

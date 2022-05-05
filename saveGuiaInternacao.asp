@@ -169,7 +169,7 @@ else
 		let convenioId = '<%=guia("ConvenioID")%>'
 
 		if(print == 1 && convenioId != ''){
-			guiaTISS('GuiaInternacao', <%=guia("id")%>, convenioId, (valor)=>{
+			guiaTISS('GuiaInternacao', <%=guia("id")%>, convenioId, null, (valor)=>{
 				if(typeof callback === "function"){
 					window.onafterprint =callback("true")
 					return true

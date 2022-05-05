@@ -85,7 +85,7 @@ if ref("Enviar")="" then
 <script >
     $(".crumb-active a").html("E-mail marketing");
     $(".crumb-icon a span").attr("class", "far fa-envelope");
-    $(".crumb-icon").removeClass("hidden");
+    $(".crumb-icon a span").removeClass("hidden");
 </script>
 	<%
 else

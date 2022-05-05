@@ -1,6 +1,30 @@
 <!--#include file="./../connect.asp"-->
 <%
 
+function accountBalanceData(AccountID, Data)
+    splAccountInQuestion = split(AccountID, "_")
+    AccountAssociationID = splAccountInQuestion(0)
+    AccountID = splAccountInQuestion(1)
+
+    accountBalanceData = 0
+
+    set getMovement = db_execute("select SUM(Valor) Saldo FROM (select COALESCE(IF(AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&",Value,value*-1),0)Valor from sys_financialMovement "&_
+    "where ((AccountAssociationIDCredit="&AccountAssociationID&" and AccountIDCredit="&AccountID&") or (AccountAssociationIDDebit="&AccountAssociationID&" and AccountIDDebit="&AccountID&")) and Date<='"&myDate(Data)&"' "&_
+    ")t")
+
+    if not getMovement.eof then
+        accountBalanceData = getMovement("Saldo")
+        if accountBalanceData&""="" then
+            accountBalanceData = 0
+        end if
+    end if
+
+    if AccountAssociationID=1 or AccountAssociationID=7 then
+        accountBalanceData = accountBalanceData*(-1)
+    end if
+
+end function
+
 function accountBalancePerDate(AccountID, Flag, Date)
 	splAccountInQuestion = split(AccountID, "_")
 	AccountAssociationID = splAccountInQuestion(0)

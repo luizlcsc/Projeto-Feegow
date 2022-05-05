@@ -18,21 +18,25 @@ if(window.location.href.indexOf('sandbox') > 0){
 }
 
 var domain = null;
+var domainApiRest = null;
 var api = "./api/";
 
 switch (env){
     case "local":
         domain = "http://localhost:8000/";
+        domainApiRest = "http://localhost:9002/";
         labServiceURL = "http://localhost:8001/"
         api = "./api/";
         break;
     case "production":
         domain = "https://app.feegow.com.br/";
+        domainApiRest = "https://api.feegow.com/rest/";
         labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
     case "homolog":
         domain = "https://api-homolog.feegow.com/index.php/";
+        domainApiRest = "https://api.feegow.com/rest/";
         labServiceURL = "https://labs.feegow.com/"
         api = "/main/api/";
         break;
@@ -174,19 +178,17 @@ function getUrl(url, data, callback,ms = null) {
         data = {};
     }
 
-
+    var d = "";
+	
     if (url.indexOf(".asp") === -1) {
-        if (ms=="integracaolaboratorial")
+        d = domain;
+	    
+        if (ms)
         {
-            url = labServiceURL + url;
+	    d = getMicroserviceDomain(ms)
         }
-        else
-        {
-            url = domain + url;
-        }
-        
-
     }
+    url = d + url;
 
 	var token="";
 	if(localStorage.getItem("tk")){
@@ -217,15 +219,22 @@ function getUrl(url, data, callback,ms = null) {
     });
 }
 
-function postUrl(url, data, callback) {
+function postUrl(url, data, callback,ms = null) {
     if (!data) {
         data = {};
     }
 
+    var d = "";
+	
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
-
+        d = domain;
+	    
+        if (ms)
+        {
+	    d = getMicroserviceDomain(ms)
+        }
     }
+    url = d + url
 
     var token="";
     if(localStorage.getItem("tk")){
@@ -265,24 +274,33 @@ function openModal(data, title, closeBtn, saveBtn, modalSize) {
     setModalContent(data, title, closeBtn, saveBtn);
 }
 
+function getMicroserviceDomain(ms){
+	if(ms === 'integracaolaboratorial')
+	{
+	    return labServiceURL;
+	}
+	
+	return false;
+}
+
 function openComponentsModal(url, params, title, closeBtn, saveBtn, modalSize, modalWidth) {
     if (!modalSize) {
         modalSize = "lg";
     }
+    var d = "";
 
     var $modal = getModal(true, modalSize, modalWidth);
     $modal.modal("show");
 
     if (url.indexOf(".asp") === -1) {
-        if (params.microservico === 'integracaolaboratorial')
+	d = domain;
+
+        if (typeof(params) === 'object' && params.microservico)
         {
-            url = labServiceURL + url;
-        }
-        else
-        {
-            url = domain + url;
+	    d = getMicroserviceDomain(params.microservico)
         }
     }
+    url = d + url;
 
 	var token="";
 	if(localStorage.getItem("tk")){
@@ -435,8 +453,8 @@ function showMessageDialog(message, messageType, title, delay=3000) {
     });
 }
 
-function authenticate(u, l = false, cupom="") {
-    getUrl("auth", {l: l,_u: u, _p: cupom}, function(data) {
+function authenticate(u, l = false, cupom="",franquia="") {
+    getUrl("auth", {l: l,_u: u, _p: cupom,_f:franquia}, function(data) {
         if(data.success==true){
             $.post("confAut.asp", data);
 
@@ -465,7 +483,7 @@ function replicarRegistro(id,tabela){
 
 const uploadProfilePic = async ({userId, db, table, content, contentType, elem = false}) => {
     let response = false;
-    let enpoint = domain + "file/perfil/uploadPerfilFile";
+    let endpoint = domain + "file/perfil/uploadPerfilFile";
 
     if (contentType === "form") {
         let objct = new FormData();
@@ -476,7 +494,7 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
         objct.append('folder_name', "Perfil");
 
         response = await $.ajax({
-            url: enpoint,
+            url: endpoint,
             type: 'POST',
             processData: false,
             contentType: false,
@@ -488,7 +506,7 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     }else{
 
         response = await jQuery.ajax({
-            url: enpoint,
+            url: endpoint,
             type: 'post',
             dataType: 'json',
             data: JSON.stringify(content),
@@ -510,6 +528,18 @@ const uploadProfilePic = async ({userId, db, table, content, contentType, elem =
     }
 
     return response;
+}
+
+const callRestApi = ({ params, method, path }) => {
+    return fetch(domainApiRest + path, {
+        "method": method,
+        "headers": {
+            "accept": "*/*",
+            "content-type": "application/json; charset=UTF-8",
+            "Authorization": `Bearer ${localStorage.getItem('tk')}`
+        },
+        "body": JSON.stringify(params)
+    });
 }
   
 const recordLog = async (
@@ -637,3 +667,19 @@ function abrirIntegracao(invoiceId,labid,itenscount) {
 
 
 /* FIM DAS FUNÇÕES DA INTEGRACAO LABORATORIAL */
+
+const toggleBtnLoading = (btnSelector) => {
+    const $el = $(btnSelector);
+    const $elIcon = $el.find("i");
+    let isLoading = $el.data("data-loading") === "true";
+
+    if(isLoading){
+        $el.attr("disabled", false);
+        $el.data("data-loading", "false");
+        $elIcon.removeClass("fa-circle-o-notch fa-spin");
+    }else{
+        $el.data("data-loading", "true");
+        $el.attr("disabled", true);
+        $elIcon.addClass("fa-circle-o-notch fa-spin");
+    }
+}

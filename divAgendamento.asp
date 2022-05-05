@@ -353,16 +353,16 @@ else
 end if
 
 'verificar convenios pelo local e pela unidade
-mUnidadeID = session("UnidadeID")
-if LocalID <> 0 then
+UnidadeID = session("UnidadeID")
+if LocalID&"" <> "0" then
     set sqlUnidadeID = db.execute("select UnidadeID from locais where id="&treatvalzero(LocalID))
     if not sqlUnidadeID.eof then
-        mUnidadeID = sqlUnidadeID("UnidadeID")
+        UnidadeID = sqlUnidadeID("UnidadeID")
     end if
 end if
 
 if Convenios = "Todos" then
-    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&mUnidadeID&"|%' or unidades ='' or unidades is null or unidades=0)"
+    sqlconveniosexibir2 = "select group_concat(id) exibir from convenios where sysActive=1 and (unidades like'%|"&UnidadeID&"|%' or unidades ='' or unidades is null or unidades=0)"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
     if not conveniosexibir2.eof then
         ExibirConvenios = conveniosexibir2("exibir")
@@ -375,7 +375,7 @@ else
  if Convenios <> "Nenhum" then
     sqlconveniosexibir2 = "SELECT GROUP_CONCAT('|',id,'|') naoexibir"&_
                         " FROM convenios"&_
-                        " WHERE sysActive=1 AND unidades not LIKE'%|"&mUnidadeID&"|%' and unidades <> ''"
+                        " WHERE sysActive=1 AND unidades not LIKE'%|"&UnidadeID&"|%' and unidades <> ''"
     set conveniosexibir2 = db.execute(sqlconveniosexibir2)
 
     if not conveniosexibir2.eof then
@@ -683,7 +683,7 @@ end if
                 if session("Banco")="clinic6102" or session("Banco")="clinic6118" then
                     tabelaRequired=" required "
                 end if
-                call quickField("simpleSelect", "ageTabela", "Tabela", 2, ageTabela, "select id, NomeTabela from tabelaparticular where Ativo='on' AND sysActive=1 and (Unidades like '' or Unidades = "&session("UnidadeID")&" or Unidades like '%|"& session("UnidadeID") &"|%') order by NomeTabela", "NomeTabela", " empty no-select2  onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); });"" "&tabelaRequired&" "&fieldReadonly)
+                call quickField("simpleSelect", "ageTabela", "Tabela", 2, ageTabela, "select id, NomeTabela from tabelaparticular where Ativo='on' AND sysActive=1 and (Unidades like '' or Unidades = "&UnidadeID&" or Unidades like '%|"& UnidadeID &"|%') order by NomeTabela", "NomeTabela", " empty no-select2  onchange=""$.each($('.linha-procedimento'), function(){ parametros('ProcedimentoID'+$(this).data('id'),$(this).find('select[data-showcolumn=\'NomeProcedimento\']').val()); });"" "&tabelaRequired&" "&fieldReadonly)
             end if
 
             if getConfig("ExibirCampoCanal")=1 then
@@ -1450,11 +1450,6 @@ $(".abaAgendamento").click(function(){
 function setAgendamentoHeaders() {
     <%
 
-        set LocalUnidadeSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(LocalID))
-        if not LocalUnidadeSQL.eof then
-            UnidadeID = LocalUnidadeSQL("UnidadeID")
-        end if
-
         set UnidadeSQL = db.execute("SELECT NomeFantasia FROM (SELECT 0 id, NomeFantasia FROM empresa WHERE id=1 UNION ALL SELECT id,NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1)t WHERE t.id="&treatvalzero(UnidadeID))
         if not UnidadeSQL.eof then
             NomeUnidade = UnidadeSQL("NomeFantasia")&" - "
@@ -1504,7 +1499,7 @@ var checkmultiplos = '<%= getConfig("RealizarCheckinMultiplosProcedimentos") %>'
 function checkinMultiplo()
 {
     let pacienteid = $("#PacienteID").val();
-    let unidadeid = '<%=session("UnidadeID")%>';
+    let unidadeid = '<%=UnidadeID%>';
     let agendamentoID = '<%=req("id")%>';
     $.get("checkinmultiplo.asp",{
         PacienteID:pacienteid,
@@ -1532,37 +1527,80 @@ function gravaWorklist () {
     end if%>
 }
 
-var saveAgenda = function(){
-        $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
-        //$("#btnSalvarAgenda").attr('disabled', 'disabled');
-        $("#btnSalvarAgenda").prop("disabled", true);
+function saveReconhecimentoFacial(){
+    <% if recursoAdicional(17)=4 then %>
+    // Reconhecimento facial
+    // A cada criação de agendamento deve-se incluir o rosto do paciente na coleção de rostos daquela unidade referente ao dia daquele agendamento.
+    // Exemplo: "105_0_20220321", refere-se a uma coleção da licença 105, unidade 0 e dia 21/03/2022.
+    
+    const dateParts = $("#Data").val().split('/')
+    const day = dateParts[0]
+    const month = dateParts[1]
+    const year = dateParts[2]
+    const now = new Date()
 
-        $.post("saveAgenda.asp", $("#formAgenda").serialize())
-        .done(function(data){
-            //$("#btnSalvarAgenda").removeAttr('disabled');
-            eval(data);
-            $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
-            $("#btnSalvarAgenda").prop("disabled", false);
-            crumbAgenda();
-            gravaWorklist();
+    // se o agendamento estiver sendo criado para o dia atual, insere o rosto do paciente na coleção do dia
+    if (now.getDate() == day && now.getMonth() + 1 == month && now.getFullYear() == year) {
+
+        const licencaId = '<%=session("Banco")%>'.replace('clinic', '');
+        const unidadeId = parseInt('<%=UnidadeID%>');
+        const usuarioId = $("#PacienteID").val();
+        const usuarioTipo = 'pacientes';
+        const colecaoNomeSufixo = $("#Data").val().split('/').reverse().join('');
+
+        console.log(`Inserindo imagem com rosto (${usuarioId} - ${usuarioTipo}) em coleção diária (${licencaId}_${unidadeId}_${colecaoNomeSufixo})`) 
+
+        callRestApi({
+            method: "POST",
+            path: `reconhecimento-facial/colecoes/${licencaId}_${unidadeId}_${colecaoNomeSufixo}/rostos`,
+            params: {
+                pacienteId: usuarioTipo === 'pacientes' ? usuarioId : undefined,
+                profissionalId: usuarioTipo === 'profissionais' ? usuarioId : undefined,
+                funcionarioId: usuarioTipo === 'funcionarios' ? usuarioId : undefined,
+            }
         })
+    }
 
-        .fail(function(err){
-            $("#btnSalvarAgenda").prop("disabled", true);
-            showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+    // fim Reconhecimento facial
+    <% end if %>
+}
 
+var saveAgenda = function(){
+    $("#btnSalvarAgenda").html(`<i class="far fa-circle-o-notch fa-spin fa-fw"></i> <span>Salvando...</span>`);
+    //$("#btnSalvarAgenda").attr('disabled', 'disabled');
+    $("#btnSalvarAgenda").prop("disabled", true);
 
-            gtag('event', 'erro_500', {
-                'event_category': 'erro_agenda',
-                'event_label': "Erro ao salvar agendamento."
-            });
+    $.post("saveAgenda.asp", $("#formAgenda").serialize())
+    .done(function(data) {
+        //$("#btnSalvarAgenda").removeAttr('disabled');
+        eval(data);
+        $("#btnSalvarAgenda").html('<i class="far fa-save"></i> Salvar');
+        $("#btnSalvarAgenda").prop("disabled", false);
+
+        processosPosAgendamento = ["crumbAgenda", "gravaWorklist", "saveReconhecimentoFacial"];
+
+        processosPosAgendamento.forEach(function(element, index, array){
+            window[element]();
         });
 
-        if(typeof callbackAgendaFiltros === "function"){
-            callbackAgendaFiltros();
-            crumbAgenda();
-        }
+    })
+
+    .fail(function(err){
+        $("#btnSalvarAgenda").prop("disabled", true);
+        showMessageDialog("Ocorreu um erro ao tentar salvar. Tente novamente mais tarde", 'danger');
+
+
+        gtag('event', 'erro_500', {
+            'event_category': 'erro_agenda',
+            'event_label': "Erro ao salvar agendamento."
+        });
+    });
+
+    if(typeof callbackAgendaFiltros === "function"){
+        callbackAgendaFiltros();
+        crumbAgenda();
     }
+}
 
 async function submitAgendamento(check) {
 
@@ -1659,7 +1697,7 @@ function repeteAgendamento(ConsultaID){
 setInterval(function(){abasAux()}, 3000);
 
 function atualizaHoraAtual(){
-    //let horaAtual = '<%=formatdatetime(getClientDataHora(session("UnidadeID")),4)%>';
+    //let horaAtual = '<%=formatdatetime(getClientDataHora(UnidadeID),4)%>';
     var data    = new Date();
     var hora    = data.getHours();          // 0-23
     var min     = data.getMinutes();        // 0-59
@@ -2056,7 +2094,7 @@ function liberar(Usuario , senha , id){
 function toRequired(){
     $(document).ajaxComplete(function(){
 <%
-        set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and Obrigar like '%|%'")
+        set obriga = db.execute("select * from obrigacampos where Tipo='Paciente' and ( Obrigar is not null or Obrigar <> '')")
         if not obriga.eof then
             Obr = obriga("Obrigar")
             splObr = split(Obr, ", ")

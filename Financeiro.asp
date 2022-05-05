@@ -9,6 +9,7 @@
 </script>
 
 <style>
+
 .icon-current-account{
     width: 32px;
     height: 32px;

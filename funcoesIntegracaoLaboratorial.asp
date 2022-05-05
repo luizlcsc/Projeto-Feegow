@@ -2,6 +2,7 @@
 
 function verificaSevicoIntegracaoLaboratorial(unidade)
     'Verifica se possui o servico adicional integração laboratorial habilitado e qual versão
+    'serviço habilitado | versão | unidade com credencial
     sql = "SELECT max(ServicoID) id FROM cliniccentral.clientes_servicosadicionais cs WHERE cs.LicencaID = '"&replace(session("Banco"),"clinic","")&"' AND  cs.ServicoID in(24,48) AND cs.`Status`=4"
     set rs1 = db.execute(sql)
     if not rs1.eof then
@@ -9,31 +10,31 @@ function verificaSevicoIntegracaoLaboratorial(unidade)
            if unidade <> "" then
                set labAutenticacao = db.execute("SELECT * FROM labs_autenticacao WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade))
                if labAutenticacao.eof then
-                    verificaSevicoIntegracaoLaboratorial = "0|0"
+                    verificaSevicoIntegracaoLaboratorial = "1|1|0"
                else
-                    verificaSevicoIntegracaoLaboratorial = "1|1"
+                    verificaSevicoIntegracaoLaboratorial = "1|1|1"
                end if 
             else 
-               verificaSevicoIntegracaoLaboratorial = "1|1"
+               verificaSevicoIntegracaoLaboratorial = "1|1|1"
             end if 
         else 
             if unidade <> "" then
                set labAutenticacao = db.execute("SELECT max(versao) as versao FROM slabs_autenticacao WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade))
                if labAutenticacao.eof then
-                    verificaSevicoIntegracaoLaboratorial = "0|0"
+                    verificaSevicoIntegracaoLaboratorial = "0|0|0"
                else
                     versao = labAutenticacao("versao")
                     if versao&"" = "" THEN  
                         versao = "2"
                     end if 
-                    verificaSevicoIntegracaoLaboratorial = "1|"&versao
+                    verificaSevicoIntegracaoLaboratorial = "1|"&versao&"|1"
                end if 
             else 
-               verificaSevicoIntegracaoLaboratorial = "1|2"
+               verificaSevicoIntegracaoLaboratorial = "1|2|1"
             end if 
         end if
     else 
-        verificaSevicoIntegracaoLaboratorial = "0|0"
+        verificaSevicoIntegracaoLaboratorial = "0|0|0"
     end if 
 end function 
 
@@ -165,7 +166,7 @@ end function
 function retornaChamadaIntegracaoLaboratorial(link)
     verificaAcesso = verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))
     arrayintegracao = split(verificaAcesso,"|")
-    if arrayintegracao(0) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
+    if arrayintegracao(0) = 1 or arrayintegracao(2) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao
         'convertendo os links para a versão antiga para manter a compatibilidade
             select case link 
@@ -186,6 +187,8 @@ function retornaChamadaIntegracaoLaboratorial(link)
         retornaChamadaIntegracaoLaboratorial = "Esta licença não está habilitada para integração laboratorial" 
     end if 
 end function 
+
+
 
 function verificaStatusIntegracaoConta(tabela,id)
     arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(session("UnidadeID")),"|")

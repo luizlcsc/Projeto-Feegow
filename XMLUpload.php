@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$target_dir = "C:\\inetpub\\wwwroot\\v7\\xml-retorno\\";
+$target_dir = "C:\\inetpub\\wwwroot\\temp\\xml-retorno\\";
 $fileName = md5( uniqid(time())) . ".xml";
 $target_file = $target_dir . $fileName;
 $uploadOk = 1;

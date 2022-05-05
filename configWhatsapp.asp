@@ -40,7 +40,7 @@ if eventoID <> "" then
             
             <%= quickfield("text", "IntervaloHoras", "Intervalo (em horas)", 2, intervalo, "", "", "required") %>
 
-            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '1' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '2' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
+            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, paraApenas, "select '1' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '2' id , 'Apenas agendamento online' ApenasAgendamentoOnline UNION ALL SELECT '3' id , 'Apenas do sistema' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
             <div class="col-md-1 switch switch-info switch-inline">
                 <b>Ativo</b>
@@ -94,7 +94,7 @@ if eventoID = "" then %>
             
             <%= quickfield("simpleSelect", "Envio", "Envio", 3, antesDepois, "SELECT 'A' id, 'Antes' Envio UNION ALL SELECT 'D' id, 'Depois' Envio UNION ALL SELECT 'I' id, 'Imediato' Envio", "Envio", "required") %>
 
-            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '1' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '2' id , 'Apenas agendamento online' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
+            <%= quickfield("simpleSelect", "ApenasAgendamentoOnline", "Para", 4, "", "select '1' id, 'Qualquer agendamento' ApenasAgendamentoOnline UNION ALL SELECT '2' id , 'Apenas agendamento online' ApenasAgendamentoOnline UNION ALL SELECT '3' id , 'Apenas do sistema' ApenasAgendamentoOnline", "ApenasAgendamentoOnline", "required") %>
 
             <div class="col-md-1 switch switch-info switch-inline">
                 <b>Ativo</b>

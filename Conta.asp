@@ -42,125 +42,130 @@ EliminaNotificacao=0
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#NaoFaturados" id="tabNaoFaturados">
+                            <a data-toggle="tab" href="#NaoFaturados" id="tabNaoFaturados" onclick="contaLoadTab('nao-faturados', {PacienteID: '<%=PacienteID%>'})">
                                 <i class="far fa-exclamation-circle bigger-110"></i>
                                 Não faturados
                             </a>
                         </li>
                         <li>
-                            <a data-toggle="tab" href="#ExtratoDireto" id="StatementTab" onclick="extratoDireto('3_<%=PacienteID%>', '<%=dateadd("m", -1, date())%>', '<%=date()%>', '')">
+                            <a data-toggle="tab" href="#ExtratoDireto" id="StatementTab" onclick="contaLoadTab('extrato-direto', {AccountID:'3_<%=PacienteID%>', DateFrom:'<%=dateadd("m", -1, date())%>', DateTo:'<%=date()%>', Pagto:$('#Pagto').val(), DeleteMovementID:'' })">
                                 <i class="far fa-exchange bigger-110"></i>
                                 Extrato
                             </a>
                         </li>
-                        <li>
-                            <a data-toggle="tab" href="#Informacoes" class="hidden" id="tabInformacoes">
-                                <i class="far fa-exclamation-triangle bigger-110"></i>
-                                Info.
+                        <%
+                        if aut("receitafixaV")=1  then
+                        %>
+                        <li class="hidden-sm">
+                            <a data-toggle="tab" href="#div-receita-recorrente"  id="tabReceitasFixas" onclick="contaLoadTab('receita-fixa', {AccountID:'3_<%=PacienteID%>', T:'C', Source: 'Conta'})">
+                                <i class="far fa-rotate-left bigger-110"></i>
+                                Receita fixa
                             </a>
                         </li>
+                        <%
+                        end if
+                        %>
+
                         <li class="pull-right">
-
-                <div>
-
-
-                <%
-                set age = db.execute("select ag.id, ag.rdValorPlano, ag.ValorPlano, ag.TipoCompromissoID, proc.NomeProcedimento from agendamentos ag left join procedimentos proc on proc.id=ag.TipoCompromissoID where ag.StaID not in (6,11) and  ag.PacienteID="&PacienteID&" and ag.Data=date(now())")
-                if not age.eof then
-                    ProcedimentoAgendado = age("NomeProcedimento")
-                    FormaPagtoAgendada = age("rdValorPlano")
-
-                    if age("rdValorPlano")="P" then
-                        set ConvenioConfigSQL = db.execute("SELECT NaoPermitirGuiaDeConsulta FROM convenios WHERE id="&treatvalzero(age("ValorPlano")))
-
-                        if not ConvenioConfigSQL.eof then
-                            NaoPermitirGuiaDeConsulta= ConvenioConfigSQL("NaoPermitirGuiaDeConsulta")
-                        end if
-                    end if
-
-                    ProcedimentoIDAgendado = age("TipoCompromissoID")
-                    if age("rdValorPlano")="V" then
-                        if age("ValorPlano")=0 then
-                            EliminaNotificacao=1
-                        end if
-                    else
-		                set assoc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID="&treatvalzero(age("TipoCompromissoID"))&" and ConvenioID="&treatvalzero(age("ValorPlano")))
-		                if not assoc.EOF then
-			                if assoc("NaoCobre")="S" or assoc("Valor")=0 then
-				                EliminaNotificacao=1
-			                end if
-		                else
-			                EliminaNotificacao=1
-                        end if
-                    end if
-
-                %>
-                        <input type="checkbox" class="hidden" id="hiddenLanctoAgenda" name="Lancto" value="<%=age("id")%>|agendamento" checked>
-                <%
-                end if
-                %>
-
-                    Lançar
-	                    <%
-	                    set PermiteParticularSQL = db.execute("SELECT OcultarLanctoParticular FROM sys_users WHERE id="&session("User"))
-
-	                    ExibeBotaoParticular=True
-	                    if not PermiteParticularSQL.eof then
-	                        if PermiteParticularSQL("OcultarLanctoParticular")="S" then
-	                            ExibeBotaoParticular=False
-                            end if
-	                    end if
-
-		                if ExibeBotaoParticular and ((aut("areceberpacienteI")) OR (aut("contasareceberI")) OR (aut("aberturacaixinhaI") AND session("CaixaID")<>"")) then
-                   '         <a class="btn btn-default btn-sm" id="btnParticular" href="javascript:ajxContent('Invoice', 'N&T=C&Ent=Conta&PacienteID='+$('#PacienteID').val(), '1', 'divHistorico')">
-			                %>
-                            <button type="button" id="btnParticular" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber">
-                                <i class="far fa-money"></i> Particular
-                            </button>
+                            <div>
                             <%
-		                elseif aut("aberturacaixinhaI") AND session("CaixaID")="" then
-			                %>
-			                <button type="button" id="btnParticular" onClick="alert('Seu caixa está fechado. \n\nAbra seu caixa para realizar lançamentos.')" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber"><i class="far fa-money"></i> Particular</button>
-			                <%
-		                end if
-                        if aut("|guiasI|") then
-                        %>
+                            set age = db.execute("select ag.id, ag.rdValorPlano, ag.ValorPlano, ag.TipoCompromissoID, proc.NomeProcedimento from agendamentos ag left join procedimentos proc on proc.id=ag.TipoCompromissoID where ag.StaID not in (6,11) and  ag.PacienteID="&PacienteID&" and ag.Data=date(now())")
+                            if not age.eof then
+                                ProcedimentoAgendado = age("NomeProcedimento")
+                                FormaPagtoAgendada = age("rdValorPlano")
 
-                            <button name="TipoBotao" type="button" id="btnGuiaConsulta" class="btn btn-default btn-sm btn-guia" data-value="GuiaConsulta">
-                                <i class="far fa-credit-card"></i> Guia Consulta
-                            </button>
-                            <button class="btn btn-default btn-sm btn-guia" type="button" id="btnGuiaSADT" name="TipoBotao" data-value="GuiaSADT">
-                                <i class="far fa-credit-card"></i> Guia SP/SADT
-                            </button>
-                            <!--<button class="btn btn-default btn-sm btn-guia" type="button" id="btnGuiaHonorarios" name="TipoBotao" value="GuiaHonorarios">-->
-                                <!--<i class="far fa-credit-card"></i> Guia Honorários-->
-                            <!--</button>-->
+                                if age("rdValorPlano")="P" then
+                                    set ConvenioConfigSQL = db.execute("SELECT NaoPermitirGuiaDeConsulta FROM convenios WHERE id="&treatvalzero(age("ValorPlano")))
 
-                            <div class="btn-group">
-                                        <button id="outrasGuias" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="far fa-plus"></i> Outras Guias  <i class="far fa-angle-down icon-on-right"></i></button>
-                                        <ul class="dropdown-menu dropdown-danger">
-                                        <!--<li><a href="#" id="btnGuiaConsulta" data-value="GuiaConsulta" class="btn-guia"><i class="far fa-plus btn-guia"></i> Consulta</a></li>-->
-                                        <!--<li><a href="#" id="btnGuiaSADT" data-value="GuiaSADT" class="btn-guia"><i class="far fa-plus"></i> SP/SADT</a></li>-->
-                                        <li><a href="#" id="btnGuiaHonorarios" data-value="GuiaHonorarios" class="btn-guia"><i class="far fa-plus"></i> Honorários</a></li>
-                                        <li><a href="#" id="btnGuiaInternacao" data-value="GuiaInternacao" class="btn-guia"><i class="far fa-plus"></i> Sol. Internação</a></li>
-                                        </ul>
-                                    </div>
-                        <%
-                        end if
+                                    if not ConvenioConfigSQL.eof then
+                                        NaoPermitirGuiaDeConsulta= ConvenioConfigSQL("NaoPermitirGuiaDeConsulta")
+                                    end if
+                                end if
 
-                        if getConfig("PermitirAtendimentoAvulso")=1 then
-                        %>
-                        <button type="button" class="btn btn-sm btn-default" onClick="infAten('N');"><i class="far fa-stethoscope"></i> Atendimento</button>
-                        <%
-                        end if
-                        %>
+                                ProcedimentoIDAgendado = age("TipoCompromissoID")
+                                if age("rdValorPlano")="V" then
+                                    if age("ValorPlano")=0 then
+                                        EliminaNotificacao=1
+                                    end if
+                                else
+                                    set assoc = db.execute("select * from tissprocedimentosvalores where ProcedimentoID="&treatvalzero(age("TipoCompromissoID"))&" and ConvenioID="&treatvalzero(age("ValorPlano")))
+                                    if not assoc.EOF then
+                                        if assoc("NaoCobre")="S" or assoc("Valor")=0 then
+                                            EliminaNotificacao=1
+                                        end if
+                                    else
+                                        EliminaNotificacao=1
+                                    end if
+                                end if
 
-                </div>
+                            %>
+                                    <input type="checkbox" class="hidden" id="hiddenLanctoAgenda" name="Lancto" value="<%=age("id")%>|agendamento" checked>
+                            <%
+                            end if
+                            %>
+
+                                <span class="hidden-sm">Lançar</span>
+                                    <%
+                                    set PermiteParticularSQL = db.execute("SELECT OcultarLanctoParticular FROM sys_users WHERE id="&session("User"))
+
+                                    ExibeBotaoParticular=True
+                                    if not PermiteParticularSQL.eof then
+                                        if PermiteParticularSQL("OcultarLanctoParticular")="S" then
+                                            ExibeBotaoParticular=False
+                                        end if
+                                    end if
+
+                                    if ExibeBotaoParticular and ((aut("areceberpacienteI")) OR (aut("contasareceberI")) OR (aut("aberturacaixinhaI") AND session("CaixaID")<>"")) then
+                            '         <a class="btn btn-default btn-sm" id="btnParticular" href="javascript:ajxContent('Invoice', 'N&T=C&Ent=Conta&PacienteID='+$('#PacienteID').val(), '1', 'divHistorico')">
+                                        %>
+                                        <button type="button" id="btnParticular" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber">
+                                            <i class="far fa-money"></i> Particular
+                                        </button>
+                                        <%
+                                    elseif aut("aberturacaixinhaI") AND session("CaixaID")="" then
+                                        %>
+                                        <button type="button" id="btnParticular" onClick="alert('Seu caixa está fechado. \n\nAbra seu caixa para realizar lançamentos.')" class="btn btn-default btn-sm" name="TipoBotao" value="AReceber"><i class="far fa-money"></i> Particular</button>
+                                        <%
+                                    end if
+                                    if aut("|guiasI|") then
+                                    %>
+
+                                        <button name="TipoBotao" type="button" id="btnGuiaConsulta" class="btn btn-default btn-sm btn-guia" data-value="GuiaConsulta">
+                                            <i class="far fa-credit-card"></i> Guia Consulta
+                                        </button>
+                                        <button class="btn btn-default btn-sm btn-guia" type="button" id="btnGuiaSADT" name="TipoBotao" data-value="GuiaSADT">
+                                            <i class="far fa-credit-card"></i> Guia SP/SADT
+                                        </button>
+                                        <!--<button class="btn btn-default btn-sm btn-guia" type="button" id="btnGuiaHonorarios" name="TipoBotao" value="GuiaHonorarios">-->
+                                            <!--<i class="far fa-credit-card"></i> Guia Honorários-->
+                                        <!--</button>-->
+
+                                        <div class="btn-group">
+                                                    <button id="outrasGuias" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="far fa-plus"></i> Outras Guias  <i class="far fa-angle-down icon-on-right"></i></button>
+                                                    <ul class="dropdown-menu dropdown-danger">
+                                                    <!--<li><a href="#" id="btnGuiaConsulta" data-value="GuiaConsulta" class="btn-guia"><i class="far fa-plus btn-guia"></i> Consulta</a></li>-->
+                                                    <!--<li><a href="#" id="btnGuiaSADT" data-value="GuiaSADT" class="btn-guia"><i class="far fa-plus"></i> SP/SADT</a></li>-->
+                                                    <li><a href="#" id="btnGuiaHonorarios" data-value="GuiaHonorarios" class="btn-guia"><i class="far fa-plus"></i> Honorários</a></li>
+                                                    <li><a href="#" id="btnGuiaInternacao" data-value="GuiaInternacao" class="btn-guia"><i class="far fa-plus"></i> Sol. Internação</a></li>
+                                                    </ul>
+                                                </div>
+                                    <%
+                                    end if
+
+                                    if getConfig("PermitirAtendimentoAvulso")=1 then
+                                    %>
+                                    <button type="button" class="btn btn-sm btn-default" onClick="infAten('N');"><i class="far fa-stethoscope"></i> Atendimento</button>
+                                    <%
+                                    end if
+                                    %>
+
+                            </div>
 
 
                         </li>
                     </ul>
                 </div>
+
                 <div class="panel-body">
                     <div class="tab-content pn br-n">
                         <div id="Conta" class="tab-pane active widget-box transparent">
@@ -169,109 +174,18 @@ EliminaNotificacao=0
 
 
                         </div>
-                        <div id="ExtratoDireto" class="tab-pane">
+                        <div id="ExtratoDireto" class="tab-pane" >
                             Carregando...
                         </div>
-                        <div id="NaoFaturados" class="tab-pane">
-                            <!--#include file="NaoFaturados.asp"-->
+                        <div id="NaoFaturados" class="tab-pane" >
+                            Carregando...
                         </div>
-                        <div id="Informacoes" class="tab-pane">
-
-
-
-                <div class="page-header">
-                        <h1>Informações <small>&raquo; Recebidas no atendimento</small></h1>
-                </div>
-
-        	                <%
-			                set Aviso = db.execute("select distinct FormID from buicamposforms where AvisoFechamento=1")
-			                while not Aviso.eof
-				                set preen = db.execute("select * from buiformspreenchidos where ModeloID="&Aviso("FormID")&" AND PacienteID="&PacienteID&" order by DataHora desc")
-				                while not preen.eof
-					                set campos = db.execute("select * from buicamposforms where AvisoFechamento=1 AND FormID="&Aviso("FormID"))
-					                while not campos.EOF
-						                Titulo = campos("RotuloCampo")
-						                Data = preen("DataHora")
-						                NomeProfissional = nameInTable(preen("sysUser"))
-						                set val = db.execute("select * from _"&Aviso("FormID")&" where id="&preen("id"))
-						                if not val.eof then
-                                            set vcaCampo = db.execute("select i.table_name from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='"&session("banco")&"' and i.TABLE_NAME='_"&Aviso("FormID")&"' and i.COLUMN_NAME='"&campos("id")&"'")
-                                            if not vcaCampo.eof then
-							                    Valor = val(""&campos("id")&"")
-							                    if not isnull(Valor) and Valor<>"" then
-								                    if campos("TipoCampoID")=4 or campos("TipoCampoID")=5 or campos("TipoCampoID")=6 then
-                                                        valorIds=replace(Valor, "|", "")
-
-                                                        if valorIds<>"nao" then
-                                                            set opcoes = db.execute(" select group_concat(Nome separator '<br>') Valor from buiopcoescampos where id in("&valorIds&")")
-                                                            if not opcoes.eof then
-                                                                Valor = opcoes("Valor")
-                                                            end if
-                                                        end if
-                                                    elseif  campos("TipoCampoID")=16 then
-                                                        set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&Valor&"'")
-                                                        if not pcid.eof then
-                                                            Valor = pcid("Codigo") &" - "& pcid("Descricao")
-                                                        end if
-								                    end if
-								                    Tem = 1
-
-								                    Valor=Valor&""
-
-                                                    Valor = Replace(Valor, chr(10), "")
-                                                    Valor = Replace(Valor, chr(13), "<br>")
-
-                                                    if Data<>"" then
-                                                        if formatdatetime(Data, 1)=formatdatetime(date(),1) then
-                                                            Data = "Hoje"
-
-                                                            Titulo = replace(Titulo, "'", "")
-                                                            %>
-                                                            <script>
-                                                                $("#tabInformacoes").addClass("red");
-                                                                var valor = `<%=Valor%>`;
-                                                                $.gritter.add({
-                                                                    title: '<i class="far fa-exclamation-triangle"></i> <%=Titulo%>',
-                                                                    text: valor,
-                                                                    time: 50000,
-                                                                    class_name: 'gritter-error gritter-light'
-                                                                });
-                                                            </script>
-                                                            <%
-                                                        end if
-                                                    end if
-								                    %>
-								                    <h4><%=Titulo%> &raquo; <small><%=Data%> por <%=NomeProfissional%></small></h4>
-								                    <%=Valor%>
-								                    <hr>
-								                    <%
-                                                end if
-							                end if
-						                end if
-					                campos.movenext
-					                wend
-					                campos.close
-					                set campos = nothing
-				                preen.movenext
-				                wend
-				                preen.close
-				                set preen=nothing
-			                Aviso.movenext
-			                wend
-			                Aviso.close
-			                set Aviso = nothing
-			                if Tem=1 then
-				                %>
-                                <script>
-                                $('#tabInformacoes').removeClass('hidden');
-				                </script>
-                                <%
-			                end if
-			                %>
+                        <div id="div-receita-recorrente" class="tab-pane" >
+                            Carregando...
                         </div>
                     </div>
                 </div>
-        </div>
+            </div>
         </form>
         <div id="verificacaoIntegracaoLaboratorial" style="float: right;">  </div>
 
@@ -333,13 +247,6 @@ $("#btnParticular").click(function () {
 function anexa(){
     $("#btnAnexa").css("visibility", "visible");
 }
-
-$("#btnFatAgendamento").click(function(){
-    $("#divFatAgendamento").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
-    $.get("AgendamentosFaturar.asp?PacienteID=<%=PacienteID%>", function(data){
-        $("#divFatAgendamento").html(data);
-    });
-});
 
 function modalEstoqueAtend(AtendimentoID){
     $("#modal-table").modal("show");
@@ -411,5 +318,34 @@ function verificaServicoIntegracaoLaboratorial()
 <% if verificaSevicoIntegracaoLaboratorial(session("UnidadeID"))= "1|2" then %>
  verificaServicoIntegracaoLaboratorial();
 <% end if %>
+
+function contaLoadTab(page, params){
+    
+    let file = null;
+    let $content = null;
+    let method = "GET";
+
+    if(page === "nao-faturados"){
+        file = "TabNaoFaturados.asp";
+        $content = $("#NaoFaturados");
+    }else if(page === "extrato-direto"){
+        file = "ExtratoDireto.asp";
+        $content = $("#ExtratoDireto");
+        method="POST"
+    }else if(page === "receita-fixa"){
+        file = "Recorrentes.asp";
+        $content = $("#div-receita-recorrente");
+    }
+
+    $.ajax({
+        type: method,
+        url: file,
+        data: params,
+        success: function(data){
+            $content.html(data);
+        }
+    });
+
+}
 
 </script>

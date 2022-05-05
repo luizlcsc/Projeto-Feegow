@@ -914,7 +914,7 @@ end if
 
     $(document).ready(function(){
 
-        <% IF session("Admin")=1 THEN %>
+        <% IF session("Admin")=1 and session("ExibeFaturas") THEN %>
         setTimeout(function(){cobrancaBoletoAberto()}, 1000);
         <% END IF %>
         <%

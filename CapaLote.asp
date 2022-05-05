@@ -57,7 +57,7 @@ Observacoes = capa("Observacoes")
 <script >
     $(".crumb-active a").html("Capa de Lote");
     $(".crumb-link").html("Lote n&deg; <%=capa("Lote")%> - <%=monthname(capa("Mes"))%> de <%=capa("Ano")%>").removeClass("hidden");
-    $(".crumb-icon").removeClass("hidden");
+    $(".crumb-icon a span").removeClass("hidden");
 </script>
 <h4 class="text-center">RELAT&Oacute;RIO DE CAPA DO LOTE N&deg; <%=capa("Lote")%></h4><br><br>
 <div class="clearfix form-actions no-margin">

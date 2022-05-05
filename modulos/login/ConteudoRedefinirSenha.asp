@@ -8,6 +8,10 @@
     font-size: 22px !important;
 }
 
+#confirmacao-status{
+    margin-top: 10px;
+    font-size: 15px;
+}
 
 </style>
 <img class="login-logo" src="assets/img/login_logo.svg" border="0" width="124" height="36">

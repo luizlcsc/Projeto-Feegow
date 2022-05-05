@@ -1,6 +1,10 @@
 <!--#include file="connect.asp"-->
 <!--#include file="modal.asp"-->
-
+<style>
+.horarios-hidden{
+    opacity: 0;
+}
+</style>
 <br />
         <%
 if session("Atendimentos")&""="" then

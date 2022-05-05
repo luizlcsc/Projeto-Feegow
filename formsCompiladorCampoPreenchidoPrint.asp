@@ -246,7 +246,7 @@ $(function() {
 				checks.close
 				set checks = nothing
 				%></select><%
-	  	case 8'textarea
+	  	case 8,17'textarea
 			%><div style="padding-bottom:4px"><label class="campoLabel"><%=RotuloCampo%></label></div>
             <div id="input_<%=CampoID%>" class="postvalue" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" tabindex="<%=Ordem%>"><%=unscapeOutput(ValorPadrao)%></div>
             <%

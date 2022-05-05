@@ -27,11 +27,12 @@
 }
 
 
-function transaction(transactionID, Save, ModalMeuCaixa){
+function transaction(transactionID, Save, ModalMeuCaixa, PacienteID=0){
 	var dados = $('#formTransaction').serialize();
+    (PacienteID == '') ? PacienteID = 0 : false;
 	$.ajax({
 		type: "POST",
-		url: "transaction.asp?transactionID="+transactionID+"&Save="+Save,
+		url: "transaction.asp?PacienteID="+PacienteID+"&transactionID="+transactionID+"&Save="+Save,
 		data: dados,
 		success: function( data )
 		{

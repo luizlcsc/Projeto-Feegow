@@ -219,15 +219,22 @@ function getUrl(url, data, callback,ms = null) {
     });
 }
 
-function postUrl(url, data, callback) {
+function postUrl(url, data, callback,ms = null) {
     if (!data) {
         data = {};
     }
 
+    var d = "";
+	
     if (url.indexOf(".asp") === -1) {
-        url = domain + url;
-
+        d = domain;
+	    
+        if (ms)
+        {
+	    d = getMicroserviceDomain(ms)
+        }
     }
+    url = d + url
 
     var token="";
     if(localStorage.getItem("tk")){
@@ -446,8 +453,8 @@ function showMessageDialog(message, messageType, title, delay=3000) {
     });
 }
 
-function authenticate(u, l = false, cupom="") {
-    getUrl("auth", {l: l,_u: u, _p: cupom}, function(data) {
+function authenticate(u, l = false, cupom="",franquia="") {
+    getUrl("auth", {l: l,_u: u, _p: cupom,_f:franquia}, function(data) {
         if(data.success==true){
             $.post("confAut.asp", data);
 
@@ -660,3 +667,19 @@ function abrirIntegracao(invoiceId,labid,itenscount) {
 
 
 /* FIM DAS FUNÇÕES DA INTEGRACAO LABORATORIAL */
+
+const toggleBtnLoading = (btnSelector) => {
+    const $el = $(btnSelector);
+    const $elIcon = $el.find("i");
+    let isLoading = $el.data("data-loading") === "true";
+
+    if(isLoading){
+        $el.attr("disabled", false);
+        $el.data("data-loading", "false");
+        $elIcon.removeClass("fa-circle-o-notch fa-spin");
+    }else{
+        $el.data("data-loading", "true");
+        $el.attr("disabled", true);
+        $elIcon.addClass("fa-circle-o-notch fa-spin");
+    }
+}

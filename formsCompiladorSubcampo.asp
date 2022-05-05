@@ -64,7 +64,7 @@ End If
 				checks.close
 				set checks = nothing
 				%></select><%
-	  	case 8'textarea
+	  	case 8,17'textarea
 			%><div style="padding-bottom:4px"><label class="campoLabel"><%=RotuloCampo%></label></div><textarea class="campoInput" name="input_<%=CampoID%>" tabindex="<%=Ordem%>"><%=ValorPadrao%></textarea><%
 	  	case 9'tabela
 			%><label class="campoLabel"><%=RotuloCampo%></label><table class="table table-condensed table-bordered table-hover"><thead><%

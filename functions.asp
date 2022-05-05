@@ -194,6 +194,8 @@ function dd(variable)
 
         description = description&str&chr(13)&"]"
 
+    elseif isnull(variable) then
+        description="NULL"
     else
         description = variable
     end if
@@ -215,6 +217,23 @@ new PNotify({
 
 <%
     Response.End
+end function
+
+
+function CalculoSemanalQuinzenal(FrequenciaSemanas, InicioVigencia)
+    CalculoSemanalQuinzenal = true
+    if isnumeric(FrequenciaSemanas) then
+        if InicioVigencia&"" = "" then
+            InicioVigencia = date()
+        end if
+        if FrequenciaSemanas>1 then
+            NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
+            RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
+            if RestoDivisaoNumeroSemana>0 then
+                CalculoSemanalQuinzenal=False
+            end if
+        end if
+    end if
 end function
 
 Function in_array(element, arr)

@@ -14,7 +14,6 @@ if not pCampo.eof then
     FormID = pCampo("FormID")
     set pCampos = db.execute("select id, Formula from buicamposforms where Formula like '%["& NomeCampo &"]%' and FormID="& FormID )
     while not pCampos.eof
-        on error resume next
         Formula = replace(replace(replace(pCampos("Formula")&"", chr(13), ""), chr(10), ""), " ", "")
         Calculo = Formula
 
@@ -47,13 +46,20 @@ if not pCampo.eof then
         else
         %>
         console.log('<%= (Calculo) %>');
-        <%
-            Valor = eval(Calculo)
-            if isnumeric(Valor) then
-                Calculo = formatnumber(Valor, 2)
-            else
+        <%  
+
+            hasDivisionByZero = instr(replace(Calculo, " ", ""), "/0") > 0
+            if hasDivisionByZero then
                 Calculo = "0"
+            else
+                Valor = eval(Calculo)
+                if isnumeric(Valor) then
+                    Calculo = formatnumber(Valor, 2)
+                else
+                    Calculo = "0"
+                end if
             end if
+            
         end if
 
         if Calculo&""="" then

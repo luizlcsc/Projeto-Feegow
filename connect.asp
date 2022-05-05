@@ -4812,7 +4812,7 @@ private function calcValPosicao(QuantidadeAtual, ValorAtual, QuantidadeInserida,
         <%
     end if
     Divisor = (QuantidadeAtual + QuantidadeInserida)
-    if Dividor<>0 then
+    if Divisor<>0 then
         calcValPosicao = ( (QuantidadeAtual*ValorAtual) + (QuantidadeInserida*ValorInserido) ) / Divisor
     else
         calcValPosicao = 0
@@ -4938,7 +4938,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             PosicaoE = PosicaoID
             PosicaoS = 0
         elseif Tipo="S" or Tipo="M" then
-            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' "& sqlValidade & " AND id=" & req("PosicaoID")
+            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' "& sqlValidade & " AND id=" & PosicaoID
             set posSaida = db.execute(sqlPosSaida)
             'jamais dar saida de uma posicao que nao foi criada previamente
             if not posSaida.eof then

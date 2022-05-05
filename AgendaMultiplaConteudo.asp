@@ -391,6 +391,7 @@ cProf = 0
 while not comGrade.eof
 
     MostraGrade=True
+    MostraGrade = CalculoSemanalQuinzenal(comGrade("FrequenciaSemanas"), comGrade("InicioVigencia")&"")
 
     if MostraGrade then
         set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")
@@ -435,7 +436,7 @@ while not comGrade.eof
                 let conteudo = $($('#contQuadro  table  table  tr')[0]).text();
                 conteudo = conteudo.trim();
                 if(conteudo === ""){
-                    $('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
+                    //$('#contQuadro').html(`<div class="alert alert-warning text-center mt20"><i class="fa fa-alert"></i> Nenhum profissional encontrado com grade que atenda aos critérios selecionados.  </div>`)
                 }
             }));
         </script>

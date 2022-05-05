@@ -594,7 +594,7 @@ setMemedError("Prescrição clássica ativa.")
                     nForms = 0
                     set forms = db.execute(sqlBuiforms)
                     while not forms.eof
-                        if autForm(forms("id"), "IN", "") then
+                        if autForm(forms("id"), "IN", "", "") then
                             nForms = nForms+1
                             idFormUnico = forms("id")
                             nomeFormUnico = forms("nomeModelo")
@@ -603,8 +603,6 @@ setMemedError("Prescrição clássica ativa.")
                     wend
                     forms.close
                     set forms = nothing
-
-			        set forms = db.execute(sqlBuiforms)
                     %>
                 </div>
             </div>

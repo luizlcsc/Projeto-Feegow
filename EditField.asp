@@ -53,7 +53,7 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
             ' 5 -> Rádio
             ' 6 -> Seleção
             ' 8 -> Memorando
-            IF TipoCampoID = 1 or TipoCampoID = 4 or TipoCampoID = 5 or TipoCampoID = 6 or TipoCampoID = 8 or TipoCampoID = 16 THEN
+            IF TipoCampoID = 1 or TipoCampoID = 4 or TipoCampoID = 5 or TipoCampoID = 6 or TipoCampoID = 8 or TipoCampoID = 16 or TipoCampoID = 17 THEN
                 hidden = ""
             END IF
         %>
@@ -62,14 +62,14 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
 	<div class="row">
     	<%=quickField("text", "RotuloCampo", "T&iacute;tulo", 6, pCampo("RotuloCampo"), "", "", "")%>
     	<%=quickField("text", "Ordem", "Ordem", 2, pCampo("Ordem"), "", "", "")%>
-    	<%if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 or TipoCampoID=8 or TipoCampoID=16 then%>
+    	<%if TipoCampoID=1 or TipoCampoID=2 or TipoCampoID=4 or TipoCampoID=5 or TipoCampoID=6 or TipoCampoID=8 or TipoCampoID=16 or TipoCampoID=17 then%>
         <div class="col-md-4 <%=hidden%>"><label>&nbsp;</label><br>
         	<label><input type="checkbox" class="ace" name="Obrigatorio" value="S"<%if pCampo("Obrigatorio")="S" then%> checked<%end if%>/><span class="lbl mb20">
             Campo obrigatório</span></label>
         </div>
         <%end if%>
     </div>
-    <% IF TipoCampoID = 1 OR TipoCampoID = 2 OR TipoCampoID = 8 THEN
+    <% IF TipoCampoID = 1 OR TipoCampoID = 2 OR TipoCampoID = 8 OR TipoCampoID = 17 THEN
         IF TipoCampoID = 1 THEN
             sqlExtra = "1, 7, 29, 30"
         ELSEIF TipoCampoID = 2 THEN
@@ -162,7 +162,7 @@ set pTipoCampo=db.execute("select * from cliniccentral.buiTiposCamposForms where
 		%>
     </div>
 	<%
-    if TipoCampoID=8 then
+    if TipoCampoID=8 or TipoCampoID=17 then
 	%>
     <div class="row">
         <div style="float: right">

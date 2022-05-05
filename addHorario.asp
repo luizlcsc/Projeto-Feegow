@@ -60,10 +60,10 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
                 end if
 
                 if FrequenciaSemanas > 4 then
-                    erro = "Frenquência deve ser menor que 4 semanas."
+                    erro = "Frequência deve ser menor que 4 semanas."
                 end if
                 if FrequenciaSemanas < 0 then
-                    erro = "Frenquência deve ser maior que 0."
+                    erro = "Frequência deve ser maior que 0."
                 end if
             end if
         end if
@@ -192,7 +192,7 @@ end if
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <% if req("addGrade")&"" = "0" or exibirPainelDiasSemana <> fasle then %>
+            <% if req("addGrade")&"" = "0" or exibirPainelDiasSemana <> false then %>
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">
@@ -299,24 +299,24 @@ end if
       </div>
       <hr class="short alt" />
       <div class="row mo">
-          <%
-          if TipoGrade=1 then
-              tgCheck = " checked "
-          end if
-          tituloHorarios = "<label><input type='checkbox' name='TipoGrade' value='1' "& tgCheck &" > Utilizar horários personalizados (preencha abaixo os horários separados por vírgula)</label>"
-          %>
-          <%if ProfissionalID>0 then %>
-          <%= quickfield("text", "Mensagem", "Mensagem de título", 3, Mensagem, "2", "", "") %>
+        <%
+        if TipoGrade=1 then
+            tgCheck = " checked "
+        end if
+        tituloHorarios = "<label><input type='checkbox' name='TipoGrade' value='1' "& tgCheck &" > Utilizar horários personalizados (preencha abaixo os horários separados por vírgula)</label>"
+        %>
+        <%if ProfissionalID>0 then %>
+            <%= quickfield("text", "Mensagem", "Mensagem de título", 3, Mensagem, "2", "", "") %>
+        <% end if %>
+        <div class="col-md-3">
+            <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
+        </div>
         <div class="col-md-3">
             <label for="FrequenciaSemanas">Frequência</label>
             <select name="FrequenciaSemanas" id="FrequenciaSemanas" class="form-control">
                 <option value="1" <% if FrequenciaSemanas=1 then %> selected <% end if %>>Semanal</option>
                 <option value="2" <% if FrequenciaSemanas=2 then %> selected <% end if %>>Quinzenal</option>
             </select>
-        </div>
-        <% end if %>
-        <div class="col-md-3">
-            <%=quickField("cor", "Cor", "Cor na agenda", 12, Cor, "select * from Cores", "Cor", "")%>
         </div>
             <%=quickField("currency", "ValorHonorario", "Valor Hora", 3, ValorHonorario, "", "", "")%>
             <%=quickField("memo", "Horarios", tituloHorarios, 12, Horarios, "", "", " placeholder='Ex.: 08:00, 08:35, 09:00'")%>

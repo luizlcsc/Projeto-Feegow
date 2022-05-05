@@ -171,6 +171,16 @@ end if
                 margin-right: auto;
              }
 
+            .formLoginContent {
+                padding: 10px;
+                border-radius: 20px;
+                padding-top: 20px;
+                background-color: #ffffff;
+                box-sizing: border-box;
+                padding: 80px;
+                padding-top: 100px;
+             }
+
             .formloginCol1 {
                 background-color: #ffffff;
                 box-sizing: border-box;
@@ -219,6 +229,7 @@ end if
                 display: flex;
                 box-shadow: 0 3px 18px rgba(0, 0, 0, 0.1);
                 border-radius: 20px;
+                width: 100%;
             }
 
             div .col {
@@ -296,13 +307,16 @@ end if
                 -webkit-text-fill-color: #2e2e2e;
             }
 
+            .formloginCol1 input {
+                padding-left: 32px!important;
+            }
+
 
             input[type=password], input[type=email], input[type=text] {
                 outline: none;
                 border: none;
                 border-radius: 6px;
                 padding: 6px;
-                padding-left: 32px!important;
                 border: 1px solid #DFDFDF;
                 font-size: 14px;
                 font-weight: normal;
@@ -631,69 +645,82 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="container">
             <div class="row formlogin">
                 <div class="content-login">
-                <div class="col-lg-6 col-xs-12 col-xl-6 formloginCol1">
-                    <a href="./?P=Login2" title="Logo">
-                        <input type="hidden" name="RedirectLogin" value="<% if LoginFTP then %>S<% end if %>">
-                        <%
-                        if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
-                            if req("Partner")="" then
+                    <%
+                    if req("ev")<>"" then
                         %>
-                                <img class="login-logo" src="assets/img/login_logo.svg" border="0" width="124" height="36">
+
+                        <div class="col-lg-12 col-xs-12 col-xl-12 formLoginContent">
+                            <!--#include file="modulos/login/ConteudoRedefinirSenha.asp"-->
+                        </div>
                         <%
-                            else
-                        %>
-                                <img class="login-logo-partner" src="logo/<%=req("Partner")%>.png" border="0" style="max-height: 80px; object-fit: cover">
-                        <%
+                    else
+                    %>
+                    <div class="col-lg-6 col-xs-12 col-xl-6 formloginCol1">
+                        <a href="./?P=Login2" title="Logo">
+                            <input type="hidden" name="RedirectLogin" value="<% if LoginFTP then %>S<% end if %>">
+                            <%
+                            if request.ServerVariables("HTTP_HOST")<>"livenote.feegow.com.br" then
+                                if req("Partner")="" then
+                            %>
+                                    <img class="login-logo" src="assets/img/login_logo.svg" border="0" width="124" height="36">
+                            <%
+                                else
+                            %>
+                                    <img class="login-logo-partner" src="logo/<%=req("Partner")%>.png" border="0" style="max-height: 80px; object-fit: cover">
+                            <%
+                                end if
+                            else 
+                            %> 
+                                <img class="login-logo-livenote" src="assets/img/180_width.png" width="138" border="0">&nbsp;&nbsp;&nbsp;<img style="margin-bottom: -7px" src="logo/livenote.png" width="130" border="0">
+                            <% 
+                            end If 
+                            %>
+                        </a>
+                            <%
+                            RedirectLogin = False
+
+
+                            if ref("RedirectLogin")<>"" then
+                                RedirectLogin=True
                             end if
-                        else 
-                        %> 
-                            <img class="login-logo-livenote" src="assets/img/180_width.png" width="138" border="0">&nbsp;&nbsp;&nbsp;<img style="margin-bottom: -7px" src="logo/livenote.png" width="130" border="0">
-                        <% 
-                        end If 
-                        %>
-                    </a>
-                        <%
-                        RedirectLogin = False
 
+                            if ref("Password")<>"" and RedirectLogin then
+                                PasswordValue = req("Password")
+                            end if
 
-                        if ref("RedirectLogin")<>"" then
-                            RedirectLogin=True
-                        end if
+                            if ref("User")<>"" then
+                                User = req("User")
 
-                        if ref("Password")<>"" and RedirectLogin then
-                            PasswordValue = req("Password")
-                        end if
+                            else
+                                User = request.Cookies("User")
+                            end if
 
-                        if ref("User")<>"" then
-                            User = req("User")
+                            if ref("U")<>"" then
+                                User=req("U")
+                            end if
+                            %>
+                            <div id="divFormLogin">
+                                <!--#include file="LoginPrincipal.asp"-->
+                            </div>
 
-                        else
-                            User = request.Cookies("User")
-                        end if
-
-                        if ref("U")<>"" then
-                            User=req("U")
-                        end if
-                        %>
-                        <div id="divFormLogin">
-                            <!--#include file="LoginPrincipal.asp"-->
-                        </div>
-
-                        <div class="copyright">
-                            <i class="far fa-copyright"></i> <%=year(date())%> Feegow S.A - Todos direitos reservados
-                        </div>
-                </div>
-                <div id="carouselExampleIndicators" class="col-lg-8 col-xl-8 d-none d-lg-block d-xl-block carousel slide" data-ride="carousel" style="width: 506px">
-                    <!-- ol class="carousel-indicators">
-                        <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                    </ol -->
-                    <div class="carousel-inner">
-                    <!--div class="carousel-item">
-                        <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>
-                    </div-->
+                            <div class="copyright">
+                                <i class="far fa-copyright"></i> <%=year(date())%> Feegow S.A - Todos direitos reservados
+                            </div>
                     </div>
-                </div>
+                    <div id="carouselExampleIndicators" class="col-lg-8 col-xl-8 d-none d-lg-block d-xl-block carousel slide" data-ride="carousel" style="width: 506px">
+                        <!-- ol class="carousel-indicators">
+                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                        </ol -->
+                        <div class="carousel-inner">
+                        <!--div class="carousel-item">
+                            <a href="https://promo.feegowclinic.com.br/curso-de-marketing?utm_campaign=email3_curso_de_marketing_cta1&utm_medium=email&utm_source=rdstationt" target="_blank"><img src="assets/img/login_marketing_medico.png"></a>
+                        </div-->
+                        </div>
+                    </div>
+                    <%
+                    end if
+                    %>
                 </div>
             </div>
         </div>

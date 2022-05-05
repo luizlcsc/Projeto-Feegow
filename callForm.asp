@@ -49,7 +49,7 @@ if not getForm.eof then
             <% end if %>
 
             <% if req("LaudoSC")="" then %>
-                <button class="btn btn-default btn-sm" type="button" onclick="fechar()"><i class="far fa-remove"></i> Fechar </button>
+                <button class="btn btn-default btn-sm" type="button" onclick="fecharForm()"><i class="far fa-remove"></i> Fechar </button>
             <% end if %>
         </span>
     </div>
@@ -450,7 +450,7 @@ urlPost = "saveNewForm.asp?A='+A+'&t="&req("t")&"&p="&req("p")&"&m="&req("m")
         }
     });
 */
-    function fechar(){
+    function fecharForm(){
         if($("#Alterado").val()=="S"){
             if(confirm("ATENÇÂO: Você não salvou este formulário. Tem certeza de que deseja fechar sem salvar?")){
                 $("#modal-form").magnificPopup("close");

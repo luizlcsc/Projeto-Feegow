@@ -159,7 +159,7 @@ elseif Tipo="Procedimentos" then
 
 		if ItemID="0" then
             sqlExecute = "insert into tissprocedimentossadt (CalcularEscalonamento,GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao,TotalCH,TotalValorFixo,TotalUCO,TotalPORTE,TotalFILME,TotalGeral,CalculoConvenioID,CalculoPlanoID,CalculoContratos)"&_
-                         "values (COALESCE(NULLIF('"&treatval(ref("CalcularEscalonamento"))&"',''),1),"&GuiaID&", "& treatvalzero(rfProfissionalID) &", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&session("User")&"', "& treatvalnull(rfAssociacao)&", "&treatvalzero(ref("TotalCH"))&", "&treatvalzero(ref("TotalValorFixo"))&", "&treatvalzero(ref("TotalUCO"))&", "&treatvalzero(ref("TotalPORTE"))&", "&treatvalzero(ref("TotalFILME"))&", "&treatvalzero(ref("xTotalGeral"))&", "&ref("gConvenioID")&", "&treatvalzero(ref("PlanoID"))&",NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''))"
+                         "values (COALESCE(NULLIF('"&treatval(ref("CalcularEscalonamento"))&"',''),1),"&GuiaID&", "& treatvalzero(rfProfissionalID) &", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', "&treatvalnull(ref("ViaID"))&", '"&ref("TecnicaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&session("User")&"', "& treatvalnull(rfAssociacao)&", "&treatvalzero(ref("TotalCH"))&", "&treatvalzero(ref("TotalValorFixo"))&", "&treatvalzero(ref("TotalUCO"))&", "&treatvalzero(ref("TotalPORTE"))&", "&treatvalzero(ref("TotalFILME"))&", "&treatvalzero(ref("xTotalGeral"))&", "&ref("gConvenioID")&", "&treatvalzero(ref("PlanoID"))&",NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"',''))"
             db.execute(sqlExecute)
 
 			set pult = db.execute("select id from tissprocedimentossadt where GuiaID="&GuiaID&" and sysUser="&session("User")&" order by id desc LIMIT 1")
@@ -215,7 +215,7 @@ elseif Tipo="Procedimentos" then
 
             ObsLog = "Procedimento adicionado pelo usuário"
 		else
-			sqlExecute = "update tissprocedimentossadt set CalcularEscalonamento="&treatval(ref("CalcularEscalonamento"))&", ProfissionalID="& treatvalzero(rfProfissionalID) &", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID='"&ref("ViaID")&"', TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"', Associacao="& treatvalnull(rfAssociacao) &",TotalCH = "&treatvalzero(ref("TotalCH"))&",TotalValorFixo = "&treatvalzero(ref("TotalValorFixo"))&",TotalUCO="&treatvalzero(ref("TotalUCO"))&",TotalPORTE="&treatvalzero(ref("TotalPORTE"))&",TotalFILME="&treatvalzero(ref("TotalFILME"))&",TotalGeral="&treatvalzero(ref("xTotalGeral"))&",CalculoConvenioID="&ref("gConvenioID")&",CalculoPlanoID="&ref("PlanoID")&",CalculoContratos=NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"','') where id="&ItemID
+			sqlExecute = "update tissprocedimentossadt set CalcularEscalonamento="&treatval(ref("CalcularEscalonamento"))&", ProfissionalID="& treatvalzero(rfProfissionalID) &", Data="&myDatenull(ref("Data"))&", HoraInicio="&myTime(ref("HoraInicio"))&", HoraFim="&myTime(ref("HoraFim"))&", ProcedimentoID='"&ref("gProcedimentoID")&"', TabelaID='"&ref("TabelaID")&"', CodigoProcedimento='"&ref("CodigoProcedimento")&"', Descricao='"&ref("Descricao")&"', Quantidade='"&ref("Quantidade")&"', ViaID="&treatvalnull(ref("ViaID"))&", TecnicaID='"&ref("TecnicaID")&"', Fator='"&treatval(ref("Fator"))&"', ValorUnitario='"&treatval(ref("ValorUnitario"))&"', ValorTotal='"&treatval(ref("ValorTotal"))&"', sysUser='"&session("User")&"', Associacao="& treatvalnull(rfAssociacao) &",TotalCH = "&treatvalzero(ref("TotalCH"))&",TotalValorFixo = "&treatvalzero(ref("TotalValorFixo"))&",TotalUCO="&treatvalzero(ref("TotalUCO"))&",TotalPORTE="&treatvalzero(ref("TotalPORTE"))&",TotalFILME="&treatvalzero(ref("TotalFILME"))&",TotalGeral="&treatvalzero(ref("xTotalGeral"))&",CalculoConvenioID="&ref("gConvenioID")&",CalculoPlanoID="&ref("PlanoID")&",CalculoContratos=NULLIF('"&ref("ContratadoSolicitanteCodigoNaOperadora")&"','') where id="&ItemID
             db.execute(sqlExecute)
 
 			EsteItem = ItemID
@@ -224,7 +224,7 @@ elseif Tipo="Procedimentos" then
 		end if
 
 		sqlExecute = "insert into tissprocedimentossadt_log (GuiaID, ProfissionalID, Data, HoraInicio, HoraFim, ProcedimentoID, TabelaID, CodigoProcedimento, Descricao, Quantidade, ViaID, TecnicaID, Fator, ValorUnitario, ValorTotal, sysUser, Associacao, Obs)"&_
-		             " values ("&GuiaID&", "& treatvalzero(rfProfissionalID) &", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', '"&ref("ViaID")&"', '"&ref("TecnicaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&session("User")&"', "& treatvalnull(rfAssociacao) &", '"&ObsLog&"')"
+		             " values ("&GuiaID&", "& treatvalzero(rfProfissionalID) &", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", '"&ref("gProcedimentoID")&"', '"&ref("TabelaID")&"', '"&ref("CodigoProcedimento")&"', '"&ref("Descricao")&"', '"&ref("Quantidade")&"', "&treatvalnull(ref("ViaID"))&", '"&ref("TecnicaID")&"', "&treatvalzero(ref("Fator"))&", "&treatvalzero(ref("ValorUnitario"))&", "&treatvalzero(ref("ValorTotal"))&", '"&session("User")&"', "& treatvalnull(rfAssociacao) &", '"&ObsLog&"')"
         db.execute(sqlExecute)
 
         if ItemID="0" and not pv.eof then
@@ -331,11 +331,12 @@ elseif Tipo="Procedimentos" then
            if not ProdutoValorSQL.eof then
                 while not ProdutoValorSQL.eof
                     Valor = ProdutoValorSQL("Valor")
+                    ValorNovo = Valor + (CalculaFatorDeflatorInflator(ConvenioID, ProcedimentoID, ProdutoValorSQL("ProdutoID")) * Valor)
                     Quantidade = ProdutoValorSQL("Quantidade") * ref("Quantidade")
-                    ValorTotalProduto = Quantidade *  Valor
+                    ValorTotalProduto = Quantidade *  ValorNovo
 
-                    if Valor > 0 then
-                        sqlExecute = "insert into tissguiaanexa (GuiaID, CD, Data, HoraInicio, HoraFim, ProdutoID, TabelaProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao) values ("&GuiaID&", "&treatvalzero(ProdutoValorSQL("CD"))&", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", "&treatvalzero(ProdutoValorSQL("ProdutoID"))&", "&treatvalzero(ProdutoValorSQL("TabelaID"))&", '"&ProdutoValorSQL("Codigo")&"', "&treatvalzero(Quantidade)&", "&treatvalzero(ProdutoValorSQL("ApresentacaoUnidade"))&", '1', "&treatvalzero(Valor)&", "&treatvalzero(ValorTotalProduto)&", '"&ProdutoValorSQL("RegistroANVISA")&"', '"&ProdutoValorSQL("CodigoNoFabricante")&"', '"&ProdutoValorSQL("AutorizacaoEmpresa")&"', '"&rep(ProdutoValorSQL("NomeProduto"))&"')"
+                    if ValorNovo > 0 then
+                        sqlExecute = "insert into tissguiaanexa (GuiaID, CD, Data, HoraInicio, HoraFim, ProdutoID, TabelaProdutoID, CodigoProduto, Quantidade, UnidadeMedidaID, Fator, ValorUnitario, ValorTotal, RegistroANVISA, CodigoNoFabricante, AutorizacaoEmpresa, Descricao) values ("&GuiaID&", "&treatvalzero(ProdutoValorSQL("CD"))&", "&myDateNULL(ref("Data"))&", "&myTime(ref("HoraInicio"))&", "&myTime(ref("HoraFim"))&", "&treatvalzero(ProdutoValorSQL("ProdutoID"))&", "&treatvalzero(ProdutoValorSQL("TabelaID"))&", '"&ProdutoValorSQL("Codigo")&"', "&treatvalzero(Quantidade)&", "&treatvalzero(ProdutoValorSQL("ApresentacaoUnidade"))&", '1', "&treatvalzero(ValorNovo)&", "&treatvalzero(ValorTotalProduto)&", '"&ProdutoValorSQL("RegistroANVISA")&"', '"&ProdutoValorSQL("CodigoNoFabricante")&"', '"&ProdutoValorSQL("AutorizacaoEmpresa")&"', '"&rep(ProdutoValorSQL("NomeProduto"))&"')"
                         db.execute(sqlExecute)
                     end if
                 ProdutoValorSQL.movenext
@@ -518,4 +519,24 @@ elseif Tipo="Despesas" then
 		atualizaTabela("tissoutrasdespesas", "tissoutrasdespesas.asp?I=<%=GuiaID%>");
 		<%
 end if
+
+function CalculaFatorDeflatorInflator(ConvenioID,ProcedimentoID,ProdutoID)
+
+          FatorDeflatorInflator = 0
+
+          sqlDeflatorInflator = "SELECT tipo, valor FROM conveniosmodificadores where ConvenioID= " & ConvenioID & " AND procedimentos LIKE CONCAT('%|'," & ProcedimentoID & ",'|%') " &_
+                                " AND produtos LIKE CONCAT('%|'," & ProdutoID & ",'|%') " 
+
+          set DeflatorInflator = db.execute(sqlDeflatorInflator)
+
+          if not DeflatorInflator.eof then
+            FatorDeflatorInflator = (DeflatorInflator("tipo") * (DeflatorInflator("valor")/100))
+          end if 
+
+          DeflatorInflator.close
+          set DeflatorInflator = nothing
+
+          CalculaFatorDeflatorInflator = FatorDeflatorInflator
+end function
+
 %>

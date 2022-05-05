@@ -509,9 +509,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         case "Agendamento"
 
           if item_AgendamentoID>0 then
-            qAgendamentosSQL = "SELECT a.id, a.Data,  a.Hora,  a.TipoCompromissoID,  a.StaID,  a.ValorPlano,  a.rdValorPlano,  a.Notas,  a.Falado,  a.FormaPagto,  a.LocalID,  a.Tempo,  a.HoraFinal,  a.SubtipoProcedimentoID,  a.HoraSta,  a.ConfEmail,  a.ConfSMS,  a.Encaixe,  a.EquipamentoID,  a.NomePaciente,  a.Tel1,  a.Cel1,  a.Email1, a.Procedimentos,  a.EspecialidadeID,  a.IndicadoPor,  a.TabelaParticularID,  a.CanalID,  a.Retorno,  a.RetornoID,  a.Primeira,  a.PlanoID, a.PermiteRetorno, esp.nomeEspecialidade "_
+            qAgendamentosSQL = "SELECT a.id, a.Data,  a.Hora,  a.TipoCompromissoID,  a.StaID,  a.ValorPlano,  a.rdValorPlano,  a.Notas,  a.Falado,  a.FormaPagto,  a.LocalID,  a.Tempo,  a.HoraFinal,  a.SubtipoProcedimentoID,  a.HoraSta,  a.ConfEmail,  a.ConfSMS,  a.Encaixe,  a.EquipamentoID,  a.NomePaciente,  a.Tel1,  a.Cel1,  a.Email1, a.Procedimentos,  a.EspecialidadeID,  a.IndicadoPor,  a.TabelaParticularID,  a.CanalID,  a.Retorno,  a.RetornoID,  a.Primeira,  a.PlanoID, a.PermiteRetorno, esp.nomeEspecialidade, l.NomeLocal, uni.NomeFantasia,uni.Endereco,uni.Estado,uni.Cidade,uni.Bairro,uni.Endereco,uni.Numero, uni.NomeEmpresa , uni.Complemento, uni.CEP  "_
             &"FROM agendamentos a "_
             &"LEFT JOIN especialidades esp ON esp.id = a.EspecialidadeID "_
+            &"LEFT JOIN locais l ON l.id = a.localid "_
+            &"LEFT JOIN vw_unidades AS uni ON uni.id=l.UnidadeID "_
             &"WHERE a.id="&item_AgendamentoID
 
           end if
@@ -529,6 +531,27 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 else
                     conteudo = replace(conteudo, "[Agendamento.Hora]", formatdatetime(AgendamentosSQL("Hora"),4)&"" )
                 end if
+
+                conteudo = replace(conteudo, "[Agendamento.Unidade.NomeFantasia]", trim(AgendamentosSQL("NomeFantasia")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Nome]", trim(AgendamentosSQL("NomeEmpresa")&" ") )
+                'ENDERECO
+                Estado = AgendamentosSQL("Estado")&""
+                Cidade = AgendamentosSQL("Cidade")&""
+                Bairro = AgendamentosSQL("Bairro")&""
+                Endereco = AgendamentosSQL("Endereco")&""
+                Numero = AgendamentosSQL("Numero")&""
+                Complemento = AgendamentosSQL("Complemento")&""
+
+                EnderecoCompleto = replace(Endereco&", "&Numero&", "&Complemento&", "&Bairro&", "&Cidade&", "&Estado, ", , ", ", " )
+
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Cep]", trim(AgendamentosSQL("CEP")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Estado]", trim(AgendamentosSQL("Estado")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Cidade]", trim(AgendamentosSQL("Cidade")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Bairro]", trim(AgendamentosSQL("Bairro")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Endereco]", trim(AgendamentosSQL("Endereco")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Numero]", trim(AgendamentosSQL("Numero")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.Complemento]", trim(AgendamentosSQL("Complemento")&" ") )
+                conteudo = replace(conteudo, "[Agendamento.Unidade.EnderecoCompleto]", trim(EnderecoCompleto))
 
               end if
             AgendamentosSQL.close

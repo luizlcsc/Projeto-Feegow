@@ -60,11 +60,11 @@ end if
 if Acao="Repetir" then
 	erro=""
 	
-	set ProcediemntosAgendamentoSQL = db.execute(" SELECT CONCAT(a.TipoCompromissoID, COALESCE(CONCAT(',', GROUP_CONCAT(ap.TipoCompromissoID)),'')) ProcedimentoID FROM agendamentos a "&_
+	set ProcedimentosAgendamentoSQL = db.execute(" SELECT CONCAT(a.TipoCompromissoID, COALESCE(CONCAT(',', GROUP_CONCAT(ap.TipoCompromissoID)),'')) ProcedimentoID FROM agendamentos a "&_
 	" LEFT JOIN agendamentosprocedimentos ap ON ap.AgendamentoID = a.id "&_
 	" WHERE a.id="&session("RepSol"))
 
-	if not ProcediemntosAgendamentoSQL.eof then
+	if not ProcedimentosAgendamentoSQL.eof then
 
 		if UnidadeID<>"" then
 			sqlUnidade = " AND loc.UnidadeID='"&UnidadeID&"'"
@@ -74,8 +74,15 @@ if Acao="Repetir" then
 			horaWhere = " AND "&mytime(Hora)&" BETWEEN HoraDe AND HoraA "
 		end if
 
-		Procedimentos__array = split(ProcediemntosAgendamentoSQL("ProcedimentoID"), ",")
-		ProcediemntoValidado = false
+		Procedimentos__array = split(ProcedimentosAgendamentoSQL("ProcedimentoID"), ",")
+		ProcedimentoValidado = false
+
+		if ProfissionalID&""="" or ProfissionalID&""="0"  then
+			ProfissionalEquipamentoID=EquipamentoID*-1
+		else
+			ProfissionalEquipamentoID=ProfissionalID
+		end if
+		
 		For i = 0 To ubound(Procedimentos__array)
 			Procedimento = Procedimentos__array(i)
 			sqlProcedimentoPermitido =  " AND ((Procedimentos = '' OR Procedimentos IS NULL)"&_
@@ -84,7 +91,7 @@ if Acao="Repetir" then
 			set sqlGrade = db.execute("SELECT id GradeID, Especialidades, Procedimentos,Convenios, "&_
 										" LocalID FROM (SELECT ass.id, Especialidades, Procedimentos, LocalID,Convenios FROM assfixalocalxprofissional ass "&_
 														" LEFT JOIN locais loc ON loc.id=ass.LocalID "&_
-														" WHERE ProfissionalID="&treatvalzero(ProfissionalID)&_
+														" WHERE ProfissionalID="&treatvalzero(ProfissionalEquipamentoID)&_
 														sqlUnidade&_
 														" AND DiaSemana=dayofweek("&mydatenull(Data)&") "&_
 														horaWhere&_
@@ -92,13 +99,13 @@ if Acao="Repetir" then
 														" UNION ALL "&_
 														" SELECT ex.id*-1 id, Especialidades, Procedimentos, LocalID,Convenios FROM assperiodolocalxprofissional ex "&_
 														" LEFT JOIN locais loc ON loc.id=ex.LocalID "&_
-														" WHERE ProfissionalID="&ProfissionalID&sqlUnidade&_
+														" WHERE ProfissionalID="&treatvalzero(ProfissionalEquipamentoID)&sqlUnidade&_
 														" AND DataDe<="&mydatenull(Data)&_
 														" AND DataA>="&mydatenull(Data)&")t"&_
 										" where true "&sqlProcedimentoPermitido)
-			if sqlGrade.eof and ProcediemntoValidado = false then
+			if sqlGrade.eof and ProcedimentoValidado = false then
 				erro = "Procedimento não permitido nesta grade."
-				ProcediemntoValidado = true
+				ProcedimentoValidado = true
 			end if
 		next
 	end if
@@ -114,6 +121,8 @@ if Acao="Repetir" then
 		rfPaciente=DadosConsulta("PacienteID")
 		rfStaID=1
 		rfLocal=DadosConsulta("LocalID")
+		rfEspecialidade=DadosConsulta("EspecialidadeID")
+		rfTabelaParticularID=DadosConsulta("TabelaParticularID")
 		
 		rfProfissionalID = ProfissionalID
 		rfNotas=ref("Notas")
@@ -134,7 +143,7 @@ if Acao="Repetir" then
 		HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
 		ConsultaID="0"
-		db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, PlanoID, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfPlanoID&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
+		db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, PlanoID, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser, EspecialidadeID, TabelaParticularID) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfPlanoID&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&DadosConsulta("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&", "&treatvalnull(rfEspecialidade)&", "&treatvalnull(rfTabelaParticularID)&")")
 		set pultCon=db.execute("select id, ProfissionalID, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
 		'procedimentos
 		

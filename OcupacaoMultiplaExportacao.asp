@@ -130,7 +130,7 @@ else
         splU = split(ref("Locais"), ", ")
 
         for j=0 to Ubound(splU)
-            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), False)
+            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), True)
             UnidadeID = replace(replace(splU(j), "UNIDADE_ID", ""),"|","")
 
             sqlUnion = ", ( "&_
@@ -141,13 +141,14 @@ else
 
             
             IF ref("TipoExibicao")="P" THEN
-                sqlBusca = " ro.ProfissionalID=prof.ProfissionalID AND ro.EspecialidadeID=prof.EspecialidadeID "
+                sqlBusca = " ro.ProfissionalID=p.ProfissionalID AND ro.EspecialidadeID=p.EspecialidadeID "
                 sqlUnion = " , ( "&_
-                       "SELECT prof.id ProfissionalID, NomeProfissional, EspecialidadeID, especialidade "&_
-                       "FROM profissionais prof "&_
-                       "LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
-                       "WHERE prof.EspecialidadeID in ("&Especialidades&") "&_
-                       "ORDER BY Especialidade, NomeProfissional) prof "
+                       "SELECT p.id ProfissionalID, NomeProfissional, esp.id EspecialidadeID, especialidade "&_
+                       "FROM profissionais p "&_
+                       "LEFT JOIN profissionaisespecialidades pe ON pe.ProfissionalID=p.id "&_
+                       "LEFT JOIN especialidades esp ON esp.id=p.EspecialidadeID or pe.EspecialidadeID=esp.id "&_
+                       "WHERE p.Ativo='on' AND esp.id IN ("& Especialidades &") "&_
+                       "ORDER BY Especialidade, NomeProfissional) p "
             else
                 sqlBusca = " ro.EspecialidadeID=esp.EspecialidadeID "
             END IF

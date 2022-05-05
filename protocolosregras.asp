@@ -455,6 +455,13 @@ camposFormJson = camposFormJson & "}"
                                     condicao.Operador = 'IN';
                                 }
                                 break;
+                            case 17: //texto - memo CID BMJ
+                            condicao._TipoCampo    = 'text';
+                            condicao._TipoOperador = 'text';
+                            if (isChange) {
+                                condicao.Operador = '=';
+                            }
+                            break;
                         }
                     }
                 }

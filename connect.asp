@@ -4081,7 +4081,7 @@ private function geraRecorrente(i)
                     AccountAssociationIDCredit = fx("AssociationAccountID")
                     AccountIDCredit = fx("AccountID")
                 end if
-                db_execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Descricao, Executado, sysUser,CentroCustoID)  (select '"&pult("id")&"', Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Descricao, Executado, sysUser,CentroCustoID from itensinvoicefixa where InvoiceID="&fx("id")&")")
+                db_execute("insert into itensinvoice (InvoiceID, Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Descricao, Executado, sysUser,CentroCustoID, Desconto, Acrescimo)  (select '"&pult("id")&"', Tipo, Quantidade, CategoriaID, ItemID, ValorUnitario, Descricao, Executado, sysUser,CentroCustoID, Desconto, Acrescimo from itensinvoicefixa where InvoiceID="&fx("id")&")")
                 db_execute("insert into sys_financialmovement (AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, Value, Date, CD, Type, Currency, Rate, InvoiceID, InstallmentNumber, sysUser, ValorPago, UnidadeID) values ("&AccountAssociationIDCredit&", "&AccountIDCredit&", "&AccountAssociationIDDebit&", "&AccountIDDebit&", "&treatvalzero(fx("Value"))&", "&mydatenull(Vencto)&", '"&fx("CD")&"', 'Bill', 'BRL', 1, "&pult("id")&", 1, "&fx("sysUser")&", 0, "&fx("CompanyUnitID")&")")
 
                 db_execute("update invoicesfixas set Geradas = concat(ifnull(Geradas, ''), '|"&Conta&"|') where id="&fx("id"))
@@ -5762,7 +5762,7 @@ end function
 
 
 function recursoAdicional(RecursoAdicionalID)
-    recursoAdicionalCookie = Request.Cookies("recurso-adicional-"&RecursoAdicionalID)
+    recursoAdicionalCookie = Request.Cookies("ra-"&RecursoAdicionalID)
     if recursoAdicionalCookie<>"" then
         recursoAdicional = cInt(recursoAdicionalCookie)
     else
@@ -5777,8 +5777,11 @@ function recursoAdicional(RecursoAdicionalID)
             end if
         end if
 
-        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID)=Status
-        'Response.Cookies("recurso-adicional-"&RecursoAdicionalID).Expires = Date() + 1
+
+        On Error Resume Next
+        Response.Cookies("ra-"&RecursoAdicionalID)=Status
+        Response.Cookies("ra-"&RecursoAdicionalID).Expires = Date() + 1
+        On Error Goto 0
         recursoAdicional=Status
     end if
 end function

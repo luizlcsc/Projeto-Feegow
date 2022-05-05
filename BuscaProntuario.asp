@@ -547,6 +547,6 @@ function downloadExcel(){
 $(".crumb-active a").html("Resultados da Busca");
 $(".crumb-link").removeClass("hidden");
 $(".crumb-link").html("termo buscado: <em><%=q%></em>");
-$(".crumb-icon").html("<i class='far fa-search'></i>");
+$(".crumb-icon a span").html("<i class='far fa-search'></i>");
 $("#sidebar-search").val("<%=q%>");
 </script>

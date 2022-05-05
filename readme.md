@@ -6,23 +6,7 @@ _Partindo do pré suposto de que já exista um banco mysql funcionando e com as 
 - `cliniccentral` 
 - `clinic100000`
 
- **Instale o Mysql ODBC 8.0**
-> https://dev.mysql.com/downloads/connector/odbc/
-
-#### Dump inicial:
-- `cliniccentral`:  https://www.dropbox.com/s/dh5ruv84wmipa4r/BANCOS%20-%20cc_temp.zip?dl=0
-
-###### Banco de cliente:
-- Execute o `feegow-api`
-- Abra o Postman
-- Execute em POST o seguinte request: http://localhost:8000/trial/start?NomeContato=dev&Celular=-&Email=dev@feegow.com&senha1=feegow&senha2=feegow&ComoConheceu=-&Cupom=-
-
-#### Credenciais de acesso
-
-**Usuário**: teste@novobanco10.com
-
-**Senha**: 1234
-
+> **WARNING**: Realize o passo a passo em [dev-docs](https://github.com/feegow/dev-docs/) para realizar a configuração das base de dados
 
 
  **Instale o IIs**
@@ -51,6 +35,10 @@ _Acesse as variaveis de ambiente do windows_
 
 _Em "variaveis de sistema" insira como está a seguir_
 
+>**FC_APP_ENV**=local
+>
+>**FC_MASTER**=pipoca453
+>
 >**FC_MYSQL_DRIVER**="MySQL ODBC 8.0 ANSI Driver"
 >
 >**FC_MYSQL_HOST**=127.0.0.1
@@ -61,9 +49,7 @@ _Em "variaveis de sistema" insira como está a seguir_
 >
 >**FC_MYSQL_DATABASE**=cliniccentral
 >
->**FC_APP_ENV**=local
->
->**FC_PWD_SALT**=pdw_salt
+>**FC_PWD_SALT**=pdw_saltlocal
 
 **Configurando o projeto no IIS**
 
@@ -95,6 +81,7 @@ _Ainda dentro do IIs clique com o botão direito em "DESKTOP-XXXXX" primeiro ico
  
  
 **Agora basta acessar o http://localhost/feegowclinic-v7/index.asp**
+![image](https://user-images.githubusercontent.com/23534036/166310928-e104104e-2823-49bd-a25d-d29e930408bd.png)
 
  
 

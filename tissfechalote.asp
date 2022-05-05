@@ -408,7 +408,7 @@ elseif req("ConvenioID")<>"" and req("T")="GuiaHonorarios" then
         sqlExecutantes = " and tph.ProfissionalID IN ("&Executantes&") "
     end if
 
-    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') NomeProcedimentos  from tissguiahonorarios g LEFT JOIN tissprocedimentoshonorarios tph ON tph.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tph.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlPlanos&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes& "GROUP BY g.id "&orderBy
+    sqlGuias = "select g.*, GROUP_CONCAT(NomeProcedimento SEPARATOR ', ') NomeProcedimentos  from tissguiahonorarios g LEFT JOIN tissprocedimentoshonorarios tph ON tph.GuiaID=g.id LEFT JOIN procedimentos proc ON proc.id=tph.ProcedimentoID where g.sysActive=1"&sqlContratados&sqlPlanos&sqlLote&sqlDataDe&sqlDataAte&sqlDataDeAtendimento&sqlDataAteAtendimento&sqlProcedimentos&" and g.ConvenioID="&req("ConvenioID")&sqlUnidades &sqlStatusGuia &sqlExecutantes& " GROUP BY g.id "&orderBy
 
 	set guias = db.execute(sqlGuias)
 	while not guias.EOF

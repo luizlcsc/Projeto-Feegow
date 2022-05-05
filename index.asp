@@ -270,7 +270,7 @@ end if
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery-1.12.4.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/jquery/jquery_ui/jquery-ui.min.js"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/select2.min.js"></script>
-  <script src="js/components.js?v=1.1.7"></script>
+  <script src="js/components.js?v=1.1.9"></script>
   <script src="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 
     <%if aut("capptaI") then%>
@@ -559,7 +559,7 @@ end if
       end if
 
       if device()<>"" then %>
-        <div onclick="fechar(); fecharSubmenu()" id="cortina" class="fade in" style="backdrop-filter:blur(5px);width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
+        <div onclick="fechar(); fecharSubmenu()" id="cortina" class="fade in" style="-webkit-backdrop-filter: blur(5px);backdrop-filter:blur(5px);width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
         <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class=" bg-primary darker pt10">
             <div id="menu" style="position:absolute; width:260px; height:1000px; top:0; left:-260px; z-index:10000000001; background:#fff">
                 <div class="row">
@@ -657,7 +657,7 @@ end if
         </script>
     <% end if %>
 
-    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
+    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);-webkit-backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
 
         <div id="modalCaixa" class="modal fade" tabindex="-1">
             <div class="modal-dialog">
@@ -1231,7 +1231,7 @@ end if
             </div>
             <script type="text/javascript">
                 function abrirSubmenu() {
-                  $( "#submenu" ).animate({
+                  $( "#submenu" ).addClass("submenu-open").animate({
                     "margin-right": "0",
                   }, 400, function() {
                     // Animation complete.
@@ -1239,7 +1239,7 @@ end if
                   $("#cortina").css("display", "block");
                 }
                 function fecharSubmenu() {
-                  $( "#submenu" ).animate({
+                  $( "#submenu" ).removeClass("submenu-open").animate({
                     "margin-right": "-260px",
                   }, 400, function() {
                     // Animation complete.
@@ -1913,6 +1913,13 @@ function ajxContent(P, I, Pers, Div, ParametrosAdicionais){
 		{
 			//alert(data);
 			$("#"+Div).html(data);
+            <%
+            if device()<>"" then
+            %>
+            fecharSubmenu();
+            <%
+            end if
+            %>
 		}
 	});
 }
@@ -2536,7 +2543,7 @@ function abreModalUnidade(backdrop=true){
   </script>
   <!-- END: PAGE SCRIPTS -->
 
-<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px); " id="legend">
+<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);-webkit-backdrop-filter: blur(10px);backdrop-filter: blur(10px); " id="legend">
 	<marquee id="legendText"></marquee>
 </div>
 <iframe width="250" id="speak" name="speak" height="195" scrolling="no" style="position:fixed; bottom:0; left:0; display:none" frameborder="0" src="about:blank"></iframe>

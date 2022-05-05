@@ -132,23 +132,39 @@ end if
 <div class="panel" id="DadosComplementares">
   <div class="panel-body">
 	<div class="col-md-2" id="divAvatar">
-            <div id="camera" class="camera"></div>
-            <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
+        <div id="camera" class="camera"></div>
+        <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
+            <div class="foto-loading-content">
                 <input type="file" name="Foto" id="Foto" />
-                <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
             </div>
-            <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
-                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
+            <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
+        </div>
+        <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
+            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
+            <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
+        </div>
+        <div class="div-avatar-video ">&nbsp;</div>
+        <div class="row">
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
             </div>
-            <div class="row"><div class="col-xs-6">
-	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
-            </div><div class="col-xs-6">
-	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
-            </div></div>
+            <div class="col-xs-6">
+                <button type="button" style="display:none" id="cancelar" onclick="return cancelarFoto();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
+            </div>
+        </div>
     </div>
       <script type="text/javascript">
 
+		function cancelarFoto(){
+			sayCheese.on('stop', function(evt) {
+			$( "video" ).remove();
+            $("#divDisplayUploadFoto").fadeIn();
+            $("#take-photo, #cancelar").fadeOut();
+			});
+            sayCheese.stop();
+            //alert("toaqui");return false;
+            //$('#photo').html('');
+		}
           function sipac(Ipac){
             if(Ipac>1000000000){
                 $.get("baseExt.asp?I="+Ipac, function(data){ eval(data) });

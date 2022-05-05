@@ -22,67 +22,93 @@ while not equ.eof
     %>
              <td valign="top">
              <table class="table table-striped table-condensed table-hover" width="100%">
-                 <thead>
-                    <tr>
-                        <th colspan="3" style="min-width:200px" class="text-center warning">
-                            <i title="Configurações do Local" alt="Configurações do Local" style="cursor:pointer" onclick="location.href='?P=Equipamentos&I=<%=equ("id") %>&Pers=1&Aba=Horarios';" class="far fa-cog red"></i>
-							<%=left(ucase(equ("NomeEquipamento")),20)%>
-                        </th>
-                    </tr>
-                 </thead>
+                 
+                 <%
+                    MostraGrade = true
+
+					set Horarios = db.execute("select ass.*, '0' tipograde, '0' GradePadrao from assperiodolocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
+					if Horarios.EOF then
+	                    set Horarios = db.execute("select ass.*, '1' GradePadrao from assfixalocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
+					end if
+                    
+                    if not Horarios.EOF then
+                        if Horarios("GradePadrao")="1" then
+                            MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+                        end if
+                    end if
+                    sqlUnidadesBloqueio= ""
+
+                    if MostraGrade then
+                %>
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="min-width:200px" class="text-center warning">
+                                    <i title="Configurações do Local" alt="Configurações do Local" style="cursor:pointer" onclick="location.href='?P=Equipamentos&I=<%=equ("id") %>&Pers=1&Aba=Horarios';" class="far fa-cog red"></i>
+                                    <%=left(ucase(equ("NomeEquipamento")),20)%>
+                                </th>
+                            </tr>
+                        </thead>
+                    <% end if %>
                  <tbody>
                     <tr class="hidden e<%=LocalID%>" id="0000"></tr>
                  <%
-                    Hora = cdate("00:00")
-					set Horarios = db.execute("select ass.* from assperiodolocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" order by HoraDe")
-					if Horarios.EOF then
-	                    set Horarios = db.execute("select ass.* from assfixalocalxprofissional ass where ass.ProfissionalID="&EquipamentoID*(-1)&" and ass.DiaSemana="&DiaSemana&" AND ((ass.InicioVigencia IS NULL OR ass.InicioVigencia <= "&mydatenull(Data)&") AND (ass.FimVigencia IS NULL OR ass.FimVigencia >= "&mydatenull(Data)&")) order by ass.HoraDe")
-					end if
-                    
-                    sqlUnidadesBloqueio= ""
-
                     while not Horarios.EOF
 
-                        if UnidadeID&"" <> "" then
-                            sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+                        MostraGrade = true
+                        if Horarios("GradePadrao")="1" then
+                            FrequenciaSemanas = Horarios("FrequenciaSemanas")
+                            InicioVigencia = Horarios("InicioVigencia")
+                            if FrequenciaSemanas>1 then
+                                NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
+                                RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
+                                if RestoDivisaoNumeroSemana>0 then
+                                    MostraGrade=False
+                                end if
+                            end if
                         end if
-                        
-                        LocalID=Horarios("LocalID")
-                        %>
-                        <tr>
-                            <td colspan="3" nowrap class="nomeProf">
-								 <%'=left(ucase(Horarios("NomeProfissional")&" "), 20)%>
-                            </td>
-                        </tr>
-                        <%
-                        Intervalo = Horarios("Intervalo")
-                        if isnull(Intervalo) or Intervalo=0 then
-                            Intervalo = 30
-                        end if
-                        HoraDe = cdate(Horarios("HoraDe"))
-                        HoraA = cdate(Horarios("HoraA"))
+                        if MostraGrade then
 
-                        Hora = HoraDe
-                        while Hora<=HoraA
-                            HoraID = formatdatetime(Hora, 4)
-                            HoraID = replace(HoraID, ":", "")
-'                            else
+                            if UnidadeID&"" <> "" then
+                                sqlUnidadesBloqueio = sqlUnidadesBloqueio&" OR c.Unidades LIKE '%|"&UnidadeID&"|%'"
+                            end if
+                            
+                            LocalID=Horarios("LocalID")
                             %>
-                            <tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', '<%=LocalID%>', '<%=ProfissionalID %>', '<%=EquipamentoID %>' ,'<%=Horarios("id")%>')" class="e<%=EquipamentoID%>" data-pro="<%=EquipamentoID%>" data-id="<%=HoraID%>" data-hora="<%= ft(Hora) %>" id="e<%=EquipamentoID&"_"&HoraID%>">
-                                <td width="1%"></td>
-                                <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= ft(Hora) %></button></td>
-                                <td><%= Tipo %></td>
+                            <tr>
+                                <td colspan="3" nowrap class="nomeProf">
+                                    <%'=left(ucase(Horarios("NomeProfissional")&" "), 20)%>
+                                </td>
                             </tr>
                             <%
-'							end if
-                            Hora = dateadd("n", Intervalo, Hora)
+                            Intervalo = Horarios("Intervalo")
+                            if isnull(Intervalo) or Intervalo=0 then
+                                Intervalo = 30
+                            end if
+                            HoraDe = cdate(Horarios("HoraDe"))
+                            HoraA = cdate(Horarios("HoraA"))
 
-                            ' if instr(Hora, "08:30") <> -1 then
-                            '     HoraA = dateadd("n", 1, HoraA)
-                            ' end if
-                            
-                        wend
-                    Horarios.movenext
+                            Hora = HoraDe
+                            while Hora<=HoraA
+                                HoraID = formatdatetime(Hora, 4)
+                                HoraID = replace(HoraID, ":", "")
+    '                            else
+                                %>
+                                <tr onclick="abreAgenda('<%=HoraID%>', 0, '<%=Data%>', '<%=LocalID%>', '<%=ProfissionalID %>', '<%=EquipamentoID %>' ,'<%=Horarios("id")%>')" class="e<%=EquipamentoID%>" data-pro="<%=EquipamentoID%>" data-id="<%=HoraID%>" data-hora="<%= ft(Hora) %>" id="e<%=EquipamentoID&"_"&HoraID%>">
+                                    <td width="1%"></td>
+                                    <td width="1%"><button type="button" class="btn btn-xs btn-info"><%= ft(Hora) %></button></td>
+                                    <td><%= Tipo %></td>
+                                </tr>
+                                <%
+    '							end if
+                                Hora = dateadd("n", Intervalo, Hora)
+
+                                ' if instr(Hora, "08:30") <> -1 then
+                                '     HoraA = dateadd("n", 1, HoraA)
+                                ' end if
+                                
+                            wend
+                        end if
+                        Horarios.movenext
                     wend
                     Horarios.close
                     set Horarios=nothing

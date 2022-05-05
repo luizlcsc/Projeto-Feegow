@@ -642,7 +642,7 @@ end function
                 Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
                 for each conta in contas
                     c = c+1
-                    Response.Write conta.xml & "<br />" & vbCrLf
+                    ' Response.Write conta.xml & "<br />" & vbCrLf
                     '***Add the following:
                     Set lotes = conta.getElementsByTagName("ans:dadosProtocolo")
                     For Each lote in lotes

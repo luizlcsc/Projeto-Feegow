@@ -248,13 +248,6 @@ function anexa(){
     $("#btnAnexa").css("visibility", "visible");
 }
 
-$("#btnFatAgendamento").click(function(){
-    $("#divFatAgendamento").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
-    $.get("AgendamentosFaturar.asp?PacienteID=<%=PacienteID%>", function(data){
-        $("#divFatAgendamento").html(data);
-    });
-});
-
 function modalEstoqueAtend(AtendimentoID){
     $("#modal-table").modal("show");
     $.post("atendimentoEstoque.asp?AtendimentoID="+ AtendimentoID+"&CD=C", {}, function (data) {
@@ -330,6 +323,7 @@ function contaLoadTab(page, params){
     
     let file = null;
     let $content = null;
+    let method = "GET";
 
     if(page === "nao-faturados"){
         file = "TabNaoFaturados.asp";
@@ -337,13 +331,19 @@ function contaLoadTab(page, params){
     }else if(page === "extrato-direto"){
         file = "ExtratoDireto.asp";
         $content = $("#ExtratoDireto");
+        method="POST"
     }else if(page === "receita-fixa"){
         file = "Recorrentes.asp";
         $content = $("#div-receita-recorrente");
     }
 
-    $.get(file, params, function(data){
-        $content.html(data);
+    $.ajax({
+        type: method,
+        url: file,
+        data: params,
+        success: function(data){
+            $content.html(data);
+        }
     });
 
 }

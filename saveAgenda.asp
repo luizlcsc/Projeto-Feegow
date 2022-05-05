@@ -108,18 +108,20 @@ if ref("LocalID")<>"" then
 
     if not LocalSQL.eof then
         AgendamentoUnidadeID=LocalSQL("UnidadeID")
+        'CONVERTENDO PARA FLOAT PÓS FUNÇÃO verificaBloqueioConta()
+        AgendamentoUnidadeID2=AgendamentoUnidadeID
     end if
 end if
-
 ' ######################### BLOQUEIO FINANCEIRO ########################################
 if AgendamentoUnidadeID <> "" then
     contabloqueadacred = verificaBloqueioConta(2, 2, 0, AgendamentoUnidadeID,rfData)
     if contabloqueadacred = "1" or contabloqueadadebt = "1" then
         erro ="Agenda bloqueada para edição retroativa (data fechada)."
     end if
+    'CONVERTENDO PARA FLOAT PÓS FUNÇÃO verificaBloqueioConta()
+    AgendamentoUnidadeID=AgendamentoUnidadeID2
 end if
 ' #####################################################################################
-
 
 rfProcedimento=ref("ProcedimentoID")
 rfrdValorPlano=ref("rdValorPlano")

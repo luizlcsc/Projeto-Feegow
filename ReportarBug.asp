@@ -39,7 +39,7 @@ end if
 
     <%=quickfield("memo", "ReportErro", "O que ocorreu?", 12, "", "", "", "")%>
 
-    <div class="col-md-12 mt10">
+    <div class="col-md-12 mt10 hidden">
         <div class="alert alert-default">
             <strong><i class="far fa-concierge-bell"></i> Dica: </strong>
              Forneça o máximo de detalhes do ocorrido. Dessa forma conseguiremos lhe auxiliar da forma mais eficiente.

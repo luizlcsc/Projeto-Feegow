@@ -215,9 +215,19 @@ response.Charset="utf-8"
                                 );
                         	}
                         }
+                        
+                        function Timbrado(checked){
+                            if(checked==true){
+                                $('.cabecalho').css("display",'');
+                                $('.rodape').css("display",'');
+                            }else{
+                                $('.cabecalho').css("display",'none');
+                                $('.rodape').css("display",'none');
+                            }
+                        }
                         </script>
                         <table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0">
-                        	<tr>
+                        	<tr class="cabecalho">
                             	<td>
                                     <%= Cabecalho %>
                                 </td>
@@ -264,7 +274,7 @@ response.Charset="utf-8"
                         			<br /><br /><br /><br />
                         		</td>
                             </tr>
-                            <tr>
+                            <tr class="rodape">
                                 <td>
                                     <%= Rodape %>
                                 </td>
@@ -455,9 +465,10 @@ response.Charset="utf-8"
         		document.getElementById('Carimbo').style.display='none';
         	}
         }
+
         </script>
         <table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0">
-        	<tr>
+        	<tr class="cabecalho">
             	<td>
                     <%= Cabecalho %>
                 </td>
@@ -498,7 +509,7 @@ response.Charset="utf-8"
         			<br /><br /><br /><br />
         		</td>
             </tr>
-            <tr>
+            <tr class="rodape">
                 <td>
                     <%= Rodape %>
                 </td>

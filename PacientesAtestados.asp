@@ -29,7 +29,7 @@ end if
     <div class="tab-content">
       <div id="divatestado" class="tab-pane in active">
         <div class="row">
-            <div class="col-xs-8">
+            <div class="col-xs-12 col-md-8">
                 <div class="row">
                     <div class="col-md-5">
                         <input id="AtestadoID" type="hidden" value="<%=AtestadoID%>">
@@ -53,7 +53,7 @@ end if
                     <hr class="short alt" />
                 </div>
             </div>
-            <div class="col-xs-4 pn">
+            <div class="col-md-4 col-xs-12 pn">
                 <div class="panel">
                     <div class="panel-heading">
                         <span class="panel-title">

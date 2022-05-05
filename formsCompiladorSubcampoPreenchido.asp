@@ -62,7 +62,7 @@
 				checks.close
 				set checks = nothing
 				%></select><%
-	  	case 8'textarea
+	  	case 8,17'textarea
 			%><div style="padding-bottom:4px"><label class="campoLabel"><%=RotuloCampo%></label></div>
             <div id="input_<%=CampoID%>" style="overflow-y:scroll" contenteditable="true" class="campoInput memorando" data-campoid="<%=CampoID%>" name="input_<%=CampoID%>" tabindex="<%=Ordem%>"><%=ValorPadrao%></div>
 			<script>

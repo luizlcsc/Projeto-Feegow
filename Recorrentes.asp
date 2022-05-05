@@ -1,6 +1,17 @@
 ﻿<!--#include file="connect.asp"-->
 
 <%
+Account = req("AccountID")
+
+sqlAccountId = ""
+if instr(Account, "_") then
+    AccountSplt = split(Account, "_")
+    AccountID = AccountSplt(1) 
+    AssociationAccountID = AccountSplt(0) 
+
+    sqlAccountId = " AND AccountID="&AccountID&" AND AssociationAccountID="&AssociationAccountID
+end if
+
     if req("X")<>"" then
         db_execute("delete from invoicesfixas where id="&req("X"))
         db_execute("delete from itensinvoicefixa where InvoiceID="&req("X"))
@@ -10,7 +21,7 @@
     if CD="C" then
         Titulo = "Receitas Fixas"
         TituloConta = "Pagador"
-        sql = "select f.*, DAY(PrimeiroVencto) PrimeiroVencimento from invoicesfixas f where f.sysActive=1 and f.CD='C'"
+        sql = "select f.*, DAY(PrimeiroVencto) PrimeiroVencimento from invoicesfixas f where f.sysActive=1 and f.CD='C' "&sqlAccountId
     else
         Titulo = "Despesas Fixas"
         TituloConta = "Credor"
@@ -24,9 +35,15 @@
         $(".crumb-icon a span").attr("class", "far fa-refresh");
         <%
         if (aut("contasapagarI") and CD="D") OR (aut("contasareceberI") and CD="C") then
+            if AccountID="" then
             %>
             $(".topbar-right").html('<a href="./?P=Recorrente&Pers=1&I=N&T=<%=req("T") %>" class="btn btn-sm btn-primary"><i class="far fa-plus"></i> Inserir</a>');
             <%
+            else
+            %>
+            $("#conta-fixa-btn-inserir").html(`<a href="#" onclick="ajxContent('Recorrente', 'N&T=<%=req("T") %>&Account=<%=Account%>', 1, 'div-receita-recorrente')" class="btn btn-sm btn-primary"><i class="far fa-plus"></i> Inserir</a><br><br>`);
+            <%
+            end if
         end if
         %>
     });
@@ -36,6 +53,8 @@
 
 <div class="panel">
     <div class="panel-body">
+        <div class="col-md-offset-11 col-md-1" id="conta-fixa-btn-inserir"></div>
+
         <table class="table table-striped table-bordered table-condensed" id="datatableRecorrente">
             <thead>
                 <tr>
@@ -50,7 +69,10 @@
             </thead>
             <tbody>
                 <%
+                qtdFixas = 0
+
                 set fixa = db.execute(sql)
+
                 while not fixa.eof
                     %>
                     <tr>
@@ -83,8 +105,14 @@
                         <td>
                         <%
                         if (CD="D" and aut("despesafixaA")=1) or (CD="C" and aut("receitafixaA")=1) then
+
+                            ActionEditar = " href=""./?P=Recorrente&T="&fixa("CD") &"&I="&fixa("id")  &"&Pers=1 &"" "
+
+                            if Account<>"" then
+                                ActionEditar = " href='#' onclick='ajxContent(""Recorrente"", """&fixa("id") &"&T="&fixa("CD")&""", 1, ""div-receita-recorrente"")'"
+                            end if
                         %>
-                        <a href="./?P=Recorrente&I=<%=fixa("id") %>&T=<%=fixa("CD") %>&Pers=1" class="btn btn-xs btn-success"><i class="far fa-edit"></i></a>
+                        <a <%=ActionEditar%> class="btn btn-xs btn-success"><i class="far fa-edit"></i></a>
                         <%
                         end if
                         %>
@@ -92,14 +120,20 @@
                         <td>
                         <%
                         if (CD="D" and aut("despesafixaX")=1) or (CD="C" and aut("receitafixaX")=1) then
+                            ActionExcluir = " href=""javascript:if(confirm('Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.'))location.href='./?P=Recorrentes&T="&req("T") &"&Pers=1&List=1&X="&fixa("id") &"';"" "
+
+                            if Account<>"" then
+                                ActionExcluir = " href='#' onclick='if(confirm(""Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.""))ajxContent(""Recorrentes"", ""0&T="&req("T")&"&List=1&X="&fixa("id") &"&AccountID="&Account&""", 1, ""div-receita-recorrente"")'"
+                            end if
                         %>
-                        <a href="javascript:if(confirm('Tem certeza de que deseja excluir esta conta fixa?\n\n Obs: As contas já consolidadas não serão excluídas.'))location.href='./?P=Recorrentes&T=<%=req("T") %>&Pers=1&List=1&X=<%=fixa("id") %>';" class="btn btn-xs btn-danger"><i class="far fa-remove"></i></a>
+                        <a <%=ActionExcluir%> class="btn btn-xs btn-danger"><i class="far fa-remove"></i></a>
                         <%
                         end if
                         %>
                         </td>
                     </tr>
                     <%
+                    qtdFixas = qtdFixas + 1
                 fixa.movenext
                 wend
                 fixa.close
@@ -112,9 +146,18 @@
 
 
 <script>
+<%
+
+RenderDatatable = qtdFixas > 20 and AccountID = ""
+
+if RenderDatatable then
+%>
 $(document).ready( function () {
     $("#datatableRecorrente").dataTable({
         blengthMenu: [[10, 50, 100, -1], [10, 50, 100, "Todos"]]
     });
 } );
+<%
+end if
+%>
 </script>

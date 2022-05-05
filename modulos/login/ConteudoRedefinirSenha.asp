@@ -8,6 +8,10 @@
     font-size: 22px !important;
 }
 
+#confirmacao-status{
+    margin-top: 10px;
+    font-size: 15px;
+}
 
 </style>
 <img class="login-logo" src="assets/img/login_logo.svg" border="0" width="124" height="36">
@@ -35,12 +39,14 @@
         
         <div class="col-md-5"  style="padding-left: 10px">
             <div class="form-group">
-                <input type="password" class="form-control" onblur="" id="senha" placeholder="Senha" tabindex="6" onKeyUp="senhaValida();" maxlength="8">
+                <input type="password" class="form-control" onblur="" id="senha" placeholder="Senha" tabindex="6" onKeyUp="senhaValida();">
+
+                <div id="confirmacao-status" class="pt10"></div>
             </div>
         </div>
         <div class="col-md-5" >
             <div class="form-group">
-                <input type="password" class="form-control" id="confirmacao" placeholder="Confirmação" tabindex="7" onKeyUp="senhasIguais();" maxlength="8">
+                <input type="password" class="form-control" id="confirmacao" placeholder="Confirmação" tabindex="7" onKeyUp="senhasIguais();">
             </div>
         </div>
         
@@ -137,7 +143,7 @@
         }
         else
         {
-            $('#confirmacao-status').html("<span style='color:green'>OK! </span>");
+            $('#confirmacao-status').html("");
             $('#btnEnviar').prop( "disabled", false );
         }
     }

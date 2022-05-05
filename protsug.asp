@@ -8,6 +8,10 @@ conta = 0
 Tipo = req("Tipo")
 Subgrupo = req("Subgrupo")
 
+if len(Txt) < 3 then
+    Response.End
+end if
+
 select case Tipo
     case "CidCiap"
         set pcampo = db.execute("select c.Estruturacao FROM buicamposforms c WHERE id="& CampoID)

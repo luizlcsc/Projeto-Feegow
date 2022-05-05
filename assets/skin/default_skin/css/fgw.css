@@ -14666,6 +14666,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     padding-left: 0;
     margin: 19px 0;
     border-radius: 4px;
+    box-shadow: 0 1px 8px rgb(0 0 0 / 3%);
 }
 
 .pagination > li {
@@ -14680,7 +14681,7 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
     line-height: 1.49;
     text-decoration: none;
     color: #45AAF2;
-    background-color: #ffffff;
+    background-color: transparent;
     border: 1px solid #dddddd;
     margin-left: -1px;
 }
@@ -14703,8 +14704,8 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 .pagination > li > a:focus,
 .pagination > li > span:focus {
     color: #1d6fa5;
-    background-color: #eeeeee;
-    border-color: #dddddd;
+    background-color: #f5f5f596;
+    border-color: transparent;
 }
 
 .pagination > .active > a,
@@ -14752,20 +14753,20 @@ fieldset[disabled] .navbar-inverse .btn-link:focus {
 
 .pagination-sm > li > a,
 .pagination-sm > li > span {
-    padding: 5px 10px;
+    padding: 7px 12px;
     font-size: 12px;
 }
 
 .pagination-sm > li:first-child > a,
 .pagination-sm > li:first-child > span {
-    border-bottom-left-radius: 2px;
-    border-top-left-radius: 2px;
+    border-bottom-left-radius: 6px;
+    border-top-left-radius: 6px;
 }
 
 .pagination-sm > li:last-child > a,
 .pagination-sm > li:last-child > span {
-    border-bottom-right-radius: 2px;
-    border-top-right-radius: 2px;
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
 }
 
 /*==================================================

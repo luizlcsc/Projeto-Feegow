@@ -222,7 +222,7 @@ if Acao="Remarcar" then
             rfStaID=1
             rfLocal=AgendamentoSQL("LocalID")
             rfEspecialidade=AgendamentoSQL("EspecialidadeID")
-		    rfTabelaParticularID=DadosConsulta("TabelaParticularID")
+		    rfTabelaParticularID=AgendamentoSQL("TabelaParticularID")
             
             'if ProfissionalID&"" = "" then
             '	rfProfissionalID =AgendamentoSQL("ProfissionalID")

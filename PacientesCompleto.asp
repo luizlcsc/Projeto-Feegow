@@ -33,11 +33,12 @@ end function
 PacienteID = req("I")
 call insertRedir(req("P"), PacienteID)
 if req("Agenda")="1" then
-    set reg = db.execute("select p.*, '0' totalprescricoes, '0' totalatestados, '0' totalpedidos, '0' totaldiagnosticos, '0' totalarquivos, '0' totalimagens, '0' qtepedidos,'0' totalrecibos, '0' totalae, '0' totallf from Pacientes as p where id="&PacienteID)
+    set reg = db.execute("select p.*, '0' totalprescricoes, '0' totalatestados, '0' totalencaminhamentos, '0' totalpedidos, '0' totaldiagnosticos, '0' totalarquivos, '0' totalimagens, '0' qtepedidos,'0' totalrecibos, '0' totalae, '0' totallf from Pacientes as p where id="&PacienteID)
 else
     set reg = db.execute("select p.*, "&_
     "(select count(id) from pacientesprescricoes where sysActive=1 AND PacienteID="&PacienteID&" ) as totalprescricoes, "&_
     "(select count(id) from pacientesatestados where sysActive=1 AND PacienteID="&PacienteID&" ) as totalatestados, "&_
+    "(select count(id) from encaminhamentos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalencaminhamentos, "&_
     "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalpedidos, "&_
     "(select count(id) from pacientesdiagnosticos where sysActive=1 AND PacienteID="&PacienteID&" ) as totaldiagnosticos, "&_
     "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
@@ -46,7 +47,7 @@ else
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)
 end if
-    splBdgs = split("totalprescricoes, totalatestados, totalpedidos, totaldiagnosticos, totalarquivos, totalimagens, totalae, totallf", ", ")
+    splBdgs = split("totalprescricoes, totalatestados, totalencaminhamentos, totalpedidos, totaldiagnosticos, totalarquivos, totalimagens, totalae, totallf", ", ")
 
 
 if not isnull(reg("Nascimento")) and not isnull(reg("NomePaciente")) then
@@ -132,23 +133,39 @@ end if
 <div class="panel" id="DadosComplementares">
   <div class="panel-body">
 	<div class="col-md-2" id="divAvatar">
-            <div id="camera" class="camera"></div>
-            <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
+        <div id="camera" class="camera"></div>
+        <div id="divDisplayUploadFoto" style="display:<%=divDisplayUploadFoto%>">
+            <div class="foto-loading-content">
                 <input type="file" name="Foto" id="Foto" />
-                <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
             </div>
-            <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
-	            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
-                <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
+            <button type="button" id="clicar" class="btn btn-block btn-xs btn-info hidden-xs"><i class="far fa-camera"></i></button>
+        </div>
+        <div id="divDisplayFoto" style="display:<%= divDisplayFoto %>">
+            <img id="avatarFoto" src="<%= arqEx(reg("Foto"), "Perfil") %>" class="img-thumbnail sensitive-data" width="100%" />
+            <button type="button" class="btn btn-xs btn-danger" onclick="removeFoto();" style="position:absolute; left:18px; bottom:6px;"><i class="far fa-trash"></i></button>
+        </div>
+        <div class="div-avatar-video ">&nbsp;</div>
+        <div class="row">
+            <div class="col-xs-6">
+                <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
             </div>
-            <div class="row"><div class="col-xs-6">
-	            <button type="button" class="btn btn-xs btn-success btn-block" style="display:none" id="take-photo"><i class="far fa-check"></i></button>
-            </div><div class="col-xs-6">
-	            <button type="button" style="display:none" id="cancelar" onclick="return cancelar();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
-            </div></div>
+            <div class="col-xs-6">
+                <button type="button" style="display:none" id="cancelar" onclick="return cancelarFoto();" class="btn btn-block btn-xs btn-danger"><i class="far fa-remove"></i></button>
+            </div>
+        </div>
     </div>
       <script type="text/javascript">
 
+		function cancelarFoto(){
+			sayCheese.on('stop', function(evt) {
+			$( "video" ).remove();
+            $("#divDisplayUploadFoto").fadeIn();
+            $("#take-photo, #cancelar").fadeOut();
+			});
+            sayCheese.stop();
+            //alert("toaqui");return false;
+            //$('#photo').html('');
+		}
           function sipac(Ipac){
             if(Ipac>1000000000){
                 $.get("baseExt.asp?I="+Ipac, function(data){ eval(data) });
@@ -195,14 +212,27 @@ end if
             <%=quickField("datepicker", "Nascimento", "Nascimento", 2, reg("Nascimento"), "input-mask-date", "", "")%>
             <div class="col-md-1">
                 <label for="Estrangeiro">Estrangeiro</label>
-                   <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
-                                             <% IF reg("Estrangeiro") = "1" THEN %>
-                                               checked
-                                             <% END IF %>
-                                             name="Estrangeiro" id="Estrangeiro" value="1" />
-                                            <label class="checkbox" for="Estrangeiro"> </label>
-                                        </div>
+                <div style="
+                            border: 1px solid #dddddd;
+                            border-radius: 6px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            height: 32px;">
+                    <% IF reg("Estrangeiro") = "1" THEN %>
+                        <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">SIM</span>
+                    <% ELSE %>
+                        <span id="EstrangeiroText" style="margin-left: .9rem; margin-top: .4rem; margin-bottom: .4rem;">NÃO</span>
+                    <% END IF %>
+                    <div class="checkbox-custom checkbox-primary">
+                        <input type="checkbox" class="ace" onchange="changeRequiredCPF(this)"
+                            <% IF reg("Estrangeiro") = "1" THEN %>
+                            checked
+                            <% END IF %>
+                            name="Estrangeiro" id="Estrangeiro" value="1"/>
+                        <label class="checkbox" for="Estrangeiro" style="margin-top: 0.3rem; margin-right: 0;"> </label>
+                    </div>
+                </div>
             </div>
             <%
                 mask = " input-mask-cpf "
@@ -738,7 +768,7 @@ $(document).ready(function () {
 </script>
 <%
 if getConfig("LembreteFormulario")=1 and device()="" then
-    set lembrarme = db.execute("select * from buiformslembrarme where PacienteID="&PacienteID)
+    set lembrarme = db.execute("select bfl.* from buiformslembrarme bfl JOIN buiformspreenchidos bfp ON bfp.id=bfl.FormID where bfp.sysUser="&session("User")&" AND bfl.PacienteID="&PacienteID)
     if not lembrarme.EOF then
         %>
         <script type="text/javascript">
@@ -878,7 +908,7 @@ $(function () {
     if(!$("#Foto").is(':focusable')){
       $("#Foto").prop("required", false);
     }
-  }, 650);
+  }, 1750);
 })
 
 

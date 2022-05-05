@@ -121,7 +121,7 @@ if FormID<>"N" then
 		        DataHora=date()
 		    end if
 
-			if (autForm(ModeloID, "AO", "")=true and preen("sysUser")<>session("User")) or (autForm(ModeloID, "AP", "")=true and preen("sysUser")=session("User")) OR (formatdatetime(DataHora,2)=formatdatetime(date(),2) and preen("sysUser")=session("User") ) then
+			if (autForm(ModeloID, "AO", "","")=true and preen("sysUser")<>session("User")) or (autForm(ModeloID, "AP", "","")=true and preen("sysUser")=session("User")) OR (formatdatetime(DataHora,2)=formatdatetime(date(),2) and preen("sysUser")=session("User") ) then
 				negadoX = "N"
 			else
 				negadoX = "S"
@@ -176,7 +176,11 @@ while not campos.eof
 	  Obrigatorio = campos("Obrigatorio")
 	  Ordem = campos("Ordem")
 	  if UsarPreenchido="S" and TipoCampoID<>9 and TipoCampoID<>13 and TipoCampoID<>10 and TipoCampoID<>15 and TipoCampoID<>11 then
-	      ValorPadrao = f(""&campos("id")&"")
+	  	if FieldExists(f, ""&campos("id")&"") then
+	      	ValorPadrao = f(""&campos("id")&"")
+		else
+			ValorPadrao = ""
+		end if
 	  else
 		  ValorPadrao = campos("ValorPadrao")
 	  end if

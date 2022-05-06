@@ -108,7 +108,16 @@ end if
                 </div>
                 <%=quickField("simpleCheckbox", "DetalharRecebimentos", "Detalhar recebimentos", "2", "", "", "", "")%>
             </div>
-
+            <div class="col-md-2">
+                <label>&nbsp;</label><br />
+                <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i>Gerar</button>
+            </div>
+            <% if AccountID <> "" then %>
+                <div class="col-md-2">
+                    <label>&nbsp;</label><br />
+                    <button onclick="transaction(4,'','','<%=AccountID%>');" class="btn-export btn btn-sm btn-success btn-block" data-toggle="modal" href="#modal-table"><i class="fa fa-exchange"></i><span class="menu-text"> Transferência</span></button>
+                </div>
+            <%end if%>
         </div>
     </div>
     <div class="panel">

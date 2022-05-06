@@ -7,7 +7,11 @@ if req("transactionID") = "" then
 	transactionType = ref("transactionType")
 else
 	transactionID = req("transactionID")
-	transactionType = ""
+    if transactionID = "4" then
+        transactionType = "4"
+    else
+	    transactionType = ""
+    end if
 end if
 if transactionID="1" then
 	title = "Novo Lan&ccedil;amento"
@@ -125,14 +129,13 @@ if req("Save")="Save" then
             end if
         end if
 
-
         'response.write("aqui")
         'response.write(splDebitAccount(0))
         if ConfirmarTransferencia and (splDebitAccount(0)=1 or splDebitAccount(0)=7 or (splCreditAccount(0) =7 and outroUsuario <> "")) then
             sqlFilaTransferecia = "INSERT INTO filatransferencia (Descricao, AccountAssociationIDCredit, AccountIDCredit, AccountAssociationIDDebit, AccountIDDebit, PaymentMethodID, Value, Date, CaixaID, sysUser, UnidadeID) VALUES "&_
             "('"&ref("TransactionDescription")&"', '"&splCreditAccount(0)&"', '"&splCreditAccount(1)&"', '"&splDebitAccount(0)&"', '"&splDebitAccount(1)&"', '"&ref("PaymentMethodID")&"', '"&treatVal(ref("TransactionValue"))&"', '"&myDate(ref("TransactionDate"))&"', "&treatvalnull(CaixaID)&", "&session("User")&", "&treatvalzero(UnidadeID)&")"
-    'solicita confirmacao da transferencia
-
+            
+            'solicita confirmacao da transferencia
             if splDebitAccount(0)=1 then
                 'caixa fisico/conta bancaria
                 set ContaSQL = db.execute("SELECT UsuariosConfirmadores FROM sys_financialcurrentaccounts WHERE id="&splDebitAccount(1))
@@ -170,9 +173,9 @@ if req("Save")="Save" then
                 userName=nameInTable(UsuarioID)
 
             next
-    %>
-    showMessageDialog("Transferência enviada para aprovação de <strong><%=userName%></strong>.", "warning", "Aguardando aprovação");
-    <%
+            %>
+            showMessageDialog("Transferência enviada para aprovação de <strong><%=userName%></strong>.", "warning", "Aguardando aprovação");
+            <%
         else
             disponibilizarsaldo = ref("disponibilizarsaldo")
 
@@ -195,22 +198,21 @@ if req("Save")="Save" then
         '	response.Write(sql)
             db_execute(sql)
             %>
-    showMessageDialog("Transferência enviada.", "success");
+                showMessageDialog("Transferência enviada.", "success");
                 //getStatement($("#StatementAccountID").val(), '');
                 $("#Filtrate").click();
-
             <%
         end if
     end if
 
     if Sucesso then
     %>
-$("#modalCaixa").modal("hide");
-$("#modal-table").modal("hide");
+        $("#modalCaixa").modal("hide");
+        $("#modal-table").modal("hide");
     <%
     else
     %>
-showMessageDialog("Valor maior que o permitido", "danger");
+        showMessageDialog("Valor maior que o permitido", "danger");
     <%
     end if
 Response.End
@@ -248,11 +250,23 @@ end if
 		  
 		  while not getTransactionType.eof
 
-		    if getTransactionType("id")=3 or (getTransactionType("id")=1 and aut("|movementI|")=1) then
-		  	%><div class="radio"><label><input name="transactionType" type="radio" class="ace postTransaction" value="<%=getTransactionType("id")%>"<% If transactionType=cstr(getTransactionType("id")) Then
-				TransactionDescription = getTransactionType("TransactionName")
-			 %> checked<%end if%>><span class="lbl"> <%=getTransactionType("TransactionName")%></span></label></div>
-			<%
+		    if getTransactionType("id")=4 or getTransactionType("id")=3 or (getTransactionType("id")=1 and aut("|movementI|")=1) then
+                ExibeRadio = True
+                checked = ""
+                contaPaciente = False
+                PacienteID = req("PacienteID")&""
+                if PacienteID <> "0" and getTransactionType("id")<>4 then
+                    ExibeRadio = False
+                elseif PacienteID<>0 and getTransactionType("id")=4 then
+                    checked = "checked"
+                    contaPaciente = True
+                end if
+                if ExibeRadio = True then
+                    %><div class="radio"><label><input name="transactionType" type="radio" class="ace postTransaction" <%=checked%> value="<%=getTransactionType("id")%>"<% If transactionType=cstr(getTransactionType("id")) Then
+                        TransactionDescription = getTransactionType("TransactionName")
+                    %> checked<%end if%>><span class="lbl"> <%=getTransactionType("TransactionName")%></span></label></div>
+                    <%
+                end if
 			end if
 		  getTransactionType.movenext
 		  wend
@@ -300,7 +314,7 @@ end if
 				%>
                <div>
                 <label>Transferido de</label> <br />
-				<%=selectInsertCA("", "transactionAccountIDCredit", ref("transactionAccountIDCredit"), "5, 4, 3, 2, 6, 1, 7", "", " required  onchange='cPlan()' " & readonly, "")%>
+				<%=selectInsertCA("", "transactionAccountIDCredit", ref("transactionAccountIDCredit"), "5, 4, 2, 6, 1, 7", "", " required  onchange='cPlan()' " & readonly, "")%>
                </div>
                <div>
                 <label>Para</label> <br />
@@ -308,10 +322,36 @@ end if
                     if aut("|movementI|")=0 then
                     contasPara="1, 7, 5"
                 else
-                    contasPara="5, 4, 3, 2, 6, 1, 7"
+                    contasPara="5, 4, 2, 6, 1, 7"
                 end if
                 %>
                 <%=selectInsertCA("", "transactionAccountIDDebit", ref("transactionAccountIDDebit"), contasPara, "", " required  onchange='cPlan()' ", "")%>
+               </div>
+				<%
+
+            case "4"
+                readonly = ""
+                if aut("|movementI|")=0 or aut("|transferirI|")=0 then
+                    readonly = " readonly "
+                end if
+				%>
+               <div>
+                    <label>Saindo de</label> <br />
+                    <%=selectInsertCA("", "transactionAccountIDCredit", ref("transactionAccountIDCredit"), "3", "", " required  onchange='cPlan()' " & readonly, "")%>
+               </div>
+               <div>
+                    <label>Entrando em</label> <br />
+                    <%
+                    if contaPaciente <> False then
+                        set NomePacienteSQL = db_execute("SELECT NomePaciente FROM pacientes WHERE id="&PacienteID)
+                    %>  
+                        <div class="col-md-12 input-group">
+                            <input type="text" class="form-control" value="<%=NomePacienteSQL("NomePaciente")%>" disabled>
+                            <input type="hidden" name="transactionAccountIDDebit" id="transactionAccountIDDebit" value="3_<%=PacienteID%>">
+                        </div>
+                    <%else%>
+                        <%=selectInsertCA("", "transactionAccountIDDebit", ref("transactionAccountIDDebit"), "3", "", " required  onchange='cPlan()' " & readonly, "")%>
+                    <%end if%>
                </div>
 				<%
 			end select
@@ -325,9 +365,11 @@ end if
                     "INNER JOIN sys_financialpaymentmethod pm ON fm.PaymentMethodID = pm.id "&_
                     "WHERE fm.Type IN ('Pay','Transfer') and fm.CaixaID = "&CaixaID&" GROUP BY pm.id"
                 end if
+                if transactionType <> "4" then
             %>
-				<%=quickField("simpleSelect", "PaymentMethodID", "Forma", 12, "",sqlPaymentMethods, "PaymentMethod", " required empty ")%>
-			</div>
+				    <%=quickField("simpleSelect", "PaymentMethodID", "Forma", 12, "",sqlPaymentMethods, "PaymentMethod", " required empty ")%>
+                <%end if%>
+            </div>
 			<%
 			if TransactionDate = "" then
 				TransactionDate = date()
@@ -339,13 +381,13 @@ end if
                		<%= quickField("currency", "TransactionValue", "Valor", 6, ref("TransactionValue"), "", "", " required ") %>
                		<%= quickField("datepicker", "TransactionDate", "Data", 6, TransactionDate, "", "", " required ") %>
                </div>
-              <div>
-                <label>Descri&ccedil;&atilde;o</label>
-                <input required class="form-control" name="TransactionDescription" id="TransactionDescription" value="<%= TransactionDescription %>">
-              </div>
-              <div id="divCategoriaID">
-                  ...
-              </div>
+              <%if transactionType <> "4" then%>
+                <div>
+                    <label>Descri&ccedil;&atilde;o</label>
+                    <input required class="form-control" name="TransactionDescription" id="TransactionDescription" value="<%= TransactionDescription %>">
+                </div>
+              <%end if%>
+              <div id="divCategoriaID"></div>
           </div>
         </div>
       </div>
@@ -354,8 +396,8 @@ end if
 			<i class="far fa-remove"></i>
 			Fechar
 		</button>
-		<button  id="btnSaveTransaction" class="btn btn-sm btn-success pull-right mr10">
-        <i class="far fa-check"></i>
+		<button  id="btnSaveTransaction" class="btn btn-sm btn-primary pull-right mr10">
+        <i class="fa fa-check"></i>
         Salvar</button>
 	</div>
 </form>

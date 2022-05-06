@@ -91,6 +91,10 @@ end if
         sqlAtestado = " union all (select 0, pa.id, '', sysUser, '', 'Atestado', ifnull(Titulo, 'Atestado'), 'file-text', 'success', `Data`, Atestado,s.id, pa.sysActive, '' from pacientesatestados pa LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pa.id AND s.tipo = 'ATESTADO' WHERE sysActive in ("&sysActiveRecords&") AND PacienteID="&PacienteID&") "
     end if
 
+    if instr(Tipo, "|Encaminhamentos|")>0 then
+        sqlEncaminhamentos = "union all(select 0, pe.id, '', pe.profissionalemissorid, '', 'Encaminhamentos', CONCAT('Encaminhado p/ ', COALESCE(esp.especialidade, esp.nomeEspecialidade)), 'fa-file-archive-o', 'success', `dataHora`, pe.descricao, s.id, pe.sysactive, pe.MemedID from encaminhamentos AS pe LEFT JOIN dc_pdf_assinados AS s ON s.DocumentoID = pe.id AND s.tipo = 'ENCAMINHAMENTOS' LEFT JOIN especialidades esp ON esp.id=pe.especialidadeid WHERE PacienteID="&PacienteID&" AND pe.sysactive = 1) "
+    end if
+
      if instr(Tipo, "|Tarefas|")>0 then
         sqlTarefa = " union all (SELECT 0, ta.id, '', ta.sysuser, '', 'Tarefas' , ta.Titulo, 'check-square-o' , 'success' , ta.dtabertura  , tm.msg ,'' assinatura, ta.sysActive, '' FROM tarefas ta "&_
                     " INNER JOIN tarefasmsgs tm ON tm.TarefaID = ta.id "&_
@@ -116,14 +120,14 @@ end if
                  cont=0
 
     sql = "select t.*, lower(su.table) UserType , esp.Especialidade, lu.Nome UserName from ( (select 0 Prior, '' id, '' Modelo, '' sysUser, '' Autorizados, '' Tipo, '' Titulo, '' Icone, '' cor, '' DataHora, '' Conteudo,'' Assinado, '' sysActive, '' MemedID limit 0) "&_
-                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
+                sqlAE & sqlL & sqlPrescricao & sqlDiagnostico & sqlEncaminhamentos & sqlAtestado & sqlTarefa & sqlPedido & sqlProtocolos & sqlImagens & sqlArquivos &_
                 ") t "&sqlProf&" "&_
                 " LEFT JOIN cliniccentral.licencasusuarios lu ON lu.id=t.sysUser "&_
                 " LEFT JOIN sys_users su ON su.id=lu.id "&_
                 " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
                 " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
                 "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-    'response.write(sql)
+    ' response.write(sql)
              set ti = db.execute( sql )
 
              while not ti.eof

@@ -1,5 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
+LoteID = req("LoteID")
+
 if req("T")="GuiaConsulta" then
 	src = "GuiaConsultaPrint"
 elseif req("T")="GuiaSADT" then
@@ -32,14 +34,14 @@ end if
     <%if req("T")="EspelhoConta" then%>
         <h4 class="modal-title">Impress&atilde;o &raquo; Espelho de Conta</h4>
     <%else%>
-        <h4 class="modal-title">Impress&atilde;o de Guia<span id="btnAnexa" style="visibility:hidden"> &raquo; <a class="btn btn-xs btn-info" href="GuiaAnexa.asp?I=<%=req("I")%>" target="GuiaTISS">Imprimir Guia Anexa de Outras Despesas</a></span></h4>
+        <h4 class="modal-title">Impress&atilde;o de Guia<span id="btnAnexa" style="visibility:hidden"> &raquo; <a class="btn btn-xs btn-info" href="printGuiaAnexa.asp?I=<%=req("I")%>" target="GuiaTISS">Imprimir Guia Anexa de Outras Despesas</a></span></h4>
     <%end if%>
 </div>
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
         <%
-		src = src&".asp?I="&req("I")
+		src = src&".asp?I="&req("I")&"&LoteID="&LoteID
 		%>
         <iframe width="100%" height="600px" src="<%=src%>" id="GuiaTISS" name="GuiaTISS" frameborder="0"></iframe>
         </div>

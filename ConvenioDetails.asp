@@ -1,7 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 
-if req("ConvenioID")<>"" then
+if req("ConvenioID")<>"" and req("ConvenioID")&""<>"0" then
     ConvenioID = req("ConvenioID")
     MinimoDigitos = 0
     MaximoDigitos = 100

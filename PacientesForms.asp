@@ -15,7 +15,7 @@
 			end if
 			set forms = db.execute("select * from buiforms where sysActive=1"&sqlTipo&" order by Nome")
 			while not forms.eof
-				if autForm(forms("id"), "IN", "") then
+				if autForm(forms("id"), "IN", "", "") then
 				%>
                 <li><a href="javascript:callForm(<%=req("PacienteID")%>, <%=forms("id")%>, 'N');"><i class="far fa-plus"></i> <%=forms("Nome")%></a></li>
 				<%

@@ -335,15 +335,7 @@ end if
                     end if
                 end if
                 if Horarios("GradePadrao")=1 then
-                    FrequenciaSemanas = Horarios("FrequenciaSemanas")
-                    InicioVigencia = Horarios("InicioVigencia")
-                    if FrequenciaSemanas>1 then
-                        NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
-                        RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
-                        if RestoDivisaoNumeroSemana>0 then
-                            MostraGrade=False
-                        end if
-                    end if
+                    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
                 end if
                 if MostraGrade then
                 LocalID = Horarios("LocalID")

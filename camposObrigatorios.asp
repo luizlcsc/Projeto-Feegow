@@ -9,6 +9,8 @@ FormID = req("F")
     <ul class="dropdown-menu dropdown-info">
       <li><a href="javascript:addPerm('Paciente');"><i class="far fa-plus"></i> Pacientes</a></li>
       <li><a href="javascript:addPerm('Agendamento');" ><i class="far fa-plus"></i> Agendamento</a></li>
+      <li><a href="javascript:addPerm('Procedimento');" ><i class="far fa-plus"></i> Procedimento</a></li>
+      <li><a href="javascript:addPerm('Profissional');" ><i class="far fa-plus"></i> Profissional</a></li>
       <li><a href="javascript:addPerm('AltAge');" class="hidden"><i class="far fa-plus"></i> Alteração do agendamento para "aguardando"</a></li>
     </ul>
   </div>

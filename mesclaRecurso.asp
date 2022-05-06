@@ -20,7 +20,7 @@ end if
 <script type="text/javascript">
         $(".crumb-active a").html("Mesclagem de recurso");
         $(".crumb-link").removeClass("hidden");
-        $(".crumb-icon").html("<i class='fa fa-search'></i>");
+        $(".crumb-icon a span").html("<i class='fa fa-search'></i>");
         $("#sidebar-search").val("<%=q%>");
 </script>
 <br>

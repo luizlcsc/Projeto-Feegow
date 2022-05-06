@@ -42,7 +42,7 @@
             end if
             if aut("|contasapagarV") and aut("despesafixaV")=1 then
             %>
-            <li<% If req("P")="Recorrentes" AND req("T")="D" AND req("List")="1" Then %> class="active"<% End If %>>
+            <li<% If (req("P")="Recorrentes" OR req("P")="Recorrente") AND req("T")="D" Then %> class="active"<% End If %>>
                 <a href="./?P=Recorrentes&T=D&Pers=1&List=1">
                     <i class="far fa-refresh"></i>
                     Despesas Fixas
@@ -65,7 +65,7 @@
             <span class="caret"></span>
         </a>
 
-        <ul class="nav sub-nav" <% If (req("P")="ContasCD" OR req("P")="Recorrentes") AND req("T")="C" Then %> style="display:block"<% End If %>>
+        <ul class="nav sub-nav" <% If (req("P")="ContasCD" OR req("P")="Recorrentes" OR req("P")="Recorrente") AND req("T")="C" Then %> style="display:block"<% End If %>>
         	<%
 			if aut("|contasareceberI")  then
 			%>
@@ -89,7 +89,7 @@
             <%
             if aut("receitafixaV")=1  then
             %>
-            <li<% If req("P")="Recorrentes" AND req("T")="C" AND req("List")="1" Then %> class="active"<% End If %>>
+            <li<% If (req("P")="Recorrentes" OR req("P")="Recorrente") AND req("T")="C" Then %> class="active"<% End If %>>
                 <a href="./?P=Recorrentes&T=C&Pers=1&List=1">
                     <i class="far fa-refresh"></i>
                     Receitas Fixas
@@ -484,7 +484,7 @@
     </li>
     <%
         end if
-        if aut("|honorarios|")=1 then
+        if aut("|honorariosV|")=1 then
     %>
     <li <% If req("P")="Honorarios" Then %> class="active"<% End If %>>
         <a href="./?P=Honorarios&Pers=1">

@@ -794,7 +794,7 @@ else
                                             $("#ValorText").html($(this).val());
                                         });
                                         </script>
-                                        <% elseif aut("areceberpacienteV")=1 and aut("|valordoprocedimentoV|")=1 then
+                                <% elseif aut("areceberpacienteV")=1 and aut("|valordoprocedimentoV|")=1 then
                                         %>
                                         <%=quickField("text", "Valor", "", 5, Valor, " text-right input-mask-brl valorprocedimento", "", "")%>
                                         <%

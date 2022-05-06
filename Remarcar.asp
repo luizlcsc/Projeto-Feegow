@@ -221,6 +221,8 @@ if Acao="Remarcar" then
             rfPaciente=AgendamentoSQL("PacienteID")
             rfStaID=1
             rfLocal=AgendamentoSQL("LocalID")
+            rfEspecialidade=AgendamentoSQL("EspecialidadeID")
+		    rfTabelaParticularID=AgendamentoSQL("TabelaParticularID")
             
             'if ProfissionalID&"" = "" then
             '	rfProfissionalID =AgendamentoSQL("ProfissionalID")
@@ -247,7 +249,7 @@ if Acao="Remarcar" then
             HoraSolFin=dateAdd("n",TempoSol,HoraSolIni)
             HoraSolFin=cDate(hour(HoraSolFin)&":"&minute(HoraSolFin))
 
-            db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&AgendamentoSQL("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&")")
+            db_execute("insert into agendamentos (PacienteID, ProfissionalID, Data, Hora, TipoCompromissoID, StaID, ValorPlano, rdValorPlano, Notas, FormaPagto, LocalID, Tempo, HoraFinal,Procedimentos, EquipamentoID, sysUser, EspecialidadeID, TabelaParticularID) values ('"&rfPaciente&"', "&treatvalzero(rfProfissionalID)&", "&mydatenull(Data)&", "&mytime(Hora)&", '"&rfProcedimento&"', '"&rfStaID&"', "&treatvalzero(rfValorPlano)&", '"&rfrdValorPlano&"', '"&rfNotas&"', '0', "&treatvalzero(LocalID)&", '"&rfTempo&"', '"&HoraSolFin&"','"&AgendamentoSQL("Procedimentos")&"','"&EquipamentoID&"', "&session("User")&", "&treatvalnull(rfEspecialidade)&", "&treatvalnull(rfTabelaParticularID)&")")
             set pultCon=db.execute("select id, ProfissionalID, ConfSMS, ConfEmail from agendamentos where ProfissionalID="&treatvalzero(rfProfissionalID)&" and Data="&mydatenull(Data)&" and Hora="&mytime(Hora)&" order by id desc limit 1")
             'procedimentos
             

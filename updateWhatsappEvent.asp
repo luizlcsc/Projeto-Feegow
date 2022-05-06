@@ -34,17 +34,22 @@ if instr(procedimentos, "|ALL|") > 0 then
 end if
 
 if eventoID <> "" then 
-    updateEventoSQL="   UPDATE eventos_emailsms eve SET eve.Descricao ='"+nomeEvento+"', eve.ModeloID = '"+modeloID+"',     "&chr(13)&_
-                    "   eve.`Status` = '"+statusAgenda+"', eve.IntervaloHoras = '"+intervalo+"', eve.AntesDepois =          "&chr(13)&_
-                    "   '"+antesDepois+"', eve.ApenasAgendamentoOnline = '"+paraApenas+"', eve.Ativo = '"+ativoCheckbox+"', "&chr(13)&_
-                    "   eve.Profissionais ='"+profissionais+"', eve.Unidades = '"+unidades+"', eve.Especialidades =         "&chr(13)&_
-                    "   '"+especialidades+"', eve.Procedimentos = '"+procedimentos+"', eve.EnviarPara = '"+enviarPara+"',   "&chr(13)&_
-                    "   eve.sysUser = '"+sysUser+"', eve.LinkPersonalizado = '"+linkPers+"' WHERE eve.id = "+eventoID
+    if deleteEvento = "1" then
+        deletarEventoSQL = "UPDATE eventos_emailsms eve SET eve.sysActive = -1 WHERE eve.id = "+eventoID
+        db.execute(deletarEventoSQL)
+        tpOperacao = "X"
+    else
+        updateEventoSQL="   UPDATE eventos_emailsms eve SET eve.Descricao ='"+nomeEvento+"', eve.ModeloID = '"+modeloID+"',     "&chr(13)&_
+                        "   eve.`Status` = '"+statusAgenda+"', eve.IntervaloHoras = '"+intervalo+"', eve.AntesDepois =          "&chr(13)&_
+                        "   '"+antesDepois+"', eve.ApenasAgendamentoOnline = '"+paraApenas+"', eve.Ativo = '"+ativoCheckbox+"', "&chr(13)&_
+                        "   eve.Profissionais ='"+profissionais+"', eve.Unidades = '"+unidades+"', eve.Especialidades =         "&chr(13)&_
+                        "   '"+especialidades+"', eve.Procedimentos = '"+procedimentos+"', eve.EnviarPara = '"+enviarPara+"',   "&chr(13)&_
+                        "   eve.sysUser = '"+sysUser+"', eve.LinkPersonalizado = '"+linkPers+"' WHERE eve.id = "+eventoID
 
-    db.execute(updateEventoSQL)
-end if
-
-if eventoID = "" then
+        db.execute(updateEventoSQL)
+        tpOperacao = "E"
+    end if
+else
     insertEventoSQL="   INSERT INTO eventos_emailsms                                                                                        "&chr(13)&_
                     "   (Descricao, ModeloID, `Status`, IntervaloHoras, AntesDepois, ApenasAgendamentoOnline, Ativo, LinkPersonalizado,     "&chr(13)&_
                     "   `Profissionais`, Unidades, `Especialidades`, `Procedimentos`, EnviarPara, Whatsapp, sysUser, sysActive)             "&chr(13)&_
@@ -53,10 +58,17 @@ if eventoID = "" then
                     "   '"+procedimentos+"', '"+enviarPara+"', 1, '"+sysUser+"', 1)                                                         "
 
     db.execute(insertEventoSQL)
+
+    sqlUltimoInsert  = "SELECT LAST_INSERT_ID() as eventoID"
+    set registro = db.execute(sqlUltimoInsert)
+    ultimoEventoID = registro("eventoID")
+    eventoID = ultimoEventoID
+
+    tpOperacao = "I"   
     
-elseif deleteEvento = 1 then
-    deletarEventoSQL = "UPDATE eventos_emailsms eve SET eve.sysActive = -1 WHERE eve.id = "+eventoID
-    db.execute(deletarEventoSQL)
 end if
+
+'****** ADICIONANDO LOG DE OPERAÇÃO *******
+db.execute("insert into log (I, Operacao, recurso, colunas, valorAnterior, valorAtual, sysUser) values ("&eventoID&", '"&tpOperacao&"', 'evento_whatsapp', '', '', '', '"&session("User")&"')")
 
 %>

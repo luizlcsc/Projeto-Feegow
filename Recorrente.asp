@@ -58,7 +58,7 @@ if InvoiceID="N" then
     if req("PacienteID")<>"" then
         reqPacDireto = "&PacienteID="&req("PacienteID")
     end if
-	response.Redirect("?P=Recorrente&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD )'A=AgendamentoID quando vem da agenda
+	response.Redirect("?P=Recorrente&I="&vie("id")&"&A="&req("A")&"&Pers=1&T="&CD &"&Account="&req("Account"))'A=AgendamentoID quando vem da agenda
 else
 	set data = db.execute("select * from "&tableName&" where id="&InvoiceID)
 	if data.eof then
@@ -82,6 +82,17 @@ if data("sysActive")=1 then
     PrimeiroVencto = data("PrimeiroVencto")
 else
     PrimeiroVencto = date()
+end if
+
+Account = req("Account")
+
+sqlAccountId = ""
+if instr(Account, "_") then
+    AccountSplt = split(Account, "_")
+    ContaID = AccountSplt(1) 
+    AssID = AccountSplt(0) 
+
+    Pagador = Account
 end if
 
 LicencaFinanceiro =  session("Banco")="clinic100003" or session("Banco")="clinic5459"
@@ -193,12 +204,12 @@ posModalPagar = "fixed"
             <div class="panel-heading">
                 <span class="panel-title">Itens <small>&raquo; servi&ccedil;os, produtos e outros</small></span>
                 <div class="panel-controls">
-                    <div class="btn-toolbar">
+                    <div class="">
                 	    <%if CD="C" then%>
                         <div class="btn-group">
                             <button class="btn btn-success btn-sm dropdown-toggle disable" data-toggle="dropdown">
-                            <i class="far fa-plus"> Adicionar Item</i>
-                            <span class="far fa-caret-down icon-on-right"></span>
+                            <i class="far fa-plus"> </i> Adicionar Item
+                            <span class="caret ml5"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-success">
                                 <li>
@@ -220,8 +231,8 @@ posModalPagar = "fixed"
     
                         <div class="btn-group">
                             <button class="btn btn-success btn-sm dropdown-toggle disable<% If CD="D" Then %> hidden<% End If %>" data-toggle="dropdown">
-                            <i class="far fa-plus"> Adicionar Pacote</i>
-                            <span class="far fa-caret-down icon-on-right"></span>
+                            <i class="far fa-plus"> </i> Adicionar Pacote
+                            <span class="caret ml5"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-success">
                               <%
@@ -362,7 +373,7 @@ $(function() {
     $( "#pagar" ).draggable();
 });
 
-if( $(".parte-paga").size()>0 ){
+if( $(".parte-paga").size()>0 && $(".parte-paga").val()!=='' ){
     disable(true);
 }
 
@@ -442,7 +453,7 @@ recorrenteLista();
        }, true);
  });
  function saveRecorrente(){
-     $('#save').click();
+     $('#formItens').submit();
      recorrenteLista();
  }
  </script>

@@ -35,7 +35,7 @@ while not preen.eof
 			em = "Em "
 		end if
     
-    if autForm(preen("ModeloID"), "VO", "")=true or autForm(preen("ModeloID"), "AO", "")=true or preen("preenchedor")=session("User") then
+    if autForm(preen("ModeloID"), "VO", "", "")=true or autForm(preen("ModeloID"), "AO", "", "")=true or preen("preenchedor")=session("User") then
 		%>
         <li><a href="javascript:callForm(<%=preen("PacienteID")%>, <%=preen("ModeloID")%>, <%=preen("idpreen")%>);"><i class="far fa-edit"></i> <%=em&left(preen("DataHora"),10)&" "&preen("Nome") &" "& por%></a></li>
 	    <%

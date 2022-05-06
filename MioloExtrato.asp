@@ -31,6 +31,13 @@ end if
 	end if
     %>
     <div class="panel hidden-print">
+        <div class="panel-heading">
+            <div class='painel-header-flex'>
+                <span class="panel-controls">
+                    <button class="btn btn-sm btn-primary" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i>Gerar</button>
+                </span>
+            </div>
+        </div>
         <div class="panel-body">
             <div class="row">
                 <%
@@ -105,7 +112,12 @@ end if
                 <label>&nbsp;</label><br />
                 <button class="btn btn-sm btn-primary btn-block" id="Filtrate" name="Filtrate"><i class="far fa-search bigger-110"></i>Gerar</button>
             </div>
-
+            <% if AccountID <> "" then %>
+                <div class="col-md-2">
+                    <label>&nbsp;</label><br />
+                    <button onclick="transaction(4,'','','<%=AccountID%>');" class="btn-export btn btn-sm btn-success btn-block" data-toggle="modal" href="#modal-table"><i class="fa fa-exchange"></i><span class="menu-text"> Transferência</span></button>
+                </div>
+            <%end if%>
         </div>
     </div>
     <div class="panel">
@@ -166,11 +178,14 @@ function downloadExcel(){
 
 $("#frmExtrato").submit(function(){
 	$("#Extrato").html('Carregando...');
+    toggleBtnLoading("#Filtrate");
+
 	$(".btn-export").attr("disabled", false);
     $.post("ExtratoConteudo.asp", $("#frmExtrato").serialize(), 
     function(data)
     { 
         $("#Extrato").html(data) 
+        toggleBtnLoading("#Filtrate");
     });
 	return false;
 });

@@ -259,13 +259,7 @@ end if
             if(typeof(item) !== "undefined"){
                 item.NovaDescricao = item.Descricao ? item.Descricao:item.NomeArquivo;
             }else{
-                item = {
-                    NovaDescricao: "",
-                    NomeArquivo: "",
-                    thumbnailLink: "",
-                    ArquivoLink: "",
-                    link: ""
-                }
+                return false;
             }
 
             let isImage = true
@@ -578,9 +572,11 @@ Em ${moment(item.DataHora).format('DD/MM/YYYY H:mm:ss')}<br/> ${item.NovaDescric
     function reloadItens(){
         $("[id-img-arquivos]").map((a,b) => {
             let _item = itens.find(item => item.id == $(b).attr("id-img-arquivos"));
-                processaItem(_item);
-               $(b).attr("src",_item.link);
-               $(b).parent().attr("href",_item.ArquivoLink);
+                if(_item){
+                    processaItem(_item);
+                   $(b).attr("src",_item.link);
+                   $(b).parent().attr("href",_item.ArquivoLink);
+                }
         })
     }
 

@@ -206,7 +206,7 @@ end if
                     <div class="row">
                         <div class="col-md-12">
                             <label for="InputObservacao">Observação</label>
-                            <textarea class="form-control" id="InputObservacao"></textarea>
+                            <textarea class="form-control" id="InputObservacao"><%=req("Observacao")%></textarea>
                         </div>
                     </div>
                 </div>

@@ -472,7 +472,7 @@ end if
             end if
 
 
-            if aut("autorizacaodeacessosuporte")=1 then
+            if aut("autorizacaodeacessosuporte")=1 or True then
 %>
 
 

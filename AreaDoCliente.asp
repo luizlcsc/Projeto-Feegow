@@ -486,7 +486,7 @@ end if
                 set SolicitacaoAcessoSQL = dbc.execute("SELECT m.*, p.Foto, LEFT(p.NomeProfissional, 15) NomeProfissional, CONCAT(mm.Motivo, ' #',IFNULL(m.Ticket,'0'))DescricaoSolicitacao FROM cliniccentral.admin_senhas_master m "&_
                                                        "JOIN clinic5459.sys_users u ON u.id=m.usuarioId "&_
                                                        "JOIN clinic5459.profissionais p ON p.id=u.idInTable AND u.`Table`='profissionais' "&_
-                                                       "JOIN admin_senhas_master_motivo mm ON mm.id=m.MotivoID "&_
+                                                       "JOIN cliniccentral.admin_senhas_master_motivo mm ON mm.id=m.MotivoID "&_
                                                        " "&_
                                                        "WHERE m.LicencaID="&LicenseId&" "&_
                                                        "AND m.Status!='N/A' "&_

@@ -254,8 +254,8 @@ end if
                 ExibeRadio = True
                 checked = ""
                 contaPaciente = False
-                PacienteID = req("PacienteID")
-                if PacienteID<>0 and getTransactionType("id")<>4 then
+                PacienteID = req("PacienteID")&""
+                if PacienteID <> "0" and getTransactionType("id")<>4 then
                     ExibeRadio = False
                 elseif PacienteID<>0 and getTransactionType("id")=4 then
                     checked = "checked"

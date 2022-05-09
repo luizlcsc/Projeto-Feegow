@@ -46,13 +46,20 @@ if not pCampo.eof then
         else
         %>
         console.log('<%= (Calculo) %>');
-        <%
-            Valor = eval(Calculo)
-            if isnumeric(Valor) then
-                Calculo = formatnumber(Valor, 2)
-            else
+        <%  
+
+            hasDivisionByZero = instr(replace(Calculo, " ", ""), "/0") > 0
+            if hasDivisionByZero then
                 Calculo = "0"
+            else
+                Valor = eval(Calculo)
+                if isnumeric(Valor) then
+                    Calculo = formatnumber(Valor, 2)
+                else
+                    Calculo = "0"
+                end if
             end if
+            
         end if
 
         if Calculo&""="" then

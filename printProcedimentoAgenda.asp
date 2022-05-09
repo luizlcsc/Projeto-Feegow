@@ -8,6 +8,7 @@ ProfissionalID= req("ProfissionalID")
 UnidadeID= req("UnidadeID")
 TipoImpresso= req("Tipo")
 Solicitante= req("solicitante")
+AgendamentoID= req("AgendamentoID")
 DataAgendamento = req("DataAgendamento")
 Imprime=False
 ProAssociationID = "5"
@@ -61,7 +62,7 @@ if TipoImpresso="Protocolo" then
         end if
 
         if LaudoID<>"" then
-            UrlPrint = "printLaudoProtocolo.asp?L="&LaudoID
+            UrlPrint = "printLaudoProtocolo.asp?L="&LaudoID&"&AgendamentoID="&AgendamentoID
             Imprime=True
             %>
             $("#ImpressaoProcedimento").remove();

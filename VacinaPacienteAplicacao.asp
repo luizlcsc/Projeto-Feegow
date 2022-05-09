@@ -40,7 +40,11 @@ if ref("opt") = "AtualizaLote" then
         $('.select-lote').select2();
     </script>
 <%
-else 
+else
+StatusID = "0"
+if req("StatusID")&"" <> "" then
+    StatusID = req("StatusID")
+end if
 %>
 
 <div class="modal-header ">
@@ -60,131 +64,201 @@ else
             <div class="row">
                 <div class="col-xs-12">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="InputDataAplicacao">Data de aplicação</label>
-                            <div class="input-group">
-                                <input id="InputDataAplicacao" autocomplete="off" class="form-control input-mask-date date-picker" type="text" data-date-format="dd/mm/yyyy" value="<%=Right("00"&Day(date),2)&"/"&Right("00"&Month(date),2)&"/"&Year(date)%>">
-                                <span class="input-group-addon">
-                                <i class="far fa-calendar bigger-110"></i>
-                                </span>
-                            </div>	
-                        </div>
-                        <div class="col-md-4">
-                            <label for="SelectViaAplicacao">Via</label>
-                            <select id="SelectViaAplicacao" name="SelectViaAplicacao" class="select-via">
-                                <option value="0">Selecione
-<%
-                                set vias = db.execute(" SELECT id, "&_
-                                                    " CONCAT(NomeViaAplicacao, ' (',SiglaViaAplicacao,')') AS SiglaViaAplicacao"&_
-                                                    " FROM cliniccentral.vacina_via_aplicacao ORDER BY 2 ")
-                                while not vias.EOF
-                                    response.Write("<option value='"&vias("id")&"'>"&vias("SiglaViaAplicacao"))
-                                    vias.movenext
-                                wend
+                        <%if StatusID = "3" then%>
+                            <%=quickField("text", "InputDataAplicacao", "Data de aplicação", 4, req("DataAplicacao"), "", "", " readOnly")%>
+                        <%else%>
+                            <div class="col-md-4">
+                                <label for="InputDataAplicacao">Data de aplicação</label>
+                                <div class="input-group">
+                                    <input id="InputDataAplicacao" autocomplete="off" class="form-control input-mask-date date-picker" type="text" data-date-format="dd/mm/yyyy" value="<%=Right("00"&Day(date),2)&"/"&Right("00"&Month(date),2)&"/"&Year(date)%>" <%=readOnly%>>
+                                    <span class="input-group-addon">
+                                    <i class="far fa-calendar bigger-110"></i>
+                                    </span>
+                                </div>	
+                            </div>
+                        <%end if%>
+                        <%if StatusID = "3" then%>
+                            <%=quickField("text", "SelectViaAplicacao", "Via", 4, req("NomeViaAplicacao"), "", "", " readOnly")%>
+                        <%else%>
+                            <div class="col-md-4">
+                                <label for="SelectViaAplicacao">Via</label>
+                                    <select id="SelectViaAplicacao" name="SelectViaAplicacao" class="select-via">
+                                        <option value="0">Selecione
+        <%
+                                        set vias = db.execute(" SELECT id, "&_
+                                                            " CONCAT(NomeViaAplicacao, ' (',SiglaViaAplicacao,')') AS SiglaViaAplicacao"&_
+                                                            " FROM cliniccentral.vacina_via_aplicacao ORDER BY 2 ")
+                                        while not vias.EOF
+                                            response.Write("<option value='"&vias("id")&"'>"&vias("SiglaViaAplicacao"))
+                                            vias.movenext
+                                        wend
 
-                                vias.close
-                                set vias = nothing
-%>
-                            </select>	
-                        </div>
-                        <div class="col-md-4">
-                            <label for="SelectLadoAplicacao">Lado</label>
-                            <select id="SelectLadoAplicacao" name="SelectLadoAplicacao" class="select-lado">
-                                <option value="0">Selecione
-                                <option value="1">Direito
-                                <option value="2">Esquerdo
-                            </select>	
-                        </div>
+                                        vias.close
+                                        set vias = nothing
+        %>
+                                    </select>
+                            </div>
+                        <%end if%>
+                        <%if StatusID = "3" then%>
+                            <%=quickField("text", "SelectLadoAplicacao", "Lado", 4, req("LadoAplicacao"), "", "", " readOnly")%>
+                        <%else%>
+                            <div class="col-md-4">
+                                <label for="SelectLadoAplicacao">Lado</label>
+                                <select id="SelectLadoAplicacao" name="SelectLadoAplicacao" class="select-lado">
+                                    <option value="0">Selecione
+                                    <option value="1">Direito
+                                    <option value="2">Esquerdo
+                                </select>	
+                            </div>
+                        <%end if%>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="row">
-                        <div class="col-md-6">
-                            <label for="SelectUnidade">Unidade</label>
-                            <select id="SelectUnidade" name="SelectUnidade" class="select-unidade">
-                                <option value="-1">Selecione
-<%
-                                set produtos = db.execute(" SELECT '0' id, "&_
-                                                            " NomeFantasia "&_
-                                                            " FROM empresa UNION ALL SELECT CAST(id AS CHAR), NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 ")
+                        <%if StatusID = "3" then%>
+                            <%=quickField("text", "SelectUnidade", "Unidade", 6, req("Unidade"), "", "", " readOnly")%>
+                        <%else%>
+                            <div class="col-md-6">
+                                <label for="SelectUnidade">Unidade</label>
+                                <select id="SelectUnidade" name="SelectUnidade" class="select-unidade">
+                                    <option value="-1">Selecione
+    <%
+                                    set produtos = db.execute(" SELECT '0' id, "&_
+                                                                " NomeFantasia "&_
+                                                                " FROM empresa UNION ALL SELECT CAST(id AS CHAR), NomeFantasia FROM sys_financialcompanyunits WHERE sysActive=1 ")
 
-                                while not produtos.EOF
-                             
-                                    if "'"&produtos("id")&"'" = "'"&session("UnidadeID")&"'" then
-                                        selecionado = "selected"
-                                    end if
-                                        
-                                    response.Write("<option value='"&produtos("id")&"' "&selecionado&">"&produtos("NomeFantasia"))
-                                    
-                                    selecionado = ""
-
-                                    produtos.movenext
-                                wend
-
-                                produtos.close
-                                set produtos = nothing
-
-%>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="SelectPosicao">Lote</label>
-                            <div id="DivSelectPosicao">
-                                <select id="SelectPosicao" name="SelectPosicao" class="select-lote">
-<%
-                                    sqlLote = " SELECT p.NomeProduto AS descricao, "&_
-                                                                                                              " e.Lote, "&_
-                                                                                                              " e.id AS PosicaoID "&_
-                                                                                                              " FROM vacina_aplicacao va "&_
-                                                                                                              " JOIN vacina_serie_dosagem vsd ON vsd.id = va.VacinaSerieDosagemID "&_
-                                                                                                              " JOIN produtos p ON p.id = vsd.ProdutoID "&_
-                                                                                                              " JOIN estoqueposicao e ON e.ProdutoID = p.id "&_
-                                                                                                              " LEFT JOIN produtoslocalizacoes pl ON pl.id = e.LocalizacaoID "&_
-                                                                                                              " WHERE va.id = "&ref("valor2")&_
-                                                                                                              " AND (pl.UnidadeID = "&session("UnidadeID")&" or pl.UnidadeID IS NULL)"&_
-                                                                                                              " AND e.Quantidade >= 1"&_
-                                                                                      " AND (CASE WHEN Responsavel IS NOT NULL AND TRIM(Responsavel) <> '' AND TRIM(Responsavel) <> '0' AND Responsavel REGEXP '^3_' THEN (CASE WHEN Responsavel REGEXP '^3_' THEN Responsavel END) = CONCAT('3_',"&ref("valor1")&") ELSE 1 = 1 END)"
-
-                                    set produtos = db.execute(sqlLote)
-
-                                    if not produtos.EOF then
-                                        %> <option value="-1">Selecione <%
-                                    else
-                                        response.write("<option value='0'>Nenhum lote encontrado")
-                                    end if
-                                    
                                     while not produtos.EOF
-                                        response.Write("<option value='"&produtos("PosicaoID")&"'>"&produtos("Lote")&" - "&produtos("descricao")&"")
+                                
+                                        if "'"&produtos("id")&"'" = "'"&session("UnidadeID")&"'" then
+                                            selecionado = "selected"
+                                        end if
+                                            
+                                        response.Write("<option value='"&produtos("id")&"' "&selecionado&">"&produtos("NomeFantasia"))
+                                        
+                                        selecionado = ""
+
                                         produtos.movenext
                                     wend
 
                                     produtos.close
                                     set produtos = nothing
-%>
+
+    %>
                                 </select>
+                            </div>
+                        <%end if%>
+                        <%if StatusID = "3" then%>
+                            <%=quickField("text", "SelectPosicao", "Dose", 6, req("Dose"), "", "", " readOnly")%>
+                        <%else%>
+                            <div class="col-md-6">
+                                <label for="SelectPosicao">Lote</label>
+                                <div id="DivSelectPosicao">
+                                    <select id="SelectPosicao" name="SelectPosicao" class="select-lote">
+    <%
+                                        sqlLote = " SELECT p.NomeProduto AS descricao, "&_
+                                                                                                                " e.Lote, "&_
+                                                                                                                " e.id AS PosicaoID "&_
+                                                                                                                " FROM vacina_aplicacao va "&_
+                                                                                                                " JOIN vacina_serie_dosagem vsd ON vsd.id = va.VacinaSerieDosagemID "&_
+                                                                                                                " JOIN produtos p ON p.id = vsd.ProdutoID "&_
+                                                                                                                " JOIN estoqueposicao e ON e.ProdutoID = p.id "&_
+                                                                                                                " LEFT JOIN produtoslocalizacoes pl ON pl.id = e.LocalizacaoID "&_
+                                                                                                                " WHERE va.id = "&ref("valor2")&_
+                                                                                                                " AND (pl.UnidadeID = "&session("UnidadeID")&" or pl.UnidadeID IS NULL)"&_
+                                                                                                                " AND e.Quantidade >= 1"&_
+                                                                                        " AND (CASE WHEN Responsavel IS NOT NULL AND TRIM(Responsavel) <> '' AND TRIM(Responsavel) <> '0' AND Responsavel REGEXP '^3_' THEN (CASE WHEN Responsavel REGEXP '^3_' THEN Responsavel END) = CONCAT('3_',"&ref("valor1")&") ELSE 1 = 1 END)"
+
+                                        set produtos = db.execute(sqlLote)
+
+                                        if not produtos.EOF then
+                                            %> <option value="-1">Selecione <%
+                                        else
+                                            response.write("<option value='0'>Nenhum lote encontrado")
+                                        end if
+                                        
+                                        while not produtos.EOF
+                                            response.Write("<option value='"&produtos("PosicaoID")&"'>"&produtos("Lote")&" - "&produtos("descricao")&"")
+                                            produtos.movenext
+                                        wend
+
+                                        produtos.close
+                                        set produtos = nothing
+    %>
+                                    </select>
+                                </div>
+                            </div>
+                        <%end if%>
+                    </div>
+                </div>
+            </div>
+            <%if StatusID = "3" then%>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="InputObservacao">Observação</label>
+                                <textarea class="form-control" id="InputObservacao"><%=req("Observacao")%></textarea>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="InputObservacao">Observação</label>
-                            <textarea class="form-control" id="InputObservacao"></textarea>
-                        </div>
-                    </div>
+                <div class="row" id="DivHistoricoAplicacaoVacina" style="display:none;">
+                    <h3 class="lighter blue">Histórico de Aplicação</h3>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Data</th>
+                                <th>Usuário</th>
+                                <th>Obs Anterior</th>
+                                <th>Obs Alterada</th>
+                            </tr>
+                        </thead>
+                        <%
+                            'Criar select para buscar dados
+                            set HistoricoVacinaAplicacao = db.execute("SELECT va.id AS VacinaAplicacaoID, va.DataAplicacao, su.`Table`, p.NomeProfissional, f.NomeFuncionario, l.ValorAnterior as ObsAnterior, l.valorAtual as ObsAtual  FROM vacina_aplicacao va "&_
+                                                                        " LEFT JOIN log l ON l.I = va.id "&_
+                                                                        " LEFT JOIN sys_users su ON su.id = l.sysUser "&_
+                                                                        " LEFT JOIN profissionais p ON p.id = su.idInTable "&_
+                                                                        " LEFT JOIN funcionarios f ON f.id = su.idInTable "&_
+                                                                        " WHERE (va.id = 373 AND l.I=373) AND l.recurso='vacina_aplicacao'")
+                        %>
+                        <tbody>
+                            <%
+                                while not HistoricoVacinaAplicacao.eof
+                                    UsuarioAlteracao = HistoricoVacinaAplicacao("NomeProfissional")
+                                    if LCase(HistoricoVacinaAplicacao("Table")) <> "profissionais" then
+                                        UsuarioAlteracao = HistoricoVacinaAplicacao("NomeFuncionario")
+                                    end if
+                            %>
+                                    <tr>
+                                        <th><code>#<%=HistoricoVacinaAplicacao("VacinaAplicacaoID")%></code></th>
+                                        <th><%=HistoricoVacinaAplicacao("DataAplicacao")%></th>
+                                        <th><%=UsuarioAlteracao%></th>
+                                        <td><%=replace(replace(HistoricoVacinaAplicacao("ObsAnterior"),"|^",""),"^|","")%></td>
+                                        <td><%=replace(replace(HistoricoVacinaAplicacao("ObsAtual"),"|^",""),"^|","")%></td>
+                                    </tr>
+                            <%
+                                HistoricoVacinaAplicacao.movenext
+                                wend
+                                HistoricoVacinaAplicacao.close
+                                set HistoricoVacinaAplicacao = nothing
+                            %>       
+                        </tbody>
+                    </table>
                 </div>
-            </div>
+            <%end if%>
         </div>
     </div>
 </div> 
 
 <div class="modal-footer no-margin-top">
     <button class="btn btn-sm btn-primary pull-right" id="saveVacinaPacienteAplicacao"><i class="far fa-save"></i> Salvar</button>
+    <%if StatusID = "3" then%>
+        <button title="Histórico de Aplicação" class="btn btn-sm btn-default hidden-xs mr10 pull-right" id="historicoAplicacaoVacina"><i class="far fa-history"></i> </button>
+    <%end if%>
 </div>
 
 <script type="text/javascript">
@@ -220,6 +294,7 @@ else
 
         $.post("saveVacinaPaciente.asp",{
             Tipo:"Aplicacao",
+            StatusID:'<%=StatusID%>',
             PacienteID:'<%=ref("valor1")%>',
             AplicacaoID: <%=ref("valor2")%>,
             DataAplicacao: novaDataAplicacao,
@@ -232,6 +307,9 @@ else
             pront('timeline.asp?PacienteID=<%=ref("valor1")%>&Tipo=|VacinaPaciente|');
             eval(data);
         });
+    });
+    $('#historicoAplicacaoVacina').click(function(){
+        $('#DivHistoricoAplicacaoVacina').toggle();
     });
 </script>
 <%

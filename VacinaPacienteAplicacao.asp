@@ -200,17 +200,18 @@ end if
                     <label><input class="ace" type="radio" id="TipoUnidadeU" name="TipoUnidade" required="required" value="U"><span class="lbl" id="TipoUnidadeUTexto"> </span></label>
                 </div>
             </div>
-            <%if StatusID = "3" then%>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="InputObservacao">Observação</label>
-                                <textarea class="form-control" id="InputObservacao"><%=req("Observacao")%></textarea>
-                            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="InputObservacao">Observação</label>
+                            <textarea class="form-control" id="InputObservacao"><%=req("Observacao")%></textarea>
                         </div>
                     </div>
                 </div>
+            </div>
+            <%
+            if StatusID = "3" then%>
                 <div class="row" id="DivHistoricoAplicacaoVacina" style="display:none;">
                     <h3 class="lighter blue">Histórico de Aplicação</h3>
                     <table class="table table-striped table-bordered">
@@ -230,7 +231,7 @@ end if
                                                                         " LEFT JOIN sys_users su ON su.id = l.sysUser "&_
                                                                         " LEFT JOIN profissionais p ON p.id = su.idInTable "&_
                                                                         " LEFT JOIN funcionarios f ON f.id = su.idInTable "&_
-                                                                        " WHERE (va.id = 373 AND l.I=373) AND l.recurso='vacina_aplicacao'")
+                                                                        " WHERE (va.id = "&ref("valor2")&" AND l.I="&ref("valor2")&") AND l.recurso='vacina_aplicacao'")
                         %>
                         <tbody>
                             <%
@@ -366,3 +367,4 @@ end if
 
     });
 </script>
+<%end if%>

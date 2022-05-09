@@ -61,6 +61,7 @@ select case ref("Tipo")
                 set pos = db.execute("select *, p.id as ProdutoID, ep.LocalizacaoID as Localizacao from estoqueposicao ep join produtos p on p.id = ep.ProdutoID join vacina_serie_dosagem vsd on vsd.ProdutoID = p.id where ep.id = "& PosicaoID)
                 if not pos.eof then
                     TipoUnidade = ref("TipoUnidade")
+                    ProdutoID = pos("ProdutoID")
                     TipoUnidadeOriginal = pos("TipoUnidade")
                     ResponsavelOriginal = pos("Responsavel")
                     Responsavel = pos("Responsavel")

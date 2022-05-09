@@ -256,7 +256,17 @@ end if
     }
 
     function processaItem(item){
-            item.NovaDescricao = item.Descricao?item.Descricao:item.NomeArquivo;
+            if(typeof(item) !== "undefined"){
+                item.NovaDescricao = item.Descricao ? item.Descricao:item.NomeArquivo;
+            }else{
+                item = {
+                    NovaDescricao: "",
+                    NomeArquivo: "",
+                    thumbnailLink: "",
+                    ArquivoLink: "",
+                    link: ""
+                }
+            }
 
             let isImage = true
             let extension = item.NomeArquivo.substr(item.NomeArquivo.lastIndexOf('.') + 1).toLowerCase();

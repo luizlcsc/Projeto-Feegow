@@ -361,12 +361,9 @@ end if
         let valorInteiro = valorLimpo.substr(0,(tamanhoCampo-2));
         let valorPosVirgula = valorLimpo.substr((tamanhoCampo-2), 2);
         $("#Quantidade").val(valorInteiro+','+valorPosVirgula);
-
+    });
     $('#historicoAplicacaoVacina').click(function(){
         $('#DivHistoricoAplicacaoVacina').toggle();
 
     });
 </script>
-<%
-end if
-%>

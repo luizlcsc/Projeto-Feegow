@@ -30793,3 +30793,14 @@ select[tabindex="-1"], .multisel {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
+
+.btn-outline-success{
+    border: 1px solid #26DE81;
+    background: transparent;
+    color: #26DE81;
+}
+.btn-outline-danger{
+    border: 1px solid #EE5253;
+    background-color: transparent;
+    color: #EE5253;
+}

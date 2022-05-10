@@ -76,9 +76,7 @@ if not PacienteSQL.eof then
     EtiquetaAgendamento = replace(EtiquetaAgendamento, "[Paciente.Convenio]", AgendamentoProcedimentoSQL("NomeConvenio")&"")
 
 	EtiquetaAgendamento = unscapeOutput(replaceTags(EtiquetaAgendamento, PacienteSQL("id"), session("User"), session("Unidade")))
-	EtiquetaAgendamento = tagsConverte(EtiquetaAgendamento,"AgendamentoID_"&AgendamentoID,"")
-	EtiquetaAgendamento = tagsConverte(EtiquetaAgendamento,"ProfissionalID_"&ProfissionalID,"")
-	EtiquetaAgendamento = tagsConverte(EtiquetaAgendamento,"ProcedimentoID_"&ProcedimentoID,"")
+	EtiquetaAgendamento = tagsConverte(EtiquetaAgendamento,"AgendamentoID_"&AgendamentoID&"|ProfissionalID_"&ProfissionalID&"|ProcedimentoID_"&ProcedimentoID,"")
     
     %>
 <style>

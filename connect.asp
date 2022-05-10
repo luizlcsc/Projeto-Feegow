@@ -2751,7 +2751,9 @@ function replateTagsPaciente(valor,PacienteID)
                 end select
                 val = trim(val&" ")
                 if Tag = "Cpf" or Tag = "CPF" then
-                    Val = formatCPF(Val&"")
+                    if Val&"" <> "" then
+                        Val = formatCPF(Val&"")
+                    end if
                 end if
                 valor = replace(valor, "[Paciente."&Tag&"]", Val)
             rec.movenext

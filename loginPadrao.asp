@@ -421,6 +421,7 @@ if not tryLogin.EOF then
 
             session("Permissoes") = sysUser("Permissoes")&""
             session("ModoFranquia") = getConfig("ModoFranquia")
+            session("TempoMaximoPorSessaoInativa")=getConfig("TempoMaximoPorSessaoInativa")
             if left(session("Permissoes"), 1)<>"|" then
                 IF session("ModoFranquia")=0 THEN
                     db_execute("update sys_users set Permissoes=concat('|', replace(Permissoes, ', ', '|, |'), '|' ) where Permissoes not like '|%'")

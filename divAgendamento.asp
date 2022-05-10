@@ -1136,7 +1136,7 @@ end if
                     </div>
                     <%
                     end if
-                    if aut("agendaX")=1 and (cdate(Data) >= date() or (cdate(Data) < date() and aut("agendamentosantigosX")=1)) then
+                    if aut("|agendaX|")=1 and (cdate(Data) >= date() or (cdate(Data) < date() and aut("|agendamentosantigosX|")=1)) then
                     %>
                     <div class="col-xs-5 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-danger btn-block" type="button" data-bb-handler="danger" onclick="excluiAgendamento(<%=ConsultaID%>, 0);">
@@ -1864,7 +1864,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
         somarValores();
     }
 }
-function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso) {
+function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso, AgendamentoID) {
 
     if(TipoImpresso === "Preparos"){
         $("body").append("<iframe id='ImpressaoEtiqueta' src='listaDePreparoPorProcedimento.asp?PacienteId="+PacienteID+"&procedimento="+ProcedimentoID+"' style='display:none;'></iframe>")
@@ -1882,6 +1882,7 @@ function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpre
         ProfissionalID:ProfissionalID,
         UnidadeID:'<%=UnidadeID%>',
         Tipo: TipoImpresso,
+        AgendamentoID:AgendamentoID,
         DataAgendamento: '<%=Data%>'
     }, function(data) {
         eval(data);

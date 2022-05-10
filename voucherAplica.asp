@@ -53,6 +53,7 @@ if Voucher<>"" then
                 Pacotes = vca("Pacotes")&""
                 Valor = vca("Valor")
                 TipoValor = vca("TipoValor")
+                AplicouVoucherProc = 0
 
                 for i=0 to ubound(spl)
                     Valor = 0
@@ -81,7 +82,15 @@ if Voucher<>"" then
                         response.write("$('#Desconto"& spl(i) &"').val('"& fn(Desconto) &"');")
 
                     end if
+
+                    if instr(Procedimentos, "|"& ref("ItemID"& spl(i)) &"|")>0 then
+                        AplicouVoucherProc = AplicouVoucherProc + 1
+                    end if                     
                 next
+
+                if AplicouVoucherProc = 0 then
+                    erro = "Voucher não pode ser aplicado para o(s) procedimento(s) selecionado(s)"
+                end if 
             end if
         end if
     end if

@@ -213,9 +213,11 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Nascimento]", PacientesSQL("Nascimento")&"")
                 conteudo = replace(conteudo, "[Paciente.Documento]", PacientesSQL("Documento")&"")
 
-                Prontuario = PacientesSQL("id")
-                if getConfig("AlterarNumeroProntuario") = 1 then
-                  Prontuario = PacientesSQL("idImportado")
+                if inStr(conteudo,"[Paciente.Prontuario]")>0 then
+                  Prontuario = PacientesSQL("id")
+                  if getConfig("AlterarNumeroProntuario") = 1 then
+                    Prontuario = PacientesSQL("idImportado")
+                  end if
                 end if
                 conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
                 'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS

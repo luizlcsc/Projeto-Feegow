@@ -218,8 +218,8 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                   if getConfig("AlterarNumeroProntuario") = 1 then
                     Prontuario = PacientesSQL("idImportado")
                   end if
+                  conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
                 end if
-                conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
                 'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
                 conteudo = replace(conteudo, "[Paciente.Convenio1]", PacientesSQL("Convenio1")&"")
                 conteudo = replace(conteudo, "[Paciente.Convenio2]", PacientesSQL("Convenio2")&"")

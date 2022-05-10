@@ -25,7 +25,7 @@ if FormID<>"N" then
 				negadoX = "N"
 			end if
 		else
-			if (autForm(ModeloID, "AO", "")=true and preen("sysUser")<>session("User")) or (autForm(ModeloID, "AP", "")=true and preen("sysUser")=session("User")) then
+			if (autForm(ModeloID, "AO", "","")=true and preen("sysUser")<>session("User")) or (autForm(ModeloID, "AP", "","")=true and preen("sysUser")=session("User")) then
 				negadoX = "N"
 			else
 				negadoX = "S"

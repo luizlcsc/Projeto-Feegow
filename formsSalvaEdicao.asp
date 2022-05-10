@@ -107,7 +107,7 @@ ELSE
 	EixoYQuery = "'"&EixoYQuery&"'"		
 END IF
 
-sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', Ordem="& treatvalzero(ref("Ordem")) &", "& alteraValorPadrao &"Tamanho='"&Tamanho&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Largura='"&Largura&"', AvisoFechamento="&treatvalzero(ref("AvisoFechamento"))&", Formula='"& ref("Formula") &"', Estruturacao='"& Estruturacao &"', EixoX = " &EixoXQuery& ", EixoY = " &EixoYQuery& ", InformacaoCampo = "&InformacaoCampoQuery&", enviardadoscid="&EnviarDadosCID&" where id = '"&replace(req("I"),"'","''")&"'"
+sql = "update buiCamposForms set NomeCampo='"&NomeCampo&"', RotuloCampo='"&RotuloCampo&"', Ordem="& treatvalzero(ref("Ordem")) &", "& alteraValorPadrao &"Tamanho='"&Tamanho&"', MaxCarac='"&MaxCarac&"', Checado='"&Checado&"', Obrigatorio='"&Obrigatorio&"', Texto='"&Texto&"', Largura='"&Largura&"', AvisoFechamento="&treatvalzero(ref("AvisoFechamento"))&", Formula='"& ref("Formula") &"', EixoX = " &EixoXQuery& ", EixoY = " &EixoYQuery& ", InformacaoCampo = "&InformacaoCampoQuery&", enviardadoscid="&EnviarDadosCID&" where id = '"&replace(req("I"),"'","''")&"'"
 
 ' response.Write("<br>// "&sql)
 db_execute(sql)

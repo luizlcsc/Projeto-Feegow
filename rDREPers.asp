@@ -128,6 +128,8 @@ ModeloID = ref("ModeloID")
                 Agrupamento = ", tg.NomeGrupo "
             elseif Tipo="O" then
                 Agrupamento = ", ct.Name "
+            elseif Tipo="M" then
+                Agrupamento = ", concat(ct.Name, ' (estoque)')"
             else
                 Agrupamento = ", '' "
             end if

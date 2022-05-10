@@ -335,7 +335,10 @@ function DefaultForm(tableName, id)
     					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &" order by ativo desc, "&initialOrder& palLimit&partirde&limite
                         elseif lcase(tableName)="pacientes" and session("SepararPacientes") and aut("vistodospacsV")=0 and lcase(session("Table"))="profissionais" then
                             sqlReg = "select * from pacientes where Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%' and sysActive=1 "&sqlInitial & sqlConstatus &" order by "&initialOrder& palLimit &partirde&limite
-                        else
+                        elseif lcase(tableName)="eventos_emailsms" then
+							'********** LISTA Configuração de eventos do e-mail/sms ***********							
+    					    sqlReg = "select * from "&tableName&" where whatsapp <> 1 and sysActive=1 "&sqlInitial & sqlConstatus &" order by "&initialOrder& palLimit &partirde&limite
+						else
     					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &" order by "&initialOrder& palLimit &partirde&limite
                         end if
                     else
@@ -833,12 +836,10 @@ function DefaultForm(tableName, id)
 
 					if ExibirPrazoRetornoBuscaPaciente then
 						
-						set age = db.execute("SELECT sp_retornaultimodiaretorno(a.PacienteID) PrazoRetorno, a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional "&_
-											" FROM agendamentos a "&_
-											" LEFT JOIN profissionais p ON p.id=a.ProfissionalID "&_
-											" LEFT JOIN procedimentos proc ON proc.id=a.TipoCompromissoID "&_
-											" WHERE a.StaID=3 AND a.PacienteID IN ("&calendars&") AND (proc.DiasRetorno !='' AND proc.DiasRetorno IS NOT NULL) "&_
-											" and sp_retornaultimodiaretorno(a.PacienteID) = DATE_ADD(a.Data, INTERVAL proc.DiasRetorno DAY)")
+						set age = db.execute("select DATE_ADD(a.Data, INTERVAL proc.DiasRetorno DAY) PrazoRetorno, a.PacienteID, a.id, a.Data, a.Hora, p.NomeProfissional from agendamentos a "&_
+						"LEFT JOIN profissionais p on p.id=a.ProfissionalID "&_
+						"LEFT JOIN procedimentos proc on proc.id=a.TipoCompromissoID "&_
+						"where a.StaID=3 AND a.id IN (0"&UltAgendamentoIds&") AND (proc.DiasRetorno !='' AND proc.DiasRetorno IS NOT NULL)")
 
 						while not age.eof
 							%>

@@ -90,7 +90,7 @@ if req("ConvenioID")<>"" then
         	<th nowrap="nowrap">Data Enviada</th>
         	<th nowrap="nowrap">Previsão</th>
         	<th nowrap="nowrap">Previsão Original</th>
-            <th nowrap="nowrap">Capa</th>
+            <th nowrap="nowrap">Imprimir</th>
             <th nowrap="nowrap" class="hidden">XML Conferência</th>
             <th nowrap="nowrap">Baixar XML</th>
             <th>Editar</th>
@@ -241,11 +241,35 @@ if req("ConvenioID")<>"" then
                     convenioVersao = "_"
                     fileName = objConvenio("FileName")
                 end if
+
+
+                PermiteImpressaoMultipla = False
+                if req("T")="GuiaSADT" then
+                    'impressao das guias do lote implementada
+                    PermiteImpressaoMultipla = True
+                end if
                 %>
             </td>
 
 
-            <td><a href="?P=CapaLote&PrintPage=1&LoteID=<%=lotes("id")%>&Pers=1" class="btn btn-info btn-sm"><i class="far fa-print"></i></a></td>
+            <td>
+                <div class="btn-group" style="display: flex;">
+                    <button class="btn btn-sm btn-info dropdown-toggle" data-toggle="dropdown"><i class="far fa-print"></i> 
+                    &nbsp; <i class="far fa-angle-down icon-only"></i></button>
+                    <ul class="dropdown-menu dropdown-warning">
+                        <li>
+                            <a href="?P=CapaLote&PrintPage=1&LoteID=<%=lotes("id")%>&Pers=1"  target="_blank"><i class="far fa-download"></i> Capa de lote</a>
+                            <%
+                            if PermiteImpressaoMultipla then
+                            %>
+                            <a href="javascript:guiaTISS('<%=req("T")%>', 0,<%=req("ConvenioID")%>,<%=lotes("id")%>)" ><i class="far fa-download"></i> <%=nguias("total")%> guia(s) do lote</a>
+                            <%
+                            end if
+                            %>
+                        </li>
+                    </ul>
+                </div>
+            </td>
             <td>
 
                 <div class="btn-group" style="display: flex;">

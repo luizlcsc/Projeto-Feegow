@@ -20,15 +20,15 @@ spl = split(request.Form(), "&")
 Novo=False
 sysActive=0
 
-set ActiveSQL = db.execute("SELECT sysActive FROM "&tableName&" WHERE id="&id&" LIMIT 1")
-if not ActiveSQL.eof then
-    sysActive=ActiveSQL("sysActive")
+set ResourceDataSQL = db.execute("SELECT * FROM `"&tableName&"` WHERE id="&id&" LIMIT 1")
+if not ResourceDataSQL.eof then
+    sysActive=ResourceDataSQL("sysActive")
     if sysActive=0 then
         Novo=True
     end if
 end if
 
-if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("Banco")="clinic100000" or session("Banco")="clinic105" or session("Banco")="clinic5355" or True then
+if True then
     '---> ADICIONANDO FUNCOES V7.5
     set Config = db.execute("SELECT ValidarCPFCNPJ, BloquearCPFCNPJDuplicado FROM sys_config WHERE id=1")
     if not Config.eof then
@@ -119,6 +119,26 @@ if session("Banco")="clinic5760" or session("Banco")="clinic100002" or session("
             end if
         end if
 
+        '---> Verifica se for sem CPF e aplica regra de configuração Obrigar preenchimento de responsável financeiro caso não tenha CPF
+        if getConfig("ObrigarPreenchimentoResponsavelFinanceiroSemCpf") = 1 then
+            if ref("SemCPF") = "on" or ref("SemCPF") = "on, on" then
+                msg = "Obrigatório preenchimento de responsável financeiro caso não tenha CPF"
+                set PacientesRelativosSQL = db.execute("SELECT id FROM pacientesrelativos WHERE PacienteID = "&ref("I"))
+                if not PacientesRelativosSQL.eof then
+                    PacientesRelativo = PacientesRelativosSQL("id")
+                    if ref("CPFParente-PacientesRelativos-"&PacientesRelativo)&"" = "" then
+                        if ref("SemCPF") = "on, on" then
+                            erro = "Obrigatório CPF do Responsável."
+                        else
+                            erro = msg
+                        end if
+                    end if
+                else
+                    erro = msg
+                end if
+            end if
+        end if
+        
         '--->Verificar TEL duplicado
 
         if session("Banco")="clinic6118" and 1=2 then
@@ -321,81 +341,91 @@ if not getResource.EOF then
 	set getFields = db.execute("select * from cliniccentral.sys_resourcesFields where resourceID="&getResource("id"))
 	sqlFields = "sysActive=1"
 	while not getFields.EOF
-		if getFields("fieldTypeID")=6 or getFields("fieldTypeID")=5 or getFields("fieldTypeID")=29 then
-			if ref(getFields("columnName"))="" or not isnumeric(ref(getFields("columnName"))) then
-				sqlValue = "NULL"
-			else
-				sqlValue = "'"&treatVal(ref(getFields("columnName")))&"'"
-			end if
-		elseif getFields("fieldTypeID")=3 then
-			if ref(getFields("columnName"))<>"" and isnumeric(ref(getFields("columnName"))) then
-				sqlValue = ccur(ref(getFields("columnName")))
-			else
-				sqlValue = 0
-			end if
-		elseif getFields("fieldTypeID")=13 or getFields("fieldTypeID")=10 then
-			if ref(getFields("columnName"))="" then
-				sqlValue = "NULL"
-			else
-				if not isDate(ref(getFields("columnName"))) then
-					sqlValue = "NULL"
-				else
-					sqlValue = "'"&year(ref(getFields("columnName")))&"-"&month(ref(getFields("columnName")))&"-"&day(ref(getFields("columnName")))&"'"
-				end if
-			end if
+        CampoExiste = True
 
-        elseif getFields("fieldTypeID")=7 then
-            if getFields("columnName") = "DiasAvisoValidade" then
-                sqlValue = treatvalnull(ref(getFields("columnName")))
-            else
-                sqlValue = valnullToZero(ref(getFields("columnName")))
-            end if
-        elseif getFields("fieldTypeID")=2 or getFields("fieldTypeID")=21  then
-            sqlValue = "'"&refHtml(getFields("columnName"))&"'"
-        else
-            sqlValue = "'"&ref(getFields("columnName"))&"'"
-        end if
-
-        IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
-
-            valor = ref(getFields("columnName"))
-
-            if instr(getFields("columnName"), "Nome")>0 then
-                valor = NomeNoPadrao(valor)
-            end if
-			sqlValue = "'"&valor&"'"
-	    END IF
-
-
-	    if getFields("columnName")="ProjetoID" AND tableName="tarefas" AND ref(getFields("columnName")) = "0" then
-	        sqlValue = "NULL"
-	    end if
-
-		if getFields("fieldTypeID")<>17 then
-            'TRATA UPDATE NO CPF
-            if getFields("columnName")="CPF" or getFields("columnName")="CNPJ" or getFields("columnName")="Cel1" or getFields("columnName")="Tel1" or getFields("columnName")="Cel2" or getFields("columnName")="Cel1" then
-                sqlFields = sqlFields&", `"&getFields("columnName")&"`="&RemoveCaracters(sqlValue,".-/() ")
-            else
-                sqlFields = sqlFields&", `"&getFields("columnName")&"`="&sqlValue
-            end if
-			columnsCompare = columnsCompare&"|"&getFields("columnName")&"|"
-		end if
-
-		if instr(inputsCompare, "|"&getFields("columnName")&"|")=0 then
-			falta = falta&"|"&getFields("columnName")&"|"
-		end if
-
-        '-> GRAVANDO NOVO LOG 2
-        if not valorAntigo.eof then
-            txtValorAntigo = valorAntigo(""&getFields("columnName")&"")&""
-            txtValorAtual = ref(getFields("columnName"))&""
-            if txtValorAntigo<>txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0") then
-                logColunas = logColunas & "|" & getFields("columnName")
-                logValorAnterior = logValorAnterior & "|^" & txtValorAntigo
-                logValorNovo = logValorNovo & "|^" & txtValorAtual
+        if getFields("ShowInForm")&""="0" then
+            if not FieldExists(ResourceDataSQL, getFields("columnName")) then
+                CampoExiste = False
             end if
         end if
-        '<- GRAVANDO NOVO LOG 2
+
+        if CampoExiste then
+            if getFields("fieldTypeID")=6 or getFields("fieldTypeID")=5 or getFields("fieldTypeID")=29 then
+                if ref(getFields("columnName"))="" or not isnumeric(ref(getFields("columnName"))) then
+                    sqlValue = "NULL"
+                else
+                    sqlValue = "'"&treatVal(ref(getFields("columnName")))&"'"
+                end if
+            elseif getFields("fieldTypeID")=3 then
+                if ref(getFields("columnName"))<>"" and isnumeric(ref(getFields("columnName"))) then
+                    sqlValue = ccur(ref(getFields("columnName")))
+                else
+                    sqlValue = 0
+                end if
+            elseif getFields("fieldTypeID")=13 or getFields("fieldTypeID")=10 then
+                if ref(getFields("columnName"))="" then
+                    sqlValue = "NULL"
+                else
+                    if not isDate(ref(getFields("columnName"))) then
+                        sqlValue = "NULL"
+                    else
+                        sqlValue = "'"&year(ref(getFields("columnName")))&"-"&month(ref(getFields("columnName")))&"-"&day(ref(getFields("columnName")))&"'"
+                    end if
+                end if
+
+            elseif getFields("fieldTypeID")=7 then
+                if getFields("columnName") = "DiasAvisoValidade" then
+                    sqlValue = treatvalnull(ref(getFields("columnName")))
+                else
+                    sqlValue = valnullToZero(ref(getFields("columnName")))
+                end if
+            elseif getFields("fieldTypeID")=2 or getFields("fieldTypeID")=21  then
+                sqlValue = "'"&refHtml(getFields("columnName"))&"'"
+            else
+                sqlValue = "'"&ref(getFields("columnName"))&"'"
+            end if
+
+            IF getFields("id") = 1 or getFields("id") = 138 or getFields("id") = 250 then
+
+                valor = ref(getFields("columnName"))
+
+                if instr(getFields("columnName"), "Nome")>0 then
+                    valor = NomeNoPadrao(valor)
+                end if
+                sqlValue = "'"&valor&"'"
+            END IF
+
+
+            if getFields("columnName")="ProjetoID" AND tableName="tarefas" AND ref(getFields("columnName")) = "0" then
+                sqlValue = "NULL"
+            end if
+
+            if getFields("fieldTypeID")<>17 then
+                'TRATA UPDATE NO CPF
+                if getFields("columnName")="CPF" or getFields("columnName")="CNPJ" or getFields("columnName")="Cel1" or getFields("columnName")="Tel1" or getFields("columnName")="Cel2" or getFields("columnName")="Cel1" then
+                    sqlFields = sqlFields&", `"&getFields("columnName")&"`="&RemoveCaracters(sqlValue,".-/() ")
+                else
+                    sqlFields = sqlFields&", `"&getFields("columnName")&"`="&sqlValue
+                end if
+                columnsCompare = columnsCompare&"|"&getFields("columnName")&"|"
+            end if
+
+            if instr(inputsCompare, "|"&getFields("columnName")&"|")=0 then
+                falta = falta&"|"&getFields("columnName")&"|"
+            end if
+
+            '-> GRAVANDO NOVO LOG 2
+            if not valorAntigo.eof then
+                txtValorAntigo = valorAntigo(""&getFields("columnName")&"")&""
+                txtValorAtual = ref(getFields("columnName"))&""
+                if txtValorAntigo<>txtValorAtual and not (txtValorAntigo="" and txtValorAtual="0") and not (txtValorAtual="" and txtValorAntigo="0") then
+                    logColunas = logColunas & "|" & getFields("columnName")
+                    logValorAnterior = logValorAnterior & "|^" & txtValorAntigo
+                    logValorNovo = logValorNovo & "|^" & txtValorAtual
+                end if
+            end if
+            '<- GRAVANDO NOVO LOG 2
+        end if
 	getFields.movenext
 	wend
 	getFields.close

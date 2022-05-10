@@ -94,7 +94,7 @@ db_execute("UPDATE pacientes SET sysActive=-1 where id="&velhoid)
 
 call logMessage("pacientes",novoid,"Mesclagem de paciente. "&p1("NomePaciente")&"{"&velhoid&"} -> "&p2("NomePaciente")&"{"&novoid&"}")
 
-set fp = db.execute("select distinct ModeloID from buiformspreenchidos where PacienteID="&velhoid)
+set fp = db.execute("select distinct ModeloID from buiformspreenchidos where  ModeloID <> 0 and PacienteID="&velhoid)
 while not fp.eof
 	db_execute("update _"&fp("ModeloID")&" set PacienteID="&novoid&" where PacienteID="&velhoid)
 fp.movenext

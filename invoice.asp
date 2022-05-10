@@ -550,7 +550,7 @@ end if
                 if not ValorPagoSQL.eof then
                     Executado = ValorPagoSQL("Executado")
                     camposBloqueados = ""
-                    if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
+                    if ValorPagoSQL("ValorPago")>0 or Executado = "S" then
                         camposBloqueados = "disabled"
                     end if
                 end if

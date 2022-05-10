@@ -1,5 +1,5 @@
 <script language="javascript">
-function guiaTISS(T, I, ConvenioID, callback=false){
+function guiaTISS(T, I, ConvenioID, LoteID , callback=false){
     if(T == 'GuiaHonorarios'){
         window.open("guiaHonorariosPrint.asp?I="+I, '_blank');
         return ;
@@ -7,7 +7,7 @@ function guiaTISS(T, I, ConvenioID, callback=false){
 
 	$.ajax({
 	   type:"GET",
-	   url:"modalGuiaTISS.asp?T="+T+"&I="+I+"&ConvenioID="+ConvenioID,
+	   url:"modalGuiaTISS.asp?T="+T+"&I="+I+"&ConvenioID="+ConvenioID+"&LoteID="+LoteID,
 	   success: (suc) => {
 		$("#modal").html(suc);
 		$("#modal-table").modal("show");

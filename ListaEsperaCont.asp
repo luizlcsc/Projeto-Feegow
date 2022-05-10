@@ -762,4 +762,20 @@ else
     </tbody>
   </table>
 <%end if%>
+<% if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" then %>
+<script>
+fetch('https://socket.feegow.com/send',{
+         method:"POST",
+         headers: {
+                "Authorization":localStorage.getItem("tk"),
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+         },
+         body:JSON.stringify({
+                                 "service":"panel",
+                                 "data": {"call": "next"}
+                             })
+      })
+</script>
+<% end if %>
 <!--#include file = "disconnect.asp"-->

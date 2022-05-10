@@ -210,7 +210,7 @@ elseif session("Partner")<>"" or LicenseId=5459 then
 
                             QuebraDeLinha="  "
 
-                            Texto = "Olá, *"& a("NomePaciente") &"*! Posso confirmar sua consulta com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?"&QuebraDeLinha&"_Este horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar, assim podemos liberar seu horário para outro paciente._ "&QuebraDeLinha&" _Obrigada!_"
+                            Texto = "Olá, *"& a("NomePaciente") &"*! Posso confirmar seu horário com *"& p("NomeProfissional") &"*  no dia *"& Data &"* às *"& ft(a("Hora")) &"*?"&QuebraDeLinha&"_Este horário foi especialmente reservado para você, portanto, se não puder comparecer não deixe de nos avisar, assim podemos liberar seu horário para outro paciente._ "&QuebraDeLinha&" _Obrigada!_"
 
                             Classe = ""
                             if a("StaID")=7 then

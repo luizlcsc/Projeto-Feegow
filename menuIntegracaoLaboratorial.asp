@@ -1,5 +1,5 @@
 <%
-case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs"
+case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs", "procedimentolaboratorio"
 arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
 if arrayintegracao(0) = 1 and Aut("labsconfigintegracao") = 1 then
     %>

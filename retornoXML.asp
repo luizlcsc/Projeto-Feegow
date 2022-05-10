@@ -618,7 +618,7 @@ end function
                                 tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
                                 valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
                                 valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
-                                tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
+                                ' tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
                                     
@@ -642,7 +642,7 @@ end function
                 Set contas = objXML.getElementsByTagName("ans:demonstrativoAnaliseConta")
                 for each conta in contas
                     c = c+1
-                    Response.Write conta.xml & "<br />" & vbCrLf
+                    ' Response.Write conta.xml & "<br />" & vbCrLf
                     '***Add the following:
                     Set lotes = conta.getElementsByTagName("ans:dadosProtocolo")
                     For Each lote in lotes

@@ -335,7 +335,10 @@ function DefaultForm(tableName, id)
     					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &" order by ativo desc, "&initialOrder& palLimit&partirde&limite
                         elseif lcase(tableName)="pacientes" and session("SepararPacientes") and aut("vistodospacsV")=0 and lcase(session("Table"))="profissionais" then
                             sqlReg = "select * from pacientes where Profissionais like '%|ALL|%' or Profissionais like '%|"& session("idInTable") &"|%' and sysActive=1 "&sqlInitial & sqlConstatus &" order by "&initialOrder& palLimit &partirde&limite
-                        else
+                        elseif lcase(tableName)="eventos_emailsms" then
+							'********** LISTA Configuração de eventos do e-mail/sms ***********							
+    					    sqlReg = "select * from "&tableName&" where whatsapp <> 1 and sysActive=1 "&sqlInitial & sqlConstatus &" order by "&initialOrder& palLimit &partirde&limite
+						else
     					    sqlReg = "select * from "&tableName&" where sysActive=1 "&sqlInitial & sqlConstatus &" order by "&initialOrder& palLimit &partirde&limite
                         end if
                     else

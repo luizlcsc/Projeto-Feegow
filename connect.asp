@@ -2750,6 +2750,11 @@ function replateTagsPaciente(valor,PacienteID)
                         Tag = Coluna
                 end select
                 val = trim(val&" ")
+                if Tag = "Cpf" or Tag = "CPF" then
+                    if Val&"" <> "" then
+                        Val = formatCPF(Val&"")
+                    end if
+                end if
                 valor = replace(valor, "[Paciente."&Tag&"]", Val)
             rec.movenext
             wend
@@ -2775,7 +2780,8 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Matricula]", trim(pac("Matricula1")&" ") )
             valor = replace(valor, "[Paciente.Validade]", trim(pac("Validade1")&" ") )
             valor = replace(valor, "[Paciente.Email]", trim(pac("Email1")&" ") )
-            valor = replace(valor, "[Paciente.Cpf]", trim(pac("CPF")&" ") )
+            CPFFormatado = formatCPF(pac("CPF")&"")
+            valor = replace(valor, "[Paciente.Cpf]", CPFFormatado)
             valor = replace(valor, "[Paciente.Telefone]", trim(pac("Cel1")&" ") )
 
             if not ResponsavelSQL.eof then

@@ -32,7 +32,7 @@
    
     resultado = resultado + "</div>"
     resultado = resultado + "<div class='modal-footer'>"
-    resultado = resultado + "<button type='button' onclick='fechar()' class='btn btn-default' data-dismiss='modal'>Fechar</button>"
+    resultado = resultado + "<button type='button' onclick='fecharForm()' class='btn btn-default' data-dismiss='modal'>Fechar</button>"
     resultado = resultado + " </div>"
     resultado = resultado + "</div>"     
    
@@ -41,7 +41,7 @@ response.write(resultado)
 %>  
 
 <script type="text/javascript">
-function fechar(){
+function fecharForm(){
         
             $("#modal-form").magnificPopup("close");
       

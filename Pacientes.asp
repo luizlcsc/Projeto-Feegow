@@ -168,6 +168,16 @@ if session("Admin")=0 then
 end if
 %>
 <style>
+
+#divDisplayUploadFoto input[type=file]{
+    opacity: 0;
+}
+#divDisplayUploadFoto .foto-loading-content{
+    background-color: #f7f8fb;
+    height: 125px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
 <%
 if session("MasterPwd")&""="S" then
     %>
@@ -426,6 +436,16 @@ var validar = false;
 <% END IF %>
 
 function atender(AgendamentoID, PacienteID, Acao, Solicitacao){
+
+    <%
+    if device()<>"" then
+    %>
+    if(Acao == "PreEncerrar"){
+        fecharSubmenu();
+    }
+    <%
+    end if
+    %>
 
     var atenderF = () => {
         $.ajax({
@@ -1077,22 +1097,22 @@ $("#content .form-control").change(function(){
       $("#NomePaciente").change(function(){
           $(".crumb-active a").html( $(this).val() );
       });
-      //novo envio de foto tirada do paciente
-    let endpointupload =  async (objct) => {
-        await uploadProfilePic({
-            $elem: $("#Foto"),
-            userId: "<%=req("I")%>",
-            db:"<%= LicenseID %>",
-            table:'pacientes',
-            content: objct ,
-            contentType: "base64",
-            elem:$('#divDisplayFoto img')
-        });
-    };
+        //novo envio de foto tirada do paciente
+        let endpointupload =  async (objct) => {
+            await uploadProfilePic({
+                $elem: $("#Foto"),
+                userId: "<%=req("I")%>",
+                db:"<%= LicenseID %>",
+                table:'pacientes',
+                content: objct ,
+                contentType: "base64",
+                elem:$('#divDisplayFoto img')
+            });
+        };
 
 
        //change to feegow-api
-      var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
+      var sayCheese = new SayCheese('#divAvatar .div-avatar-video', { snapshot: true });
 
 		$('#clicar').on('click', function(evt) {
 	      //  var sayCheese = new SayCheese('#divAvatar', { snapshot: true });
@@ -1112,14 +1132,6 @@ $("#content .form-control").change(function(){
 
 
 
-		function cancelar(){
-			sayCheese.on('stop', function(evt) {
-			$( "video" ).remove();
-			});
-            sayCheese.stop();
-            //alert("toaqui");return false;
-            //$('#photo').html('');
-		}
 
 
 

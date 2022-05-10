@@ -228,7 +228,7 @@ end if
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.14.0">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.14.1">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -559,7 +559,7 @@ end if
       end if
 
       if device()<>"" then %>
-        <div onclick="fechar(); fecharSubmenu()" id="cortina" class="fade in" style="backdrop-filter:blur(5px);width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
+        <div onclick="fechar(); fecharSubmenu()" id="cortina" class="fade in" style="-webkit-backdrop-filter: blur(5px);backdrop-filter:blur(5px);width:100%; height:100%; display:table; background:rgba(128,128,128,0.4); z-index:10002; position:fixed; top:0; left:0; display:none"></div>
         <div id="topApp" style="position:fixed; z-index:10000000000; top:0; width:100%; height:65px;" class=" bg-primary darker pt10">
             <div id="menu" style="position:absolute; width:260px; height:1000px; top:0; left:-260px; z-index:10000000001; background:#fff">
                 <div class="row">
@@ -657,7 +657,7 @@ end if
         </script>
     <% end if %>
 
-    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
+    <div id="disc" class="alert alert-danger text-center hidden" style="position: fixed;z-index:9999;width:100%;border-radius: 0;box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px);-webkit-backdrop-filter: blur(10px);background-color: #ee5253d9;"></div>
 
         <div id="modalCaixa" class="modal fade" tabindex="-1">
             <div class="modal-dialog">
@@ -1113,7 +1113,7 @@ end if
 
 
             <li class="dropdown-footer">
-              <a href="./?P=Login&Log=Off" class="btn-logoff">
+              <a href="./?P=Logout&Log=Off&Pers=1" class="btn-logoff">
               <span class="far fa-power-off pr5"></span> Sair </a>
             </li>
           </ul>
@@ -1231,7 +1231,7 @@ end if
             </div>
             <script type="text/javascript">
                 function abrirSubmenu() {
-                  $( "#submenu" ).animate({
+                  $( "#submenu" ).addClass("submenu-open").animate({
                     "margin-right": "0",
                   }, 400, function() {
                     // Animation complete.
@@ -1239,7 +1239,7 @@ end if
                   $("#cortina").css("display", "block");
                 }
                 function fecharSubmenu() {
-                  $( "#submenu" ).animate({
+                  $( "#submenu" ).removeClass("submenu-open").animate({
                     "margin-right": "-260px",
                   }, 400, function() {
                     // Animation complete.
@@ -1754,6 +1754,27 @@ end if
 
   </div>
 
+//VE SE PRECISA ALTERAR A SENHA
+<%
+TempoMaximoPorSessaoInativa = session("TempoMaximoPorSessaoInativa")
+if TempoMaximoPorSessaoInativa&""="" or TempoMaximoPorSessaoInativa&""="0" then
+  TempoMaximoPorSessaoInativa = 120 '120 minutos (2h)
+end if
+TempoMaximoPorSessaoInativa = cint(TempoMaximoPorSessaoInativa)
+%>
+<script >
+      var timer = null;
+      var killSession = function() {
+        timer = setTimeout(function() {
+              location.href = "./?P=Logout&Pers=1&Log=Off&Inatividade=1";
+        }, parseInt('<%=TempoMaximoPorSessaoInativa%>') * 60000);
+      };
+      killSession();
+      $(document).mousemove(function() {
+          clearInterval(timer);
+          killSession()
+      });
+</script>
 
 <%
 if session("AlterarSenha") <> "0" then
@@ -1913,6 +1934,13 @@ function ajxContent(P, I, Pers, Div, ParametrosAdicionais){
 		{
 			//alert(data);
 			$("#"+Div).html(data);
+            <%
+            if device()<>"" then
+            %>
+            fecharSubmenu();
+            <%
+            end if
+            %>
 		}
 	});
 }
@@ -2536,7 +2564,7 @@ function abreModalUnidade(backdrop=true){
   </script>
   <!-- END: PAGE SCRIPTS -->
 
-<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);backdrop-filter: blur(10px); " id="legend">
+<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);-webkit-backdrop-filter: blur(10px);backdrop-filter: blur(10px); " id="legend">
 	<marquee id="legendText"></marquee>
 </div>
 <iframe width="250" id="speak" name="speak" height="195" scrolling="no" style="position:fixed; bottom:0; left:0; display:none" frameborder="0" src="about:blank"></iframe>

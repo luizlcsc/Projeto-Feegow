@@ -4,6 +4,12 @@
 if ref("De")="" then De=date() else De=cdate(ref("De")) end if
 if ref("Ate")="" then Ate=date() else Ate=cdate(ref("Ate")) end if
 
+Unidades = session("Unidades")
+
+if ref("Unidades") <> "" Then
+	Unidades = ref("Unidades")
+end if
+
 %>
 
 <div class="panel mt20">
@@ -12,7 +18,7 @@ if ref("Ate")="" then Ate=date() else Ate=cdate(ref("Ate")) end if
 			<%= quickfield("multiple", "Profissionais", "Profissionais", 3, ref("Profissionais"), "select id, NomeProfissional from profissionais where ativo='on' and sysActive=1 order by NomeProfissional", "NomeProfissional", " required ") %>
 			<%=quickField("datepicker", "De", "De", "2", De, "", "", " required ")%>
 			<%=quickField("datepicker", "Ate", "Até", "2", Ate, "", "", " required ")%>
-			<%=quickField("empresaMulti", "Unidades", "Unidades", "2", ref("Unidades"), "", "", " required ")%>
+			<%=quickField("empresaMulti", "Unidades", "Unidades", "2", Unidades, "", "", " required ")%>
 			<div class="col-md-2">
 				<button class="btn btn-primary mt25"><i class="far fa-search"></i> Buscar</button>
 			</div>

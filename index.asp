@@ -1113,7 +1113,7 @@ end if
 
 
             <li class="dropdown-footer">
-              <a href="./?P=Login&Log=Off" class="btn-logoff">
+              <a href="./?P=Logout&Log=Off&Pers=1" class="btn-logoff">
               <span class="far fa-power-off pr5"></span> Sair </a>
             </li>
           </ul>

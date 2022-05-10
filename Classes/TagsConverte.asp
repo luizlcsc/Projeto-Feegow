@@ -96,7 +96,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         'ALIAS DE TAGS RELACIONADAS AO AGENDAMENTO
         conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
         conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
-        conteudo = replace(conteudo, "[Agendamento.Id]", item_id )
+        conteudo = replace(conteudo, "[Agendamento.ID]", item_id )
 
       case "ProcedimentoID"
         item_ProcedimentoID      = item_id

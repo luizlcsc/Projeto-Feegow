@@ -618,7 +618,7 @@ end function
                                 tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
                                 valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
                                 valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
-                                tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
+                                ' tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
                                 IF NOT pguias.eof THEN
                                     IF pguias("Tabela") = "tissguiasadt" THEN
                                     

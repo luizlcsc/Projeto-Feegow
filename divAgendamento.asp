@@ -1864,7 +1864,7 @@ function procs(A, I, LocalID, Convenios, GradeApenasProcedimentos, GradeApenasCo
         somarValores();
     }
 }
-function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso) {
+function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpresso, AgendamentoID) {
 
     if(TipoImpresso === "Preparos"){
         $("body").append("<iframe id='ImpressaoEtiqueta' src='listaDePreparoPorProcedimento.asp?PacienteId="+PacienteID+"&procedimento="+ProcedimentoID+"' style='display:none;'></iframe>")
@@ -1882,6 +1882,7 @@ function printProcedimento(ProcedimentoID, PacienteID, ProfissionalID, TipoImpre
         ProfissionalID:ProfissionalID,
         UnidadeID:'<%=UnidadeID%>',
         Tipo: TipoImpresso,
+        AgendamentoID:AgendamentoID,
         DataAgendamento: '<%=Data%>'
     }, function(data) {
         eval(data);

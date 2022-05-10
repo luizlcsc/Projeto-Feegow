@@ -1754,6 +1754,27 @@ end if
 
   </div>
 
+//VE SE PRECISA ALTERAR A SENHA
+<%
+TempoMaximoPorSessaoInativa = session("TempoMaximoPorSessaoInativa")
+if TempoMaximoPorSessaoInativa&""="" or TempoMaximoPorSessaoInativa&""="0" then
+  TempoMaximoPorSessaoInativa = 120 '120 minutos (2h)
+end if
+TempoMaximoPorSessaoInativa = cint(TempoMaximoPorSessaoInativa)
+%>
+<script >
+      var timer = null;
+      var killSession = function() {
+        timer = setTimeout(function() {
+              location.href = "./?P=Logout&Pers=1&Log=Off&Inatividade=1";
+        }, parseInt('<%=TempoMaximoPorSessaoInativa%>') * 60000);
+      };
+      killSession();
+      $(document).mousemove(function() {
+          clearInterval(timer);
+          killSession()
+      });
+</script>
 
 <%
 if session("AlterarSenha") <> "0" then

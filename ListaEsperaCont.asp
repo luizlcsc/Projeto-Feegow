@@ -762,7 +762,7 @@ else
     </tbody>
   </table>
 <%end if%>
-<% if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" then %>
+<% if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" and recursoAdicional(1)=4 then %>
 <script>
 fetch('https://socket.feegow.com/send',{
          method:"POST",

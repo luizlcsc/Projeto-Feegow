@@ -228,7 +228,7 @@ end if
 
   <link rel="stylesheet" href="https://cdn.feegow.com/feegowclinic-v7/assets/css/datepicker.css" />
   <link rel="stylesheet" type="text/css" href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/fullcalendar/fullcalendar.min.css">
-  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.14.0">
+  <link rel="stylesheet" type="text/css" href="./assets/skin/default_skin/css/fgw.css?version=8.0.14.1">
   <link rel="stylesheet" type="text/css" href="./assets/admin-tools/admin-forms/css/admin-forms.css">
   <link rel="shortcut icon" href="./assets/img/feegowclinic.ico" type="image/x-icon" />
   <link href="https://cdn.feegow.com/feegowclinic-v7/vendor/plugins/select2/css/core.css" rel="stylesheet" type="text/css">
@@ -1113,7 +1113,7 @@ end if
 
 
             <li class="dropdown-footer">
-              <a href="./?P=Login&Log=Off" class="btn-logoff">
+              <a href="./?P=Logout&Log=Off&Pers=1" class="btn-logoff">
               <span class="far fa-power-off pr5"></span> Sair </a>
             </li>
           </ul>
@@ -1754,6 +1754,27 @@ end if
 
   </div>
 
+//VE SE PRECISA ALTERAR A SENHA
+<%
+TempoMaximoPorSessaoInativa = session("TempoMaximoPorSessaoInativa")
+if TempoMaximoPorSessaoInativa&""="" or TempoMaximoPorSessaoInativa&""="0" then
+  TempoMaximoPorSessaoInativa = 120 '120 minutos (2h)
+end if
+TempoMaximoPorSessaoInativa = cint(TempoMaximoPorSessaoInativa)
+%>
+<script >
+      var timer = null;
+      var killSession = function() {
+        timer = setTimeout(function() {
+              location.href = "./?P=Logout&Pers=1&Log=Off&Inatividade=1";
+        }, parseInt('<%=TempoMaximoPorSessaoInativa%>') * 60000);
+      };
+      killSession();
+      $(document).mousemove(function() {
+          clearInterval(timer);
+          killSession()
+      });
+</script>
 
 <%
 if session("AlterarSenha") <> "0" then

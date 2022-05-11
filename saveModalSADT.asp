@@ -523,6 +523,9 @@ end if
 function CalculaFatorDeflatorInflator(ConvenioID,ProcedimentoID,ProdutoID)
 
           FatorDeflatorInflator = 0
+          if ProdutoID&""="" or ConvenioID&""="" or ProcedimentoID&""="" then
+            Exit function
+          end if
 
           sqlDeflatorInflator = "SELECT tipo, valor FROM conveniosmodificadores where ConvenioID= " & ConvenioID & " AND procedimentos LIKE CONCAT('%|'," & ProcedimentoID & ",'|%') " &_
                                 " AND produtos LIKE CONCAT('%|'," & ProdutoID & ",'|%') " 

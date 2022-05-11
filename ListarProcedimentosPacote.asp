@@ -19,7 +19,7 @@ if ConvenioID&""<>"" then
 end if
 
 
-ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario + ii.Acrescimo - ii.Desconto) ValorProcedimento, pa.NomePacote FROM pacientes p "&_
          "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
          "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
          "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -29,7 +29,7 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario 
          "i.sysActive <> -1 AND p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.PacoteID is not null and ii.Tipo = 'S' "&SomenteConvenios&""
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
-    ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, ii.ValorUnitario ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+    ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario + ii.Acrescimo - ii.Desconto) ValorProcedimento, pa.NomePacote FROM pacientes p "&_
              "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
              "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
              "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_

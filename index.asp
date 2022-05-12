@@ -2564,7 +2564,7 @@ function abreModalUnidade(backdrop=true){
   </script>
   <!-- END: PAGE SCRIPTS -->
 
-<div style="position:fixed; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);-webkit-backdrop-filter: blur(10px);backdrop-filter: blur(10px); " id="legend">
+<div style="position:fixed;left:0; width:100%; z-index:200000; bottom:0; height:25px; background-color:rgb(235 0 78 / 71%); color:#FFF; padding:8px; display:none; box-shadow: 0 3px 18px rgb(0 0 0 / 10%);-webkit-backdrop-filter: blur(10px);backdrop-filter: blur(10px); " id="legend">
 	<marquee id="legendText"></marquee>
 </div>
 <iframe width="250" id="speak" name="speak" height="195" scrolling="no" style="position:fixed; bottom:0; left:0; display:none" frameborder="0" src="about:blank"></iframe>

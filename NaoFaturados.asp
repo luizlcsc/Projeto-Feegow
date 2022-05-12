@@ -235,7 +235,7 @@ while not atend.eof
                 <button title="Lançamentos de produtos, materiais e medicamentos neste procedimento" onclick="modalEstoqueAtend(<%= atend("id") %>)" type="button" class="btn btn-xs"><i class="far fa-medkit"></i></button>
             </td>
             <td nowrap="nowrap"><%
-        
+
 
             response.Write(atend("Data")&" ")
 		    if not isnull(atend("HoraInicio")) then
@@ -249,7 +249,7 @@ while not atend.eof
             <td><%=atend("NomeProcedimento")%></td>
             <td class="text-right"><%=ValorPlano%></td>
             <%if aut("finalizaratendimentoX")=1 then%>
-            <td width="1"><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento?'))contaLoadTab('nao-faturados', {PacienteID: '<%=PacienteID%>', XAP: '<%=atend("id") %>'})"><i class="far fa-remove"></i></button></td>
+            <td width="1"><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento?'))ajxContent('Conta', '<%=PacienteID %>&XAP=<%=atend("id") %>', '1', 'divHistorico')"><i class="far fa-remove"></i></button></td>
             <%end if%>
         </tr>
         <%
@@ -267,13 +267,3 @@ atend.close
 set atend=nothing
 %>
 </table>
-<script>
-
-$("#btnFatAgendamento").click(function(){
-    $("#divFatAgendamento").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
-    $.get("AgendamentosFaturar.asp?PacienteID=<%=PacienteID%>", function(data){
-        $("#divFatAgendamento").html(data);
-    });
-});
-
-</script>

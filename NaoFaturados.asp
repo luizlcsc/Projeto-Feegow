@@ -249,7 +249,7 @@ while not atend.eof
             <td><%=atend("NomeProcedimento")%></td>
             <td class="text-right"><%=ValorPlano%></td>
             <%if aut("finalizaratendimentoX")=1 then%>
-            <td width="1"><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento?'))ajxContent('Conta', '<%=PacienteID %>&XAP=<%=atend("id") %>', '1', 'divHistorico')"><i class="far fa-remove"></i></button></td>
+            <td width="1"><button type="button" class="btn btn-xs btn-danger" onclick="if(confirm('Tem certeza de que deseja excluir este procedimento?'))contaLoadTab('nao-faturados', {PacienteID: '<%=PacienteID%>', XAP: '<%=atend("id") %>'})"><i class="far fa-remove"></i></button></td>
             <%end if%>
         </tr>
         <%

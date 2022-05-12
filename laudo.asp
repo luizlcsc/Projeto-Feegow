@@ -144,11 +144,12 @@ if LaudoID="" then
     
     response.Redirect(redir)
 else
-    set l = db.execute("SELECT proc.NomeProcedimento, pac.NomePaciente, l.*, "&_
+    set l = db.execute("SELECT a.id as AgendamentoID, proc.NomeProcedimento, pac.NomePaciente, l.*, "&_
                        " "&_
                        "COALESCE(ii.ItemID, tpsadt.ProcedimentoID) ProcedimentoID "&_
                        "FROM laudos l  "&_
-                       " "&_
+                       " LEFT JOIN atendimentos aten ON aten.id = l.AtendimentoID "&_
+                       " LEFT JOIN agendamentos a ON a.id = aten.AgendamentoID "&_
                        "INNER JOIN pacientes pac ON pac.id=l.PacienteID "&_
                        "LEFT JOIN itensinvoice ii ON ii.id=l.IDTabela AND l.Tabela='itensinvoice' "&_
                        "LEFT JOIN tissprocedimentossadt tpsadt ON tpsadt.id=l.IDTabela AND l.Tabela='tissprocedimentossadt' "&_
@@ -366,7 +367,7 @@ function changeTexto(arg){
         if ($("#StatusID").val() == 3) {
             $("#modal-table").modal("show");
             $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
-            $.post("laudoEntrega.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
+            $.post("laudoEntrega.asp?L=<%=LaudoID%>&AgendamentoID=<%=AgendamentoID%>", "", function (data) { $("#modal").html(data) });
         } else {
             alert("Não é possível entregar o laudo pois ainda não foi liberado.");
         }
@@ -375,7 +376,7 @@ function changeTexto(arg){
     function protocolo() {
         $("#modal-table").modal("show");
         $("#modal").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
-        $.post("laudoProtocolo.asp?L=<%=LaudoID%>", "", function (data) { $("#modal").html(data) });
+        $.post("laudoProtocolo.asp?L=<%=LaudoID%>&AgendamentoID=<%=AgendamentoID%>", "", function (data) { $("#modal").html(data) });
      }
 
 

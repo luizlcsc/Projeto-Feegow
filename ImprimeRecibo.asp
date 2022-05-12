@@ -7,7 +7,7 @@ set ReciboSQL=db.execute("SELECT * FROM recibos WHERE id="&ReciboID)
 if not ReciboSQL.eof then
     'db.execute("UPDATE recibos SET Texto = '"&Recibo&"', ImpressoEm = now() WHERE id="&reciboID)
     db.execute("UPDATE recibos SET ImpressoEm = now() WHERE id="&reciboID)
-    response.write(ReciboSQL("Texto"))
+    response.write(unscapeOutput(ReciboSQL("Texto")))
 end if
 %>
 <script type="text/javascript">

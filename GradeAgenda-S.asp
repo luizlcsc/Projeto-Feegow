@@ -206,7 +206,7 @@ while diaS<n
 
 
                 if Horarios("GradePadrao")=1 then
-                    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+                    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
                 end if
 
                 if MostraGrade then

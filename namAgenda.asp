@@ -99,7 +99,7 @@ end if
 if not Horarios.eof then
     MostraGrade=True
     if Horarios("GradePadrao")=1 then
-        MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+        MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
     end if
 %>
 
@@ -156,7 +156,7 @@ if not Horarios.eof then
         MostraGrade=True
 
         if Horarios("GradePadrao")=1 then
-            MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+            MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
         end if
 
         if Unidades<>"" then

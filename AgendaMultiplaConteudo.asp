@@ -391,7 +391,7 @@ cProf = 0
 while not comGrade.eof
 
     MostraGrade=True
-    MostraGrade = CalculoSemanalQuinzenal(comGrade("FrequenciaSemanas"), comGrade("InicioVigencia")&"")
+    'MostraGrade = CalculoSemanalQuinzenal(comGrade("FrequenciaSemanas"), comGrade("InicioVigencia")&"")
 
     if MostraGrade then
         set pesp = db.execute("select esp.especialidade from especialidades esp where esp.id="& treatvalnull(comGrade("EspecialidadeID"))&" or esp.id in(select group_concat(pe.EspecialidadeID) from profissionaisespecialidades pe where ProfissionalID in ("&treatvalzero(comGrade("ProfissionalID"))&"))")

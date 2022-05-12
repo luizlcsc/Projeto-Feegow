@@ -335,7 +335,7 @@ end if
                     end if
                 end if
                 if Horarios("GradePadrao")=1 then
-                    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+                    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
                 end if
                 if MostraGrade then
                 LocalID = Horarios("LocalID")

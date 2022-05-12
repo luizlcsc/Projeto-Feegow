@@ -65,8 +65,10 @@ else
     end if
 
     set prot = db.execute("SELECT LaudosProtocolo FROM impressos")
+
     if not Prot.eof then
-        ProtocoloConteudo = prot("LaudosProtocolo")&""
+        ProtocoloConteudo = unscapeOutput(prot("LaudosProtocolo"))&""
+        
         if ProtocoloConteudo<>"" then
             
             ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"PacienteID_"&PacienteProntuario&"|UnidadeID_"&session("UnidadeID")&"|ProcedimentoID_"&ProcedimentoID,""))

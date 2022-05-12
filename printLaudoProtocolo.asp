@@ -76,7 +76,7 @@ else
             if AgendamentoID <> "" then 
                 ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"AgendamentoID_"&AgendamentoID,""))
             else 
-                ProtocoloConteudo = replace(ProtocoloConteudo, "[Agendamento.id]", "")
+                ProtocoloConteudo = replace(ProtocoloConteudo, "[Agendamento.ID]", "")
             end if
 
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Protocolo.ID]", right("0000000"&Id,7))

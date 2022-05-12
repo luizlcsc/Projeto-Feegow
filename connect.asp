@@ -2764,7 +2764,13 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Idade]", idade(pac("Nascimento")))
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
-            valor = replace(valor, "[Paciente.Prontuario]", pac("id"))
+            if inStr(conteudo,"[Paciente.Prontuario]")>0 then
+                Prontuario = PacientesSQL("id")
+                if getConfig("AlterarNumeroProntuario") = 1 then
+                    Prontuario = PacientesSQL("idImportado")
+                end if
+                conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
+            end if
 
             'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
             valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1")&"")

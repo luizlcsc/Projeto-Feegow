@@ -148,10 +148,9 @@ else
                        " "&_
                        "COALESCE(ii.ItemID, tpsadt.ProcedimentoID) ProcedimentoID "&_
                        "FROM laudos l  "&_
-                       " LEFT JOIN atendimentos aten ON aten.id = l.AtendimentoID "&_
-                       " LEFT JOIN agendamentos a ON a.id = aten.AgendamentoID "&_
                        "INNER JOIN pacientes pac ON pac.id=l.PacienteID "&_
                        "LEFT JOIN itensinvoice ii ON ii.id=l.IDTabela AND l.Tabela='itensinvoice' "&_
+                       "LEFT JOIN agendamentos a ON a.id = ii.AgendamentoID "&_
                        "LEFT JOIN tissprocedimentossadt tpsadt ON tpsadt.id=l.IDTabela AND l.Tabela='tissprocedimentossadt' "&_
                        "LEFT JOIN procedimentos proc ON proc.id=COALESCE(ii.ItemID, tpsadt.ProcedimentoID) "&_
                        "WHERE l.id="& LaudoID)
@@ -159,6 +158,7 @@ else
         PacienteID = l("PacienteID")
         NomePaciente = l("NomePaciente")
         NomeProcedimento = l("NomeProcedimento")
+        AgendamentoID = l("AgendamentoID")
         Texto = l("Texto")
         FormPID = l("FormPID")
         if isnull(FormPID) then

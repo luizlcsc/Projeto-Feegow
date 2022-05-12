@@ -33,7 +33,7 @@ while not equ.eof
                     
                     if not Horarios.EOF then
                         if Horarios("GradePadrao")="1" then
-                            MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+                            MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
                         end if
                     end if
                     sqlUnidadesBloqueio= ""

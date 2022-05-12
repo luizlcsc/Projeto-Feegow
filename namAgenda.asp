@@ -95,9 +95,12 @@ if Horarios.EOF then
     set Horarios = db.execute(sqlHorarios2)
 end if
 'response.write sqlHorarios&"<br>"&sqlHorarios2
+
 if not Horarios.eof then
     MostraGrade=True
-    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+    if Horarios("GradePadrao")=1 then
+        MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+    end if
 %>
 
 <table class="table table-condensed table-hover" width="100%"><thead><tr><th colspan="3" style="min-width:200px" class="text-center pn">

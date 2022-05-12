@@ -117,7 +117,7 @@ function UpdateGuiaComGlosa(codigoItem, tipoTabela, valorProcessado, valorLibera
                             "WHERE  CodigoProcedimento = '"&codigoItem&"' AND GuiaID = "&GuiaID
             db.execute(sqlUpdateTabela)
         else
-            sqlUpdateTabela = "UPDATE tissguiaanexa SET ValorPago=NULLIF('"&valorLiberado&"',''), CodigoGlosa='|"&idGlosa&"|', motivoGlosa="&tipoGlosa&" WHERE GuiaID = "&GuiaID&" AND CodigoProduto = "&codigoItem
+            sqlUpdateTabela = "UPDATE tissguiaanexa SET ValorPago=NULLIF('"&valorLiberado&"',''), CodigoGlosa='|"&idGlosa&"|', motivoGlosa="&treatValZero(tipoGlosa)&" WHERE GuiaID = "&GuiaID&" AND CodigoProduto = "&codigoItem
             db.execute(sqlUpdateTabela)
         end if
     end if
@@ -731,7 +731,10 @@ end function
                                         tipoTabela = proc.getElementsByTagName("ans:codigoTabela")(0).text
                                         valorProcessado = proc.getElementsByTagName("ans:valorProcessado")(0).text
                                         valorLiberado = proc.getElementsByTagName("ans:valorLiberado")(0).text
-                                        tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
+                                        valorInformado = proc.getElementsByTagName("ans:valorInformado")(0).text
+                                        IF valorInformado > valorLiberado THEN
+                                            tipoGlosa = proc.getElementsByTagName("ans:tipoGlosa")(0).text
+                                        END IF
                                         'Verificar tipo da tabela
                                         IF pguias("Tabela") = "tissguiasadt" THEN
                                             call UpdateGuiaComGlosa(codigoItem, tipoTabela, valorProcessado, valorLiberado, tipoGlosa, pguias("id"))

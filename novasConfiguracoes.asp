@@ -20,7 +20,9 @@ if AppEnv<>"production" then
     end if
 end if
 
-set confNew = db.execute("select *, ifnull(IsClinicCentral,0) VIsClinicCentral from cliniccentral.config_opcoes where sysActive = 1 and (TipoConfig != 'APP' OR TipoConfig IS NULL) AND JSON_SEARCH(Versoes,'one','"&currentVersionFolder&"') IS NOT null order by secao ")
+'AND JSON_SEARCH(Versoes,'one','"&currentVersionFolder&"') IS NOT null
+
+set confNew = db.execute("select *, ifnull(IsClinicCentral,0) VIsClinicCentral from cliniccentral.config_opcoes where sysActive = 1 and (TipoConfig != 'APP' OR TipoConfig IS NULL)  order by secao ")
 LicencaID = replace(session("Banco"), "clinic", "")
 if E = "E" then
 

@@ -14,7 +14,7 @@ AppEnv = getEnv("FC_APP_ENV", "local")
 MasterPwd = getEnv("FC_MASTER", "----")
 
 Dominio = request.ServerVariables("SERVER_NAME")
-isHomolog = instr(Dominio, "teste")>0
+isHomolog = instr(Dominio, "teste")>0 or instr(Dominio, "homolog")>0
 User = ref("User")
 
 Password = ref("Password")

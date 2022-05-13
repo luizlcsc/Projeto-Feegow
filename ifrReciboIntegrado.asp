@@ -1000,5 +1000,5 @@ end if %>
 <script type="text/javascript">
    $(document).ready(function(){
         print();
-   }
+   });
 </script>

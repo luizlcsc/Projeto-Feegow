@@ -493,7 +493,7 @@ else
 <%
 end if
              if getConfig("ObrigarTabelaParticular") then
-                camposRequired=" required empty"
+                camposRequired=" required empty "
             else
                 camposRequired=""
             end if
@@ -550,12 +550,12 @@ end if
                 if not ValorPagoSQL.eof then
                     Executado = ValorPagoSQL("Executado")
                     camposBloqueados = ""
-                    if ValorPagoSQL("ValorPago")>0 or Executado = "S" then
+                    if ValorPagoSQL("ValorPago")>0 and Executado = "S" then
                         camposBloqueados = "disabled"
                     end if
                 end if
             %>
-            <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 3, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' "& camposRequired&camposBloqueados) %>
+            <%= quickfield("simpleSelect", "invTabelaID", "Tabela / Parceria", 3, TabelaID, sqlTabela , "NomeTabela", " no-select2 mn  onchange=""tabelaChange()"" data-row='no-server' " & camposRequired & camposBloqueados) %>
             <%
             if camposBloqueados<>"" then
                 %>

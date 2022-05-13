@@ -578,7 +578,7 @@ if not inv.eof then
                         end if
                     end if
 
-                    if instr(Recibo, "[ProfissionalExecutante.Nome]")>0 then
+                    if instr(Recibo, "[ProfissionalExecutante.")>0 then
                         if ProfissionalExecutanteID="" then
                             ProfissionalID=itens("ProfissionalID")
                         else

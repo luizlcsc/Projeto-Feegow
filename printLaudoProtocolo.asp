@@ -72,6 +72,7 @@ else
         if ProtocoloConteudo<>"" then
             
             ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"PacienteID_"&PacienteProntuario&"|UnidadeID_"&session("UnidadeID")&"|ProcedimentoID_"&ProcedimentoID,""))
+            ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"AgendamentoID_"&AgendamentoID,""))
             
             if AgendamentoID <> "" then 
                 ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"AgendamentoID_"&AgendamentoID,""))

@@ -1,5 +1,6 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/DateFormat.asp"-->
+<!--#include file="Classes/Logs.asp"-->
 <%
 select case ref("Tipo")
 
@@ -39,45 +40,61 @@ select case ref("Tipo")
 
     case "Aplicacao"
 
-        PosicaoID = ref("PosicaoID")
-
-        if PosicaoID = "-1" then
-            mensagem = "Selecione o Lote"
-            tipo = "error"
-
-        else
-
-            set pos = db.execute("select *, p.id as ProdutoID, ep.LocalizacaoID as Localizacao from estoqueposicao ep join produtos p on p.id = ep.ProdutoID join vacina_serie_dosagem vsd on vsd.ProdutoID = p.id where ep.id = "& PosicaoID)
-
-            if not pos.eof then
-
-                TipoUnidade = "U"
-                TipoUnidadeOriginal = pos("TipoUnidade")
-                ResponsavelOriginal = pos("Responsavel")
-                Responsavel = pos("Responsavel")
-                Validade = pos("Validade")
-                Lote = pos("Lote")
-                LocalizacaoID = pos("Localizacao")
-                LocalizacaoIDOriginal = pos("Localizacao")
-                CBID = pos("CBID")
-                UnidadePagto = pos("TipoVenda")
-                ProdutoID = pos("ProdutoID")
-                Quantidade = 1
-
-                call LanctoEstoque(0, PosicaoID, ProdutoID, "S", TipoUnidadeOriginal, TipoUnidade, Quantidade, ref("DataAplicacao"), "", Lote, Validade, "", "0.00", UnidadePagto, "Aplicação de vacina", Responsavel, ref("PacienteID"), "", LocalizacaoID, "", "", "eval", CBID, "", Responsavel, LocalizacaoIDOriginal, "", "", "","")
-
-                db_execute("UPDATE vacina_aplicacao SET StatusID = '3', ViaAplicacaoID = '"&ref("ViaAplicacaoID")&"', LadoAplicacao = '"&ref("LadoAplicacao")&"', UnidadeID = '"&ref("UnidadeID")&"', DataAplicacao = '"&ref("DataAplicacao")&"', Observacao = '"&ref("Observacao")&"', UsuarioIDAplicacao = "&session("User")&" WHERE id = "&ref("AplicacaoID"))
+        if ref("StatusID")&"" = 3 then
+            'Informações para log
+            set LogVacinaAplicacaoSQL = db_execute("SELECT va.id AS VacinaAplicacaoID, va.Observacao  FROM vacina_aplicacao va WHERE va.id="&ref("AplicacaoID"))
+            if not LogVacinaAplicacaoSQL.eof then
+                UpdateVacinaLogSQL = "UPDATE vacina_aplicacao SET Observacao = '"&ref("Observacao")&"' WHERE id = "&ref("AplicacaoID")
+                call gravaLogs(UpdateVacinaLogSQL ,"AUTO", "Item excluído manualmente","")
+                db_execute(UpdateVacinaLogSQL)
 
                 mensagem = "Salvo com sucesso!"
                 tipo = "success"
-
-            else
-
-                mensagem = "Falha ao registrar"
-                tipo = "error"
-
             end if
+        else
+            PosicaoID = ref("PosicaoID")
 
+            if PosicaoID = "-1" then
+                mensagem = "Selecione o Lote"
+                tipo = "error"
+            else
+                set pos = db.execute("select *, p.id as ProdutoID, ep.LocalizacaoID as Localizacao from estoqueposicao ep join produtos p on p.id = ep.ProdutoID join vacina_serie_dosagem vsd on vsd.ProdutoID = p.id where ep.id = "& PosicaoID)
+                if not pos.eof then
+                    TipoUnidade = ref("TipoUnidade")
+                    ProdutoID = pos("ProdutoID")
+                    TipoUnidadeOriginal = pos("TipoUnidade")
+                    ResponsavelOriginal = pos("Responsavel")
+                    Responsavel = pos("Responsavel")
+                    Validade = pos("Validade")
+                    Lote = pos("Lote")
+                    LocalizacaoID = pos("Localizacao")
+                    LocalizacaoIDOriginal = pos("Localizacao")
+                    QuantidadeLote = pos("Quantidade")
+                    if QuantidadeLote&"" = "" then
+                        QuantidadeLote = 0
+                    else
+                        NumeroQuantidadeLote = replace(replace(QuantidadeLote,".",""),",",".")
+                    end if
+                    Quantidade = ref("Quantidade")
+                    if Quantidade = "" then
+                        Quantidade = 0
+                    else
+                        NumeroQuantidade = replace(replace(Quantidade,".",""),",",".")
+                    end if
+                        call LanctoEstoque(0, PosicaoID, ProdutoID, "S", TipoUnidadeOriginal, TipoUnidade, Quantidade, ref("DataAplicacao"), "", Lote, Validade, "", "0.00", UnidadePagto, "Aplicação de vacina", Responsavel, ref("PacienteID"), "", LocalizacaoID, "", "", "eval", CBID, "", Responsavel, LocalizacaoIDOriginal, "", "", "","")
+                    if ccur(QuantidadeLote) >= ccur(Quantidade) then
+                        db_execute("UPDATE vacina_aplicacao SET StatusID = '3', ViaAplicacaoID = '"&ref("ViaAplicacaoID")&"', LadoAplicacao = '"&ref("LadoAplicacao")&"', UnidadeID = '"&ref("UnidadeID")&"', DataAplicacao = '"&ref("DataAplicacao")&"', Lote='"&Lote&"', EstoquePosicaoID='"&PosicaoID&"', Observacao = '"&ref("Observacao")&"', UsuarioIDAplicacao = "&session("User")&" WHERE id = "&ref("AplicacaoID"))
+                        mensagem = "Salvo com sucesso!"
+                        tipo = "success"
+                    else
+                        mensagem = "Falha ao registrar"
+                        tipo = "error"
+                    end if
+                else
+                    mensagem = "Falha ao registrar"
+                    tipo = "error"
+                end if
+            end if
         end if
 
     case "Alterar"

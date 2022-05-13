@@ -2765,9 +2765,9 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
             if inStr(valor,"[Paciente.Prontuario]")>0 then
-                Prontuario = PacientesSQL("id")
+                Prontuario = pac("id")
                 if getConfig("AlterarNumeroProntuario") = 1 then
-                    Prontuario = PacientesSQL("idImportado")
+                    Prontuario = pac("idImportado")
                 end if
                 valor = replace(valor, "[Paciente.Prontuario]", Prontuario)
             end if

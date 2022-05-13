@@ -53,15 +53,19 @@ if Voucher<>"" then
                 Pacotes = vca("Pacotes")&""
                 Valor = vca("Valor")
                 TipoValor = vca("TipoValor")
+                AplicouVoucherProc = 0
 
                 for i=0 to ubound(spl)
+                    Valor = 0
                     if GruposProcedimentos<>"" then
                         set proc = db.execute("select GrupoID from procedimentos where id="& ref("ItemID"& spl(i)))
                         if not proc.eof then
                             GrupoID = proc("GrupoID")
                         end if
                     end if
+                    
                     if instr(GruposProcedimentos, "|"& GrupoID &"|")>0 or instr(Procedimentos, "|"& ref("ItemID"& spl(i)) &"|")>0 or instr(Pacotes, "|"& ref("PacoteID"& spl(i)) &"|")>0 then
+                        Valor = vca("Valor")
                         if TipoValor="V" then
                             Desconto = Valor
                         else
@@ -78,7 +82,15 @@ if Voucher<>"" then
                         response.write("$('#Desconto"& spl(i) &"').val('"& fn(Desconto) &"');")
 
                     end if
+
+                    if instr(Procedimentos, "|"& ref("ItemID"& spl(i)) &"|")>0 then
+                        AplicouVoucherProc = AplicouVoucherProc + 1
+                    end if                     
                 next
+
+                if AplicouVoucherProc = 0 then
+                    erro = "Voucher não pode ser aplicado para o(s) procedimento(s) selecionado(s)"
+                end if 
             end if
         end if
     end if

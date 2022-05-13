@@ -96,7 +96,7 @@ function tagsConverte(conteudo,itens,moduloExcecao)
         'ALIAS DE TAGS RELACIONADAS AO AGENDAMENTO
         conteudo = replace(conteudo, "[DataAgendamento]", "[Agendamento.Data]" )
         conteudo = replace(conteudo, "[HoraAgendamento]", "[Agendamento.Hora]" )
-        conteudo = replace(conteudo, "[Agendamento.id]", item_id )
+        conteudo = replace(conteudo, "[Agendamento.ID]", item_id )
 
       case "ProcedimentoID"
         item_ProcedimentoID      = item_id
@@ -214,11 +214,14 @@ function tagsConverte(conteudo,itens,moduloExcecao)
                 conteudo = replace(conteudo, "[Paciente.Nascimento]", PacientesSQL("Nascimento")&"")
                 conteudo = replace(conteudo, "[Paciente.Documento]", PacientesSQL("Documento")&"")
 
-                Prontuario = PacientesSQL("id")
-                if getConfig("AlterarNumeroProntuario") = 1 then
-                  Prontuario = PacientesSQL("idImportado")
+                if inStr(conteudo,"[Paciente.Prontuario]")>0 then
+                  Prontuario = PacientesSQL("id")
+                  if getConfig("AlterarNumeroProntuario") = 1 then
+                    Prontuario = PacientesSQL("idImportado")
+                  end if
+                  conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
                 end if
-                conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
+
                 'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
                 conteudo = replace(conteudo, "[Paciente.Convenio1]", PacientesSQL("Convenio1")&"")
                 conteudo = replace(conteudo, "[Paciente.Convenio2]", PacientesSQL("Convenio2")&"")

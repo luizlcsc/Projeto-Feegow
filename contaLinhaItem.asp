@@ -49,8 +49,11 @@
                 else 
                     medkit = 1
                     %>
+                    
                     <button type="button" class="btn btn-block btn-xs btn-default" name="Executado" data-value="<%=ItemID %>" <%=desabilitar%>><%=checado%> <%=Executor%></button>
+                    
                     <%
+                     
                 end if
             end if
             if len(Observacoes)>2 then
@@ -70,6 +73,14 @@
             %>	
             <span class="badge badge-success">  Particular </span>
             <%
+        else
+            if medkit = 1 then
+                %>
+                <button type="button" onclick="modalEstoque('<%=ii("ItemID")%>', '', '')" class="btn btn-xs btn-alert">
+                    <i class="far fa-medkit"></i>
+                </button>
+                <%
+            end if 
         end if
         %>
     </td>
@@ -87,11 +98,6 @@
         
         <%
         if tipoLinha="u" then
-            if medkit=1 then 
-                %>
-                <button type="button" onclick="modalEstoque('<%= ItemID %>', '', '')" class="btn btn-xs btn-alert"><i class="far fa-medkit"></i></button>
-                <% 
-            end if 
             if recursoAdicional(8)=4 then
                 sqlBoletos = "SELECT coalesce(sum(boletos_emitidos.DueDate > now() and StatusID = 1),0) as aberto"&_
                             "       ,coalesce(sum(now() > boletos_emitidos.DueDate and StatusID <> 3),0) as vencido"&_
@@ -124,7 +130,7 @@
             mov.close
             set mov=nothing
         end if
-        
+       
         %>
     </td>
     <!--<td></td>-->

@@ -1136,7 +1136,7 @@ end if
                     </div>
                     <%
                     end if
-                    if aut("agendaX")=1 and (cdate(Data) >= date() or (cdate(Data) < date() and aut("agendamentosantigosX")=1)) then
+                    if aut("|agendaX|")=1 and (cdate(Data) >= date() or (cdate(Data) < date() and aut("|agendamentosantigosX|")=1)) then
                     %>
                     <div class="col-xs-5 col-md-3 pt10 <%= hiddenCHK %>">
                         <button class="btn btn-sm btn-danger btn-block" type="button" data-bb-handler="danger" onclick="excluiAgendamento(<%=ConsultaID%>, 0);">

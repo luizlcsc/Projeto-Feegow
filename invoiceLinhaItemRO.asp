@@ -3,12 +3,17 @@
     set InvoiceSQL = db.execute("select * from sys_financialinvoices where id="&treatvalzero(InvoiceID))
     'Caso exista alguma integração para este ítem desabilitar o botão
    ' set integracaofeita = db.execute("SELECT id FROM labs_invoices_amostras lia WHERE lia.InvoiceID = "&treatvalzero(InvoiceID))
+    nome = ""
     if tipo = "M" then
         set produto  = db.execute("Select NomeProduto from produtos p  where id= "&treatvalzero(ItemID))
-        nome = produto("NomeProduto")
-    else
+        if not produto.eof then
+            nome = produto("NomeProduto")
+        end if
+    elseif tipo = "S" THEN
         set procedimentos  = db.execute("Select NomeProcedimento from procedimentos where id= "&treatvalzero(ItemID))
-        nome = procedimentos("NomeProcedimento")
+        if not procedimentos.eof then
+            nome = procedimentos("NomeProcedimento")
+        end if
 
     end if
 %>

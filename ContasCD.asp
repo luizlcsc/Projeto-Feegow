@@ -31,7 +31,7 @@ else
     icone = "arrow-circle-up"
 
     idUser = session("User")
-   
+
     set regraspermissoes = db.execute("SELECT REPLACE(limitarcontaspagar, '|', '') AS limitarcontaspagar, IF( Permissoes like '%[%', SUBSTRING_INDEX(SUBSTRING_INDEX(Permissoes, '[', -1), ']', 1), '') RegraUsuario FROM sys_users WHERE id ="&idUser)
     queryTotal = " SELECT * from sys_financialexpensetype WHERE 1=1 "
 
@@ -51,7 +51,7 @@ else
 
     queryTotal = queryTotal&" ORDER BY Name"
     set categoriaContasAPagar = db.execute(queryTotal)
-    
+
 end if
 
 
@@ -201,15 +201,15 @@ end if
                                     <option value="">Selecione um item</option>
                                     <% while not categoriaContasAPagar.eof  %>
                                         <option value="<%=categoriaContasAPagar("id")%>" <% If CategoriaID = categoriaContasAPagar("id")&"" Then %> selected="selected" <% End If %>><%=categoriaContasAPagar("Name")%></option>
-                                    <% 
+                                    <%
                                     categoriaContasAPagar.movenext
                                     wend
-                                    categoriaContasAPagar.close 
+                                    categoriaContasAPagar.close
                                     set categoriaContasAPagar=nothing
                                     %>
                                 </select>
                             <% end if %>
-                        
+
                         </div>
 
                         <%=quickField("text", "NotaFiscal", "Nota Fiscal", 2, NotaFiscal, "", "", " ")%>

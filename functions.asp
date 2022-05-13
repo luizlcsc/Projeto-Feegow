@@ -220,7 +220,7 @@ new PNotify({
 end function
 
 
-function CalculoSemanalQuinzenal(FrequenciaSemanas, InicioVigencia)
+function CalculoSemanalQuinzenal(FrequenciaSemanas, InicioVigencia, Data)
     CalculoSemanalQuinzenal = true
     if isnumeric(FrequenciaSemanas) then
         if InicioVigencia&"" = "" then

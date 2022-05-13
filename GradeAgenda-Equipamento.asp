@@ -161,7 +161,7 @@ end if
 			MostraGrade=False
 		else
 			if Horarios("GradePadrao")=1 then
-				MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"")
+				MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
 			end if
 		end if
 		if MostraGrade = false then

@@ -2751,7 +2751,9 @@ function replateTagsPaciente(valor,PacienteID)
                 end select
                 val = trim(val&" ")
                 if Tag = "Cpf" or Tag = "CPF" then
-                    Val = formatCPF(Val&"")
+                    if Val&"" <> "" then
+                        Val = formatCPF(Val&"")
+                    end if
                 end if
                 valor = replace(valor, "[Paciente."&Tag&"]", Val)
             rec.movenext
@@ -2762,11 +2764,13 @@ function replateTagsPaciente(valor,PacienteID)
             valor = replace(valor, "[Paciente.Idade]", idade(pac("Nascimento")))
             valor = replace(valor, "[Paciente.Nascimento]", pac("Nascimento")&"")
             valor = replace(valor, "[Paciente.Documento]", pac("Documento")&"")
-            Prontuario = pac("id")
-            if getConfig("AlterarNumeroProntuario") = 1 then
-                Prontuario = pac("idImportado")
+            if inStr(conteudo,"[Paciente.Prontuario]")>0 then
+                Prontuario = PacientesSQL("id")
+                if getConfig("AlterarNumeroProntuario") = 1 then
+                    Prontuario = PacientesSQL("idImportado")
+                end if
+                conteudo = replace(conteudo, "[Paciente.Prontuario]", Prontuario)
             end if
-            valor = replace(valor, "[Paciente.Prontuario]", Prontuario)
 
             'POSSIBILIDADE DE UTILIZAR PLANOS E CONVENIOS SECUNDÁRIOS
             valor = replace(valor, "[Paciente.Convenio1]", pac("Convenio1")&"")
@@ -4820,7 +4824,7 @@ private function calcValPosicao(QuantidadeAtual, ValorAtual, QuantidadeInserida,
         <%
     end if
     Divisor = (QuantidadeAtual + QuantidadeInserida)
-    if Dividor<>0 then
+    if Divisor<>0 then
         calcValPosicao = ( (QuantidadeAtual*ValorAtual) + (QuantidadeInserida*ValorInserido) ) / Divisor
     else
         calcValPosicao = 0
@@ -4946,7 +4950,7 @@ private function LanctoEstoque(LancamentoID, PosicaoID, P, Tipo, TipoUnidadeOrig
             PosicaoE = PosicaoID
             PosicaoS = 0
         elseif Tipo="S" or Tipo="M" then
-            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' "& sqlValidade
+            sqlPosSaida = "select * from estoqueposicao where ProdutoID="&P&" AND TipoUnidade='"& TipoUnidadeOriginal &"' AND Lote like '"&Lote&"' AND ifnull(LocalizacaoID, 0)="& treatvalzero(LocalizacaoIDOriginal) &" AND CBID LIKE '"& CBID &"' AND Responsavel like '"& ResponsavelOriginal &"' "& sqlValidade & " AND id=" & PosicaoID
             set posSaida = db.execute(sqlPosSaida)
             'jamais dar saida de uma posicao que nao foi criada previamente
             if not posSaida.eof then

@@ -24,7 +24,7 @@ end if
 
 
 if lcase(session("Table"))="profissionais" then
-    sqlPacotes = "SELECT pp.* "&_
+    sqlPacotes = "SELECT 'Pacote de Exame' TipoPacote, pp.* "&_
                  "FROM  pacotesprontuarios pp "&_
                  "LEFT JOIN (  "&_
                  "    select EspecialidadeID from profissionais   "&_
@@ -63,7 +63,7 @@ if lcase(session("Table"))="profissionais" then
                     <i class="far fa-hand-o-left"></i>&nbsp;<i class="far fa-folder"></i>
                 </a>
             </td>
-            <td id="NomePedido<%=listaTextosPedidos("id")%>"> <code><%=listaTextosPedidos("Tipo")%></code> <%=pacotes("Nome")%></td>
+            <td id="NomePedido<%=pacotes("id")%>"> <code><%=pacotes("TipoPacote")%></code> <%=pacotes("Nome")%></td>
             <td width="1%" nowrap>
             </td>
         </tr>

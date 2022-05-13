@@ -30,7 +30,7 @@
                 DisabledNaoAlterarExecutante=" disabled"
             end if
 
-            if NaoPermitirAlterarExecutante and Executado="S" then
+            if (NaoPermitirAlterarExecutante or aut("profissionalcontaA")=0) and Executado="S" then
                 NaoAlterarExecutante=True
                 DisabledNaoAlterarExecutante=" disabled"
             end if

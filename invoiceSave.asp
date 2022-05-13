@@ -34,11 +34,13 @@ if not rsRateio.eof then
 	end if
 end if
 
-if instr(ref("invTabelaID"), ",") >0 then
-	splTabela = split(ref("invTabelaID"), ",")
-	varTabelaID = Trim(splTabela(0))
-else
-	varTabelaID = ref("invTabelaID")
+if CD="C" then
+	if instr(ref("invTabelaID"), ",") >0 then
+		splTabela = split(ref("invTabelaID"), ",")
+		varTabelaID = Trim(splTabela(0))
+	else
+		varTabelaID = ref("invTabelaID")
+	end if
 end if
 
 ' ######################### BLOQUEIO FINANCEIRO ########################################
@@ -648,11 +650,11 @@ if erro="" then
             DescricaoLog=""
         end if
         if scp()=1 then
-			sqlInvoice = "update sys_financialinvoices set Voucher='"&Voucher&"', Rateado="&contaRateada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& varTabelaID &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Voucher='"&Voucher&"', Rateado="&contaRateada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(varTabelaID) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 			'call gravaLog(sqlInvoice, "AUTO")
 	    	db_execute(sqlInvoice)
         else
-			sqlInvoice = "update sys_financialinvoices set Voucher='"&Voucher&"', Rateado="&contaRateada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& varTabelaID &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
+			sqlInvoice = "update sys_financialinvoices set Voucher='"&Voucher&"', Rateado="&contaRateada&", AccountID="&AccountID&", AssociationAccountID="&AssociationAccountID&", Value="&treatvalzero(ref("Valor"))&", Tax=1, Currency='BRL', Recurrence="&treatvalnull(ref("Recurrence"))&", RecurrenceType='"&ref("RecurrenceType")&"', FormaID="&treatvalzero(splForma(0))&", ContaRectoID="&treatvalzero(splForma(1))&", TabelaID="& treatvalnull(varTabelaID) &", ProfissionalSolicitante='"&ref("ProfissionalSolicitante")&"', nroNFe='"& ref("nroNFe") &"', CompanyUnitID="&treatvalzero(ref("CompanyUnitID"))&", sysActive=1 "& sqlCaixaID & sqlUsuario & gravaData &" where id="&InvoiceID
 		' 	call gravaLog(sqlInvoice, "AUTO")
 
 			db_execute(sqlInvoice)
@@ -731,7 +733,7 @@ if erro="" then
 
     sqlAtualizaTabela = ""
     if existePagto="" or aut("|tabelacontapagaA|")=1 then
-        sqlAtualizaTabela=" TabelaID="& varTabelaID &", "
+        sqlAtualizaTabela=" TabelaID="& treatvalnull(varTabelaID) &", "
     end if
 
   if scp()=1 then

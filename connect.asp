@@ -2710,7 +2710,7 @@ function replateTagsPaciente(valor,PacienteID)
         strPac = "SELECT  "&_
         "c1.NomeConvenio AS 'Convenio1', c2.NomeConvenio AS 'Convenio2',c3.NomeConvenio AS 'Convenio3'  "&_
         ",pla1.NomePlano AS 'Plano1', pla2.NomePlano AS 'Plano2',pla3.NomePlano AS 'Plano3'  "&_
-        ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem, p.idImportado  "&_
+        ",p.*, ec.EstadoCivil, s.NomeSexo as Sexo, g.GrauInstrucao, o.Origem  "&_
         "from pacientes as p  "&_
         "left join estadocivil as ec on ec.id=p.EstadoCivil  "&_
         "left join sexo as s on s.id=p.Sexo  "&_

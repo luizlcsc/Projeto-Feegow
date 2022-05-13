@@ -964,7 +964,7 @@ if not inv.eof then
         end if
 
 		%>
-		<%=Recibo%>
+		<%=unscapeOutput(Recibo)%>
 	</div>
 	<%
 	if TabelaRepasses<>"" then
@@ -998,5 +998,7 @@ end if %>
 </div>
 <% next %>
 <script type="text/javascript">
-   print();
+   $(document).ready(function(){
+        print();
+   }
 </script>

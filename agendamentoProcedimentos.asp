@@ -1421,8 +1421,14 @@ function validaProcedimento(id,value){
             }
 
             json = json[0];
+            
+            //se já tem equipamento selecionado, não muda para o equipamento padrão ~BrunoBastos@20220516
+            let equip = json.EquipamentoPadrao
+            if(<%=EquipamentoId%>) {
+                equip = <%=EquipamentoId%>
+            }
 
-            $("#EquipamentoID").val(json.EquipamentoPadrao).change();
+            $("#EquipamentoID").val(equip).change();
             $("#EquipamentoID").select2();
             
             if(json.NaoParticular == "1"){

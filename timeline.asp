@@ -1476,16 +1476,19 @@ function excluirSerie(id) {
                         loadMore : newloadMore,
                         ProfissionalID:ProfissionalID
                     }).done(function(data) {
-                        if(data!==""){
+                        //quando não encontra resultados, põe uma div na tela com essa informação
+                        //e não deve ficar rodando o loadMore no scroll... ~BrunoBastos@20220517
+                        if(data!=="" && data!=='<div class="panel-body">Não foram encontrados registros</div>'){
                                 $("#timeline").append(data);
                                 loadMore+=steps;
-                        } else
-                        {
+                        } else {
                             final = true;
 
                             if($(".no-more-registers").length <= 0){
                                 $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label no-more-registers'>Não há mais registros</div></div>");
                             }
+
+                        
                         }
                     }).fail(function(data) {
                         console.log(data);

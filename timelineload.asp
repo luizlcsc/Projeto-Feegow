@@ -50,7 +50,9 @@ end if
     end if
 
     if ProfessionalID <>"" then
-        sqlProf = " left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID&" "
+        'remove where do join e muda pra inner join de modo a listar apenas os resultados que coincidam com o filtro ~BrunoBastos@20220517
+        'sqlProf = " left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID&" "
+        sqlProf = " inner join sys_users as us on us.id = sysUser and us.idInTable = "&ProfessionalID&" "
     end if 
 
     if instr(Tipo, "|AE|")>0 then
@@ -127,10 +129,15 @@ end if
                 " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
                 " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
                 "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-    ' response.write(sql)
+        ' response.write(sql)
              set ti = db.execute( sql )
 
-             while not ti.eof
+            'se não encontrar resultados, põe um aviso na tela ~BrunoBastos@20220517
+            if ti.eof then
+            response.Write("<div class=""panel-body"">Não foram encontrados resultados</div>")
+            end if
+
+            while not ti.eof
                 
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
@@ -903,6 +910,9 @@ end if
 
               ti.movenext
               wend
+
+
+
               ti.close
               set ti=nothing
 

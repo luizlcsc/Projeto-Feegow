@@ -134,10 +134,8 @@ end if
              set ti = db.execute( sql )
 
             'se não encontrar resultados, põe um aviso na tela ~BrunoBastos@20220517
-            if (ti.eof ) then
-               ' response.Write("<div class=""sem-registros-para-o-profissional""></div>")
-                response.Write("xxx")
-
+            if (ti.eof and sqlProf <> "" ) then
+                response.write("<div class=""panel-body"">Nenhum registro encontrado para o profissional selecionado</div>")
             end if
 
             while not ti.eof

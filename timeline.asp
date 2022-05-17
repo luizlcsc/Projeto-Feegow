@@ -1479,20 +1479,17 @@ function excluirSerie(id) {
                         console.log('debug'+ data)
                         //quando não encontra resultados, põe uma div na tela com essa informação
                         //e não deve ficar rodando o loadMore no scroll... ~BrunoBastos@20220517
-                        if(data!=="" && data!=='<div class="sem-registros-para-o-profissional"></div>'){
+                        if(data!=="" && data!=='<div class="panel-body">Nenhum registro encontrado para o profissional selecionado</div>'){
                                 $("#timeline").append(data);
                                 loadMore+=steps;
-                        } else if(data=='<div class="sem-registros-para-o-profissional"></div>'){
+                        } else if(data=='<div class="panel-body">Nenhum registro encontrado para o profissional selecionado</div>'){
                             final = true;
-                                $("#timeline").append("<div class='panel-body'>Nenhum registro encontrado para o profissional selecionado</div>");
-                        }else {
+                        }
+                        else {
                             final = true;
-
                             if($(".no-more-registers").length <= 0){
                                 $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label no-more-registers'>Não há mais registros</div></div>");
-                            }
-
-                        
+                            }                        
                         }
                     }).fail(function(data) {
                         console.log(data);

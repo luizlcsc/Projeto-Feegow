@@ -130,11 +130,14 @@ end if
                 " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
                 "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
         ' response.write(sql)
+        
              set ti = db.execute( sql )
 
             'se não encontrar resultados, põe um aviso na tela ~BrunoBastos@20220517
-            if ti.eof then
-            response.Write("<div class=""panel-body"">Não foram encontrados resultados</div>")
+            if (ti.eof ) then
+               ' response.Write("<div class=""sem-registros-para-o-profissional""></div>")
+                response.Write("xxx")
+
             end if
 
             while not ti.eof

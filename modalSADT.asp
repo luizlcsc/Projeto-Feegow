@@ -173,8 +173,8 @@ elseif Tipo="Procedimentos" then
         </div>
         <div class="row">
             <%= quickField("number", "Quantidade", "* Quant.", 1, Quantidade, " text-right ", "", " required='required' min='0' onchange=""tissRecalc('Quantidade');""") %>
-            <%= quickField("simpleSelect", "ViaID", "Via", 2, ViaID, "select * from tissvia order by descricao", "descricao", "  onchange=""tissCompletaDados(4, $('#gProcedimentoID').val());"" empty='' required='required' no-select2") %>
-            <%= quickField("simpleSelect", "TecnicaID", "T&eacute;c.", 3, TecnicaID, "select * from tisstecnica order by descricao", "descricao", " empty='' required='required' no-select2") %>
+            <%= quickField("simpleSelect", "ViaID", "Via", 2, ViaID, "select * from tissvia order by descricao", "descricao", "  onchange=""tissCompletaDados(4, $('#gProcedimentoID').val());"" empty='' no-select2") %>
+            <%= quickField("simpleSelect", "TecnicaID", "T&eacute;c.", 3, TecnicaID, "select * from tisstecnica order by descricao", "descricao", " empty='' no-select2") %>
             <%= quickField("text", "Fator", "* Fator", 2, formatnumber(Fator,2), " input-mask-brl text-right", "", " required='required' onchange=""alertCalculo(this);tissRecalc('Fator');""") %>
             <%= quickField("currency", "ValorUnitario", "* Valor Unit&aacute;rio", 2, ValorUnitario, "", "", " "&ValorRequired&" onchange=""alertCalculo(this);tissRecalc('ValorUnitario');""") %>
             <%= quickField("currency", "ValorTotal", "* Valor Total", 2, ValorTotal, "", "", " "&ValorRequired) %>

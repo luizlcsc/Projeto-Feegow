@@ -477,10 +477,18 @@ function completaProcedimentoNew(id, ConvenioID)
     END IF
 
     viaID = ref("ViaID")
-
-    IF viaID = "" THEN
-       viaID = 1
-    END IF
+	
+	set CamposConvenios = db.execute("SELECT CamposObrigatorios FROM convenios where id = " & treatvalzero(ConvenioID))
+	if not CamposConvenios.eof then
+		camposObrigatorios = CamposConvenios("CamposObrigatorios")
+		if not isnull(camposObrigatorios) then 
+			if instr(camposObrigatorios , "|Via|") > 0  then
+				IF viaID = "" THEN
+					viaID = 1
+				END IF
+			end if
+		end if	 
+	end if   
 
     set Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,id,ref("PlanoID"),ref("CodigoNaOperadora"),Quantidade,null,viaID)
 

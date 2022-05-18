@@ -279,11 +279,7 @@ if not tryLogin.EOF then
                 end if
             end if
             if mobileDevice()<>"" then
-                set valter = dbProvi.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='sys_users' and i.COLUMN_NAME='UltRefDevice'")
-                if valter.EOF then
-                    dbProvi.execute("ALTER TABLE `clinic"&tryLogin("LicencaID")&"`.`sys_users` ADD COLUMN `UltRefDevice` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `UltRef`, ADD COLUMN `UltPac` INT NULL DEFAULT NULL AFTER `UltRefDevice`")
-                    set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
-                else
+                if FieldExists(sysUser, "UltRefDevice") then
                     TempoDistDevice = datediff("s", sysUser("UltRefDevice"), now())
                     if TempoDistDevice<20 and TempoDistDevice>0 and not permiteMasterLogin then
                         erro = "Este usuário já está conectado em outro aparelho."

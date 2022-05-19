@@ -159,16 +159,20 @@ if isnumeric(EventID) then
                 'IGNORA ERROS PARA EVITAR INTERRUPÇÕES NO SISTEMA 
                 On error Resume Next
 
-                'A TAG alternativa recebe o mesmo valor da TAG principal, pois é apenas pra tratar o legado que ainda usa essas tags
                 columnNameValue = moduleValue(columnName)&""
-                columnAlternativeValue = moduleValue(columnName)&""
 
+                'Problema de aspas duplas no JSON no campo "EmailModelo"
+                if columnName = "EmailModelo" then
+                  columnNameValue = replace(columnNameValue, "&quot;", "\""")
+                end if
+                
                 if forceNotSendSMS = "true" and columnName = "SmsModelo" or forceNotSendWhatsApp = "true" and columnName = "WhatsAppModelo" or forceNotSendEmail = "true" and columnName = "EmailModelo" then
-                  columnNameValue = "nao sera enviado"
+                  columnNameValue = "nao sera enviado"                  
                 end if
 
+                'A TAG alternativa recebe o mesmo valor da TAG principal, pois é apenas pra tratar o legado que ainda usa essas tags
                 webhook_body = replace(webhook_body, "["&tagName&"]", columnNameValue)
-                webhook_body = replace(webhook_body, "["&tagAlternativa&"]", columnAlternativeValue)
+                webhook_body = replace(webhook_body, "["&tagAlternativa&"]", columnNameValue)
 
                 If Err.number <> 0 then
                   'CASO ALGUM VALOR NÃO SEJA CONVERTIDO, ALTERE O VALOR DE "ativaDebug" PARA true

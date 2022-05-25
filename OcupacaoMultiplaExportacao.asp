@@ -130,7 +130,7 @@ else
         splU = split(ref("Locais"), ", ")
 
         for j=0 to Ubound(splU)
-            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), True)
+            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j),session("User") ,"always",True)
             UnidadeID = replace(replace(splU(j), "UNIDADE_ID", ""),"|","")
 
             sqlUnion = ", ( "&_

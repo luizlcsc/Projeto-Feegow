@@ -173,10 +173,12 @@ if not tryLogin.EOF then
                                   "FROM cliniccentral.config_opcoes cc LEFT JOIN config cp ON cc.id = cp.ConfigID WHERE Coluna='"&configNome&"'")
       if not config.eof then
             if config("Valor")&"" = "1" then
-                set StatusEmailSQL = dbc.execute("SELECT eu.SysUserID, eu.Validado, eu.Hash FROM email_usuarios as eu WHERE eu.Validado=1 AND eu.LicencaID="&tryLogin("LicencaID")&" AND eu.SysUserID="&tryLogin("id"))
+                set StatusEmailSQL = dbc.execute("SELECT eu.SysUserID, eu.Validado, eu.Hash FROM email_usuarios as eu WHERE eu.LicencaID="&tryLogin("LicencaID")&" AND eu.SysUserID="&tryLogin("id"))
 
-                if StatusEmailSQL.eof then
-                    erro = "Enviamos um link para o seu e-mail para concluir seu cadastro. Caso não tenha recebido o e-mail, entre em contato conosco."
+                if not StatusEmailSQL.eof then
+                    IF StatusEmailSQL("Validado")&""="0" THEN
+                        erro = "Enviamos um link para o seu e-mail para concluir seu cadastro. Caso não tenha recebido o e-mail, entre em contato conosco."
+                    END IF
                 end if
             end if
         end if

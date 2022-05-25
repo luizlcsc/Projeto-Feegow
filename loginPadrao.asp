@@ -94,7 +94,7 @@ else
 	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
                " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID                                                      "&_
-	           "where Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
+	           "where u.Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
                " " & sqlHomologacao                                                                                                                  &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
@@ -165,6 +165,24 @@ if not tryLogin.EOF then
         errorCode = "server_unavailable"
     end if
 
+    configNome = "ValidarEmailDeUsuario"
+
+
+    if not permiteMasterLogin then
+        set config = dbc.execute("SELECT COALESCE(cp.Valor, cc.ValorPadrao,0) Valor "&_
+                                  "FROM cliniccentral.config_opcoes cc LEFT JOIN config cp ON cc.id = cp.ConfigID WHERE Coluna='"&configNome&"'")
+      if not config.eof then
+            if config("Valor")&"" = "1" then
+                set StatusEmailSQL = dbc.execute("SELECT eu.SysUserID, eu.Validado, eu.Hash FROM email_usuarios as eu WHERE eu.LicencaID="&tryLogin("LicencaID")&" AND eu.SysUserID="&tryLogin("id"))
+
+                if not StatusEmailSQL.eof then
+                    IF StatusEmailSQL("Validado")&""="0" THEN
+                        erro = "Enviamos um link para o seu e-mail para concluir seu cadastro. Caso não tenha recebido o e-mail, entre em contato conosco."
+                    END IF
+                end if
+            end if
+        end if
+    end if
 	if erro="" then
 
         set dbProvi = newConnection("cliniccentral", Servidor)

@@ -9,7 +9,7 @@ if rfLocais="" then
     rfLocais = "-"
 end if
 'response.write(De&", "&Ate&", "&refEspecialidade&", """", """", """", "& rfLocais)    
-call ocupacao(lDe, lAte, ref("Especialidades"), "", "", "", rfLocais)    
+call ocupacao(lDe, lAte, ref("Especialidades"), "", "", "", rfLocais,session("User"),"",false)    
 %>
 
 

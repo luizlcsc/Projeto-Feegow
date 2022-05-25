@@ -673,7 +673,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                     "LEFT JOIN assperiodolocalxprofissional ex ON h.`Data` BETWEEN ex.DataDe AND ex.DataA AND h.Hora BETWEEN ex.HoraDe AND ex.HoraA AND ex.ProfissionalID=h.ProfissionalID  "&_ 
                                     "LEFT JOIN assfixalocalxprofissional ah ON h.`Data` BETWEEN COALESCE(ah.InicioVigencia, h.`Data`) AND COALESCE(ah.FimVigencia, h.`Data`) AND h.ProfissionalID=ah.ProfissionalID AND ah.DiaSemana=DAYOFWEEK(h.`Data`) AND h.Hora BETWEEN ah.HoraDe AND ah.HoraA "&_ 
                                     "SET h.GradeID= COALESCE(ex.id*-1, ah.id), h.ExibeAgendamentoOnline=COALESCE(IF(ex.id is NULL,NULL, IF(ex.Compartilhar='S',1,0)), IF(ah.id is NULL,NULL, IF(ah.Compartilhada='S',1,0)) ) "&_ 
-                                    "WHERE h.Situacao='A' AND h.GradeID IS NULL AND sysUser="& treatvalzero(sysUser) &"")
+                                    "WHERE h.Situacao='A' AND h.GradeID IS NULL AND h.sysUser="& treatvalzero(sysUser) &"")
                             end if
 
 

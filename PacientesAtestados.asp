@@ -102,9 +102,10 @@ end if
     </div>
 
 
-<div class="text-left mt20">
-    <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <span class="caret ml5"></span></a>
+    <div class="text-left mt20">
+        <a href="#" class="btn btn-default btn-sm" id="showTimeline">Mostrar/Ocultar Histórico <i class="fas fa-caret-down ml5"></i></a>
     </div>
+
     <div id="conteudo-timeline"></div>
 
   </div>
@@ -125,15 +126,32 @@ end if
     <%
     end if
     %>
+    var loadingTimeline = false;
+
     $(function(){
         $("#conteudo-timeline").hide();
         $("#showTimeline").on('click', function(){
-            $.get("timeline.asp", {PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
-                $("#conteudo-timeline").html(data)
-                $("#conteudo-timeline").toggle(1000);
-            });
+
+            if(!loadingTimeline){
+                loadingTimeline=true;
+                toggleBtnLoading("#showTimeline");
+                
+                $("#conteudo-timeline").html("")
+                ProntTimelineLoadMore(0);
+            }   
         })
-    })
+    });
+
+    function ProntTimelineLoadMore(offset){
+        $.get("timelineloadmore.asp", {CallbackShowMore: 'ProntTimelineLoadMore' ,BtnShowMore: true, LoadMore: offset, PacienteID:'<%=req("p")%>', Tipo: "|Prescricao|AE|L|Diagnostico|Atestado|Imagens|Arquivos|Pedido|", OcultarBtn: 1}, function(data) {
+            $("#conteudo-timeline").append(data)
+            if(offset === 0){
+                $("#conteudo-timeline").toggle(1000);
+                toggleBtnLoading("#showTimeline");
+                loadingTimeline=false;
+            }
+        });
+    }
 
 $(function () {
 	CKEDITOR.config.height = 400;

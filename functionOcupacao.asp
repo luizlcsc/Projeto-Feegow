@@ -694,7 +694,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 
     'diminuir um minuto no horário "até" para ter o mesmo comportamento da agenda, qual seja, não bloquear horário redondo
     'ex.: 10:00:00 vai deixar de aparecer no relatório como bloqueado (a exemplo do que acontece na agenda)
-    bloqueioSql = "select c.HoraDe, SUBTIME(c.HoraA, '00:01:00'), c.Profissionais, c.id from compromissos c where (c.ProfissionalID='"& ProfissionalID &"' or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"& ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+    bloqueioSql = "select c.HoraDe, SUBTIME(c.HoraA, '00:01:00') HoraA, c.Profissionais, c.id from compromissos c where (c.ProfissionalID='"& ProfissionalID &"' or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"& ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
    ' response.Write( bloqueioSql )
     set bloq = db.execute(bloqueioSql)
 

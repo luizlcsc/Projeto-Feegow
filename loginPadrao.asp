@@ -173,7 +173,7 @@ if not tryLogin.EOF then
     set config = dbc.execute("SELECT COALESCE(cp.Valor, cc.ValorPadrao,0) Valor "&_
                                   "FROM cliniccentral.config_opcoes cc LEFT JOIN config cp ON cc.id = cp.ConfigID WHERE Coluna='"&configNome&"'")
       if not config.eof then
-            if config("Valor")&"" <> "1" and tryLogin("Hash")&""<>"" and tryLogin("Validado")&"" <> "1" then
+            if config("Valor")&"" = "1" and tryLogin("Hash")&""<>"" and tryLogin("Validado")&"" <> "1" then
                 erro = "Para concluir seu cadastro, enviamos um link para o seu e-mail. Não se esqueça de verificar sua pasta spam! Caso não tenha recebido o e-mail, entre em contado com nosso suporte: email@amorsaude.com.br."
             end if
         end if

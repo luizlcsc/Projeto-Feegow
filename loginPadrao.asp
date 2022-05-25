@@ -84,7 +84,7 @@ else
         sqlHomologacao = " AND ( l.DominioHomologacao IS NULL OR l.DominioHomologacao='"&Dominio&"' ) "
     end if
 
-	sqlLogin = "select u.*, l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
+	sqlLogin = "select u.*, eu.SysUserID, eu.Validado, eu.Hash, l.ExibeChatAtendimento,l.PorteClinica, l.ExibeFaturas, l.Cliente, l.NomeEmpresa, l.Franquia, l.TipoCobranca, l.FimTeste, l.DataHora,    "&_
 	           "l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status`,l.TipoCobranca, l.`UsuariosContratados`, l.`UsuariosContratadosNS`,                 "&_
 	           " COALESCE(serv.ReadOnlyDNS, serv.DNS, l.Servidor) ServerRead, u.Tipo as tipoUsuario,                                                "&_
 	           "COALESCE(serv.DNS, l.Servidor) Servidor, serv.Status StatusServidor,                                                                                           "&_
@@ -92,9 +92,10 @@ else
 	           "l.ServidorAplicacao,l.PastaAplicacao,   u.Home, l.ultimoBackup, l.Cupom, UNIX_TIMESTAMP(u.DataHora) as DataCadastro                 "&_
 	           "from licencasusuarios as u                                                                                                          "&_
 	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
+	           "Left join email_usuarios as eu on u.id = eu.SysUserID                                                                               "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
                " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID                                                      "&_
-	           "where Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
+	           "where u.Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
                " " & sqlHomologacao                                                                                                                  &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
@@ -165,6 +166,18 @@ if not tryLogin.EOF then
         errorCode = "server_unavailable"
     end if
 
+    configNome = "ValidarEmailDeUsuario"
+
+
+    if not masterLogin then
+    set config = dbc.execute("SELECT COALESCE(cp.Valor, cc.ValorPadrao,0) Valor, (SELECT Email1 FROM empresa) Email "&_
+                                  "FROM cliniccentral.config_opcoes cc LEFT JOIN config_gerais cp ON cc.id = cp.ConfigID WHERE Coluna='"&configNome&"'")
+      if not config.eof then
+            if config("Valor")&"" <> "1" and tryLogin("Hash")&""<>"" and tryLogin("Validado")&"" <> "1" then
+                erro = "Para concluir seu cadastro, enviamos um link para o seu e-mail. Não se esqueça de verificar sua pasta spam! Caso não tenha recebido o e-mail, entre em contado com nosso suporte: email@amorsaude.com.br."
+            end if
+        end if
+    end if
 	if erro="" then
 
         set dbProvi = newConnection("cliniccentral", Servidor)

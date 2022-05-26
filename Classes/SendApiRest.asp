@@ -159,7 +159,7 @@ if isnumeric(EventID) then
                 'IGNORA ERROS PARA EVITAR INTERRUPÇÕES NO SISTEMA 
                 On error Resume Next
 
-                columnNameValue = moduleValue(columnName)
+                columnNameValue = moduleValue(columnName)&""
 
                 'Problema de aspas duplas no JSON no campo "EmailModelo"
                 if columnName = "EmailModelo" then

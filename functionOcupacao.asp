@@ -34,8 +34,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         end if
     end if
 
-
-
     if resetMode = "daily_specialty"  then
         getEspecialidades = "select group_concat(t.EspecialidadeID) especialidades,  CAST(data AS datetime) as data, now() as hoje from ( select EspecialidadeID, Data from agenda_horarios where sysUser = "&sysUser&" group by EspecialidadeID order by data desc) as t "
         set especialidadesRet = db_execute(getEspecialidades)
@@ -52,11 +50,22 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                     db.execute(sqldeleteByEspecialidade)
                 end if 
             end if 
-        end if 
-    else
-        db.execute("delete from agenda_horarios where sysUser="& treatvalzero(sysUser))
-    end if 
+        end if         
+    else 
+        if resetMode = "keep_old"  then
+            keepOldWhere = " AND DATA >= CURDATE()" 
+            if De < date() then
+                De = date() 
+            end if
+            
+            if Ate < date() then
+                Ate = date() 
+            end if
+        end if
 
+        db.execute("delete from agenda_horarios where sysUser="& treatvalzero(sysUser)&keepOldWhere)
+    end if 
+    
     response.Buffer
     profissionais=rfProfissionais
 
@@ -215,7 +224,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
         end if
     end if
-
 
     splrfesp = split(refEspecialidade, ", ")
 

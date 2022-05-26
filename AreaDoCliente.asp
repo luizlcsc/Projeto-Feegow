@@ -546,7 +546,7 @@ end if
                                       <div class="checkbox-custom checkbox-primary">
                                           <input type="checkbox" name="AceiteSolicitacao<%=SolicitacaoID%>" id="AceiteSolicitacao<%=SolicitacaoID%>" value="S">
                                           <label for="AceiteSolicitacao<%=SolicitacaoID%>" class="checkbox" style="font-weight: 500">
-                                          Autorizo o acesso da equipe de apoio ao cliente da Feegow a minha licença mediante solicitação de ajuda feita previamente.
+                                          Autorizo o acesso da equipe de apoio ao cliente da Feegow a minha licença em razão de solicitação de ajuda técnica feita previamente. 
                                           </label>
                                       </div>
 

@@ -152,7 +152,7 @@ if isnumeric(EventID) then
               tagAlternativa = tagsValidate("Alternativa")&""
               
               columnName = replace(tagsValidate("tagNome"),ModuleName&".","")
-
+              
               'SE HOUVER ["tagName"] NO "webhook_body" ACIONA O REPLACE DE FORMA DINÂMICA
 
               if instr(webhook_body, tagName) > 0 or instr(webhook_body, tagAlternativa) > 0 then
@@ -163,7 +163,7 @@ if isnumeric(EventID) then
 
                 'Problema de aspas duplas no JSON no campo "EmailModelo"
                 if columnName = "EmailModelo" then
-                  columnNameValue = replace(columnNameValue, "&quot;", "\""")
+                  columnNameValue = replace(replace(replace(columnNameValue, "&quot;", "\"""), chr(13), ""), chr(10), "")
                 end if
                 
                 if forceNotSendSMS = "true" and columnName = "SmsModelo" or forceNotSendWhatsApp = "true" and columnName = "WhatsAppModelo" or forceNotSendEmail = "true" and columnName = "EmailModelo" then

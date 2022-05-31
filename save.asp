@@ -321,7 +321,7 @@ if lcase(ref("P"))="profissionais" or lcase(ref("P"))="funcionarios" then
 
 	set vcaUser = db.execute("select id from sys_users where `Table`='"&tableName&"' AND idInTable="&id)
 	if NOT vcaUser.EOF then
-		db_execute("UPDATE cliniccentral.licencasusuarios SET Nome='"&ref(""&Nome&"")&"',Ativo="&UsuarioAtivo&" WHERE id="&vcaUser("id"))
+		dbc.execute("UPDATE cliniccentral.licencasusuarios SET Nome='"&ref(""&Nome&"")&"',Ativo="&UsuarioAtivo&" WHERE id="&vcaUser("id"))
 	end if
 end if
 

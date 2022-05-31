@@ -1522,8 +1522,8 @@ function quickField(fieldType, fieldName, label, width, fieldValue, sqlOrClass, 
 				end if
 				%><option disabled="disabled" style="border-bottom:1px dotted #CCC; border-top:1px dotted #CCC;"></option><%
 				while not filiais.eof
+                    %><option value="<%=filiais("id")%>"<%
 					if instr(session("Unidades"), "|"&filiais("id")&"|") then
-						%><option value="<%=filiais("id")%>"<%
 						If fieldValue=filiais("id") or fieldValue=cstr(filiais("id")) Then
 							%> selected="selected"<%
 						end if

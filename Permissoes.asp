@@ -2,6 +2,8 @@
 <!--#include file="connectCentral.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="modulos/audit/AuditoriaUtils.asp"-->
+<!--#include file="Classes/ServerPath.asp"-->
+
 <%
 
 PessoaID = req("I")
@@ -181,8 +183,9 @@ else
 
             <table width="100%" class="table table-striped table-hover">
 	          <%
-	          set lista=db.execute("select * from cliniccentral.sys_permissoes where not Categoria like '' order by Categoria,Acao")
-	          while not lista.eof
+			  currentVersionFolder = getCurrentVersion()
+
+	          set lista=db.execute("select * from cliniccentral.sys_permissoes where Categoria != '' AND JSON_SEARCH(Versoes,'one','"&currentVersionFolder&"') IS NOT null order by Categoria,Acao")
 		          if Categoria<>lista("Categoria") then
 			        %><tr class="success">
 				        <th><%=lista("Categoria")%></th>

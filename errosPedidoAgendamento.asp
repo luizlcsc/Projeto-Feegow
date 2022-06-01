@@ -120,7 +120,23 @@ if ref("rdValorPlano")="P" then
     if not ConfigConvenio.EOF and ref("PlanoID") = "" then
         erro = "Erro: Selecione um Plano"
     end if
+
+    if getConfig("validadeconveniovencido")&"" = "0" then 
+        set PacientePlanoConvenioSQL = db.execute("SELECT id, ConvenioID1, Validade1  FROM pacientes WHERE id="&rfPaciente&"")
+        DataHoraFeito = now()
+
+        if not isnull(PacientePlanoConvenioSQL("ConvenioID1")) then
+            If PacientePlanoConvenioSQL("ConvenioID1")=CInt(ref("ConvenioID")&"") Then
+                if not isnull(PacientePlanoConvenioSQL("Validade1")) then
+                    If myDate(PacientePlanoConvenioSQL("Validade1")) < myDate(DataHoraFeito) Then
+                        erro = "A data da carteirinha do convênio está vencida."
+                    End if
+                end if
+            End if
+        end if
+    end if
 end if
+
 
 if rfProcedimento&""="" then
     erro = "Erro: Selecione pelo menos um procedimento"

@@ -203,56 +203,6 @@ end if
 <!--#include file="errosPedidoAgendamento.asp"-->
 <%
 if erro="" then
-    if getConfig("validadeconveniovencido") = 1 then 
-        set PacientePlanoConvenioSQL = db.execute("SELECT id, PlanoID1, PlanoID2, PlanoID3, Validade1, Validade2, Validade3 FROM pacientes WHERE sysActive=1 and id="&rfPaciente&"")
-        DataHoraFeito = now()
-        if session("FusoHorario")<>"" then
-            FusoHorario = session("FusoHorario")
-            if FusoHorario<>-180 and FusoHorario<>-120 and FusoHorario<>-60 then
-                FusoHorario = -180
-            end if
-            HorasDiferencaFusoHorario= ((FusoHorario / 60) + 3) * -1
-            DataHoraFeito = dateadd("h", HorasDiferencaFusoHorario, DataHoraFeito)
-        end if
-
-        If PacientePlanoConvenioSQL("PlanoID1")=CInt(PlanoID) Then
-            If myDate(PacientePlanoConvenioSQL("Validade1")) < myDate(DataHoraFeito) Then
-                %>
-                new PNotify({
-                    title: 'N&Atilde;O AGENDADO!',
-                    text: 'A data da carteirinha do convênio está vencida.',
-                    type: 'danger',
-                    delay: 3000
-                });
-                <%
-                response.end
-            End if
-        Elseif PacientePlanoConvenioSQL("PlanoID2")=CInt(PlanoID) Then
-            If myDate(PacientePlanoConvenioSQL("Validade2")) < myDate(DataHoraFeito) Then
-                %>
-                new PNotify({
-                    title: 'N&Atilde;O AGENDADO!',
-                    text: 'A data da carteirinha do convênio está vencida.',
-                    type: 'danger',
-                    delay: 3000
-                });
-                <%
-                response.end
-            End if
-        Elseif PacientePlanoConvenioSQL("PlanoID3")=CInt(PlanoID) Then
-            If myDate(PacientePlanoConvenioSQL("Validade3")) < myDate(DataHoraFeito) Then
-                %>
-                new PNotify({
-                    title: 'N&Atilde;O AGENDADO!',
-                    text: 'A data da carteirinha do convênio está vencida.',
-                    type: 'danger',
-                    delay: 3000
-                });
-                <%
-                response.end
-            End if
-        End if
-    end if
 '"Hora=&Paciente=&Procedimento=&StaID=&Local=&rdValorPlano=&ValorPlano=&ProfissionalID=&Data=&Tempo=
 	if rfStaID=5 or rfStaID="5" then
 	    set LocalSQL = db.execute("SELECT UnidadeID FROM locais WHERE id="&treatvalzero(rfLocal))

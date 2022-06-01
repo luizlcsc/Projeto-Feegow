@@ -120,7 +120,7 @@ if True then
         end if
 
         '---> Verifica se for sem CPF e aplica regra de configuração Obrigar preenchimento de responsável financeiro caso não tenha CPF
-        if getConfig("ObrigarPreenchimentoResponsavelFinanceiroSemCpf") = 1 then
+        if getConfig("ObrigarPreenchimentoResponsavelFinanceiroSemCpf")&"" = "1" then
             if ref("SemCPF") = "on" or ref("SemCPF") = "on, on" then
                 msg = "Obrigatório preenchimento de responsável financeiro caso não tenha CPF"
                 set PacientesRelativosSQL = db.execute("SELECT id FROM pacientesrelativos WHERE PacienteID = "&ref("I"))

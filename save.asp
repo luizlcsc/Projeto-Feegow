@@ -120,7 +120,7 @@ if True then
         end if
 
         '---> Verifica se for sem CPF e aplica regra de configuração Obrigar preenchimento de responsável financeiro caso não tenha CPF
-        if getConfig("ObrigarPreenchimentoResponsavelFinanceiroSemCpf") = 1 then
+        if getConfig("ObrigarPreenchimentoResponsavelFinanceiroSemCpf")&"" = "1" then
             if ref("SemCPF") = "on" or ref("SemCPF") = "on, on" then
                 msg = "Obrigatório preenchimento de responsável financeiro caso não tenha CPF"
                 set PacientesRelativosSQL = db.execute("SELECT id FROM pacientesrelativos WHERE PacienteID = "&ref("I"))
@@ -321,7 +321,7 @@ if lcase(ref("P"))="profissionais" or lcase(ref("P"))="funcionarios" then
 
 	set vcaUser = db.execute("select id from sys_users where `Table`='"&tableName&"' AND idInTable="&id)
 	if NOT vcaUser.EOF then
-		db_execute("UPDATE cliniccentral.licencasusuarios SET Nome='"&ref(""&Nome&"")&"',Ativo="&UsuarioAtivo&" WHERE id="&vcaUser("id"))
+		dbc.execute("UPDATE cliniccentral.licencasusuarios SET Nome='"&ref(""&Nome&"")&"',Ativo="&UsuarioAtivo&" WHERE id="&vcaUser("id"))
 	end if
 end if
 

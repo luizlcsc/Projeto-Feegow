@@ -1,4 +1,5 @@
 <!--#include file="connect.asp"-->
+<!--#include file="Classes/ServerPath.asp"-->
 <%
 RegraID = req("I")
 T = req("T")
@@ -34,7 +35,9 @@ end if
     	<div class="col-md-12">
             <table width="100%" class="table table-striped table-hover">
               <%
-              set lista=db.execute("select * from cliniccentral.sys_permissoes where not Categoria like '' order by Categoria,Acao")
+              currentVersionFolder = getCurrentVersion()
+
+              set lista=db.execute("select * from cliniccentral.sys_permissoes where Categoria != '' AND JSON_SEARCH(Versoes,'one','"&currentVersionFolder&"') IS NOT null order by Categoria,Acao")
               while not lista.eof
                   if Categoria<>lista("Categoria") then
                     %><tr class="success">

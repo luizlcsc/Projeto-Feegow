@@ -3,7 +3,7 @@
 <%
 if req("N")<>"" and isnumeric(req("N")) then
     dbc.execute("insert into cliniccentral.pesquisa_satisfacao (UsuarioID, LicencaID, NotaNova) values ("& session("User") &", "& replace(session("Banco"), "clinic", "") &", "& req("N") &")")
-    db_execute("update cliniccentral.licencasusuarios set QualiData=now(), Qualidometro="& req("N") &" where id="& session("User"))
+    dbc.execute("update cliniccentral.licencasusuarios set QualiData=now(), Qualidometro="& req("N") &" where id="& session("User"))
 end if    
 %>
 <div class="col-md-12 pb10">

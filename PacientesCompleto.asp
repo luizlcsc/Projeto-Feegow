@@ -372,7 +372,7 @@ end if
             <%
         'if session("banco")="clinic811" or session("banco")="clinic100002" then
 
-            set busca = db.execute("select distinct ii.InvoiceID, i.sysDate, (select count(id) from itensinvoice where InvoiceID=i.id and Executado='S' and Tipo='S') Executados, (select count(id) from itensinvoice where InvoiceID=i.id and Tipo='S') Total from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where (isnull(ii.Executado) OR ii.Executado='' OR ii.Executado='N') and i.AccountID="&PacienteID&" AND i.CD='C' AND Tipo='S' and i.AssociationAccountID=3")
+            set busca = db.execute("select distinct ii.InvoiceID, i.sysDate, (select count(id) from itensinvoice where InvoiceID=i.id and Executado='S' and Tipo='S') Executados, (select count(id) from itensinvoice where InvoiceID=i.id and Tipo='S') Total from itensinvoice ii LEFT JOIN sys_financialinvoices i on i.id=ii.InvoiceID where (isnull(ii.Executado) OR ii.Executado='' OR ii.Executado='N') and i.AccountID="&PacienteID&" AND i.CD='C' AND Tipo='S' and i.AssociationAccountID=3 AND i.sysActive = 1")
             if not busca.EOF then
                 %>
                 <div class="alert alert-block alert-default">

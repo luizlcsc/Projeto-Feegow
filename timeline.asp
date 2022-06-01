@@ -1290,7 +1290,6 @@ function toggleRegistrosInativos(el){
 }
 
 function toogleInativarRegistroTimeline(el) {
-    console.log('aqui', el);
     ativo = $(el).is(":checked");
     $item = $(el).parents(".timeline-item");
     RecursoID = $(el).data("recurso-id");
@@ -1476,7 +1475,6 @@ function excluirSerie(id) {
                         loadMore : newloadMore,
                         ProfissionalID:ProfissionalID
                     }).done(function(data) {
-                        console.log('debug'+ data)
                         //quando não encontra resultados, põe uma div na tela com essa informação
                         //e não deve ficar rodando o loadMore no scroll... ~BrunoBastos@20220517
                         if(data!=="" && data!=='<div class="panel-body">Nenhum registro encontrado para o profissional selecionado</div>'){

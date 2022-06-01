@@ -94,7 +94,7 @@ else
 	           "left join licencas as l on l.id=u.LicencaID                                                                                         "&_
                " LEFT JOIN db_servers AS serv ON serv.id=l.ServidorID                                                                               "&_
                " LEFT JOIN db_servers AS servHomolog ON servHomolog.id=l.ServidorHomologacaoID                                                      "&_
-	           "where Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
+	           "where u.Email='"&User&"' AND "&sqlSenha &"                                                                                            "&_
                " " & sqlHomologacao                                                                                                                  &_
                "ORDER BY IF(l.`Status`='C',0, 1), IF(l.DominioHomologacao='"&Dominio&"',0, 1)"
 end if
@@ -165,6 +165,24 @@ if not tryLogin.EOF then
         errorCode = "server_unavailable"
     end if
 
+    configNome = "ValidarEmailDeUsuario"
+
+
+    if not permiteMasterLogin then
+        set config = dbc.execute("SELECT COALESCE(cp.Valor, cc.ValorPadrao,0) Valor "&_
+                                  "FROM cliniccentral.config_opcoes cc LEFT JOIN config cp ON cc.id = cp.ConfigID WHERE Coluna='"&configNome&"'")
+      if not config.eof then
+            if config("Valor")&"" = "1" then
+                set StatusEmailSQL = dbc.execute("SELECT eu.SysUserID, eu.Validado, eu.Hash FROM email_usuarios as eu WHERE eu.LicencaID="&tryLogin("LicencaID")&" AND eu.SysUserID="&tryLogin("id"))
+
+                if not StatusEmailSQL.eof then
+                    IF StatusEmailSQL("Validado")&""="0" THEN
+                        erro = "Enviamos um link para o seu e-mail para concluir seu cadastro. Caso não tenha recebido o e-mail, entre em contato conosco."
+                    END IF
+                end if
+            end if
+        end if
+    end if
 	if erro="" then
 
         set dbProvi = newConnection("cliniccentral", Servidor)
@@ -201,83 +219,92 @@ if not tryLogin.EOF then
 	    TimeoutToCheckConnection = 60
         deslogarUsuario = false
 
+        On Error Resume Next
+        'caso a base nao exista
 		set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
+        
         if sysUser.eof then
-            response.write("<style>.info{display: flex;justify-content: center;align-items: center;height: 100vh;}.msg {padding: 50px;opacity: 0.7;border-radius: 10px;}</style><div class='info'><div class='msg'>Entrar em contato com o administrador e preencha os dados de acesso. </div></div>")
-            response.end
+            erro = "Entre em contato com o administrador e preencha os dados de acesso."
+            errorCode = "undefined_sys_user"
         end if 
-		if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
-			TempoDist = datediff("s", sysUser("UltRef"), now())
 
-            forcar_login = false
-            if Session("Deslogar_user")<>"" then
-                forcar_login = Session("Deslogar_user")
-            end if
+        If Err.Number <> 0 Then
+            On Error Goto 0
+            erro = "Favor entre em contato conosco para configurarmos seu acesso."
+            errorCode = "unknown"
+        End If
+        On Error Goto 0
 
-			if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login and AppEnv="production" then
-                deslogarUsuario = true
-				erro = "Este usuário já está conectado em outra máquina."
-				errorCode = "user_connected"
-            else
+        if erro="" then
+            if not isnull(sysUser("UltRef")) and isdate(sysUser("UltRef")) then
+                TempoDist = datediff("s", sysUser("UltRef"), now())
 
-                if UsuariosContratadosNS>0 and not permiteMasterLogin  then
-                'excecao para a Minha Clinica :'/
-                    if tryLogin("LicencaID")=4285 then
-                        set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and NameColumn='NomeFuncionario' and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
-                        Conectados = ccur(contaUsers("Conectados"))
-                        if Conectados>=UsuariosContratadosS and sysUser("NameColumn")="NomeFuncionario" then
-                            erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
-                            errorCode = "max_users_reached"
-                            dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
-                        end if
-                    else
-						sqlUsuariosProfissionais = ""
+                forcar_login = false
+                if Session("Deslogar_user")<>"" then
+                    forcar_login = Session("Deslogar_user")
+                end if
+
+                if TempoDist<20 and TempoDist>0 and not permiteMasterLogin and mobileDevice()="" and not forcar_login and AppEnv="production" then
+                    deslogarUsuario = true
+                    erro = "Este usuário já está conectado em outra máquina."
+                    errorCode = "user_connected"
+                else
+
+                    if UsuariosContratadosNS>0 and not permiteMasterLogin  then
+                    'excecao para a Minha Clinica :'/
+                        if tryLogin("LicencaID")=4285 then
+                            set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &" and NameColumn='NomeFuncionario' and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
+                            Conectados = ccur(contaUsers("Conectados"))
+                            if Conectados>=UsuariosContratadosS and sysUser("NameColumn")="NomeFuncionario" then
+                                erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
+                                errorCode = "max_users_reached"
+                                dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
+                            end if
+                        else
+                            sqlUsuariosProfissionais = ""
 
 
-                        ' Caso o contrato seja por profissional e o usuario que esta se logando seja um profissional
-						if TipoCobranca&""="0" and tipoUsuario = "profissionais" then
-							sqlUsuariosProfissionais = " and `table`='profissionais' "
-						end if
+                            ' Caso o contrato seja por profissional e o usuario que esta se logando seja um profissional
+                            if TipoCobranca&""="0" and tipoUsuario = "profissionais" then
+                                sqlUsuariosProfissionais = " and `table`='profissionais' "
+                            end if
 
-                        ' Contabiliza os usuarios da licença que estão logados 
-                        set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
-                        Conectados = ccur(contaUsers("Conectados"))
-                        
-                        'Desconsidera os usuarios logados caso o contrato seja por profissional e o usuario NÃO seja um profissional 
-                        if TipoCobranca&""="0" and tipoUsuario <> "profissionais" then
-                            Conectados = 0
-                        end if
+                            ' Contabiliza os usuarios da licença que estão logados 
+                            set contaUsers = dbProvi.execute("select count(id) Conectados from clinic"&tryLogin("LicencaID")&".sys_users where id<>"& tryLogin("id") &sqlUsuariosProfissionais&" and UltRef>DATE_ADD(NOW(), INTERVAL -"&TimeoutToCheckConnection&" SECOND)")
+                            Conectados = ccur(contaUsers("Conectados"))
+                            
+                            'Desconsidera os usuarios logados caso o contrato seja por profissional e o usuario NÃO seja um profissional 
+                            if TipoCobranca&""="0" and tipoUsuario <> "profissionais" then
+                                Conectados = 0
+                            end if
 
-                        ' Trava o login do usuario caso esteja exedido o numero de usuarios
-                        if Conectados>=UsuariosContratadosS  then
-                            erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
-                            dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
+                            ' Trava o login do usuario caso esteja exedido o numero de usuarios
+                            if Conectados>=UsuariosContratadosS  then
+                                erro = "O máximo de usuários conectados simultaneamente foi atingido para sua licença.\n Solicite o aumento da quantidade de usuários simultâneos."
+                                dbc.execute("insert into logsns (UserID, LicencaID) values ("&tryLogin("id")&", "&tryLogin("LicencaID")&")")
+                            end if
                         end if
                     end if
                 end if
-			end if
-		end if
-		if sysUser("Table")&"" <>"" then
-            set AtivoSQL = dbProvi.execute("SELECT p.Ativo FROM `clinic"&tryLogin("LicencaID")&"`.`"&sysUser("Table")&"` p WHERE p.id='"&sysUser("idInTable")&"'")
-            if not AtivoSQL.eof then
-                if AtivoSQL("Ativo")<>"on" then
-                    erro = "Usuário inativo."
-                    errorCode = "inactive_user"
+            end if
+            if sysUser("Table")&"" <>"" then
+                set AtivoSQL = dbProvi.execute("SELECT p.Ativo FROM `clinic"&tryLogin("LicencaID")&"`.`"&sysUser("Table")&"` p WHERE p.id='"&sysUser("idInTable")&"'")
+                if not AtivoSQL.eof then
+                    if AtivoSQL("Ativo")<>"on" then
+                        erro = "Usuário inativo."
+                        errorCode = "inactive_user"
+                    end if
+                end if
+            end if
+            if mobileDevice()<>"" then
+                if FieldExists(sysUser, "UltRefDevice") then
+                    TempoDistDevice = datediff("s", sysUser("UltRefDevice"), now())
+                    if TempoDistDevice<20 and TempoDistDevice>0 and not permiteMasterLogin then
+                        erro = "Este usuário já está conectado em outro aparelho."
+                    end if
                 end if
             end if
         end if
-		if mobileDevice()<>"" then
-			set valter = dbProvi.execute("select i.COLUMN_NAME from information_schema.`COLUMNS` i where i.TABLE_SCHEMA='clinic"&tryLogin("LicencaID")&"' and i.TABLE_NAME='sys_users' and i.COLUMN_NAME='UltRefDevice'")
-			if valter.EOF then
-				dbProvi.execute("ALTER TABLE `clinic"&tryLogin("LicencaID")&"`.`sys_users` ADD COLUMN `UltRefDevice` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP AFTER `UltRef`, ADD COLUMN `UltPac` INT NULL DEFAULT NULL AFTER `UltRefDevice`")
-				set sysUser = dbProvi.execute("select * from `clinic"&tryLogin("LicencaID")&"`.sys_users where id="&tryLogin("id"))
-			else
-				TempoDistDevice = datediff("s", sysUser("UltRefDevice"), now())
-				if TempoDistDevice<20 and TempoDistDevice>0 and not permiteMasterLogin then
-					erro = "Este usuário já está conectado em outro aparelho."
-				end if
-			end if
-		end if
 	end if
 
     

@@ -76,7 +76,7 @@
         else
             if medkit = 1 then
                 %>
-                <button type="button" onclick="modalEstoque('<%=ii("ItemID")%>', '', '')" class="btn btn-xs btn-alert">
+                <button type="button" onclick="modalEstoque('<%=ii("id")%>', '', '')" class="btn btn-xs btn-alert">
                     <i class="far fa-medkit"></i>
                 </button>
                 <%

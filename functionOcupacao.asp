@@ -16,9 +16,13 @@ function debugMessage(msg)
 end function
 
 'ATENÇÃO: ESTA FUNÇÃO NÃO BUSCA SEM ESPECIALIDADE!!!
-function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais, ConsiderarEspecialidadeReal)
+function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissionais, rfConvenio, rfLocais, sysUser,resetMode, ConsiderarEspecialidadeReal)
     De = cdate(De)
     Ate = cdate(Ate)
+
+    if  resetMode&"" = "" then
+        resetMode = "always"
+    end if 
 
     set AgendamentosNaoPagosSQL = db.execute("SELECT GROUP_CONCAT(id) agendamentosNaoPagos FROM agendamentos WHERE FormaPagto = 9 AND DATE_ADD(sysDate, INTERVAL 15 MINUTE) < now()  and sysActive = 1 AND CanalID=1 AND StaID=1;")
 
@@ -30,7 +34,38 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         end if
     end if
 
-    db.execute("delete from agenda_horarios where sysUser="& treatvalzero(session("User")))
+    if resetMode = "daily_specialty"  then
+        getEspecialidades = "select group_concat(t.EspecialidadeID) especialidades,  CAST(data AS datetime) as data, now() as hoje from ( select EspecialidadeID, Data from agenda_horarios where sysUser = "&sysUser&" group by EspecialidadeID order by data desc) as t "
+        set especialidadesRet = db_execute(getEspecialidades)
+
+        if not especialidadesRet.eof  and especialidadesRet("data")&"" <> "" then
+            ontem = split(cdate(dateadd("d",-1,especialidadesRet("hoje")))," ")(0)
+
+            if cdate(split(especialidadesRet("data")&""," ")(0)) <> cdate(ontem) then 
+                sqldeleteAll = "delete from agenda_horarios where sysUser="& treatvalzero(sysUser)
+                db.execute(sqldeleteAll)
+            else
+                if instr(especialidadesRet("especialidades"), refEspecialidade) then
+                    sqldeleteByEspecialidade = "delete from agenda_horarios where sysUser="& treatvalzero(sysUser)&" and EspecialidadeID = "&refEspecialidade
+                    db.execute(sqldeleteByEspecialidade)
+                end if 
+            end if 
+        end if         
+    else 
+        if resetMode = "keep_old"  then
+            keepOldWhere = " AND DATA >= CURDATE()" 
+            if De < date() then
+                De = date() 
+            end if
+            
+            if Ate < date() then
+                Ate = date() 
+            end if
+        end if
+
+        db.execute("delete from agenda_horarios where sysUser="& treatvalzero(sysUser)&keepOldWhere)
+    end if 
+    
     response.Buffer
     profissionais=rfProfissionais
 
@@ -189,7 +224,6 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             SomenteEspecialidades = SomenteEspecialidades&", "&ProcedimentoSomenteEspecialidades
         end if
     end if
-
 
     splrfesp = split(refEspecialidade, ", ")
 
@@ -446,7 +480,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                             HoraID = replace(HoraID, ":", "")
                                             'HORARIO VAZIO
 
-                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& treatvalnull(GradeID) &", 1, "&ExibeAgendamentoOnline&")"
+                                            sqlInsertV = sqlInsertV & ", ("& treatvalzero(sysUser) &", "& mydatenull(Data) &", "& mytime(Hora) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& treatvalnull(GradeID) &", 1, "&ExibeAgendamentoOnline&")"
 
                                             Hora = dateadd("n", Intervalo, Hora)
                                         wend
@@ -461,7 +495,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 				                                    HLivres = HLivres+1
                                                     HoraID = horaToID(HoraPers)
 
-                                                sqlInsertV = sqlInsertV & ", ("& treatvalzero(session("User")) &", "& mydatenull(Data) &", "& mytime(HoraPers) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& treatvalnull(GradeID) &", 1, "&ExibeAgendamentoOnline&")"
+                                                sqlInsertV = sqlInsertV & ", ("& treatvalzero(sysUser) &", "& mydatenull(Data) &", "& mytime(HoraPers) &", 'V', "& treatvalzero(ProfissionalID) &", "& EspecialidadeID &", "& treatvalzero(LocalID) &", "& treatvalzero(UnidadeID) &", "& Horarios("TipoGrade") &", "& treatvalnull(GradeID) &", 1, "&ExibeAgendamentoOnline&")"
                                                 end if
                                             next
                                         end if
@@ -498,6 +532,8 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
                                 EspecialidadeIDAgendada = comps("EspecialidadeID")
                                 compsHora = comps("Hora")
                                 LocalID = comps("LocalID")
+                                GradeID = NULL
+
 	                            if not isnull(compsHora) then
 		                            compsHora = formatdatetime(compsHora, 4)
 	                            end if
@@ -574,71 +610,83 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
 								end if
 
                                 'todo: tentar de implementar update em massa
+                                'passa a carregar a GradeID usando as queries abaixo
                                 if 0 then
                                     sqlGradeExcecao = "select id, Compartilhar from assperiodolocalxprofissional where  '"&horario&"' BETWEEN HoraDe  AND HoraA  AND  " & mydatenull(Data) & " BETWEEN DataDe AND DataA  AND ProfissionalID=" &treatvalnull(ProfissionalID) & " ORDER BY 1  "
                                     set GradeExcecaoSQL = db.execute(sqlGradeExcecao)
 
-                                    sqlGradeId=""
-                                    ExibeAgendamentoOnline=1
+                                    'sqlGradeId=""
+                                    'ExibeAgendamentoOnline=1
 
                                     if not GradeExcecaoSQL.eof then
                                         GradeID = GradeExcecaoSQL("id")*-1
-                                        sqlGradeId = ", GradeID="&treatvalnull(GradeID)
+                                        'sqlGradeId = ", GradeID="&treatvalnull(GradeID)
 
-                                        if GradeExcecaoSQL("Compartilhar")="S" then
-                                            ExibeAgendamentoOnline=1
-                                        else
-                                            ExibeAgendamentoOnline=0
-                                        end if
+                                        'if GradeExcecaoSQL("Compartilhar")="S" then
+                                        '    ExibeAgendamentoOnline=1
+                                        'else
+                                        '    ExibeAgendamentoOnline=0
+                                        'end if
                                     else
                                         sqlGradePadrao0 = "select id, Compartilhada from assfixalocalxprofissional where DiaSemana = " & DiaSemana & " AND HoraDe <= " & mytime(horario) & " AND HoraA >= "  &  mytime(horario) &  " AND ( (InicioVigencia <= " &mydatenull(Data)& " OR InicioVigencia IS NULL) AND (FimVigencia >= " &mydatenull(Data)& " OR FimVigencia  IS NULL) )  AND ProfissionalID=" &treatvalzero(ProfissionalID)& " ORDER BY 1 "
                                         set GradePadraoSQL = db.execute(sqlGradePadrao0)
 
                                         if not GradePadraoSQL.eof then
                                             GradeID=GradePadraoSQL("id")
-                                            sqlGradeId = ", GradeID="&treatvalnull(GradeID)
+                                            'sqlGradeId = ", GradeID="&treatvalnull(GradeID)
 
-                                            if GradePadraoSQL("Compartilhada")="S" then
-                                                ExibeAgendamentoOnline=1
-                                            else
-                                                ExibeAgendamentoOnline=0
-                                            end if
+                                            'if GradePadraoSQL("Compartilhada")="S" then
+                                            '    ExibeAgendamentoOnline=1
+                                            'else
+                                            '    ExibeAgendamentoOnline=0
+                                            'end if
                                         end if
                                     end if
                                 end if
 
 
-
-                            if LiberaInsert then
-                                sqlInsertCompromissos = sqlInsertCompromissos & ", ("&treatvalzero(comps("id"))&", "&treatvalzero(session("User"))&", "&mydatenull(Data)&" ,"&mytime(Horario)&", "&StaID&", 'A', "&treatvalzero(ProfissionalID)&", "&EspecialidadeID&", "&treatvalzero(LocalID) &", "&treatvalzero(UnidadeID) &", "&treatvalzero(ExibeAgendamentoOnline)&", "&treatvalnull(comps("Encaixe"))&", "&GradeOriginal&", "&treatvalnull(GradeID) &" ) " 
-                                'db.execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(session("User")) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", ExibeAgendamentoOnline="&treatvalzero(ExibeAgendamentoOnline)&",Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal & sqlGradeId)
-                            '                            set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
-                            '                            if vcaPL.eof then
-                            '                                set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
-                            '                            end if
-                            '                            while not vcaPL.eof
-                            '                                if ft(vcaPL("Hora"))=ft(comps("Hora")) and ( StaID<>11 and StaID<>22) ) then
-                            '                                    db.execute("update agenda_horarios SET StaID="& StaID &", Situacao='A' WHERE")
-                            '                                end if
-                            '                            vcaPL.movenext
-                            '                            wend
-                            '                            vcaPL.close
-                            '                            set vcaPL = nothing
+                                if LiberaInsert then
+                                    sqlInsertCompromissos = sqlInsertCompromissos & ", ("&treatvalzero(comps("id"))&", "&treatvalzero(sysUser)&", "&mydatenull(Data)&" ,"&mytime(Horario)&", "&StaID&", 'A', "&treatvalzero(ProfissionalID)&", "&EspecialidadeID&", "&treatvalzero(LocalID) &", "&treatvalzero(UnidadeID) &", "&treatvalzero(ExibeAgendamentoOnline)&", "&treatvalnull(comps("Encaixe"))&", "&GradeOriginal&", "&treatvalnull(GradeID) &" ) " 
+                                    'db.execute("INSERT INTO agenda_horarios SET AgendamentoID="&treatvalzero(comps("id"))&", sysUser="& treatvalzero(sysUser) &", Data="& mydatenull(Data) &", Hora="& mytime(Horario) &", StaID="& StaID &", Situacao='A', ProfissionalID="& treatvalzero(ProfissionalID) &", EspecialidadeID="& EspecialidadeID &", LocalID="& treatvalzero(LocalID) &", UnidadeID="& treatvalzero(UnidadeID) &", ExibeAgendamentoOnline="&treatvalzero(ExibeAgendamentoOnline)&",Encaixe="& treatvalnull(comps("Encaixe")) &", GradeOriginal="& GradeOriginal & sqlGradeId)
+                                '                            set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND LocalID="& treatvalnull(LocalID))
+                                '                            if vcaPL.eof then
+                                '                                set vcaPL = db.execute("select id from agenda_horarios where sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND Situacao='V' AND ProfissionalID="& treatvalnull(ProfissionalID))
+                                '                            end if
+                                '                            while not vcaPL.eof
+                                '                                if ft(vcaPL("Hora"))=ft(comps("Hora")) and ( StaID<>11 and StaID<>22) ) then
+                                '                                    db.execute("update agenda_horarios SET StaID="& StaID &", Situacao='A' WHERE")
+                                '                                end if
+                                '                            vcaPL.movenext
+                                '                            wend
+                                '                            vcaPL.close
+                                '                            set vcaPL = nothing
                                 else
-                                    db.execute("UPDATE agenda_horarios SET Situacao='A',Encaixe="&treatvalnull(comps("Encaixe"))&",AgendamentoID="&treatvalzero(comps("id"))&" where sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND Hora="& mytime(Horario) &" AND Situacao='V' AND ProfissionalID="& treatvalzero(ProfissionalID) &" and EspecialidadeID="& EspecialidadeID)
+                                    db.execute("UPDATE agenda_horarios SET Situacao='A',Encaixe="&treatvalnull(comps("Encaixe"))&",AgendamentoID="&treatvalzero(comps("id"))&" where sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND Hora="& mytime(Horario) &" AND Situacao='V' AND ProfissionalID="& treatvalzero(ProfissionalID) &" and EspecialidadeID="& EspecialidadeID)
                                 end if
-                            comps.movenext
+                                comps.movenext
                             wend
                             comps.close
                             set comps = nothing
                             
                             if sqlInsertCompromissos<>"" then
                                 sqlInsertCompromissos = right(sqlInsertCompromissos, len(sqlInsertCompromissos)-1)
-                                db.execute("INSERT INTO agenda_horarios (AgendamentoID, sysUser, Data, Hora, StaID, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, ExibeAgendamentoOnline, Encaixe, GradeOriginal, GradeID) VALUES " &sqlInsertCompromissos )
+                                sqlInsertCompromissosFinal = "INSERT INTO agenda_horarios (AgendamentoID, sysUser, Data, Hora, StaID, Situacao, ProfissionalID, EspecialidadeID, LocalID, UnidadeID, ExibeAgendamentoOnline, Encaixe, GradeOriginal, GradeID) VALUES " &sqlInsertCompromissos
+                                db.execute(sqlInsertCompromissosFinal )
                             end if  
 
+                            'update em massa GradeID
+                            if 1 then
+                                db.execute(" "&_ 
+                                    "UPDATE agenda_horarios h  "&_ 
+                                    "LEFT JOIN assperiodolocalxprofissional ex ON h.`Data` BETWEEN ex.DataDe AND ex.DataA AND h.Hora BETWEEN ex.HoraDe AND ex.HoraA AND ex.ProfissionalID=h.ProfissionalID  "&_ 
+                                    "LEFT JOIN assfixalocalxprofissional ah ON h.`Data` BETWEEN COALESCE(ah.InicioVigencia, h.`Data`) AND COALESCE(ah.FimVigencia, h.`Data`) AND h.ProfissionalID=ah.ProfissionalID AND ah.DiaSemana=DAYOFWEEK(h.`Data`) AND h.Hora BETWEEN ah.HoraDe AND ah.HoraA "&_ 
+                                    "SET h.GradeID= COALESCE(ex.id*-1, ah.id), h.ExibeAgendamentoOnline=COALESCE(IF(ex.id is NULL,NULL, IF(ex.Compartilhar='S',1,0)), IF(ah.id is NULL,NULL, IF(ah.Compartilhada='S',1,0)) ) "&_ 
+                                    "WHERE h.Situacao='A' AND h.GradeID IS NULL AND h.sysUser="& treatvalzero(sysUser) &"")
+                            end if
+
+
                             if deleteHorariosAgendamento<>"" then
-                                sqlDel = "DELETE FROM agenda_horarios WHERE sysUser="& treatvalzero(session("User")) &" AND Situacao='V' AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" "&_
+                                sqlDel = "DELETE FROM agenda_horarios WHERE sysUser="& treatvalzero(sysUser) &" AND Situacao='V' AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" "&_
                                 " AND (0 "&deleteHorariosAgendamento&")"
                                 db.execute(sqlDel)
                             end if
@@ -651,7 +699,10 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
     else
         ProfissionalID= replace(ProfissionalID, ",00", "")
     end if
-    bloqueioSql = "select c.HoraDe, c.HoraA, c.Profissionais, c.id from compromissos c where (c.ProfissionalID='"& ProfissionalID &"' or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"& ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
+
+    'diminuir um minuto no horário "até" para ter o mesmo comportamento da agenda, qual seja, não bloquear horário redondo
+    'ex.: 10:00:00 vai deixar de aparecer no relatório como bloqueado (a exemplo do que acontece na agenda)
+    bloqueioSql = "select c.HoraDe, SUBTIME(c.HoraA, '00:01:00') HoraA, c.Profissionais, c.id from compromissos c where (c.ProfissionalID='"& ProfissionalID &"' or (c.ProfissionalID=0 AND (c.Profissionais = '' or c.Profissionais LIKE '%|"& ProfissionalID&"%|'))) AND (c.Unidades LIKE '%|"&UnidadeID&"|%' or c.Unidades='' or c.Unidades is null) and DataDe<="&mydatenull(Data)&" and DataA>="&mydatenull(Data)&" and DiasSemana like '%"&weekday(Data)&"%'"
    ' response.Write( bloqueioSql )
     set bloq = db.execute(bloqueioSql)
 
@@ -661,7 +712,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         HoraA = bloq("HoraA")
         BloqueioID = bloq("id")
 
-        sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&", Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
+        sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&", Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
 
         'response.write( sqlUP &" -> "& bloq("Profissionais") &"<br>")
         sqlProfissionalBloq = "ProfissionalID="& treatvalnull(ProfissionalID)
@@ -671,7 +722,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             sqlProfissionalBloq = sqlProfissionalBloq & " OR ProfissionalID IN("& ProfissionaisBloq &") "
         end if
 
-        sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&",Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(session("User")) &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
+        sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&",Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
         db.execute( sqlUP )
 
         HBloqueados = HBloqueados + 1

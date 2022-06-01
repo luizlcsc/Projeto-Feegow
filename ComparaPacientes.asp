@@ -46,6 +46,9 @@ if NomePaciente<>"" or CPF<>"" then
                 <span class="panel-title">Pacientes com nome similar</span>
             </div>
             <div class="panel-body">
+                <div class="alert alert-default">
+                    <label style="font-weight: 500" ><input type="checkbox" id="btn-aceite-mesclagem" > Estou de acordo que esta operação não poderá ser desfeita.</label>
+                </div>
                 <table class="table table-condensed table-hover">
                     <thead>
                         <tr>
@@ -67,7 +70,7 @@ if NomePaciente<>"" or CPF<>"" then
                             <td><%= vout("CPF") %></td>
                             <td><a class="btn btn-xs btn-info" target="_blank" href="./?P=Pacientes&I=<%=vout("id")%>&Pers=1"><i class="far fa-eye"></i> Visualizar</a></td>
                             <td><%if aut("|mesclarpacientesA|")=1 then%>
-                                <a class="btn btn-xs btn-success" href="javascript:mesclar(<%= id %>, <%=vout("id")%>)">Mesclar cadastros</a>
+                                <a class="btn btn-xs btn-success btn-acao-mesclar" disabled href="javascript:mesclar(<%= id %>, <%=vout("id")%>)">Mesclar cadastros</a>
                             <%end if%></td>
                         </tr>
 	                    <%
@@ -80,6 +83,14 @@ if NomePaciente<>"" or CPF<>"" then
                 </table>
             </div>
         </div>
+<script>
+$(document).ready(function(){
+    
+    $("#btn-aceite-mesclagem").change(function(){
+        $(".btn-acao-mesclar").attr("disabled", !$(this).prop("checked"));
+    });
+})
+</script>
 
         <%
     end if

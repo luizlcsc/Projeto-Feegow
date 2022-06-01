@@ -102,8 +102,8 @@ validaEventosSQL =  "SELECT ev.id, ev.Status, sSmsEma.AtivoEmail, sSmsEma.AtivoS
             
             EventoStatus = validaEventos("Status")
             EventoID = validaEventos("id")
-            bodyContentFrom = "|PacienteID|,|EventoID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
-            bodyContentTo   = "|"&ref("PacienteID") &"|,|"& EventoID &"|,|"& ConsultaID &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
+            bodyContentFrom = "|EventoID|,|PacienteID|,|AgendamentoID|,|ProfissionalID|,|ProcedimentoID|,|UnidadeID|"
+            bodyContentTo   = "|"& EventoID &"|,|"&ref("PacienteID") &"|,|"& ConsultaID &"|,|"& ref("ProfissionalID") &"|,|"& ref("ProcedimentoID") &"|,|"& AgendamentoUnidadeID &"|"
             'MARCADO CONFIRMADO E MARCADO NÃO CONFIRMADO
             webhookID = false
 

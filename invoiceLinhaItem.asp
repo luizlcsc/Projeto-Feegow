@@ -30,7 +30,7 @@
                 DisabledNaoAlterarExecutante=" disabled"
             end if
 
-            if (NaoPermitirAlterarExecutante or aut("profissionalcontaA")=0) and Executado="S" then
+            if (NaoPermitirAlterarExecutante or aut("profissionalcontaA")=0) and Executado="S" and InvoiceSQL("sysActive")=1 then
                 NaoAlterarExecutante=True
                 DisabledNaoAlterarExecutante=" disabled"
             end if

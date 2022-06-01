@@ -1,5 +1,6 @@
 <!--#include file="./Classes/imagens.asp"-->
 <%
+response.Buffer
 'variaveis estão no arquivo timeline.asp
 CareTeam = getConfig("ExibirCareTeam")
 ExigirAutorizacaoAcessoProntuario = getConfig("ExigirAutorizacaoAcessoProntuario")
@@ -8,6 +9,8 @@ recursoUnimed = recursoAdicional(12)
 urlbmj = getConfig("urlbmj")
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 MemedHabilitada = getConfig("MemedHabilitada")
+HasMoreRegisters = False
+NumeroRegistros = 0
 
 sysActiveRecords = "1"
 if showInactive="1" then
@@ -139,6 +142,7 @@ end if
             end if
 
             while not ti.eof
+                response.flush
                 
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
@@ -909,6 +913,7 @@ end if
                 end if
             end if
 
+                NumeroRegistros = NumeroRegistros + 1
               ti.movenext
               wend
 
@@ -916,6 +921,11 @@ end if
 
               ti.close
               set ti=nothing
+
+
+              if NumeroRegistros&"" = MaximoLimit&"" and NumeroRegistros<>"" then 
+                HasMoreRegisters=True
+              end if
 
                  ' if c>0 then
                    ' response.Write("</div></div>             <div class=""timeline-divider"">            <div class=""divider-label"">"&Ano&"</div>          </div>")

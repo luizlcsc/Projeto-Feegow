@@ -149,20 +149,30 @@ if isnumeric(EventID) then
             while not tagsValidate.eof
 
               tagName = tagsValidate("tagNome")&""
+              tagAlternativa = tagsValidate("Alternativa")&""
+              
               columnName = replace(tagsValidate("tagNome"),ModuleName&".","")
-
+              
               'SE HOUVER ["tagName"] NO "webhook_body" ACIONA O REPLACE DE FORMA DINÂMICA
-              if instr(webhook_body, tagName) > 0 then
+
+              if instr(webhook_body, tagName) > 0 or instr(webhook_body, tagAlternativa) > 0 then
                 'IGNORA ERROS PARA EVITAR INTERRUPÇÕES NO SISTEMA 
                 On error Resume Next
 
                 columnNameValue = moduleValue(columnName)&""
 
+                'Problema de aspas duplas no JSON no campo "EmailModelo"
+                if columnName = "EmailModelo" then
+                  columnNameValue = replace(replace(replace(columnNameValue, "&quot;", "\"""), chr(13), ""), chr(10), "")
+                end if
+                
                 if forceNotSendSMS = "true" and columnName = "SmsModelo" or forceNotSendWhatsApp = "true" and columnName = "WhatsAppModelo" or forceNotSendEmail = "true" and columnName = "EmailModelo" then
-                  columnNameValue = "nao sera enviado"
+                  columnNameValue = "nao sera enviado"                  
                 end if
 
+                'A TAG alternativa recebe o mesmo valor da TAG principal, pois é apenas pra tratar o legado que ainda usa essas tags
                 webhook_body = replace(webhook_body, "["&tagName&"]", columnNameValue)
+                webhook_body = replace(webhook_body, "["&tagAlternativa&"]", columnNameValue)
 
                 If Err.number <> 0 then
                   'CASO ALGUM VALOR NÃO SEJA CONVERTIDO, ALTERE O VALOR DE "ativaDebug" PARA true

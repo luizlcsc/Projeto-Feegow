@@ -1,4 +1,4 @@
-<%
+<!--#include file="Environment.asp"--><%
 function appUrl(includeVersionFolder)
     set shellExec = createobject("WScript.Shell")
     Set objSystemVariables = shellExec.Environment("SYSTEM")
@@ -21,5 +21,26 @@ function appUrl(includeVersionFolder)
     end if
 
     appUrl=app_url_var
+end function
+
+function getCurrentVersion()
+    PathInfo = Request.ServerVariables("PATH_INFO")
+
+    currentVersionFolder = replace(replace(PathInfo,"index.asp",""),"/","")
+    if inStr(PathInfo,".asp") then
+        splitVar = split(PathInfo, "/")
+        currentVersionFolder = splitVar(1)
+    end if
+    AppEnv = getEnv("FC_APP_ENV", "local")
+        
+    if AppEnv<>"production" then
+        if ModoFranquia then
+            currentVersionFolder="v7.6"
+        else
+            currentVersionFolder="main"
+        end if
+    end if
+    
+    getCurrentVersion = currentVersionFolder
 end function
 %>

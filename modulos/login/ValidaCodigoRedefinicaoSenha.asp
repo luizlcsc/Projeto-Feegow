@@ -6,7 +6,7 @@
 Codigo = req("codigo")
 HashVerificacao = req("EV")
 
-set CodigoSQL = dbc.execute("SELECT * FROM cliniccentral.licencasusuariosalterarsenhas WHERE hashcod='"& HashVerificacao &"'")
+set CodigoSQL = dbc.execute("SELECT * FROM cliniccentral.licencasusuariosalterarsenhas WHERE hashcod='"& HashVerificacao &"' ORDER BY id DESC LIMIT 1")
 
 if not CodigoSQL.eof then
     IF CodigoSQL("AuthCode")&""=Codigo&"" THEN

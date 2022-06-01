@@ -1,28 +1,27 @@
 <!--#include file="connect.asp"-->
 <!--#include file="connectCentral.asp"-->
-<!--#include file="Classes/Environment.asp"-->
+<!--#include file="Classes/ServerPath.asp"-->
 
 
-<form id="frmOC" >
+<form id="frmOC">
 
     <input type="hidden" name="E" value="E" />
 <%
-
+ConfigsAlteradas = ref("ConfigsAlteradas")
 E = ref("E")
-currentVersionFolder = replace(replace(Request.ServerVariables("PATH_INFO"),"index.asp",""),"/","")
-AppEnv = getEnv("FC_APP_ENV", "local")
 
-if AppEnv<>"production" then
-    if ModoFranquia then
-        currentVersionFolder="v7.6"
-    else
-        currentVersionFolder="main"
-    end if
+currentVersionFolder = getCurrentVersion()
+
+sqlApenasConfigsAlteradas = ""
+if ConfigsAlteradas<>"" then
+    ConfigsIn = "'"&replace(ConfigsAlteradas, ",", "','")&"'"
+    sqlApenasConfigsAlteradas = " AND Coluna IN ("&ConfigsIn&")"
 end if
 
-'AND JSON_SEARCH(Versoes,'one','"&currentVersionFolder&"') IS NOT null
+set confNew = db.execute("select *, ifnull(IsClinicCentral,0) VIsClinicCentral from cliniccentral.config_opcoes "&_
+"where sysActive = 1 and (TipoConfig != 'APP' OR TipoConfig IS NULL) AND JSON_SEARCH(Versoes,'one','"&currentVersionFolder&"') IS NOT null "&sqlApenasConfigsAlteradas&" "&_
+"order by secao, Label ")
 
-set confNew = db.execute("select *, ifnull(IsClinicCentral,0) VIsClinicCentral from cliniccentral.config_opcoes where sysActive = 1 and (TipoConfig != 'APP' OR TipoConfig IS NULL)  order by secao ")
 LicencaID = replace(session("Banco"), "clinic", "")
 if E = "E" then
 
@@ -40,17 +39,13 @@ if E = "E" then
                 end if
             else
                 set confGeral = db.execute("select * from config_gerais where ConfigID = " & confNew("id") & " ")
-                'if valor <> "" then
                     if not confGeral.eof then
                         db.execute("update config_gerais set Valor = '" & Valor & "' where ConfigID = " & confNew("id") & " ")
+                        'db.execute("INSERT INTO LOG(operacao,i,recurso,colunas,valorAtual,datahora,sysUser) VALUES('I','"&confNew("id")&"','config_gerais','Coluna','"&Valor&"',NOW(),"&session("User")&")")
                     else
                         db.execute("insert into config_gerais(ConfigID, Valor, sysActive, sysUser) values(" & confNew("id") & ", '" & Valor & "', 1, " & session("user") & ")")
+                        'db.execute("INSERT INTO LOG(operacao,i,recurso,colunas,valorAtual,datahora,sysUser) VALUES('I','"&confNew("id")&"','config_gerais','Coluna','"&Valor&"',NOW(),"&session("User")&")")
                     end if
-                'else
-                '    if not confGeral.eof then
-                '        db.execute("update config_gerais set Valor = '" & confNew("ValorPadrao") & "' where ConfigID = " & confNew("id") & " ")
-                '    end if
-                'end if
             end if
             confNew.movenext
         wend
@@ -150,6 +145,7 @@ function createFields(fieldType, fieldName, label, width, fieldValue, defaultVal
 		    %>
             <div class="form-group" style="margin-top: 20px;">
                 <%= label %>
+                <%' response.write( selectSql ) %>
                 <%=quickField("multiple", fieldName, "", 3, valorConf, selectSQL, columnToShow, "")%>
             </div>
 		    <%
@@ -175,11 +171,24 @@ end function
     <div class="clearfix form-actions">
         <button class="btn btn-primary pull-right btnsave"><i class="far fa-save"></i> Salvar</button>
     </div>
+    <input type="hidden" name="ConfigsAlteradas" value="" id="ConfigsAlteradas"/>
 </form>
 <script>
 
 
 $(function(){
+    var changesInputs = [];
+
+    $("#frmOC input").addClass("input-config")
+    
+    setTimeout(function(){
+        $(".input-config").change(function(){
+            var val = $(this).attr('name');
+            changesInputs.push(val);
+            $("#ConfigsAlteradas").val(changesInputs.join(","))
+        });
+    }, 3000);
+
     $(".btnsave").on('click', function(){
         $.post('novasConfiguracoes.asp', $("#frmOC").serialize(), function(data){
             showMessageDialog("Salvo com sucesso", "success")
@@ -192,4 +201,3 @@ $(function(){
 <%
 end if
 %>
-

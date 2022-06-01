@@ -76,25 +76,28 @@ elseif req("Tipo")="A" then
 		PacienteID = req("PacienteID")
 		if session("Table")="profissionais" then
 			ProfissionalID = session("idInTable")
-			qAtendimentosSQL = 	" SELECT a.id                               "														&chr(13)&_
-													" FROM atendimentos AS a                    "														&chr(13)&_
-													" WHERE PacienteID="&PacienteID&" AND a.ProfissionalID="&ProfissionalID	&chr(13)&_
-													" ORDER BY a.id DESC                        "														&chr(13)&_
-													" LIMIT 1                                   "
-			SET AtendimentoSQL = db.execute(qAtendimentosSQL)
-				if not AtendimentoSQL.eof then
-					AtendimentoID = AtendimentoSQL("id")
-					TextoFinal = tagsConverte(TextoFinal,"AtendimentoID_"&AtendimentoID,"")
-				end if
-			AtendimentoSQL.close
-			set AtendimentoSQL = nothing
+
+			if session("Atendimentos")<>"" then
+				qAtendimentosSQL = 	" SELECT a.id                               "														&chr(13)&_
+														" FROM atendimentos AS a                    "														&chr(13)&_
+														" WHERE PacienteID="&PacienteID&" AND a.ProfissionalID="&ProfissionalID	&chr(13)&_
+														" ORDER BY a.id DESC                        "														&chr(13)&_
+														" LIMIT 1                                   "
+				SET AtendimentoSQL = db.execute(qAtendimentosSQL)
+					if not AtendimentoSQL.eof then
+						AtendimentoID = AtendimentoSQL("id")
+						TextoFinal = tagsConverte(TextoFinal,"AtendimentoID_"&AtendimentoID,"")
+					end if
+				AtendimentoSQL.close
+				set AtendimentoSQL = nothing
+			end if
 		else
 			ProfissionalID=0
 		end if
 		
 	end if
 elseif req("Tipo")="E" then
-    if ref("Tipo")="Exame" then
+    if ref("Tipo")="Exame" or ref("Tipo")="Cirurgia"  then
         set ProcedimentosNomeSQL = db.execute("SELECT NomeProcedimento, id, TextoPedido FROM procedimentos WHERE ID = "&ref("id"))
             PrintSpan=False
 

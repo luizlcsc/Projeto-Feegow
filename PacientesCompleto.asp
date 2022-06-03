@@ -41,8 +41,8 @@ else
     "(select count(id) from encaminhamentos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalencaminhamentos, "&_
     "(select count(id) from pacientespedidos where sysActive=1 AND PacienteID="&PacienteID&" ) as totalpedidos, "&_
     "(select count(id) from pacientesdiagnosticos where sysActive=1 AND PacienteID="&PacienteID&" ) as totaldiagnosticos, "&_
-    "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
-    "(select count(id) from arquivos where PacienteID="&PacienteID&" and Tipo='I' ) as totalimagens, "&_
+    "(select count(id) from arquivos where sysActive=1 AND PacienteID="&PacienteID&" and Tipo='A' ) as totalarquivos, "&_
+    "(select count(id) from arquivos where sysActive=1 AND PacienteID="&PacienteID&" and Tipo='I' ) as totalimagens, "&_
     "(select count(fpae.id) from buiformspreenchidos as fpae left join buiforms as mae on fpae.ModeloID=mae.id where fpae.PacienteID="&PacienteID&" and (fpae.sysActive=1 or fpae.sysActive is null) and (mae.Tipo=1 or mae.Tipo=2 or isnull(mae.Tipo))) as totalae, "&_
     "(select count(fplf.id) from buiformspreenchidos as fplf left join buiforms as mlf on fplf.ModeloID=mlf.id where fplf.PacienteID="&PacienteID&" and (fplf.sysActive=1 or fplf.sysActive is null) and (mlf.Tipo=3 or mlf.Tipo=4)) as totallf "&_
     "from Pacientes as p where id="&PacienteID)

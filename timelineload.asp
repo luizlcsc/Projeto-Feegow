@@ -116,11 +116,11 @@ end if
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
-        sqlImagens = " union all (select 0, '0', Tipo, '0', '', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora), sysActive ) "
+        sqlImagens = " union all (select 0, '0', Tipo, '0', '', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE arquivos.sysActive in ("&sysActiveRecords&") AND Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora), sysActive ) "
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', '', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora), sysActive ) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', '', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE arquivos.sysActive in ("&sysActiveRecords&") AND provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora), sysActive ) "
     end if
                  cont=0
 
@@ -861,7 +861,7 @@ end if
                             %>
                        <div class="row">
                          <%
-                            set im = db.execute("select * from arquivos where "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='A' AND PacienteID="&PacienteID)
+                            set im = db.execute("select * from arquivos where "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='A' AND PacienteID="&PacienteID&" AND sysActive="&ti("sysActive"))
                             while not im.eof
                                 podever = true
                                 'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão do arquivo

@@ -959,7 +959,7 @@ $("#btnLancamentoRetroativo").click(function(){
 </script>
 
 <%if request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" then %>
-<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=replace(componentslegacyurl,"/index.php","")%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <%end if %>
 <script src="assets/js/ace-elements.min.js"></script>
 <script type="text/javascript">
@@ -1415,7 +1415,8 @@ if getConfig("UtilizarEnderecoEstruturado") then
             $('#Pais').parent().find('.select2').hide(); // esconde o input de país antigo
             $('#Pais').after(html); // cria select de país novo
 
-            const paisNome = $('#select2-Pais-container').text();
+            //const paisNome = $('#select2-Pais-container').text();
+            let paisNome = $('#select2-Pais-container').text();
 
             if (paisNome) {
                 paisNome = paisNome.toLowerCase();

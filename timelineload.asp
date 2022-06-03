@@ -1,5 +1,6 @@
 <!--#include file="./Classes/imagens.asp"-->
 <%
+response.Buffer
 'variaveis estão no arquivo timeline.asp
 CareTeam = getConfig("ExibirCareTeam")
 ExigirAutorizacaoAcessoProntuario = getConfig("ExigirAutorizacaoAcessoProntuario")
@@ -8,6 +9,8 @@ recursoUnimed = recursoAdicional(12)
 urlbmj = getConfig("urlbmj")
 SinalizarFormulariosSemPermissao = getConfig("SinalizarFormulariosSemPermissao")
 MemedHabilitada = getConfig("MemedHabilitada")
+HasMoreRegisters = False
+NumeroRegistros = 0
 
 sysActiveRecords = "1"
 if showInactive="1" then
@@ -50,7 +53,9 @@ end if
     end if
 
     if ProfessionalID <>"" then
-        sqlProf = " left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID&" "
+        'remove where do join e muda pra inner join de modo a listar apenas os resultados que coincidam com o filtro ~BrunoBastos@20220517
+        'sqlProf = " left join sys_users as us on us.id = sysUser where us.idInTable = "&ProfessionalID&" "
+        sqlProf = " inner join sys_users as us on us.id = sysUser and us.idInTable = "&ProfessionalID&" "
     end if 
 
     if instr(Tipo, "|AE|")>0 then
@@ -111,11 +116,11 @@ end if
     end if
 
     if instr(Tipo, "|Imagens|")>0 then
-        sqlImagens = " union all (select 0, '0', Tipo, '0', '', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlImagens = " union all (select 0, '0', Tipo, '0', '', 'Imagens', 'Imagens', 'camera', 'alert', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE Tipo='I' AND PacienteID="&PacienteID&" GROUP BY date(DataHora), sysActive ) "
     end if
 
     if instr(Tipo, "|Arquivos|")>0 then
-        sqlArquivos = " union all (select 0, '0', Tipo, '0', '', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora) ) "
+        sqlArquivos = " union all (select 0, '0', Tipo, '0', '', 'Arquivos', 'Arquivos', 'file', 'danger', DataHora,'','', arquivos.sysActive, '' from arquivos WHERE provider <> 'S3' AND Tipo='A' AND PacienteID="&PacienteID&" GROUP BY date(DataHora), sysActive ) "
     end if
                  cont=0
 
@@ -127,10 +132,17 @@ end if
                 " LEFT JOIN profissionais prof ON prof.id=su.idInTable AND su.`Table`='profissionais' "&_
                 " LEFT JOIN especialidades esp ON esp.id=prof.EspecialidadeID "&_
                 "ORDER BY Prior DESC, DataHora DESC "&SqlLimit
-    ' response.write(sql)
+        ' response.write(sql)
+        
              set ti = db.execute( sql )
 
-             while not ti.eof
+            'se não encontrar resultados, põe um aviso na tela ~BrunoBastos@20220517
+            if (ti.eof and sqlProf <> "" ) then
+                response.write("<div class=""panel-body"">Nenhum registro encontrado para o profissional selecionado</div>")
+            end if
+
+            while not ti.eof
+                response.flush
                 
                  Ano = year(ti("DataHora"))
                  if UltimoAno<>Ano then
@@ -509,7 +521,7 @@ end if
                                                 case 3
                                                     imgHTML=""
                                                     if Valor<>"" then
-                                                    set ImagemSQL = db.execute("SELECT a.NomeArquivo,a.NomePasta FROM arquivos a WHERE a.NomeArquivo LIKE '"&Valor&"'")
+                                                    set ImagemSQL = db.execute("SELECT a.NomeArquivo,a.NomePasta FROM arquivos a WHERE a.NomeArquivo = '"&Valor&"'")
                                                         if not ImagemSQL.eof then
                                                             imgHTML = "<img loading=lazy src='"&imgSRC(ImagemSQL("NomePasta"),ImagemSQL("NomeArquivo"))&"&dimension=full' class='mw140 mr25 mb20'>"
                                                         end if
@@ -812,7 +824,7 @@ end if
                         %>
                         <div class="row">
                             <%
-                                set im = db.execute("select * from arquivos where "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID)
+                                set im = db.execute("select * from arquivos where "&franquia(" COALESCE(cliniccentral.overlap(concat('|',UnidadeID,'|'),COALESCE(NULLIF('[Unidades]',''),'-999')),TRUE) AND ")&" date(DataHora)="&mydatenull(ti("DataHora"))&" AND Tipo='I' AND PacienteID="&PacienteID&" AND sysActive="&ti("sysActive"))
                                 while not im.eof
                                     'default pode ver, porém se não pertence ao CareTeam irá verificar a permissão da imagem
                                     podever = true
@@ -901,10 +913,19 @@ end if
                 end if
             end if
 
+                NumeroRegistros = NumeroRegistros + 1
               ti.movenext
               wend
+
+
+
               ti.close
               set ti=nothing
+
+
+              if NumeroRegistros&"" = MaximoLimit&"" and NumeroRegistros<>"" then 
+                HasMoreRegisters=True
+              end if
 
                  ' if c>0 then
                    ' response.Write("</div></div>             <div class=""timeline-divider"">            <div class=""divider-label"">"&Ano&"</div>          </div>")

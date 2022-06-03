@@ -75,7 +75,7 @@
 }
 </style>
 <% IF req("PacienteID")="" THEN %>
-<script src="<%=componentslegacyurl%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
+<script src="<%=replace(componentslegacyurl,"/index.php","")%>/assets/feegow-theme/vendor/plugins/datatables/media/js/jquery.dataTables.js"></script>
 <% END IF %>
 <%
 tableName = "propostas"

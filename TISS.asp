@@ -477,10 +477,18 @@ function completaProcedimentoNew(id, ConvenioID)
     END IF
 
     viaID = ref("ViaID")
-
-    IF viaID = "" THEN
-       viaID = 1
-    END IF
+	
+	set CamposConvenios = db.execute("SELECT CamposObrigatorios FROM convenios where id = " & treatvalzero(ConvenioID))
+	if not CamposConvenios.eof then
+		camposObrigatorios = CamposConvenios("CamposObrigatorios")
+		if not isnull(camposObrigatorios) then 
+			if instr(camposObrigatorios , "|Via|") > 0  then
+				IF viaID = "" THEN
+					viaID = 1
+				END IF
+			end if
+		end if	 
+	end if   
 
     set Valores = CalculaValorProcedimentoConvenio(null,ConvenioID,id,ref("PlanoID"),ref("CodigoNaOperadora"),Quantidade,null,viaID)
 
@@ -511,7 +519,27 @@ function completaProcedimentoNew(id, ConvenioID)
                                     maximumFractionDigits: 2
                                    }));
 
-    $("#TabelaID").val("<%=Valores("TabelaID")%>");
+	<% 
+	if not isnull(Valores("TabelaID")) then
+		if Valores("TabelaID") < 0 then
+			set codigotabela = db.execute("SELECT * FROM tabelasconvenios tc INNER JOIN tabelasconveniosprocedimentos tcp ON tc.id = tcp.TabelaConvenioID WHERE tcp.Codigo = " & Valores("CodigoProcedimento"))
+			if not codigotabela.eof then
+		%>		
+				$("#TabelaID").val("<%=codigotabela("CodigoTabela")%>");
+		<%	
+			else
+		%> 
+				$("#TabelaID").val("<%=Valores("TabelaID")%>");
+		<%
+			end if
+		else
+		%> 
+			$("#TabelaID").val("<%=Valores("TabelaID")%>");
+		<%			
+		end if 
+	end if
+	%>
+
     $("#Descricao").val("<%=Valores("DescricaoTabela")%>");
     $("#CodigoProcedimento").val("<%=Valores("CodigoProcedimento")%>");
 

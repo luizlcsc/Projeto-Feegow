@@ -1,5 +1,7 @@
 <%
+
 case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs", "procedimentolaboratorio", "modelocomprovantecoleta"
+
 arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
 if arrayintegracao(0) = 1 and Aut("labsconfigintegracao") = 1 then
     %>
@@ -29,9 +31,9 @@ if arrayintegracao(0) = 1 and Aut("labsconfigintegracao") = 1 then
     <li class="sidebar-label pt20">Config. Procedimentos x Exames</li>
     <% 
     if arrayintegracao(1) = 1 then 
-        sql = "SELECT lab.id, lab.NomeLaboratorio FROM labs_autenticacao la INNER JOIN cliniccentral.labs lab ON lab.id = la.LabID WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade)
+        sql = "SELECT lab.id, lab.NomeLaboratorio FROM labs_autenticacao la INNER JOIN cliniccentral.labs lab ON lab.id = la.LabID WHERE sysactive ='1' AND UnidadeID="&treatvalzero(SESSION("UnidadeID"))
     else 
-        sql = "SELECT lab.id, lab.NomeLaboratorio FROM slabs_autenticacao la INNER JOIN cliniccentral.labs lab ON lab.id = la.LabID WHERE sysactive ='1' AND UnidadeID="&treatvalzero(unidade)
+        sql = "SELECT lab.id, lab.NomeLaboratorio FROM slabs_autenticacao la INNER JOIN cliniccentral.labs lab ON lab.id = la.LabID WHERE sysactive ='1' AND UnidadeID="&treatvalzero(SESSION("UnidadeID"))
     end if
     set listaLabs = db.execute(sql)
     while not listaLabs.eof 

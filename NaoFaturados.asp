@@ -235,7 +235,7 @@ while not atend.eof
                 <button title="Lançamentos de produtos, materiais e medicamentos neste procedimento" onclick="modalEstoqueAtend(<%= atend("id") %>)" type="button" class="btn btn-xs"><i class="far fa-medkit"></i></button>
             </td>
             <td nowrap="nowrap"><%
-        
+
 
             response.Write(atend("Data")&" ")
 		    if not isnull(atend("HoraInicio")) then
@@ -267,13 +267,3 @@ atend.close
 set atend=nothing
 %>
 </table>
-<script>
-
-$("#btnFatAgendamento").click(function(){
-    $("#divFatAgendamento").html(`<div class="p10"><button type="button" class="close" data-dismiss="modal">×</button><center><i class="far fa-2x fa-circle-o-notch fa-spin"></i></center></div>`)
-    $.get("AgendamentosFaturar.asp?PacienteID=<%=PacienteID%>", function(data){
-        $("#divFatAgendamento").html(data);
-    });
-});
-
-</script>

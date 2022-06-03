@@ -6,15 +6,18 @@
 Set api = new ApiClient
 
 ServerHost = getEnv("FC_MYSQL_HOST", "")
+AppEnv = getEnv("FC_APP_ENV", "local")
 
-set dbc = newConnection("clinic5459", ServerHost)
+if AppEnv="production" then
+    set dbc = newConnection("clinic5459", ServerHost)
 
-LicencaID=replace(session("Banco"),"clinic","")
-'LicencaID=6118
+    LicencaID=replace(session("Banco"),"clinic","")
+    'LicencaID=6118
 
-set PacienteSQL = dbc.execute("SELECT Cliente From cliniccentral.licencas WHERE id="&LicencaID)
-if not PacienteSQL.eof then
-    ClienteID=PacienteSQL("CLiente")
+    set PacienteSQL = dbc.execute("SELECT Cliente From cliniccentral.licencas WHERE id="&LicencaID)
+    if not PacienteSQL.eof then
+        ClienteID=PacienteSQL("CLiente")
+    end if
 end if
 function getLastTickets(status)
     set getLastTickets = dbc.execute("SELECT t.*, ts.Classe ClasseStatus FROM tarefas t LEFT JOIN cliniccentral.tarefasstatus ts ON ts.id=t.StaPara WHERE t.Solicitantes LIKE CONCAT('%3_"&ClienteID&"%') ORDER BY t.DtAbertura DESC LIMIT 3")
@@ -30,6 +33,7 @@ end function
 <div class="row mt30">
     <%
     User= session("User")
+    if AppEnv="production" then
     'User=734
         set t = dbc.execute("select t.*, Date(t.Inicio) Data, time(t.Inicio) Hora from clinic5459.treinamentos t "&_
         "LEFT JOIN avaliacoes a ON a.RelativoID=t.id AND a.TipoID='treinamentos' where a.id is null AND isnull(t.Nota) and t.LicencaUsuarioID="& User)
@@ -114,6 +118,7 @@ end function
 </div>
 <%
 end if
+end if
 %>
           <!-- FAQ Left Column -->
           <div class="col-md-9">
@@ -164,7 +169,7 @@ end if
                   <div class="panel-group accordion accordion-lg" id="accordion1">
 
                     <%
-                        set RespostasSQL = dbc.execute("SELECT * FROM perguntas WHERE sysActive=1 ORDER BY sysDate DESC LIMIT 5")
+                        set RespostasSQL = dbc.execute("SELECT * FROM cliniccentral.perguntas WHERE sysActive=1 ORDER BY sysDate DESC LIMIT 5")
 
                         while not RespostasSQL.eof
                             idTopico = RespostasSQL("id")
@@ -270,7 +275,7 @@ end if
             </div>
 
 <%
-            if session("ExibeFaturas") then
+            if session("ExibeFaturas") and AppEnv="production" then
 %>
 
             <div class="panel mb10">
@@ -294,6 +299,7 @@ end if
                 <%
 
                 i=0
+
 
                 set FaturasSQL = dbc.execute("select * from clinic5459.sys_financialinvoices where CD ='C' AND AccountID = '"&ClienteID&"' AND AssociationAccountID=3 order by sysDate desc LIMIT 2")
                 ExibeLinha=False
@@ -407,9 +413,10 @@ end if
 
                 i=0
 
-                set UltimosChamadosAbertosSQL = getLastTickets("")
 
-                if not UltimosChamadosAbertosSQL.eof then
+                'set UltimosChamadosAbertosSQL = getLastTickets("")
+
+                if false then
                 %>
                  <div class="panel-body text-muted p10">
                 <%
@@ -460,6 +467,117 @@ end if
                   %>
 
             </div>
+
+            <%
+            end if
+
+
+            if aut("autorizacaodeacessosuporte")=1 or True then
+%>
+
+
+
+
+                <%
+
+                i=0
+
+
+                set SolicitacaoAcessoSQL = dbc.execute("SELECT m.*, p.Foto, LEFT(p.NomeProfissional, 15) NomeProfissional, CONCAT(mm.Motivo, ' #',IFNULL(m.Ticket,'0'))DescricaoSolicitacao FROM cliniccentral.admin_senhas_master m "&_
+                                                       "JOIN clinic5459.sys_users u ON u.id=m.usuarioId "&_
+                                                       "JOIN clinic5459.profissionais p ON p.id=u.idInTable AND u.`Table`='profissionais' "&_
+                                                       "JOIN cliniccentral.admin_senhas_master_motivo mm ON mm.id=m.MotivoID "&_
+                                                       " "&_
+                                                       "WHERE m.LicencaID="&LicenseId&" "&_
+                                                       "AND m.Status!='N/A' "&_
+                                                       "AND DATE(m.DataHora)=CURDATE()")
+
+                if not SolicitacaoAcessoSQL.eof then
+                %>
+                <div class="panel mb10">
+                  <div class="panel-heading">
+                    <span class="panel-icon">
+                      <i class="far fa-life-ring"></i>
+                    </span>
+                    <span class="panel-title"> Solicitação de acesso</span>
+                  </div>
+                 <div class="panel-body text-muted p10">
+                <%
+                    while not SolicitacaoAcessoSQL.eof
+                        SolicitacaoID=SolicitacaoAcessoSQL("id")
+                        Status=SolicitacaoAcessoSQL("Status")
+                        FotoAnalista=SolicitacaoAcessoSQL("Foto")
+                        NomeAnalista=SolicitacaoAcessoSQL("NomeProfissional")
+                        Titulo=SolicitacaoAcessoSQL("DescricaoSolicitacao")
+                        ClasseStatus=" label label-warning"
+                        DtAbertura=SolicitacaoAcessoSQL("DataHora")
+
+                        if Status = "PENDENTE" then
+                            ClasseStatus = " badge badge-warning"
+                        end if
+                        if Status = "APROVADO" then
+                            ClasseStatus = " badge badge-success"
+                        end if
+                        if Status = "RECUSADO" then
+                            ClasseStatus = " badge badge-danger"
+                        end if
+
+                        UrlFoto = "https://functions.feegow.com/load-image?licenseId=5459&folder=Perfil&file="&FotoAnalista
+
+                    %>
+                                <ul class="list-unstyled <% if i>0 then %>br-t<%end if%> pt10">
+                                    <li>
+                                        <img  class="img-thumbnail" src="<%= UrlFoto %>" style="float: left;height: 60px;border-radius: 50%;margin-right: 15px;" />
+                                    </li>
+                                   <li>Analista:
+                                     <strong class="text-dark"> <%=NomeAnalista%></strong>
+                                   </li>
+                                   <li>Título:
+                                     <strong class="text-dark"> <%=Titulo%></strong>
+                                   </li>
+                                   <li>Solicitação: <%=DtAbertura%></li>
+                                   <li>Status:
+                                     <strong class="text-<%=ClasseStatus%>"><%=Status%></strong>
+                                   </li>
+                                  <li>
+                                    <%
+                                    if Status="PENDENTE" then
+                                    %>
+                                      <div class="checkbox-custom checkbox-primary">
+                                          <input type="checkbox" name="AceiteSolicitacao<%=SolicitacaoID%>" id="AceiteSolicitacao<%=SolicitacaoID%>" value="S">
+                                          <label for="AceiteSolicitacao<%=SolicitacaoID%>" class="checkbox" style="font-weight: 500">
+                                          Autorizo o acesso da equipe de apoio ao cliente da Feegow a minha licença em razão de solicitação de ajuda técnica feita previamente. 
+                                          </label>
+                                      </div>
+
+                                      <div class="text-center">
+                                        <button onclick="AcaoSolicitacaoAcesso('<%=SolicitacaoID%>','CONFIRMAR')" class="btn btn-xs btn-outline-success" type="button">
+                                            <i class="far fa-check"></i> Confirmar
+                                        </button>
+
+                                        <button onclick="AcaoSolicitacaoAcesso('<%=SolicitacaoID%>','RECUSAR')" class="btn btn-xs btn-outline-danger" type="button">
+                                            <i class="far fa-times"></i> Recusar
+                                        </button>
+                                      </div>
+                                    <%
+                                    end if
+                                    %>
+                                  </li>
+                                 </ul>
+                      <%
+                        i=i+1
+                      SolicitacaoAcessoSQL.movenext
+                      wend
+                      SolicitacaoAcessoSQL.close
+                      set SolicitacaoAcessoSQL=nothing
+
+                      %>
+                   </div>
+               </div>
+                      <%
+                  end if
+                  %>
+
 
             <%
             end if
@@ -578,5 +696,26 @@ $.get("./version-git.php",{auto:1}, function(version){
 <%
 end if
 %>
+
+function AcaoSolicitacaoAcesso(SolicitacaoID, Acao){
+    const AceiteOK = $("#AceiteSolicitacao"+SolicitacaoID).prop('checked')
+
+    if(!AceiteOK && Acao === "CONFIRMAR"){
+        showMessageDialog("Você precisa realizar o aceite para confirmar o acesso.");
+    }else{
+        $.post("AcaoSolicitacaoAcesso.asp", {SolicitacaoID: SolicitacaoID, Acao: Acao}, function(data){
+            if(Acao === "CONFIRMAR"){
+                showMessageDialog("Solicitação de acesso aprovada com sucesso.", "success");
+            }
+            if(Acao === "RECUSAR"){
+                showMessageDialog("Solicitação de acesso recusada com sucesso.", "warning");
+            }
+
+            setTimeout(function(){
+                location.reload();
+            }, 500);
+        });
+    }
+}
 
 </script>

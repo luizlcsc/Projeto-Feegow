@@ -206,17 +206,7 @@ while diaS<n
 
 
                 if Horarios("GradePadrao")=1 then
-                    FrequenciaSemanas = Horarios("FrequenciaSemanas")
-                    InicioVigencia = Horarios("InicioVigencia")
-
-                    if FrequenciaSemanas>1 then
-                        NumeroDeSemanaPassado = datediff("w",InicioVigencia,Data)
-                        RestoDivisaoNumeroSemana = NumeroDeSemanaPassado mod FrequenciaSemanas
-
-                        if RestoDivisaoNumeroSemana>0 then
-                            MostraGrade=False
-                        end if
-                    end if
+                    MostraGrade = CalculoSemanalQuinzenal(Horarios("FrequenciaSemanas"), Horarios("InicioVigencia")&"", Data)
                 end if
 
                 if MostraGrade then

@@ -1,5 +1,23 @@
 <!--#include file="connect.asp"-->
 <%
+function validaVoucherProcedimento(GruposProcedimentos, Procedimentos, Pacotes, PacoteID, ProcedimentoID)
+
+    erro = "Procedimento não validado"
+
+    if GruposProcedimentos<>"" then
+        set proc = db.execute("select GrupoID from procedimentos where id="&ProcedimentoID)
+        if not proc.eof then
+            GrupoID = proc("GrupoID")
+        end if
+    end if
+
+    if instr(GruposProcedimentos, "|"& GrupoID &"|")>0 or instr(Procedimentos, "|"& ProcedimentoID &"|")>0 or instr(Pacotes, "|"& PacoteID &"|")>0 then
+       erro = "" 
+    end if
+
+    validaVoucherProcedimento = erro
+
+end function 
 T = ref("T")
 Voucher = req("Voucher")
 
@@ -23,17 +41,20 @@ Total = 0
 
 VoucherDesconto = 0
 if Voucher<>"" then
-    set VoucherSQL = db.execute("SELECT Valor,TipoValor FROM voucher WHERE Codigo='"&Voucher&"'")
+    set VoucherSQL = db.execute("SELECT * FROM voucher WHERE Codigo='"&Voucher&"'")
     if not VoucherSQL.eof then
         VoucherDesconto = ccur(VoucherSQL("Valor"))
         VoucherTipoDesconto = VoucherSQL("TipoValor")
+        VoucherGruposProcedimentos = VoucherSQL("GruposProcedimentos")&""
+        VoucherProcedimentos = VoucherSQL("Procedimentos")&""
+        VoucherPacotes = VoucherSQL("Pacotes")&""
     end if
 end if
 
 CompanyUnitID = "%|"&ref("CompanyUnitID")&"|%"
 spl = split(inputs, ", ")
 for i=0 to ubound(spl)
-
+    
 	ProcedimentoID = ref("ItemID"&spl(i))
 	Quantidade = ref("Quantidade"&spl(i))
 	ValorUnitario = ref("ValorUnitario"&spl(i))
@@ -62,16 +83,20 @@ for i=0 to ubound(spl)
 	end if
 
 
-    if VoucherDesconto > 0 then
-        if VoucherTipoDesconto="V" then
-            Desconto = VoucherDesconto
-        else
-            Desconto = ValorUnitario * (VoucherDesconto/100)
-        end if
+    if VoucherDesconto > 0 and Voucher<>"" then
 
-        %>
-            $("#<%="Desconto"&spl(i)%>").val("<%=fn(Desconto)%>").attr("readonly","readonly");
-        <%
+        valido = validaVoucherProcedimento(VoucherGruposProcedimentos, VoucherProcedimentos, VoucherPacotes, "" , ProcedimentoID)
+        if valido = "" then
+            if VoucherTipoDesconto="V" then
+                Desconto = VoucherDesconto
+            else
+                Desconto = ValorUnitario * (VoucherDesconto/100)
+            end if
+
+            %>
+                $("#<%="Desconto"&spl(i)%>").val("<%=fn(Desconto)%>").attr("readonly","readonly");
+            <%
+        end if
     end if
 
 	Desconto2 = Replace(Desconto, ",",".")
@@ -129,8 +154,9 @@ next
 
 %>
 $("#total").html("R$ <%=fn(Total)%>");
-$("#Valor").val("<%=fn(Total)%>");
-
+if($("#abaConta #Valor").lenght > 0){
+    $("#abaConta #Valor").val("<%=fn(Total)%>");
+}
 <%
 par = split(ParcelasID, ", ")
 for j=0 to ubound(par)

@@ -148,7 +148,7 @@
                                                     " FROM cliniccentral.eventos_whatsapp eveW                                                  "&chr(13)&_
                                                     " LEFT JOIN sys_smsemail sys ON sys.EventosWhatsappID = eveW.id                             "&chr(13)&_
                                                     " LEFT JOIN eventos_emailsms eve ON eve.ModeloID = sys.id                                   "&chr(13)&_
-                                                    " WHERE eveW.FacebookStatus = 1                                                             "
+                                                    " WHERE eveW.FacebookStatus = 1 AND eve.WhatsApp = 1  "
                             SET modeloDeMensagem = db.execute(modeloDeMensagemSQL)
                             
 

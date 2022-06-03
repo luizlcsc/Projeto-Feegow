@@ -813,19 +813,16 @@ function modalVacinaPaciente(pagina, valor1, valor2, valor3, valor4) {
                                 <%
 
                             end if
-                            if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
-                            <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
-                            <% end if
                             set AtendeConvenioSQL = db.execute("SELECT COUNT(id)n FROM convenios WHERE sysActive=1 HAVING n>=1")
                             if not AtendeConvenioSQL.eof then
                                 %>
                                 <li ><a href="javascript:iPront('<%=replace("PedidosSADT", "|", "") %>', <%=PacienteID%>, 0, '', '');"><i class="far fa-plus"></i> Pedido em Guia de SP/SADT</a></li>
-                                <% if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
-                                <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
-                                <% end if %>
                                 <%
                             end if
                             %>
+                            <% if getConfig("MemedHabilitada")=1 and getConfig("MemedUsarPedidoDeExameClassico")<>1 then %>
+                            <li ><a <% if EmAtendimento=0 then %> disabled data-toggle="tooltip" title="Inicie um atendimento." data-placement="right" <%else%> href="javascript:openMemed('exame')" <%end if%>><i class="far fa-plus"></i> Pedido Memed <span class="label label-system label-xs fleft">Novo</span></a></li>
+                            <% end if %>
                         </ul>
                     </div>
                     <%
@@ -1293,7 +1290,6 @@ function toggleRegistrosInativos(el){
 }
 
 function toogleInativarRegistroTimeline(el) {
-    console.log('aqui', el);
     ativo = $(el).is(":checked");
     $item = $(el).parents(".timeline-item");
     RecursoID = $(el).data("recurso-id");
@@ -1479,16 +1475,19 @@ function excluirSerie(id) {
                         loadMore : newloadMore,
                         ProfissionalID:ProfissionalID
                     }).done(function(data) {
-                        if(data!==""){
+                        //quando não encontra resultados, põe uma div na tela com essa informação
+                        //e não deve ficar rodando o loadMore no scroll... ~BrunoBastos@20220517
+                        if(data!=="" && data!=='<div class="panel-body">Nenhum registro encontrado para o profissional selecionado</div>'){
                                 $("#timeline").append(data);
                                 loadMore+=steps;
-                        } else
-                        {
+                        } else if(data=='<div class="panel-body">Nenhum registro encontrado para o profissional selecionado</div>'){
                             final = true;
-
+                        }
+                        else {
+                            final = true;
                             if($(".no-more-registers").length <= 0){
                                 $("#timeline").append("</div></div><div class='timeline-divider'><div class='divider-label no-more-registers'>Não há mais registros</div></div>");
-                            }
+                            }                        
                         }
                     }).fail(function(data) {
                         console.log(data);

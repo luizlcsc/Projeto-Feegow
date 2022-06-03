@@ -2,6 +2,7 @@
 <!--#include file="./Classes/TagsConverte.asp"-->
 <%
 LaudoID = req("L")
+AgendamentoID = req("AgendamentoID")
 qLaudoSQL = "select l.*, p.NomePaciente, p.id PacienteProntuario, p.Nascimento from laudos l LEFT JOIN pacientes p ON p.id=l.PacienteID WHERE l.id="& LaudoID
 'response.write("<pre>"&qLaudoSQL&"</pre>")
 set l = db.execute(qLaudoSQL)
@@ -64,12 +65,21 @@ else
     end if
 
     set prot = db.execute("SELECT LaudosProtocolo FROM impressos")
+
     if not Prot.eof then
-        ProtocoloConteudo = prot("LaudosProtocolo")&""
+        ProtocoloConteudo = unscapeOutput(prot("LaudosProtocolo"))&""
+        
         if ProtocoloConteudo<>"" then
             
             ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"PacienteID_"&PacienteProntuario&"|UnidadeID_"&session("UnidadeID")&"|ProcedimentoID_"&ProcedimentoID,""))
+            ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"AgendamentoID_"&AgendamentoID,""))
             
+            if AgendamentoID <> "" then 
+                ProtocoloConteudo = (tagsConverte(ProtocoloConteudo,"AgendamentoID_"&AgendamentoID,""))
+            else 
+                ProtocoloConteudo = replace(ProtocoloConteudo, "[Agendamento.ID]", "")
+            end if
+
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Protocolo.ID]", right("0000000"&Id,7))
             ProtocoloConteudo = replace(ProtocoloConteudo, "[Exame.Data]", DataExecucao)
             ProtocoloConteudo = replace(ProtocoloConteudo, "[ProfissionalSolicitante.Nome]", ProfissionalSolicitante)

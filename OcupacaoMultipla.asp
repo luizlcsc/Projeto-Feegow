@@ -102,7 +102,7 @@ else
         'while not u.eof
         splU = split(ref("Locais"), ", ")
         for j=0 to Ubound(splU)
-            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), True)    
+            call ocupacao(ref("De"), ref("Ate"), ref("Especialidade"), "", "", "", splU(j), session("User"),"always",True)    
             UnidadeID = replace(replace(splU(j), "UNIDADE_ID", ""), "|", "")
 		    if UnidadeID="0" then
 			    set un = db.execute("select NomeFantasia from empresa")

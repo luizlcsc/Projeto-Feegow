@@ -121,7 +121,14 @@ end if
 		AccountAssociationID = splAccount(0)
 		AccountID = splAccount(1)
 
-        DataSaldo = dateadd("d",-1,ref("DateFrom"))
+		if ref("DateFrom")&"" = "" then
+			data = date()
+		else 
+			data = ref("DateFrom")
+		end if
+
+        DataSaldo = dateadd("d",-1,data)
+
         Balance = accountBalanceData(ref("AccountID"), DataSaldo) * -1
 
 		sqlAcc = " AND ((m.AccountAssociationIDCredit="&AccountAssociationID&" and m.AccountIDCredit="&AccountID&") or (m.AccountAssociationIDDebit="&AccountAssociationID&" and m.AccountIDDebit="&AccountID&")) "

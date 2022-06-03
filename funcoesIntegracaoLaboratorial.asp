@@ -168,7 +168,7 @@ function retornaChamadaIntegracaoLaboratorial(link)
     arrayintegracao = split(verificaAcesso,"|")
     if arrayintegracao(0) = 1 or arrayintegracao(2) = 1  then 'Verifica se a licença está habilitada para integração laboratorial
         if arrayintegracao(1) = 1 then 'Verica a versao da integracao
-        'convertendo os links para a versão antiga para manter a compatibilidade
+            'convertendo os links para a versão antiga para manter a compatibilidade
             select case link 
                 case "fila-coleta"
                     link = "matrix/work-queue"                    
@@ -178,7 +178,21 @@ function retornaChamadaIntegracaoLaboratorial(link)
                                                     " $("".app"").html(data); " &_
                                                     " $("".app"").fadeIn('slow');}); "
         else
-            retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{}, function(data) { " &_
+            params= ""
+            select case link 
+                case "LabsConfig"
+                    link = "procedimentos-laboratorios-view" 
+                case "diagbrasil/proc-relation"
+                    link = "proc-relation" 
+                    params = "labid:'2'"
+                case "alvaro/proc-relation"
+                    link = "proc-relation" 
+                    params = "labid:'3'"
+                case "hermespardini/proc-relation"
+                    link = "proc-relation" 
+                    params = "labid:'4'"
+            end select
+            retornaChamadaIntegracaoLaboratorial =  "getUrl(""labs-integration/"&link&""",{"&params&"}, function(data) { " &_
                                                     " $("".app"").hide(); " &_
                                                     " $("".app"").html(data); " &_
                                                     " $("".app"").fadeIn('slow');},""integracaolaboratorial""); "

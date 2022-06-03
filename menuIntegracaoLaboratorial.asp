@@ -1,5 +1,5 @@
 <%
-case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs"
+case "labsconfigintegracao", "labscadastrocredenciais", "labslistagemexames", "labsimportardepara", "labslistagemprocedimentos", "deparalabs", "procedimentolaboratorio", "modelocomprovantecoleta"
 arrayintegracao = split(verificaSevicoIntegracaoLaboratorial(""),"|")
 if arrayintegracao(0) = 1 and Aut("labsconfigintegracao") = 1 then
     %>
@@ -12,6 +12,9 @@ if arrayintegracao(0) = 1 and Aut("labsconfigintegracao") = 1 then
     </li>
     <li>
         <a href="?P=labsimportardepara&Pers=1&v=<%=arrayintegracao(1)%>" title="V.<%=arrayintegracao(1)%>"><span class="far fa-download"></span> <span class="sidebar-title">Importação De x Para</span></a>
+    </li>
+    <li>
+        <a href="?P=modelocomprovantecoleta&Pers=1&v=<%=arrayintegracao(1)%>" title="V.<%=arrayintegracao(1)%>"><span class="far fa-download"></span> <span class="sidebar-title">Comprovante de Coleta</span></a>
     </li>
     <li class="sidebar-label pt20">Gerenciamento</li>
     <li>

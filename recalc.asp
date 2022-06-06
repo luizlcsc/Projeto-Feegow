@@ -154,6 +154,7 @@ next
 
 %>
 $("#total").html("R$ <%=fn(Total)%>");
+$("#Valor").attr("value","<%=fn(Total)%>");
 if($("#abaConta #Valor").lenght > 0){
     $("#abaConta #Valor").val("<%=fn(Total)%>");
 }

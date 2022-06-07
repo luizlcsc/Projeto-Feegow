@@ -507,17 +507,17 @@ $agendamentoSlot.each(function(){
     var horaSlot = $(this).attr("data-id");
     if( horaSlot=='<%=HoraComp%>' && (Status !== '11' && Status !== '22' && Status !== '33' <%=StatusRemarcado%>))
     {
-        $(this).replaceWith('<%= conteudo %>');
+        $(this).replaceWith(`<%= conteudo %>`);
         return false;
     }
     else if ( horaSlot>'<%=HoraComp%>' )
     {
         if($agendamentoSlot.filter("[data-id='<%=HoraComp%>']").length > 0 && (Status !== '11' && Status !== '22' && Status !== '33' <%=StatusRemarcado%>)){
-            $agendamentoSlot.filter("[data-id='<%=HoraComp%>']").replaceWith('<%= conteudo %>');
+            $agendamentoSlot.filter("[data-id='<%=HoraComp%>']").replaceWith(`<%= conteudo %>`);
         }else if($agendamentoSlot.filter("[data-id='<%=HoraComp%>']").length <= 0){
-            $(this).before('<%=conteudo%>');
+            $(this).before(`<%=conteudo%>`);
         }else{
-            $agendamentoSlot.filter("[data-id='<%=HoraComp%>']").before('<%=conteudo%>');
+            $agendamentoSlot.filter("[data-id='<%=HoraComp%>']").before(`<%=conteudo%>`);
         }
         return false;
     }

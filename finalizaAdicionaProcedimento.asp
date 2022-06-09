@@ -336,7 +336,7 @@ if 1=1 and AtendimentoID<>"N" and GetConfig("BaixarItensContratadosAoFinalizarAt
               " LEFT JOIN sys_financialmovement mov on mov.InvoiceID=ii.InvoiceID "&_
               " LEFT JOIN procedimentos proc on proc.id=ii.ItemID "&_
               " WHERE ii.id not in ("&itensNaListagem&") and ii.ItemID="&treatvalzero(ProcedimentoID)&" AND "&_
-              "(ISNULL(ii.Executado) OR ii.Executado='') AND ("&sqlValorPago&") AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
+              "(ISNULL(ii.Executado) OR ii.Executado='') AND ("&sqlValorPago&") AND i.sysActive=1 AND i.CD='C' AND ii.Tipo='S' AND i.AccountID="&PacienteID&" AND i.AssociationAccountID=3 "
 
             set ItemSQL = db.execute(sqlItens)
             if ExibeLinha and not ItemSQL.eof then

@@ -772,9 +772,9 @@ if not tryLogin.EOF then
                 end if
 
                 'TEMP MERGE v7.6 > V7.6h
-                if PastaAplicacao = "v7.6" and lcase(session("Table"))="profissionais" and AppEnv="production" then
-                    PastaAplicacao = "v7.6h"
-                end if
+                'if PastaAplicacao = "v7.6" and lcase(session("Table"))="profissionais" and AppEnv="production" then
+                '    PastaAplicacao = "v7.6h"
+                'end if
 
                 IF PastaAplicacao <> "" and Versao&""="7" and AppEnv="production" THEN
                     urlRedir = replace(urlRedir, "./", "/"&PastaAplicacao&"/")

@@ -618,13 +618,16 @@ end if
                                                     'CID e BMJ de campos de formulários Estruturados
                                                     if instr(pcampos("Estruturacao"), "|CID|") > 0 then
                                                         sqlBmj = montaSubqueryBMJ("bmj.codcid10 = t.CID10_Cd1")
-                                                        sqlCiap = "SELECT t.CID10_Cd1 as Codigo, t.Termo, " & sqlBmj & " as bmj_link " &_
+                                                        sqlCiap = "SELECT t.CID10_Cd1 as Codigo, c.Descricao as Termo, " & sqlBmj & " as bmj_link " &_
                                                                   "FROM pacientesciap pc " &_
-                                                                  "INNER JOIN cliniccentral.tesauro t ON t.id=pc.CiapID " &_
+                                                                  " INNER JOIN cliniccentral.tesauro t ON t.id=pc.CiapID " &_
+                                                                  "INNER JOIN cliniccentral.cid10 c ON c.Codigo = replace(t.CID10_Cd1,'.','') " &_
                                                                   "WHERE pc.FormID='" & ti("id") & "' AND pc.CampoID='" & pcampos("id") & "'"
+                                                        'response.write(sqlCiap)
                                                         set rsCiap = db.execute(sqlCiap)
                                                         while not rsCiap.eof
-                                                            response.write( rsCiap("Codigo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            'response.write( rsCiap("Codigo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            response.write( rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "<br>")
                                                             rsCiap.movenext
                                                         wend
                                                         rsCiap.close

@@ -624,7 +624,7 @@ end if
                                                                   "WHERE pc.FormID='" & ti("id") & "' AND pc.CampoID='" & pcampos("id") & "'"
                                                         set rsCiap = db.execute(sqlCiap)
                                                         while not rsCiap.eof
-                                                            response.write( rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            response.write( rsCiap("Codigo") &" "& rsCiap("bmj_link") & "<br>")
                                                             rsCiap.movenext
                                                         wend
                                                         rsCiap.close

@@ -22,6 +22,7 @@ ProfissionalID = ref("ProfissionalID"&Row)
 ProcedimentoID = ref("ItemID"&Row)
 EspecialidadeID = ref("EspecialidadeID"&Row)
 TabelaID = ref("invTabelaID")
+UnidadeID = ref("CompanyUnitID")
 
 db.execute("delete from itensinvoiceoutros where InvoiceID="&InvoiceID&" and ItemInvoiceID="& Row)
 

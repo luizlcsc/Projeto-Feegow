@@ -46,22 +46,32 @@ function updateProcedimentosTabelaValor(TabelaID, ProcedimentoPrefixoID)
     set ProcedimentosSQL=nothing
 end function
 
-sqlUpdateTabela = "update procedimentostabelas set NomeTabela='"& ref("NomeTabela") &"', Inicio="& mydatenull(ref("Inicio")) &", Tipo='"& ref("Tipo") &"', Fim="& mydatenull(ref("Fim")) &", TabelasParticulares='"& ref("TabelasParticulares") &"', Profissionais='"& ref("Profissionais") &"', Especialidades='"& ref("Especialidades") &"', Unidades='"& Unidades &"',  tabelabase ='"&TabelaBase&"' , Atuacao ='"&Atuacao&"' , sysActive=1 where id="& TabelaInputID
+Title = "Sucesso!"
+Erro = "Valores da tabela alterado."
+Tipo = "success"
 
-call gravaLogs(sqlUpdateTabela ,"AUTO", "Tabela de preço alterada","")
-db.execute(sqlUpdateTabela)
+if ref("NomeTabela")&"" <> "" then
+    sqlUpdateTabela = "update procedimentostabelas set NomeTabela='"& ref("NomeTabela") &"', Inicio="& mydatenull(ref("Inicio")) &", Tipo='"& ref("Tipo") &"', Fim="& mydatenull(ref("Fim")) &", TabelasParticulares='"& ref("TabelasParticulares") &"', Profissionais='"& ref("Profissionais") &"', Especialidades='"& ref("Especialidades") &"', Unidades='"& Unidades &"',  tabelabase ='"&TabelaBase&"' , Atuacao ='"&Atuacao&"' , sysActive=1 where id="& TabelaInputID
 
-call updateProcedimentosTabelaValor(TabelaInputID, "")
+    call gravaLogs(sqlUpdateTabela ,"AUTO", "Tabela de preço alterada","")
+    db.execute(sqlUpdateTabela)
 
-if IDTabelaInversa&""<>"" then
-    call updateProcedimentosTabelaValor(IDTabelaInversa, IDTabelaInversa&"_")
+    call updateProcedimentosTabelaValor(TabelaInputID, "")
+
+    if IDTabelaInversa&""<>"" then
+        call updateProcedimentosTabelaValor(IDTabelaInversa, IDTabelaInversa&"_")
+    end if
+else
+    Title = "Erro!"
+    Erro = "Não foi possível atualizar tabela."
+    Tipo = "danger"
 end if
 
 %>
 
 new PNotify({
-    title: 'Sucesso!',
-    text: 'Valores da tabela alterado.',
-    type: 'success',
+    title: '<%=Title%>',
+    text: '<%=Erro%>',
+    type: '<%=Tipo%>',
     delay: 3000
 });

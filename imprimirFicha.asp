@@ -14,6 +14,16 @@
                 <input type="radio" name="ImpressaoSolicitadaPor" id="SolicitadoProfissional" value="Profissional">
                 <label for="SolicitadoProfissional"> Solicitado pelo profissional</label>
             </span><br>
+            <%
+            if LicenseId=14486 then
+            %>
+            <span class="radio-custom radio-primary">
+                <input type="radio" name="ImpressaoSolicitadaPor" id="PlanejamentoTerapeutico" value="PlanejamentoTerapeutico">
+                <label for="PlanejamentoTerapeutico"> Relatório de avaliação e planejamento terapêutico</label>
+            </span><br>
+            <%
+            end if
+            %>
         </div>
         <div class="col-md-4" id="ImpressaoFichaProfissional" style="display: none;">
            <%=quickField("simpleSelect", "gProfissionalID", "Profissional", 12, ProfissionalID, "select * from profissionais where sysActive=1 and Ativo='on' order by NomeProfissional", "NomeProfissional", "")%>
@@ -127,6 +137,13 @@
             %>
         </div>
         </div>
+        
+        <div id="ImpressaoPlanejamentoTerapeutico" style="display: none;">
+            <div class="col-md-12">
+
+                <iframe  width="100%" height="600px" src="" id="ImpressaoFicha" name="ImpressaoFicha" frameborder="0"></iframe>
+            </div>
+        </div>
     </div>
 </div>
 <div class="modal-footer no-margin-top">
@@ -163,15 +180,25 @@
     };
 
     $SolicitadoPor.change(function() {
-        $("#ImpressaoFichaConteudo").fadeIn();
+        var val = $(this).val();
+        if(val === "PlanejamentoTerapeutico"){
+            $("#ImpressaoPlanejamentoTerapeutico").fadeIn();
+            var pacienteId = '<%=req("PacienteID")%>';
 
-        if($(this).val() === "Profissional"){
-            $SelectProfissional.fadeIn();
+            var urlIframe = `PrintStatement.asp?R=RelatorioPlanejamentoTerapeutico&I=${pacienteId}&Pers=1`;
+
+            $("#ImpressaoPlanejamentoTerapeutico").find("iframe").attr("src", urlIframe);
         }else{
-            $SelectProfissional.fadeOut();
-        }
+            $("#ImpressaoFichaConteudo").fadeIn();
 
-        iframeUrl();
+            if($(this).val() === "Profissional"){
+                $SelectProfissional.fadeIn();
+            }else{
+                $SelectProfissional.fadeOut();
+            }
+
+            iframeUrl();
+        }
     });
 
     $("#gProfissionalID, .ImpressaoDataFiltro, #TamanhoPapel,#ImprimirHistoricoAcoes").change(function() {

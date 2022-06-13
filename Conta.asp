@@ -323,6 +323,7 @@ function listaRecibos(InvoiceID) {
     <%if (aut("areceberpacienteI")) OR (aut("contasareceberI")) OR (aut("aberturacaixinhaI") AND session("CaixaID")<>"") then%>
 $("#btnParticular").click(function () {
     btnToggleLoading("btnParticular",false,true)
+    $("#rbtns").show(500);
     $.post("LanctoRapido.asp?Pers=1&PacienteID=<%=PacienteID%>", $("input[name=Lancto]").serialize()+"&tt=hh&TipoBotao=AReceber", function (data) {
         $("#divHistorico").html(data);
     });

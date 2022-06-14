@@ -496,10 +496,14 @@ if not tryLogin.EOF then
 
 
             set getUnidades = db.execute("select Unidades from "&session("Table")&" where id="&session("idInTable"))
-            
-            Unidades = getUnidades("Unidades")&""
+            if getUnidades.eof then
+                erro = "Usuário inativo."
+                errorCode = "invalid_user_setup"
+            else
+                Unidades = getUnidades("Unidades")&""
+            end if
 
-            if session("Admin")<>1 AND session("ModoFranquia")&""="1" then
+            if session("Admin")<>1 AND session("ModoFranquia")&""="1" and erro="" then
                 if Unidades="" then
                     erro = "ACESSO NÃO AUTORIZADO: Entre em contato com o administrador (unidades vinculadas)."
                 else

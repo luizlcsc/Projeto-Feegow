@@ -3,7 +3,7 @@
     resourceType = lcase(req("R"))&""
     itemID       = req("I")&""
     'INCLUSÃO DE REGISTRO NOS LOGS PROVENIENTE DE IMPORTAÇÃO QUE NÃO TIVERAM A INCLUSÃO DOS LOGS
-    if resourceType="pacientes" and itemID<>"" then
+    if resourceType="pacientes" and itemID<>"" and false then
         qLogsCheckSQL = "SELECT id FROM log              "&chr(13)&_
                         "WHERE Operacao='I' AND I="&itemID
                         

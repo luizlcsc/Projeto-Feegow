@@ -613,7 +613,7 @@ end if
 
                         if session("Odonto")=1  then
                             %>
-                        <div class="btn-group nao-mostrar-caso-pago">
+                        <div class="btn-group">
                             <button type="button" class="btn btn-system btn-sm hidden-xs" id="btn-abrir-modal-odontograma">
                                 <i class="far fa-tooth"></i>
 

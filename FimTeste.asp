@@ -183,10 +183,9 @@
                             <button type="button" id="cta-usar-free" onclick="changeToFree()">Usar a versão Free</button>
                         </div>
                         <div class="col-md-6">
-                            <button  id="cta-contratar-plano">Contratar um plano
+                            <button  id="cta-contratar-plano">Contratar um plano</button>
                                 <br/>
-                                <span style="color: #000000"><i class="far fa-phone"></i> 0800 591 3035</span>
-                            </button>
+                            <div style="text-align: center; color: #000000"><i class="far fa-phone"></i> 0800 591 3035</div>
                         </div>
                     </div>
                 </div>

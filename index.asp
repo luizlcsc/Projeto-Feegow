@@ -1348,7 +1348,7 @@ end if
 								set fs=nothing
 
 
-								IF FileName = "Home.asp" THEN
+								IF FileName = "Home.asp" and false THEN
                   if getConfig("HomeOtimizada")="1" or PorteClinica > 3 or AppEnv<>"production" then
 								      FileName = "HomeModoFranquia.asp"
                   end if

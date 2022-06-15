@@ -145,9 +145,8 @@
                                 <button class="btn btn-success" style="width: 48%;background-color: #00cc86; height: 58px;border-radius: 10px;" onclick="changeToFree()" type="button">
                                     Usar a versão Free
                                 </button>
-                                <div class="btn btn-success" style="width: 48%;background-color: #00bad7;border-radius: 10px;cursor: default" type="button">
-                                    Contratar Um Plano <br/>
-                                    <span style="color: #000000"><i class="far fa-phone"></i> 0800 591 3035</span>
+                                <a href="https://bit.ly/3tETKSV" target="_blank" class="btn btn-success" style="width: 48%;background-color: #00bad7;border-radius: 10px;cursor: default" type="button">
+                                    Contratar Um Plano 
                                 </div>
                             </div>
                         </div>

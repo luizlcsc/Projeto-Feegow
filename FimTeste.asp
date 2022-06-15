@@ -71,6 +71,7 @@
     margin: 0;
     font-size: 32px;
     line-height: 1em;
+    color: #000000;
     }
     .texto-titulo-modal h3 span{
     color: #009af0;

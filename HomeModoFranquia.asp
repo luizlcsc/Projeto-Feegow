@@ -23,8 +23,8 @@
     </div>
 </div>
 
-<div class="modais-new-prioridades">
-    <div id="modais-new-prioridades-modal" class="modal fade" tabindex="-1">
+<div class="modais-new-prioridades modal-v8">
+    <div id="modais-new-prioridades-modal" class="modal fade " tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content" style="margin: 0; padding: 0">
                 <div class="modal-body" style="margin: 0; padding: 0">
@@ -35,12 +35,12 @@
     </div>
 </div>
 <style>
-#modais-new-prioridades-modal .modal-backdrop{
+.modal-v8 .modal-backdrop{
     background-color: transparent;
     background-image: linear-gradient(52deg, #00b4fc47, #17df9359, #00b4fc8f, #17df9382)
 }
 
-#modais-new-prioridades-modal .box-shadow{
+.modal-v8 .box-shadow{
     box-shadow: none;
 }
 </style>

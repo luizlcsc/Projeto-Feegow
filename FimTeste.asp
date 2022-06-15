@@ -122,41 +122,6 @@
     }
 </style>
 
-<div class="modais-recursosxxx modal-v8 hidden" >
-    <div id="modal-fimtestexxx" class="modal fade" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content" id="modal-fimtestecontent" style="width:680px; margin-left:-130px;">
-                <div class="modal-body text-center">
-                    <div class="contain">
-                        <div class="item" style="width: 300px; background: #008bd0;">
-                            <div style="position: absolute;z-index: 100000"><img src="assets/fim-teste/corner_alert.png"></div>
-                            <img style="margin-top: 60px" src="assets/fim-teste/icone-relogio.png">
-                        </div>
-                        <div class="item" style="flex: auto; padding: 25px 30px">
-                            <div class="contain">
-                                <div class="item recurso-indisponivel" style="line-height: 40px;margin-left: 0px">
-                                    Seu período <br/> de teste grátis<br/>chegou ao fim :(
-                                </div>
-                            </div>
-                            <div class="text-indisponivel" style="max-width: 315px; line-height: 20px">
-                                <p><strong>Mas não precisa ficar triste!</strong>
-                                <br/>Você pode contratar um de nossos planos e seguir utilizando os melhores recursos de nosso software!</p>
-                                <br/>
-                                <button class="btn btn-success" style="width: 48%;background-color: #00cc86; height: 58px;border-radius: 10px;" onclick="changeToFree()" type="button">
-                                    Usar a versão Free
-                                </button>
-                                <a href="https://bit.ly/3tETKSV" target="_blank" class="btn btn-success" style="width: 48%;background-color: #00bad7;border-radius: 10px;cursor: default" type="button">
-                                    Contratar Um Plano 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
-</div>
-
 <div id="modal-fimteste" class="modal fade modal-v8" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content" id="modal-fimtestecontent">
@@ -183,9 +148,11 @@
                             <button type="button" id="cta-usar-free" onclick="changeToFree()">Usar a versão Free</button>
                         </div>
                         <div class="col-md-6">
-                            <button  id="cta-contratar-plano">Contratar um plano</button>
-                                <br/>
-                            <div style="text-align: center; color: #000000"><i class="far fa-phone"></i> 0800 591 3035</div>
+                            <button  id="cta-contratar-plano">
+                             <a href="https://bit.ly/3tETKSV" target="_blank" style="color: #fff">
+                                Contratar um plano
+                                </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -203,6 +170,9 @@ function changeToFree(){
 }
 
 $(document).ready(function(e) {
+    $("#cta-contratar-plano").click(function(){
+        location.href = "https://bit.ly/3tETKSV";
+    })
 <%
 if session("Bloqueado")="FimTeste" then
 %>

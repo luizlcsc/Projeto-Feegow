@@ -608,17 +608,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <%
 
 
-    if req("FP")<>"" and request.ServerVariables("REMOTE_ADDR")="::1" then
-	
-        set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where u.id="&ccur(req("FP")))
-%>
-        <!--#include file="loginPadrao.asp"-->
-<%
-    end if
-
     if ref("User")<>"" or ref("tokenLogin")<>"" then
         if req("Partner")="" then
-            set tryLogin = dbc.execute("select u.*, l.Cliente, l.NomeEmpresa, l.FimTeste, l.DataHora, l.LocaisAcesso, l.IPsAcesso, l.Logo, l.`Status` from licencasusuarios as u left join licencas as l on l.id=u.LicencaID where Email='"&ref("User")&"' and (Senha='"&ref("Password")&"' or '"&ref("Password")&"'='##Yogo@@Nutella.')")
 %>
         <!--#include file="loginPadrao.asp"-->
 <%
@@ -634,7 +625,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     LoginFTP = False
 
     if LoginFTP then
-        URLRedirectLogin = "https://app.feegow.com/v7-master/?P=Login"
+        URLRedirectLogin = "https://app.feegow.com/main/?P=Login"
 
         if req("Partner")<>"" then
             URLRedirectLogin = URLRedirectLogin & "&Partner="&req("Partner")

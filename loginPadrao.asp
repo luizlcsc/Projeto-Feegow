@@ -785,6 +785,8 @@ if not tryLogin.EOF then
 
                 call sendLogLoginSuccess()
 
+                %><!--#include file = "disconnect.asp"--><%
+
                 if QueryStringParameters<>"" then
                     response.Redirect("./?"&QueryStringParameters)
                 else
@@ -855,3 +857,4 @@ if ErroLogin then
     end if
 end if
 %>
+<!--#include file = "disconnect.asp"-->

@@ -660,3 +660,4 @@ $("#Data").val('<%=Data%>');
 end if
 %>
 </script>
+<!--#include file = "disconnect.asp"-->

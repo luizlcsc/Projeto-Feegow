@@ -180,7 +180,7 @@ if lcase(session("table"))="profissionais" then
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"),age.HoraSta),'%H:%i'))/60 AS tempoEspera , conv.NomeConvenio, st.StaConsulta,a.StaID , proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina "&_
+                    sql = "select age.*, TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"),age.HoraSta),'%H:%i'))/60 AS tempoEspera , conv.NomeConvenio, st.StaConsulta, age.StaID , proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina "&_
                     ", ( "&_
                     " SELECT count(ap.id) "&_
                     " FROM agendamentosprocedimentos ap "&_
@@ -205,7 +205,6 @@ end if
 if req("debug")="1" then
     response.write("<pre>"&sql&"</pre>")
 end if
-
 set veseha=db.execute(sql)'Hora
 if session("Table")="profissionais" then
     set vtotal=db.execute(sqlTotal)'Hora

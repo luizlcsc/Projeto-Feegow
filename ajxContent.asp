@@ -10,3 +10,4 @@ else
 end if
 server.Execute(FileName)
 %>
+<!--#include file="disconnect.asp"-->

@@ -77,3 +77,4 @@ END IF
         %>
     </div>
 </div>
+<!--#include file="disconnect.asp"-->

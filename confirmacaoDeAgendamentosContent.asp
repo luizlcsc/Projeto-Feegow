@@ -330,3 +330,4 @@ sqlData = " a.Data>="&mydatenull(ref("DataDe"))&" and a.Data<="&mydatenull(ref("
         $("#TipoLinkWhatsApp").val(localStorage.getItem("TipoLinkWhatsApp"));
     }
 </script>
+<!--#include file="disconnect.asp"-->

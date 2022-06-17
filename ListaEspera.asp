@@ -218,6 +218,7 @@ if not AgendamentosOnlineSQL.eof then
 end if
 end if
 %>
+<!--#include file="chamadaTV.asp"-->
 
 <script type="text/javascript">
 
@@ -402,4 +403,13 @@ function CopyToClipboard (text) {
     }
 	}
 }
+ function rechamar(arg, StaID, TipoAtendimentoTriagem){
+      
+      $.post("ListaEsperaCont.asp", {Rechamar:"1",id: arg,StaID:StaID}, function(data){
+          showMessageDialog("Chamando paciente.", "success");
+          // chamarPaciente(arg, StaID, TipoAtendimentoTriagem);
+          callChamadaTV(arg,false);
+          // window.location='?P=ListaEspera&Pers=1&Chamar='+arg+'&StaID='+StaID;
+        });
+  }
 </script>

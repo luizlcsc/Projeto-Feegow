@@ -1,5 +1,5 @@
 <%
-dd(TypeName(dbc)
+dd(TypeName(dbc))
 if TypeName(dbc)="Object" then
  dbc.close
  Set dbc = nothing

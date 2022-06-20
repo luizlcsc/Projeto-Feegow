@@ -133,6 +133,7 @@ if Acao="Remarcar" then
         erro="Erro: O horário solicitado não dispõe dos "&TempoSol&" minutos requeridos para o agendamento deste procedimento."
     end if
 
+    StaDasa = ""
     if session("Banco")="clinic9021" then
         StaDasa = ",22"
     end if

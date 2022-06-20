@@ -5,6 +5,7 @@ Dim i
 Dia = weekday(date())
 URLAtual = request.servervariables("SERVER_NAME")
 PaginaAtual = request.QueryString()
+ForceServerRedir = request.QueryString("FORCE_SERVER_REDIR")="1"
 URLServerNormal = "app.feegow.com"
 URLServerReduzido = "app2.feegow.com"
 
@@ -15,7 +16,7 @@ sysUser = session("User")
 
 'Está na hora de trocar de servidor
 
-if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSemana) or (Dia=7 and hour(time())>=HoraNormalSabado) or (Dia=1)) then
+if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSemana) or (Dia=7 and hour(time())>=HoraNormalSabado) or (Dia=1) or ForceServerRedir) then
 
     'Se está no server errado
     if URLAtual=URLServerNormal and req("RFSS")="" and LicenseID&""="105" then

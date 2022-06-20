@@ -373,7 +373,11 @@ end if
 'end if
 
 if ref("Encaixe")<>"1" then
-    set ve4=db.execute("select Hora, HoraFinal from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11) and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
+    StaDasa = ""
+    if session("Banco")="clinic9021" then
+        StaDasa = ",22"
+    end if
+    set ve4=db.execute("select Hora, HoraFinal from agendamentos where sysActive=1 AND ProfissionalID = '"&rfProfissionalID&"' and ProfissionalID<>0 and Data = '"&mydate(rfData)&"' and staId not in (6,11"&StaDasa&") and not id = '"&ConsultaID&"' and Hora>time('"&hour(HoraSolIni)&":"&minute(HoraSolIni)&"') and HoraFinal<time('"&hour(HoraSolFin)&":"&minute(HoraSolFin)&"')")
     if not ve4.eof then
         Hora=cdate( hour(ve4("Hora"))&":"&minute(ve4("HoraFinal")) )
         HoraFinal=cdate( hour(ve4("HoraFinal"))&":"&minute(ve4("HoraFinal")) )

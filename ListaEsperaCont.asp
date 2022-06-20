@@ -2,6 +2,7 @@
 <!--#include file="Classes/Logs.asp"-->
 <%
 TelemedicinaAtiva = recursoAdicional(32) = 4
+Rechamar = true 'getConfig("ReChamarAtendimento")
 
 IF ref("Rechamar") = "1" THEN
     db.execute("UPDATE agendamentos SET Falado = NULL WHERE id = "&ref("id"))
@@ -119,7 +120,7 @@ if req("Atender")<>"" and intval(req("Atender"))&"" <> "0" then
 end if
 
 if lcase(session("Table"))<>"profissionais" or req("ProfissionalID")<>"" then
-	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"), a.HoraSta),'%H:%i'))/60 AS tempoEspera, conv.NomeConvenio, st.StaConsulta, proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento,p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano, proc.ProcedimentoTelemedicina "&_
+	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"), a.HoraSta),'%H:%i'))/60 AS tempoEspera, conv.NomeConvenio, st.StaConsulta, a.StaID ,proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento,p.NomeProfissional,p.EspecialidadeID, l.UnidadeID, tp.NomeTabela, ac.NomeCanal, a.ValorPlano, proc.ProcedimentoTelemedicina "&_
     ", ( "&_
     " SELECT count(ap.id) "&_
     " FROM agendamentosprocedimentos ap "&_
@@ -146,7 +147,7 @@ else
 
 	'sql = "select * from Consultas where Data = "&DataHoje&" and DrId = '"&session("DoutorID")&"' and not StaID = '3' and not StaID = '1' and not StaID = '6' and not StaID = '7' order by "&Ordem
     sqlTotal = "select count(*) total, l.UnidadeID from agendamentos a INNER JOIN pacientes pac ON pac.id=a.PacienteID LEFT JOIN tabelaparticular tp on tp.id=a.TabelaParticularID left join locais l on l.id=a.LocalID  where a.Data = '"&mydate(DataHoje)&"' and a.ProfissionalID in("&ProfissionalID&", 0) and a.StaID in(2, 5, 33, "&StatusExibir&") and (l.UnidadeID <> "&session("UnidadeID")&" and not isnull(l.UnidadeID))  group by(l.UnidadeID) and a.sysActive = 1 order by total desc limit 1 "
-	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"), a.HoraSta),'%H:%i'))/60 AS tempoEspera, conv.NomeConvenio, st.StaConsulta, proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano, proc.ProcedimentoTelemedicina "&_
+	sql = "select a.*,TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"), a.HoraSta),'%H:%i'))/60 AS tempoEspera, conv.NomeConvenio, st.StaConsulta,a.StaID , proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento, tp.NomeTabela, ac.NomeCanal,  a.ValorPlano, proc.ProcedimentoTelemedicina "&_
     ", ( "&_
     " SELECT count(ap.id) "&_
     " FROM agendamentosprocedimentos ap "&_
@@ -179,7 +180,7 @@ if lcase(session("table"))="profissionais" then
             if not ProfissionalTriagemSQL.eof then
                 if ProfissionalTriagemSQL("EspecialidadeTriagem")="1" then
                     ProfissionalTriagem="S"
-                    sql = "select age.*, TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"),age.HoraSta),'%H:%i'))/60 AS tempoEspera , conv.NomeConvenio, st.StaConsulta, proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina "&_
+                    sql = "select age.*, TIME_TO_SEC(TIME_FORMAT(TIMEDIFF(time("&mytime(dataHoraCliente)&"),age.HoraSta),'%H:%i'))/60 AS tempoEspera , conv.NomeConvenio, st.StaConsulta, age.StaID , proc.NomeProcedimento, pac.NomePaciente, pac.NomeSocial, pac.Nascimento, profage.NomeProfissional, tp.NomeTabela, ac.NomeCanal, proc.ProcedimentoTelemedicina "&_
                     ", ( "&_
                     " SELECT count(ap.id) "&_
                     " FROM agendamentosprocedimentos ap "&_
@@ -525,20 +526,17 @@ else
     <td nowrap="nowrap" class="text-center"><%=Valor%></td>
     <%if ExibirChamar=1 then%>
     <td>
-        <% if session("Banco")<>"clinic5760" then
-            Rechamar = false
-         %>
+        <% if session("Banco")<>"clinic5760" then %>
             <button class="btn btn-xs btn-warning" type="button" <%=disabPagto%> <%
 
             if isTelemedicina then
             %>disabled <%
             end if
 
-            if veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 and veseha("StaID")<>33 then
+            if (veseha("StaID")<>4 and veseha("StaID")<>101 and veseha("StaID")<>102 and veseha("StaID")<>33) or Rechamar  then
 
-                Rechamar = getConfig("ReChamarAtendimento")
                 IF Rechamar THEN
-                    %> onClick="rechamar(<%=veseha("id")%>)"<%
+                    %> onClick="rechamar(<%=veseha("id")%>,<%=veseha("StaID")%>, '<%=TipoAtendimentoTriagem%>')" <%
                 ELSE
                     response.write("disabled")
                 END IF
@@ -546,7 +544,7 @@ else
                 %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%
             end if
             %>><i class="far fa-bell"></i>
-             <% IF Rechamar THEN %>
+             <% IF Rechamar and false THEN %>
                 RECHAMAR
              <% ELSE %>
                 CHAMAR
@@ -726,6 +724,7 @@ else
 
         $.post("ListaEsperaCont.asp", {Rechamar:"1",id: arg}, function(data){
             showMessageDialog("Chamando paciente.", "success");
+            callChamadaTV(arg,true);
             window.location='?P=ListaEspera&Pers=1&Chamar='+arg;
          });
 

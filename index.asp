@@ -1,13 +1,12 @@
+<!--#include file="Classes/Environment.asp"-->
 <%
+AppEnv = getEnv("FC_APP_ENV", "local")
+%><!--#include file="Classes/ServerRedirect.asp"--><%
 if session("User")="" and req("P")<>"Login" and req("P")<>"Trial" and req("P")<>"Confirmacao" then
     QueryStringParameters = request.QueryString
 
 	response.Redirect("./?P=Login&qs="&Server.URLEncode(QueryStringParameters))
 end if
-%>
-<!--#include file="Classes/Environment.asp"-->
-<%
-AppEnv = getEnv("FC_APP_ENV", "local")
 WootricToken = getEnv("FC_WOOTRIC_TOKEN", "")
 currentVersionFolder = replace(replace(Request.ServerVariables("PATH_INFO"),"index.asp",""),"/","")
 

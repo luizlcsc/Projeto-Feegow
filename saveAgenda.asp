@@ -746,3 +746,4 @@ else
 	<%
 end if
 %>
+<!--#include file="disconnect.asp"-->

@@ -253,3 +253,4 @@ end if
         //loadAgenda( $("#Data").val(), $("#ProfissionalID").val(), 'no' );
     }, 10000);
 </script>
+<!--#include file = "disconnect.asp"-->

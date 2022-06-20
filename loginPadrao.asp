@@ -855,3 +855,4 @@ if ErroLogin then
     end if
 end if
 %>
+<!--#include file = "disconnect.asp"-->

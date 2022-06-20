@@ -2207,3 +2207,4 @@ $("#qfageemail1 .input-group-addon a").on("click", () => {
 
 <!--#include file="jQueryFunctions.asp"-->
 </script>
+<!--#include file="disconnect.asp"-->

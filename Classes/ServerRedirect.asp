@@ -5,7 +5,6 @@ Dim i
 Dia = weekday(date())
 URLAtual = request.servervariables("SERVER_NAME")
 PaginaAtual = request.QueryString()
-ForceServerRedir = request.QueryString("FORCE_SERVER_REDIR")="1"
 URLServerNormal = "app.feegow.com"
 URLServerReduzido = "app2.feegow.com"
 
@@ -16,7 +15,7 @@ sysUser = session("User")
 
 'Está na hora de trocar de servidor
 
-if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSemana) or (Dia=7 and hour(time())>=HoraNormalSabado) or (Dia=1) or ForceServerRedir) then
+if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSemana) or (Dia=7 and hour(time())>=HoraNormalSabado) or (Dia=1)) then
 
     'Se está no server errado
     if URLAtual=URLServerNormal and req("RFSS")="" and replace(session("Banco"),"clinic","")="105" then
@@ -59,7 +58,7 @@ if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSem
             ses.close
             set ses = nothing
             'Envia pra página correta
-            dbc.execute("DELETE FROM cliniccentral.temp_sessions WHERE sysUser="& sysUser)
+            dbc.execute("DELETE FROM cliniccentral.temp_sessions WHERE sysUser="& req("RFSS"))
 
             if RedirecionarPara<>"" then
                 response.redirect("./?"& RedirecionarPara)

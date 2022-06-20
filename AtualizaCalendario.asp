@@ -30,8 +30,12 @@ for dia=1 to 31
                          " AND (fimvigencia >='"&dataalvo&"' OR fimvigencia IS NULL)  "&_ 
                          " AND profissionalid = "&profisionalid&"  AND diasemana = if(DATE_FORMAT('"&dataalvo&"','%w')+1 = 8 , 1,DATE_FORMAT('"&dataalvo&"','%w')+1)"
 
+        StaDasa = ""
+        if session("Banco")="clinic9021" then
+            StaDasa = ",22"
+        end if
         sqlAgendamentos = "SELECT COUNT(id) from agendamentos a  "&_
-                          " WHERE a.Data= '"&dataalvo&"' and a.ProfissionalID='"&profisionalid&"' AND staid NOT IN (11,15) AND sysactive = 1 "
+                          " WHERE a.Data= '"&dataalvo&"' and a.ProfissionalID='"&profisionalid&"' AND staid NOT IN (11,15"&StaDasa&") AND sysactive = 1 "
 
         sql  =  " INSERT INTO agendaocupacoes (`Data`, ProfissionalID, EspecialidadeID, LocalID, HLivres, HAgendados, HBloqueados) "&_
                 " VALUES ('"&dataalvo&"',"&profisionalid&",NULL,"&localid&", "&_

@@ -65,7 +65,11 @@ EliminaNotificacao=0
 
 
                 <%
-                set age = db.execute("select ag.id, ag.rdValorPlano, ag.ValorPlano, ag.TipoCompromissoID, proc.NomeProcedimento from agendamentos ag left join procedimentos proc on proc.id=ag.TipoCompromissoID where ag.StaID not in (6,11) and  ag.PacienteID="&PacienteID&" and ag.Data=date(now())")
+                StaDasa = ""
+                if session("Banco")="clinic9021" then
+                    StaDasa = ",22"
+                end if
+                set age = db.execute("select ag.id, ag.rdValorPlano, ag.ValorPlano, ag.TipoCompromissoID, proc.NomeProcedimento from agendamentos ag left join procedimentos proc on proc.id=ag.TipoCompromissoID where ag.StaID not in (6,11"&StaDasa&") and  ag.PacienteID="&PacienteID&" and ag.Data=date(now())")
                 if not age.eof then
                     ProcedimentoAgendado = age("NomeProcedimento")
                     FormaPagtoAgendada = age("rdValorPlano")

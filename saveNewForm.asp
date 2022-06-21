@@ -274,7 +274,7 @@ if req("A")="P" then
     $(".btn-save-form").remove();
     $(".btn-print-form").remove();
     var timbrado = <% if ConfigPapelTimbradoFormulario then %>1<% else %>0<% end if %>
-
+    var urlPrint = "";
     <%
     recursoPermissaoUnimed = recursoAdicional(12)
     if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
@@ -282,12 +282,12 @@ if req("A")="P" then
     %>
 
     var urlForm = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
-    $("#iProntCont").html("<div class='row'><div class='col-md-10'><iframe width='100%' height='500' frameborder=0 id='impressaoAnamnese' name='impressaoAnamnese' src='"+urlForm+"'></iframe></div><div class='col-md-2'><label><input type='checkbox' id='Timbrado' name='Timbrado' class='ace' <% if ConfigPapelTimbradoFormulario then %> checked='checked' <% end if %>><span class='lbl'> Papel Timbrado</span></label><hr></div></div>");
+    $("#iProntCont").html("<div class='row'><div class='col-md-10'><iframe width='100%' height='500' frameborder=0 id='impressaoAnamnese' name='impressaoAnamnese' src='"+urlPrint+"'></iframe></div><div class='col-md-2'><label><input type='checkbox' id='Timbrado' name='Timbrado' class='ace' <% if ConfigPapelTimbradoFormulario then %> checked='checked' <% end if %>><span class='lbl'> Papel Timbrado</span></label><hr></div></div>");
 
     $( "#Timbrado" ).change(function() {
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-        url = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
-        $('#impressaoAnamnese').attr('src', url);
+        urlPrint = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
+        $('#impressaoAnamnese').attr('src', urlPrint);
     });
 
     <%

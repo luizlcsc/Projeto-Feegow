@@ -64,7 +64,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
 </div>
 <script type="text/javascript">
-
+    let urlPrint = "";
     <%
     if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
     'if   session("Banco")="clinic100000" or session("Banco")="clinic5760" or session("Banco")="clinic1526" or session("Banco")="clinic6865" or session("Banco")="clinic6273" or session("Banco")="clinic1526" or recursoPermissaoUnimed=4 then
@@ -72,9 +72,8 @@ recursoPermissaoUnimed = recursoAdicional(12)
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
 
-        url = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
-        console.log(url)
-        $("#ImpressaoAtestado").prop("data", url);
+        let urlPrint = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoAtestado").prop("data", urlPrint);
     <%
     end if
     if cbool(redirect) then
@@ -92,13 +91,13 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
     $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-        url = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoAtestado").prop("data", url);
+        urlPrint = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoAtestado").prop("data", urlPrint);
     });
     $("#Carimbo").on("change",()=>{
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoAtestado").prop("data", url);
+        urlPrint = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoAtestado").prop("data", urlPrint);
     });
 
 

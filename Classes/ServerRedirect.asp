@@ -58,7 +58,7 @@ if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSem
             ses.close
             set ses = nothing
             'Envia pra página correta
-            dbc.execute("DELETE FROM cliniccentral.temp_sessions WHERE sysUser="& sysUser)
+            dbc.execute("DELETE FROM cliniccentral.temp_sessions WHERE sysUser="& req("RFSS"))
 
             if RedirecionarPara<>"" then
                 response.redirect("./?"& RedirecionarPara)

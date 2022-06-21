@@ -152,6 +152,8 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
 </div>
 <script type="text/javascript">
+    let urlPrint = "";
+
     <%
         if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
         'if session("Banco")="clinic6273" or session("Banco")="clinic6006" or session("Banco")="clinic6256" or session("Banco")="clinic1526" or recursoPermissaoUnimed=4 then
@@ -177,22 +179,21 @@ recursoPermissaoUnimed = recursoAdicional(12)
     function visualizarImpressao(){
         var timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         var carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        var url = domain+"print/exam-request/<%=reg("id")%>?tk="+localStorage.getItem("tk")+"&assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo;
-        console.log(url)
-        $("#ImpressaoPedido").prop("data", url);
+        urlPrint = domain+"print/exam-request/<%=reg("id")%>?tk="+localStorage.getItem("tk")+"&assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo;
+        $("#ImpressaoPedido").prop("data", urlPrint);
     }
 
    $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/exam-request/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoPedido").prop("data", url);
+        urlPrint = domain+"print/exam-request/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPedido").prop("data", urlPrint);
     });
     $("#Carimbo").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/exam-request/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoPedido").prop("data", url);
+        urlPrint = domain+"print/exam-request/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPedido").prop("data", urlPrint);
     });
     $("#btnVisualizar").click(function(){
         visualizarImpressao();

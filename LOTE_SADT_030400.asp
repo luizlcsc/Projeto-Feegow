@@ -304,7 +304,7 @@ prefixo = right(prefixo, 20)
 						Data = mydatetiss(procs("Data"))
 						Quantidade = TirarAcento(procs("Quantidade"))
 						Fator = treatvaltiss(procs("Fator"))
-						ValorUnitario = procs("Fator")*procs("ValorUnitario")
+						ValorUnitario = procs("ValorUnitario")
 						ValorTotal = procs("ValorTotal")
 
 						set SerieSQL = db.execute("SELECT "&mydatenull(procs("Data"))&" as Data")

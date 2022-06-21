@@ -194,7 +194,7 @@ prefixo = right(prefixo, 20)
 						ViaID = TirarAcento(procs("ViaID"))
 						TecnicaID = TirarAcento(procs("TecnicaID"))
 						Fator = treatvaltiss(procs("Fator"))
-						ValorUnitario = treatvaltiss( procs("Fator")*procs("ValorUnitario") )
+						ValorUnitario = treatvaltiss( procs("ValorUnitario") )
 						ValorTotal = treatvaltiss(procs("ValorTotal"))
 
 						hash = hash & sequencialItem &  Data & HoraInicio & HoraFim & TabelaID & CodigoProcedimento & Descricao & Quantidade & ViaID & TecnicaID & Fator & ValorUnitario & ValorTotal
@@ -216,7 +216,16 @@ prefixo = right(prefixo, 20)
                             <ans:valorUnitario><%= ValorUnitario %></ans:valorUnitario>
                             <ans:valorTotal><%= ValorTotal %></ans:valorTotal>
                             <%
-							set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
+							
+                            ProfissionalExecutante = procs("ProfissionalID")
+                            AssociacaoProfissionalExecutante = procs("Associacao")
+
+                            'obtém o profissional de repasse, caso não encontre, listará todos
+                            set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where ProfissionalID="&ProfissionalExecutante&" AND Associacao="&AssociacaoProfissionalExecutante&" AND GuiaID="&guias("id"))
+                            if eq.eof then
+							    set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
+                            end if
+							
 							while not eq.eof
 								GrauParticipacao = TirarAcento(eq("GrauParticipacao"))
 								if GrauParticipacao="" or isnull(GrauParticipacao) then GrauParticipacao="00" end if

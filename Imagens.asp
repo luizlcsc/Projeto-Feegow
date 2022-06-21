@@ -96,7 +96,7 @@
         podever = true
         tipoCompartilhamento = 1
         if not autCareTeam(imagens("sysUser"), req("PacienteID")) then
-            permissao = VerificaProntuarioCompartilhamento(imagens("sysUser"),"Imagens", imagens("id"))
+            permissao = VerificaProntuarioCompartilhamento(imagens("sysUser"),"Imagens", imagens("id"), lcase(session("table")))
             if permissao <> "" then
                 permissaoSplit = split(permissao,"|")
                 podever = permissaoSplit(0)

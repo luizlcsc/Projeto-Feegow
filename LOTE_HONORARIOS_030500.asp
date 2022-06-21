@@ -228,9 +228,9 @@ prefixo = right(prefixo, 20)
                             AssociacaoProfissionalExecutante = procs("Associacao")
 
                             'obtém o profissional de repasse, caso não encontre, listará todos
-                            set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where ProfissionalID="&ProfissionalExecutante&" AND Associacao="&AssociacaoProfissionalExecutante&" AND GuiaID="&guias("id"))
+                            set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla = e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where ProfissionalID="&treatvalzero(ProfissionalExecutante)&" AND Associacao="&treatvalzero(AssociacaoProfissionalExecutante)&" AND GuiaID="&guias("id"))
                             if eq.eof then
-							    set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla like e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
+							    set eq = db.execute("select e.*, p.NomeProfissional, grau.Codigo as GrauParticipacao, est.codigo as UF from tissprofissionaishonorarios as e left join profissionais as p on p.id=e.ProfissionalID left join estados as est on est.sigla = e.UFConselho left join cliniccentral.tissgrauparticipacao as grau on grau.id=e.GrauParticipacaoID where GuiaID="&guias("id"))
                             end if
 
 							while not eq.eof

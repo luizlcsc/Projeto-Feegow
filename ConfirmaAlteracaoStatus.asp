@@ -91,7 +91,7 @@ end if
 
     while not StatusSQL.eof
     %>
-    <div class="col-md-4" >
+    <div class="col-md-4">
         <div class="inputGroup">
             <input class="status-radio" id="status-<%=StatusSQL("id")%>" <% if StatusID&""=StatusSQL("id")&"" then %>checked<%end if%> name="status-confirmacao" value="<%=StatusSQL("id")%>" type="radio"/>
             <label for="status-<%=StatusSQL("id")%>" class="radio"> <img src='assets/img/<%=StatusSQL("id")%>.png'/> <%=StatusSQL("StaConsulta")%></label>

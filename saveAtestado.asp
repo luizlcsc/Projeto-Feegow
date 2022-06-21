@@ -72,7 +72,7 @@ recursoPermissaoUnimed = recursoAdicional(12)
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
 
-        let urlPrint = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
+        urlPrint = domain+"print/medical-certificate/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&tk="+localStorage.getItem("tk");
         $("#ImpressaoAtestado").prop("data", urlPrint);
     <%
     end if

@@ -7,4 +7,4 @@ if TypeName(db)="Connection" then
  db.close
  Set db = nothing
 end if
-%> 
+%>

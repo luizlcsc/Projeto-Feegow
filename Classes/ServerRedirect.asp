@@ -8,7 +8,7 @@ PaginaAtual = request.QueryString()
 URLServerNormal = "app.feegow.com"
 URLServerReduzido = "app2.feegow.com"
 
-URLReduzidoRedirect= "https://"& URLServerReduzido &"/main"
+URLReduzidoRedirect= "https://"& URLServerReduzido &"/alfa"
 HoraNormalSemana = 18
 HoraNormalSabado = 13
 sysUser = session("User")

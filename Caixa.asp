@@ -311,3 +311,4 @@ function transferir(){
 }
 
 </script>
+<!--#include file="disconnect.asp"-->

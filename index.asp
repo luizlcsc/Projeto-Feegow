@@ -2922,3 +2922,4 @@ IF FC_FIREBASE_API_KEY<>"" THEN%>
   const analytics = getAnalytics(app);
 </script>
 <% END IF %>
+<!--#include file="disconnect.asp"-->

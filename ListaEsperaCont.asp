@@ -541,7 +541,7 @@ else
                     response.write("disabled")
                 END IF
             else
-                %> onClick="window.location='?P=ListaEspera&Pers=1&Chamar=<%=veseha("id")%>';"<%
+                %> onClick="chamar(<%=veseha("id")%>,<%=veseha("StaID")%>, '<%=TipoAtendimentoTriagem%>')" <%
             end if
             %>><i class="far fa-bell"></i>
              <% IF Rechamar and false THEN %>
@@ -570,7 +570,7 @@ else
     	 <%
         
         if (veseha("StaID")<>4 and veseha("StaID")<>5 and veseha("StaID")<>33) OR (disabPagto<>"") then
-            %> disabled<%
+            %> disabled <%
         else
             %> onClick="isValido(certificadoValido,() => window.location='?P=ListaEspera&Pers=1&Atender=<%=veseha("id")%>&PacienteID=<%=veseha("PacienteID")%>&isTelemedicina=<% if isTelemedicina then %>true<%end if%>')"<%
         end if
@@ -720,17 +720,6 @@ else
         return "há "+min+" minuto"+(min>1 ? "s" : "")
     }
 
-    function rechamar(arg){
-
-        $.post("ListaEsperaCont.asp", {Rechamar:"1",id: arg}, function(data){
-            showMessageDialog("Chamando paciente.", "success");
-            callChamadaTV(arg,true);
-            window.location='?P=ListaEspera&Pers=1&Chamar='+arg;
-         });
-
-
-    }
-
     function isValido(arg1,arg2){
 
          if(!AtendimentoSimultaneoValidado){
@@ -761,20 +750,5 @@ else
     </tbody>
   </table>
 <%end if%>
-<% if req("Chamar")<>"" and intval(req("Chamar"))&"" <> "0" and recursoAdicional(1)=4 then %>
-<script>
-fetch('https://socket.feegow.com/send',{
-         method:"POST",
-         headers: {
-                "Authorization":localStorage.getItem("tk"),
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-         },
-         body:JSON.stringify({
-                                 "service":"panel",
-                                 "data": {"call": "next"}
-                             })
-      })
-</script>
-<% end if %>
+
 <!--#include file = "disconnect.asp"-->

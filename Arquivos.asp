@@ -76,7 +76,7 @@ END IF
                     setOnclick= True
                 end if
 
-                if extensao="jpg" or extensao="jpeg" or extensao="bmp" or extensao="gif" or extensao="png" then
+                if extensao="jpg" or extensao="jpeg" or extensao="bmp" or extensao="gif" or extensao="png" or extensao="tiff" or extensao="tif" then
                     icone = fullFile
                 else
                     if extensao="/" then

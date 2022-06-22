@@ -281,7 +281,7 @@ if req("A")="P" then
     'if  session("Banco")="clinic3756" or session("Banco")="clinic6290" or session("Banco")="clinic100000" or session("Banco")="clinic6256" or session("Banco")="clinic6118" or session("Banco")="clinic105" or session("Banco")="clinic6239" then
     %>
 
-    var urlForm = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
+    var urlPrint = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
     $("#iProntCont").html("<div class='row'><div class='col-md-10'><iframe width='100%' height='500' frameborder=0 id='impressaoAnamnese' name='impressaoAnamnese' src='"+urlPrint+"'></iframe></div><div class='col-md-2'><label><input type='checkbox' id='Timbrado' name='Timbrado' class='ace' <% if ConfigPapelTimbradoFormulario then %> checked='checked' <% end if %>><span class='lbl'> Papel Timbrado</span></label><hr></div></div>");
 
     $( "#Timbrado" ).change(function() {

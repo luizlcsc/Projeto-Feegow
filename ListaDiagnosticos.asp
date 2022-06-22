@@ -46,7 +46,7 @@ else%>
             permissao = ""
 
             if session("User") <> pdiag("sysUser") then
-                permissao = VerificaProntuarioCompartilhamento(session("User"), "Diagnostico", pdiag("id"))
+                permissao = VerificaProntuarioCompartilhamento(session("User"), "Diagnostico", pdiag("id"), lcase(session("table")))
             end if
 
             if permissao <> "" then

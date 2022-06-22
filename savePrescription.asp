@@ -88,6 +88,8 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
 </div>
 <script type="text/javascript">
+    let urlPrint="";
+    
     <%
     if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
     'if  session("Banco")="clinic100000" or session("Banco")="clinic6867" or session("Banco")="clinic5567" or session("Banco")="clinic6173" or session("Banco")="clinic6321" or session("Banco")="clinic6865" or session("Banco")="clinic1526" or session("Banco")="clinic6006" or session("Banco")="clinic6256" or session("Banco")="clinic6273" or recursoPermissaoUnimed=4 then
@@ -102,10 +104,9 @@ recursoPermissaoUnimed = recursoAdicional(12)
         'event_label': "Botão 'Salvar' clicado.",
     });
 
-    url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+    urlPrint = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
 
-    console.log(url);
-    $("#ImpressaoPrescricao").prop("data", url);
+    $("#ImpressaoPrescricao").prop("data", urlPrint);
     <%
     else 
     %>
@@ -121,23 +122,23 @@ recursoPermissaoUnimed = recursoAdicional(12)
 
     $("#Timbrado").on("change",()=>{
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoPrescricao").prop("data", url);
+        urlPrint = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPrescricao").prop("data", urlPrint);
     });
     $("#Datar").on("change",()=>{
         imprimeData = $("#Datar").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoPrescricao").prop("data", url);
+        urlPrint = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPrescricao").prop("data", urlPrint);
     });
     $("#Carimbo").on("change",()=>{
         carimbo = $("#Carimbo").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoPrescricao").prop("data", url);
+        urlPrint = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPrescricao").prop("data", urlPrint);
     });
     $("#Termical").on("change",()=>{
         impressaoTermica = $("#Termical").prop("checked") ==true?1:0;
-        url = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
-        $("#ImpressaoPrescricao").prop("data", url);
+        urlPrint = domain+"print/prescription/<%=reg("id")%>?assinaturaDigital=1&showPapelTimbrado="+timbrado+"&showCarimbo="+carimbo+"&showImpressaoTermica="+impressaoTermica+"&showData="+imprimeData+"&tk="+localStorage.getItem("tk");
+        $("#ImpressaoPrescricao").prop("data", urlPrint);
     });
 
 </script>

@@ -18,7 +18,7 @@ sysUser = session("User")
 if AppEnv = "production" and ((Dia>=2 and Dia<=6 and hour(time())>=HoraNormalSemana) or (Dia=7 and hour(time())>=HoraNormalSabado) or (Dia=1)) then
 
     'Se está no server errado
-    if URLAtual=URLServerNormal and req("RFSS")="" and replace(session("Banco"),"clinic","")="105" then
+    if URLAtual=URLServerNormal and req("RFSS")="" and replace(session("Banco"),"clinic","")&""="105" then
         %><!--#include file="./../connectCentral.asp"--><%
         'Apaga lixos anteriores
         dbc.execute("DELETE FROM cliniccentral.temp_sessions WHERE sysUser="& sysUser)

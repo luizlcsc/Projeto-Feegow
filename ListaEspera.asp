@@ -403,13 +403,27 @@ function CopyToClipboard (text) {
     }
 	}
 }
- function rechamar(arg, StaID, TipoAtendimentoTriagem){
-      
-      $.post("ListaEsperaCont.asp", {Rechamar:"1",id: arg,StaID:StaID}, function(data){
-          showMessageDialog("Chamando paciente.", "success");
-          // chamarPaciente(arg, StaID, TipoAtendimentoTriagem);
-          callChamadaTV(arg,false);
-          // window.location='?P=ListaEspera&Pers=1&Chamar='+arg+'&StaID='+StaID;
-        });
+
+ async function rechamar(arg, StaID, TipoAtendimentoTriagem){
+    await fetch('ListaEsperaCont.asp', {
+                      method: 'POST',
+                      headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({Rechamar:"1", id: arg})
+                  });
+
+      showMessageDialog("Chamando paciente.", "success");
+      await callChamadaTV(arg,false);
+      window.location='?P=ListaEspera&Pers=1&Chamar='+arg;
   }
+
+  async function chamar(arg, StaID, TipoAtendimentoTriagem){
+
+    showMessageDialog("Chamando paciente.", "success");
+    await callChamadaTV(arg,false);
+    window.location='?P=ListaEspera&Pers=1&Chamar='+arg;
+  }
+
 </script>

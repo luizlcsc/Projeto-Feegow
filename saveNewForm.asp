@@ -274,20 +274,20 @@ if req("A")="P" then
     $(".btn-save-form").remove();
     $(".btn-print-form").remove();
     var timbrado = <% if ConfigPapelTimbradoFormulario then %>1<% else %>0<% end if %>
-
+    var urlPrint = "";
     <%
     recursoPermissaoUnimed = recursoAdicional(12)
     if getConfig("UtilizarFormatoImpressao")=1 or recursoPermissaoUnimed=4  then
     'if  session("Banco")="clinic3756" or session("Banco")="clinic6290" or session("Banco")="clinic100000" or session("Banco")="clinic6256" or session("Banco")="clinic6118" or session("Banco")="clinic105" or session("Banco")="clinic6239" then
     %>
 
-    var urlForm = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
-    $("#iProntCont").html("<div class='row'><div class='col-md-10'><iframe width='100%' height='500' frameborder=0 id='impressaoAnamnese' name='impressaoAnamnese' src='"+urlForm+"'></iframe></div><div class='col-md-2'><label><input type='checkbox' id='Timbrado' name='Timbrado' class='ace' <% if ConfigPapelTimbradoFormulario then %> checked='checked' <% end if %>><span class='lbl'> Papel Timbrado</span></label><hr></div></div>");
+    var urlPrint = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
+    $("#iProntCont").html("<div class='row'><div class='col-md-10'><iframe width='100%' height='500' frameborder=0 id='impressaoAnamnese' name='impressaoAnamnese' src='"+urlPrint+"'></iframe></div><div class='col-md-2'><label><input type='checkbox' id='Timbrado' name='Timbrado' class='ace' <% if ConfigPapelTimbradoFormulario then %> checked='checked' <% end if %>><span class='lbl'> Papel Timbrado</span></label><hr></div></div>");
 
     $( "#Timbrado" ).change(function() {
         timbrado = $("#Timbrado").prop("checked") ==true?1:0;
-        url = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
-        $('#impressaoAnamnese').attr('src', url);
+        urlPrint = domain+"print/custom-form/<%=I %>"+"?tk="+localStorage.getItem("tk")+"&formId=<%=ModeloID %>&showPapelTimbrado="+timbrado;
+        $('#impressaoAnamnese').attr('src', urlPrint);
     });
 
     <%

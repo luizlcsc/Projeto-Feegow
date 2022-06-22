@@ -28,7 +28,7 @@ end function
 
 if agendamentoChamada <> "" then 
     if chamar = "" then
-        db.execute("call stp_chamadasTV('agendamentos', "&agendamentoChamada&")")
+        'db.execute("call stp_chamadasTV('agendamentos', "&agendamentoChamada&")")
     end if 
     
     aglocalid = getLocalIds(agendamentoChamada,chamadanomelocal)

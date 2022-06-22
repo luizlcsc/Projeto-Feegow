@@ -1,5 +1,4 @@
 ﻿<!--#include file="connect.asp"-->
-<!--#include file="Classes/Environment.asp"-->
 <script type="text/javascript">
     $(".crumb-active a").html("Bem-vindo ao Feegow Clinic");
     $(".crumb-link").removeClass("hidden");

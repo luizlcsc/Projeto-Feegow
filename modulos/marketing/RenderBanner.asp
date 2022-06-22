@@ -16,7 +16,7 @@ if not BannerHomeSQL.eof then
     <%
 else
     %>
-    <div id="banner-home" class="image-placeholder" class="panel panel-tile text-center br-a br-light mt10" style="border-radius: 18px; cursor: pointer; min-height: 310px;background-color: #ddddddbf;margin-bottom: 15px;">
+    <div id="banner-home" class="image-placeholder" class="panel panel-tile text-center br-a br-light mt10" style="border-radius: 18px; cursor: pointer; min-height: 310px;background-color: #ddddddbf;margin-bottom: 15px;margin-top: 15px;">
 
     </div>
     <%

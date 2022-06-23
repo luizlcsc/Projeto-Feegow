@@ -55,6 +55,8 @@ else
   set GuiaSQL = db.execute("SELECT id FROM tissguiasadt WHERE 1"&whereGuias)
 end if
 
+MaximosProcedimentosPorPagina = 10
+
 while not GuiaSQL.eof 
   GuiaID = GuiaSQL("id")
   
@@ -62,6 +64,8 @@ while not GuiaSQL.eof
       GuiaID = 0
       db_execute("update pedidossadt set ConvenioID="& treatvalzero(req("ConvenioIDPedidoSADT")) &", ProfissionalID="&treatvalzero(req("ProfissionalID"))&", Data="&mydatenull(req("DataSolicitacao"))&", IndicacaoClinica='"& req("IndicacaoClinicaPedidoSADT") &"', Observacoes='"& req("ObservacoesPedidoSADT") &"', ProfissionalExecutante='"& req("ProfissionalExecutanteIDPedidoSADT") &"' where id="& req("PedidoSADTID"))
       set procs = db.execute("select pps.*, ps.ConvenioID, pac.ConvenioID1, pac.ConvenioID2, pac.ConvenioID3, ps.PacienteID, ps.ProfissionalID, ps.IndicacaoClinica, ps.Observacoes, pac.NomePaciente, pac.Matricula1, pac.Matricula2, pac.Matricula3, pac.Validade1, ps.`Data` from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id LEFT JOIN pacientes pac ON pac.id=ps.PacienteID where pps.PedidoID="& req("PedidoSADTID"))
+      set countProcs = db.execute("select count(pps.id)qtd, CEILING(count(pps.id)/"&MaximosProcedimentosPorPagina&") paginas from pedidossadtprocedimentos pps LEFT JOIN pedidossadt ps ON pps.PedidoID=ps.id where pps.PedidoID="& req("PedidoSADTID"))
+
       if not procs.EOF then
         if procs("ConvenioID") = procs("ConvenioID1") then
           NumeroCarteira = procs("Matricula1")
@@ -94,7 +98,14 @@ while not GuiaSQL.eof
       end if
   else
       set procs = db.execute("select * from tissprocedimentossadt where GuiaID="&GuiaID&" order by id")
+      set countProcs = db.execute("select count(id)qtd, CEILING(count(id)/"&MaximosProcedimentosPorPagina&") paginas from tissprocedimentossadt where GuiaID="&GuiaID&" order by id")
   end if
+  
+  TotalPaginas=1
+  if not countProcs.eof then
+    TotalPaginas = ccur(countProcs("paginas"))
+  end if
+
   'on error resume next
   set conf = db.execute("select * from sys_config")
   OmitirValorGuiaConfig = conf("OmitirValorGuia")
@@ -246,6 +257,12 @@ while not GuiaSQL.eof
     if isnull(GasesMedicinais) then GasesMedicinais=0 end if
     TotalGeral=guia("TotalGeral")
 end if
+
+
+  for p=1 to TotalPaginas
+    ProcedimentoOffset=(p-1)*MaximosProcedimentosPorPagina
+    ProcedimentoLimit=MaximosProcedimentosPorPagina
+
   %>
 
 
@@ -465,7 +482,10 @@ end if
         </tr>
       <%
       c=0
-      
+      if TipoExibicao="Pedido" then
+        set procs = db.execute("select pps.* from pedidossadtprocedimentos pps where pps.PedidoID="& req("PedidoSADTID")&" LIMIT "&ProcedimentoOffset&","&ProcedimentoLimit)
+      end if
+
       while not procs.eof
         c=c+1
         %>
@@ -580,7 +600,7 @@ end if
                 </tr>
       <%
       c=0
-      set procs = db.execute("select * from tissprocedimentossadt where GuiaID="& treatvalzero(GuiaID) &" order by id")
+      set procs = db.execute("select * from tissprocedimentossadt where GuiaID="& treatvalzero(GuiaID) &" order by id LIMIT "&ProcedimentoOffset&","&ProcedimentoLimit)
       while not procs.eof
         if procs("ProfissionalID") <> 0 then
         c=c+1
@@ -871,6 +891,7 @@ end if
     </table>
   </div>
 <%
+  next
   if isnull(TotalGeral) then TotalGeral=0 end if
   if isnumeric(LoteID) then
     if AutoPrintAnexa&""="1" then

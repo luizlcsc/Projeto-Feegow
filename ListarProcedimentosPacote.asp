@@ -19,7 +19,7 @@ if ConvenioID&""<>"" then
 end if
 
 
-ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario + ii.Acrescimo - ii.Desconto) ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+ppSQL = "SELECT i.TabelaID, proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario + ii.Acrescimo - ii.Desconto) ValorProcedimento, pa.NomePacote FROM pacientes p "&_
          "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
          "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
          "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -29,7 +29,7 @@ ppSQL = "SELECT proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario
          "i.sysActive <> -1 AND p.id ="&PacienteID&" and ii.Executado != 'S' and ii.Executado!='C' and ii.PacoteID is not null and ii.Tipo = 'S' "&SomenteConvenios&""
 
 if getConfig("ProcedimentosContratadosParaSelecao") = 1 then
-    ppSQL = "SELECT i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario + ii.Acrescimo - ii.Desconto) ValorProcedimento, pa.NomePacote FROM pacientes p "&_
+    ppSQL = "SELECT i.TabelaID, i.ProfissionalSolicitante, ii.id, COALESCE(tempproc.tempo, proc.TempoProcedimento) TempoProcedimento, proc.id ProcedimentoID, proc.NomeProcedimento, (ii.ValorUnitario + ii.Acrescimo - ii.Desconto) ValorProcedimento, pa.NomePacote FROM pacientes p "&_
              "INNER JOIN sys_financialinvoices i ON p.id = i.AccountID and i.AssociationAccountID = 3 "&_
              "INNER JOIN itensinvoice ii ON ii.InvoiceID = i.id "&_
              "INNER JOIN procedimentos proc ON proc.id = ii.ItemID "&_
@@ -78,6 +78,7 @@ if not PacProc.eof then
                                             data-solicitante-id="<%=PacProc("ProfissionalSolicitante")%>"
                                             data-solicitante="<%=NomeSolicitante%>"
                                             data-tempo="<%=PacProc("TempoProcedimento")%>"
+                                            data-tabela-id = "<%=PacProc("TabelaID")%>"
                                             class="procedimento-pacote"
                                             name="procedimento-pacote" <%if i=0 then%>checked<%end if%>>
                                         </td>
@@ -134,6 +135,7 @@ if(count=="0"){
             var ProcPreco = $procedimento.data("valor");
             var TempoProcedimento = $procedimento.data("tempo");
             var SolicitanteID = $procedimento.data("solicitante-id");
+            var idTabela = $procedimento.data("tabela-id");
             var Solicitante = $procedimento.data("solicitante");
             var ProcedimentoID = $procedimento.data("id");
             var count = "";
@@ -147,10 +149,10 @@ if(count=="0"){
 
             if(count == 0){
                 count= ''
-                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i,idPacote);
+                procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i, idPacote, idTabela);
             }else{
                 adicionarProcedimentos(count,(retorno)=>{
-                    procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i,idPacote);
+                    procedimentoSelect2(ProcedimentoID, NomeProcedimento, TempoProcedimento, ProcPreco, count, i, idPacote, idTabela);
                 });
             }
 
@@ -160,10 +162,13 @@ if(count=="0"){
        closeComponentsModal();
    }
 
-   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i,idPacote=false) {
+   function procedimentoSelect2(procedimentoId, nomeProcedimento, tempo, preco, count, i ,idPacote=false, idTabela=false) {
 
         if(idPacote){
             $("#ProcedimentoID"+count+"").parent().parent().attr('data-pacote',idPacote)
+        }
+        if(idTabela){
+            $("#ProcedimentoID"+count+"").parent().parent().attr('data-tabela-id',idTabela)
         }
         $("#ProcedimentoID"+count+" option").text(nomeProcedimento);
         $("#ProcedimentoID"+count+" option").val(procedimentoId).attr('selected');
@@ -179,6 +184,10 @@ if(count=="0"){
             
             if(idPacote){
                 $("#ProcedimentoID"+count+"").change();
+            }
+            if(idTabela){
+                $('#ageTabela option[value="'+idTabela+'"]').attr('selected',true);
+                $('#ageTabela').val(idTabela);
             }
         },50*i+1);
 

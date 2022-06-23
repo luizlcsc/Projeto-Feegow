@@ -6,6 +6,15 @@
 moduloLaboratorial = recursoAdicional(24)
 ultimaguia = ""
 
+if req("P") = "divHistorico" then 
+    set rs = db.execute("select NomePaciente, sysActive from Pacientes where ID=" & PacienteID & "")
+    if not rs.eof then
+        varAtivo = rs("sysActive")
+        varnomePaciente = rs("NomePaciente")
+    end if  
+    response.write(header("pacientes", varnomePaciente , varAtivo, req("I"), "1", "Follow"))
+end if
+
 if ProcedimentoAgendado<>"" then
 %>
     <div id="NotificacaoLancto" class="alert alert-warning text-center">

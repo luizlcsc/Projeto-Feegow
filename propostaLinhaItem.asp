@@ -57,7 +57,7 @@ end if
                     </div>
                 </div>
                 <% IF moduloCallCenter or ProfissionalExecutanteID <> "" THEN%>
-                    <div class="profi<%=id%> openAllProfissional" >
+                    <div class="profi<%=id%> openAllProfissional" <% IF ProfissionalExecutanteID = "" THEN%> style="display:none" <% END IF %>>
                         <% ExecucaoRequired = " required empty " %>
                         <label class='mt5'>Profissional Executante</label>
                         <div>

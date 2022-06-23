@@ -260,6 +260,40 @@ if Acao="" then
 		</tfoot>
 	</table>
 
+<script>
+
+function agendar(ItemID, LinhaID) {
+        
+        var ProfissionalID = document.getElementById("ProfissionalLinhaID"+LinhaID).value;
+        var PacienteID     = document.getElementById("PacienteID").value;
+        if (ItemID && ProfissionalID && PacienteID) {
+            ProfissionalID = ProfissionalID.replace("5_", '');
+            // SALVA PROPOSTA
+            addEventListener("click",propostaSave(true));
+            // REDIRECIONA PARA AGENDA
+            setTimeout(function () {
+            window.location.href = `?P=Agenda-1&Pers=1&ProfissionalID=${ProfissionalID}&ProcedimentoID=${ItemID}&PacienteID=${PacienteID}`; 
+            }, 2000);
+        }else{
+            var msg = "";
+             if (!ProfissionalID) {
+                var msg = "Profissional";
+                
+            }
+             if (!PacienteID) {
+                msg = empty(msg) ? "Paciente" : msg+" e Paciente"
+             }
+
+            msg = "Preencha o(s) campo(s) \n" + msg + ".";
+            // showMessageDialog(msg, 'danger');
+
+            showMessageDialog(msg, 'warning');
+            
+        }
+        
+    }
+
+</script>
 <%
 elseif Acao="I" then
 
@@ -370,40 +404,6 @@ elseif Acao="X" then
 	<%
 end if
 %>
-<script>
-
-function agendar(ItemID, LinhaID) {
-        
-        var ProfissionalID = document.getElementById("ProfissionalLinhaID"+LinhaID).value;
-        var PacienteID     = document.getElementById("PacienteID").value;
-        if (ItemID && ProfissionalID && PacienteID) {
-            ProfissionalID = ProfissionalID.replace("5_", '');
-            // SALVA PROPOSTA
-            addEventListener("click",propostaSave(true));
-            // REDIRECIONA PARA AGENDA
-            setTimeout(function () {
-            window.location.href = `?P=Agenda-1&Pers=1&ProfissionalID=${ProfissionalID}&ProcedimentoID=${ItemID}&PacienteID=${PacienteID}`; 
-            }, 2000);
-        }else{
-            var msg = "";
-             if (!ProfissionalID) {
-                var msg = "Profissional";
-                
-            }
-             if (!PacienteID) {
-                msg = empty(msg) ? "Paciente" : msg+" e Paciente"
-             }
-
-            msg = "Preencha o(s) campo(s) \n" + msg + ".";
-            // showMessageDialog(msg, 'danger');
-
-            showMessageDialog(msg, 'warning');
-            
-        }
-        
-    }
-
-</script>
 <!--#include file="disconnect.asp"-->
 
 

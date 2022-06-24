@@ -340,7 +340,7 @@ end if
     <%
     set q = db.execute(sql)
 
-    if q.eof and sqlAlternativo<>"" then
+    if q.eof and sqlAlternativo<>"" and false then
         IF PorteClinica <= 3 then
             set q = db.execute(sqlAlternativo)
         END IF

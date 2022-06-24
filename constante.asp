@@ -10,16 +10,17 @@ else
     %>
     $("#disc").addClass('hidden');
     <!--#include file="connect.asp"-->
-    <!--#include file="connectCentral.asp"-->
     <!--#include file="Classes/StringFormat.asp"-->
 
     <%
 
 
-    if (session("OtherCurrencies")="phone" or recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 ) and session("Banco")<>"clinic5459" then
+    if (session("OtherCurrencies")="phone") and session("Banco")<>"clinic5459" then
+        if recursoAdicional(9) = 4 or recursoAdicional(21) = 4 or recursoAdicional(4) = 4 then
 	    %>
 	    <!--#include file="callsSoft.asp"-->
 	    <%
+        end if
     end if
     set buscaAtu = db.execute("select * from sys_users where id="&session("User"))
     if not buscaAtu.eof then
@@ -303,6 +304,9 @@ else
 
 						    'Notificacoes = Notificacoes&"<li class=\""dropdown-header\""><img src=\"""
 						    'Notificacoes = Notificacoes&"\"" width=\""44\"" class=\""img-circle\"">Paciente: <strong id=\""lancto"&atend("id")&"\"">"&atend("NomePaciente")&"</strong> <br /><small>Por "&nameInTable(atend("sysUser"))&"</small><br /><button type=\""button\"" class=\""btn btn-xs btn-success btn-block\"" onclick=\""location.href='?P=Pacientes&Pers=1&I="&atend("PacienteID")&"&A="&atend("id")&"&Ct=1';\""><i class=\""far fa-money\""></i> FECHAR CONTA</button></li>"
+                                
+                            atend.close
+                            set atend=nothing
 					    end if
 				    end if
 			    next
@@ -336,6 +340,8 @@ else
 							    });
 						    }
 						    <%
+                            atend.close
+                            set atend=nothing
 					    end if
 				    end if
 			    next
@@ -421,7 +427,8 @@ else
     'db_execute("update cliniccentral.licencasusuarios set URL='"&Request.ServerVariables("URL")&"', UltRef=NOW() where id="&session("User"))
 
 
-    if right(minute(time()), 1)="5" or right(minute(time()), 1)="0" then
+    'desativa processo de logoff do user logado
+    if right(minute(time()), 1)="5" or right(minute(time()), 1)="0" and false then
 
         if session("Admin")=1 then
             set LicencaSQL = dbc.execute("SELECT Status FROM cliniccentral.licencas WHERE id="&replace(session("Banco"), "clinic", "")&" AND Status='B'")
@@ -447,13 +454,6 @@ else
     <!--#include file="disconnect.asp"-->
 
 <%
-end if
-
-if 0 then
-    on error resume next
-    %>
-    <!--#include file="atualizabanco2.asp"-->
-    <%
 end if
 %>
 $("#timeInat").val(0);

@@ -12,7 +12,8 @@ Sexo = ref("S")
 sqlCPF = ""
 
 if CPF<>"" then
-    sqlCPF = " OR ( REPLACE(REPLACE(CPF, '.', ''),'-','') ='"&CPF&"') "
+    'sqlCPF = " OR ( REPLACE(REPLACE(CPF, '.', ''),'-','') ='"&CPF&"') "
+    sqlCPF = " OR ( CPF ='"&CPF&"') "
 end if
 if Nascimento<>"" and isdate(Nascimento) then
     sqlNascimento = " AND (Nascimento="& myDateNull(Nascimento) &" OR isnull(Nascimento)) "

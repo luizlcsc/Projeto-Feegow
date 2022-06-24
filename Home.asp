@@ -59,7 +59,6 @@ end if
 <!--#include file="connectCentral.asp"-->
 <!--#include file="modal.asp"-->
 <!--#include file="FuncoesAntigas.asp"-->
-<!--#include file="atualizabanco2.asp"-->
 <%
 
 if req("urlRedir")<>"" then

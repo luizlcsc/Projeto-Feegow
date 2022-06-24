@@ -29,7 +29,7 @@ $("#txtPesquisar").val(pesquiArgs);
 <%
 'set u = db.execute("select id from sys_users where id<>"&session("User")&" and Permissoes like '%chatI%'")
 'set u = db.execute("select p.NomeProfissional Nome, p.Foto, p.id from profissionais p where p.sysActive=1 UNION ALL select f.NomeFuncionario, f.Foto, f.id from funcionarios f where f.sysActive=1 ORDER BY Nome")
-set u = dd("select Nome, Foto, t.id, t.Table, UltRef, chat.DataHora FROM ("&_
+set u = db.execute("select Nome, Foto, t.id, t.Table, UltRef, chat.DataHora FROM ("&_
                    " SELECT p.NomeProfissional Nome, p.Foto, sp.id, sp.`Table`, sp.UltRef from profissionais p JOIN sys_users sp on sp.idInTable=p.id and sp.`Table` = 'profissionais' where p.sysActive=1 and p.Ativo='on' and not isnull(sp.`id`)  "&_
                    " UNION ALL select f.NomeFuncionario, f.Foto, sf.id, sf.`Table`, sf.UltRef from funcionarios f JOIN sys_users sf on sf.idInTable=f.id and sf.`Table` = 'funcionarios' where f.sysActive=1 and not isnull(sf.`id`) and f.Ativo='on'"&_
                    " )t"&_

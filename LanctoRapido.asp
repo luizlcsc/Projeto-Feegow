@@ -28,9 +28,10 @@ if Tipo="AReceber" then
        set rs = db.execute("select tabela from pacientes where id=" & PacienteID)
        if not rs.eof then
             TabelaID = rs("tabela")
+            rs.close
        end if      
     end if 
-    rs.close
+    
     set rs = nothing
 
 	UnidadeIDAgendada=""

@@ -3,7 +3,7 @@
 <!--#include file="Classes/Connection.asp"-->
 <!--#include file="Classes/Senhas.asp"-->
 <!--#include file="connectCentral.asp"-->
-<!--#include file="Classes/eventEmitter.asp"-->s
+<!--#include file="Classes/eventEmitter.asp"-->
 <%
 
 idInTable = ref("I")

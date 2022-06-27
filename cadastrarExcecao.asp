@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <!--#include file="Classes/Logs.asp"-->
 <!--#include file="sqls/sqlUtils.asp"-->
+<!--#include file="Classes/eventEmitter.asp"-->
 <%
 ProfissionalID = req("ProfissionalID")
 Unidades = session("Unidades")
@@ -16,6 +17,7 @@ if Operacao="Remover" then
     showMessageDialog("Grade de exceção removida com sucesso.", "warning");
     ajxContent('Horarios-1&T=Profissionais', <%=ProfissionalID%>, 1, 'divHorarios');
     <%
+    call eventEmitterID(128, sqlGrade, ProfissionalID)
     Response.end
 elseif Operacao="Salvar" then
 
@@ -49,6 +51,8 @@ elseif Operacao="Salvar" then
             db_execute(sqlInsert)
 
             call gravaLogs(sqlInsert, "AUTO", "", "ProfissionalID")
+            call eventEmitterID(129, sqlInsert, ProfissionalID)
+            
             %>
 
             closeComponentsModal();
@@ -61,7 +65,7 @@ elseif Operacao="Salvar" then
             showMessageDialog("<%=erro%>");
             <%
         end if
-
+    
     Response.end
 else
 %>

@@ -23,6 +23,16 @@ if Tipo="AReceber" then
 	db_execute("delete from tempinvoice where InvoiceID="&InvoiceID)
 	'Splita os Lancto e adiciona nos itens invoice de acordo com as informações
 	spl = split(ref("Lancto"), ", ")
+    if ubound(spl) = -1 then
+       'Busca a tabela cadastrada no cadastro do Paciente para ser usada na tela de conta 
+       set rs = db.execute("select tabela from pacientes where id=" & PacienteID)
+       if not rs.eof then
+            TabelaID = rs("tabela")
+            rs.close
+            set rs = nothing
+       end if      
+    end if     
+
 	UnidadeIDAgendada=""
 	for i=0 to ubound(spl)
         if spl(i)<>"" then

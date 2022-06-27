@@ -29,10 +29,9 @@ if Tipo="AReceber" then
        if not rs.eof then
             TabelaID = rs("tabela")
             rs.close
+            set rs = nothing
        end if      
-    end if 
-    
-    set rs = nothing
+    end if     
 
 	UnidadeIDAgendada=""
 	for i=0 to ubound(spl)

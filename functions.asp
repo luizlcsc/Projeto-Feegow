@@ -158,7 +158,17 @@ function dd(variable)
     variableType = TypeName(variable)
 
 
-    if variableType="Variant()" then
+    if variableType="Dictionary" then
+        description="{"
+        for each x in variable.keys
+            i = i+1
+            description = description&""""&trim(x)&""":"""&trim(variable.Item(x))&""""
+            IF i < variable.Count THEN
+                description = description&","
+            END IF
+        next
+        description=description&"}"
+    elseif variableType="Variant()" then
         description = description & "["
         itemsInArray=0
 

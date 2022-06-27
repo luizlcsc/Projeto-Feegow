@@ -1,5 +1,4 @@
 <%
-    on error resume next
 
 ' exemplo
 ' EndPoint = "http://localhost:8000/api/quickfield2/test"
@@ -33,6 +32,7 @@ Function SendSync(EndPoint, Content, Method, Token)
     Set xmlhttp = Nothing
 End Function
 Function SendAsync(EndPoint, Content, Method, Token)
+    on error resume next
     Set xmlHttp = Server.Createobject("Microsoft.XMLHTTP")
     xmlhttp.Open Method, EndPoint, true
 
@@ -44,5 +44,7 @@ Function SendAsync(EndPoint, Content, Method, Token)
     xmlHttp.setRequestHeader "Accept","application/json"
     ' response.write Content
     xmlhttp.Send Content&" "
+    
+    On Error Goto 0
 End Function
 %>

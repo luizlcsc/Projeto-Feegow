@@ -316,7 +316,7 @@ if erro="" then
     		'response.Write(sql&vbcrlf)
 
             db.execute(sql)
-            call eventEmitter(3,sql)
+            call eventEmitter(106,sql)
     		call gravaLogs(sql, "AUTO", "Agendamento criado", "")
 
             set pultCon=db.execute("select id, ProfissionalID from agendamentos order by id desc limit 1")
@@ -404,7 +404,7 @@ if erro="" then
             end if
             call gravaLogs(sqlUpdateAgendamento, "AUTO", DescricaoAlteracao, "")
             db.execute(sqlUpdateAgendamento)
-            call eventEmitter(3,sqlUpdateAgendamento)
+            call eventEmitter(107,sqlUpdateAgendamento)
 
             call statusPagto(ConsultaID, rfPaciente, rfData, rfrdValorPlano, rfValorPlano, rfStaID, rfProcedimento, rfProfissionalID)
 

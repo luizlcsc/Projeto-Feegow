@@ -3,7 +3,9 @@
 <!--#include file="Environment.asp"-->
 <%
 Function eventEmitter(tipo,sql)
-    call eventEmitterID(tipo, sql, "")
+    if isBetaUser() then
+        call eventEmitterID(tipo, sql, "")
+    end if
 end function
 Function eventEmitterID(tipo,sql, lastID)
     set payload = toDictionary(sql)

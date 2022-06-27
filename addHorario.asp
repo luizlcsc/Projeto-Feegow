@@ -1,6 +1,7 @@
 ﻿<!--#include file="connect.asp"-->
 <!--#include file="sqls/sqlUtils.asp"-->
 <!--#include file="Classes/Logs.asp"-->
+<!--#include file="Classes/eventEmitter.asp"-->
 <%
 Dia = req("Dia")
 ProfissionalID = req("ProfissionalID")
@@ -127,11 +128,13 @@ if ref("HoraDe")<>"" and ref("HoraA")<>"" and ref("Intervalo")<>"" then
               sqlGrade = "insert into assfixalocalxprofissional (DiaSemana, HoraDe, HoraA, ProfissionalID, LocalID, Intervalo, Compartilhada, Especialidades, Procedimentos, Convenios, Programas, Profissionais, TipoGrade, Horarios, MaximoRetornos, MaximoEncaixes, InicioVigencia, FimVigencia, FrequenciaSemanas, Mensagem, Cor, ValorHonorario, MarcarOrdem, MarcarEmOrdemHoraA, TipoLimiteHorario, GradeEncaixe, MarcarOrdemLimit) values ("&diaSemanaArray(i)&", "&mytime(ref("HoraDe"))&", "&mytime(ref("HoraA"))&", "&req("ProfissionalID")&", "&treatvalzero(ref("LocalID"))&", "&treatvalnull(ref("Intervalo"))&", '"&ref("Compartilhada")&"', '"&ref("Especialidades")&"', '"&ref("Procedimentos")&"', '"&ref("Convenios")&"', '"&ref("Programas")&"', '"&ref("Profissionais")&"', "& treatvalzero(ref("TipoGrade")) &", '"& ref("Horarios") &"', "& treatvalnull(ref("MaximoRetornos")) &", "& treatvalnull(ref("MaximoEncaixes")) &", "& mydatenull(ref("InicioVigencia")) &", "& mydatenull(ref("FimVigencia")) &", "&treatvalzero(ref("FrequenciaSemanas"))&", '"& ref("Mensagem") &"', '"& ref("Cor") &"', "& treatvalnull(ref("ValorHonorario")) &", '"& ref("MarcarOrdem") &"', '"& ref("MarcarEmOrdemHoraA") &"', '"& ref("TipoLimiteHorario") &"', '"& ref("GradeEncaixe)") &"', '"& ref("MarcarOrdemLimit)") &"')"
                call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
                db_execute(sqlGrade)
+               call eventEmitterID(126, sqlGrade, req("ProfissionalID"))
             Next
         else
             sqlGrade = "update assfixalocalxprofissional set HoraDe="&mytime(ref("HoraDe"))&", HoraA="&mytime(ref("HoraA"))&", LocalID="&treatvalzero(ref("LocalID"))&", Intervalo="&treatvalnull(ref("Intervalo"))&", Compartilhada='"&ref("Compartilhada")&"', Especialidades='"&ref("Especialidades")&"', Procedimentos='"&ref("Procedimentos")&"', Convenios='"&ref("Convenios")&"', Programas ='"&ref("Programas")&"', Profissionais='"&ref("Profissionais")&"', TipoGrade="& treatvalzero(ref("TipoGrade")) &", Horarios='"& ref("Horarios") &"', MaximoRetornos="& treatvalnull(ref("MaximoRetornos")) &", MaximoEncaixes="& treatvalnull(ref("MaximoEncaixes")) &", InicioVigencia="& mydatenull(ref("InicioVigencia")) &", FimVigencia="& mydatenull(ref("FimVigencia")) &", FrequenciaSemanas="&treatvalzero(ref("FrequenciaSemanas"))&", Mensagem='"& ref("Mensagem") &"', Cor='"& ref("Cor") &"', ValorHonorario="& treatvalnull(ref("ValorHonorario")) &", MarcarOrdem='"& ref("MarcarOrdem") &"', MarcarEmOrdemHoraA='"& ref("MarcarEmOrdemHoraA") &"', TipoLimiteHorario='"& ref("TipoLimiteHorario") &"',GradeEncaixe='"& ref("GradeEncaixe") &"' ,MarcarOrdemLimit='"& ref("MarcarOrdemLimit") &"' WHERE id="&intval(req("H"))
             call gravaLogs(sqlGrade, "AUTO", "Grade alterada diretamente", "ProfissionalID")
             db_execute(sqlGrade)
+            call eventEmitterID(127, sqlGrade, req("ProfissionalID"))
         end if
 
 

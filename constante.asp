@@ -428,7 +428,7 @@ else
 
 
     'desativa processo de logoff do user logado
-    if right(minute(time()), 1)="5" or right(minute(time()), 1)="0" and false then
+    if (right(minute(time()), 1)="5" or right(minute(time()), 1)="0") and false then
 
         if session("Admin")=1 then
             set LicencaSQL = dbc.execute("SELECT Status FROM cliniccentral.licencas WHERE id="&replace(session("Banco"), "clinic", "")&" AND Status='B'")

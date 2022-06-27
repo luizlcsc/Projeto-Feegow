@@ -7,6 +7,7 @@
 <!--#include file="Classes/StringFormat.asp"-->
 <!--#include file="modulos/audit/AuditoriaUtils.asp"-->
 <!--#include file="webhookFuncoes.asp"-->
+<!--#include file="Classes/eventEmitter.asp"-->
 
 <%
 if request.ServerVariables("REMOTE_ADDR")<>"::1" and request.ServerVariables("REMOTE_ADDR")<>"127.0.0.1" and session("Banco")<>"clinic5856" then
@@ -314,9 +315,10 @@ if erro="" then
 
     		'response.Write(sql&vbcrlf)
 
+            db.execute(sql)
+            call eventEmitter(106,sql)
     		call gravaLogs(sql, "AUTO", "Agendamento criado", "")
 
-            db.execute(sql)
             set pultCon=db.execute("select id, ProfissionalID from agendamentos order by id desc limit 1")
 
             call agendaUnificada("insert", pultCon("id"), pultCon("ProfissionalID"))
@@ -402,6 +404,7 @@ if erro="" then
             end if
             call gravaLogs(sqlUpdateAgendamento, "AUTO", DescricaoAlteracao, "")
             db.execute(sqlUpdateAgendamento)
+            call eventEmitter(107,sqlUpdateAgendamento)
 
             call statusPagto(ConsultaID, rfPaciente, rfData, rfrdValorPlano, rfValorPlano, rfStaID, rfProcedimento, rfProfissionalID)
 

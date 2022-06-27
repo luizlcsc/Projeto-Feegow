@@ -6620,5 +6620,13 @@ end function
 function Ceil(Number)
     Ceil = round(Number+0.1)
 end function
+
+function isBetaUser()
+    if LicenseID=522 or LicenseID=105 then
+        isBetaUser=True
+    else
+        isBetaUser=False
+    end if
+end function
 %>
 <!--#include file="funcoesIntegracaoLaboratorial.asp"-->

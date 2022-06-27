@@ -3,7 +3,7 @@
 <!--#include file="Classes/Connection.asp"-->
 <!--#include file="Classes/Senhas.asp"-->
 <!--#include file="connectCentral.asp"-->
-
+<!--#include file="Classes/eventEmitter.asp"-->s
 <%
 
 idInTable = ref("I")
@@ -59,9 +59,11 @@ if ref("User")<>"" then
 
 		if UserID="" then
 			dbc.execute("replace into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ('"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&Home&"')")
+			sqlEvent = "insert into licencasusuarios (Nome, Tipo, Email, Senha, LicencaID, Admin, Home) values ('"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', '"&ref("password")&"', '"&LicencaID&"', 0, '"&Home&"')"
 			set pult = dbc.execute("select * from licencasusuarios where Email = '"&ref("User")&"' order by id desc LIMIT 1")
 			UserID = pult("id")
-
+			
+			call eventEmitterID(125, sqlEvent, UserID)
 			set getNomeColuna = db.execute("select * from cliniccentral.sys_financialaccountsassociation where `table` = '"&Table&"'")
 
 			sqlinsert = "replace into licencasusuarios (id, Nome, Tipo, Email, VersaoSenha, SenhaCript, Senha, LicencaID, Admin, Home) "&_

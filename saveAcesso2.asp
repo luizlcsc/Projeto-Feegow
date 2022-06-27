@@ -68,7 +68,7 @@ if ref("User")<>"" then
 			            "values "&_
 			            "("&UserID&", '"&NomePessoa&"', '"&Table&"', '"&ref("User")&"', 3, SHA1('"&PasswordSalt&Password&"'), NULL, '"&LicencaID&"', 0, '"&Home&"')"
 
-			call ExecuteAllServers(sqlInsert)
+			db.execute(sqlInsert)
 			'local
 			db_execute("replace into sys_users (id, `Table`, NameColumn, idInTable, Permissoes) values ("&pult("id")&", '"&Table&"', '"&getNomeColuna("column")&"', '"&idInTable&"', '"&permissoesPadrao()&"')")
 		else
@@ -78,12 +78,12 @@ if ref("User")<>"" then
 				sqlupdate = "update cliniccentral.licencasusuarios set Ativo=1, Senha=NULL, VersaoSenha=3, SenhaCript=SHA1('"&PasswordSalt&Password&"'), AlterarSenhaAoLogin=0 " &_
 				            "where id="&UserID&" and LicencaID="&LicencaID
 
-				call ExecuteAllServers(sqlupdate)
+				db.execute(sqlupdate)
 			else
 				sqlupdate = "update cliniccentral.licencasusuarios set Ativo=1, Nome='"&NomePessoa&"', Tipo='"&Table&"', Email='"&ref("User")&"', " &_
 				            "Senha=NULL, VersaoSenha=3, SenhaCript=SHA1('"&PasswordSalt&Password&"'), " &_
 				            "Home='"&Home&"', AlterarSenhaAoLogin="&AlterarSenhaAoLogin&" where id="&UserID&" and LicencaID="&LicencaID
-                call ExecuteAllServers(sqlUpdate)
+                db.execute(sqlUpdate)
 			end if
 
             dbc.execute("INSERT INTO cliniccentral.licencasusuariossenhas (LicencaID,UsuarioID,Senha) VALUES ("&LicencaID&", "&UserID&", SHA1('" & PasswordSalt & Password &"'))")
@@ -123,7 +123,7 @@ else
 			<%
 		else
 			sqlupdate = "update licencasusuarios set Email=null,Senha=null,Ativo=0, Home='"&Home&"' where id = '"&UserID&"' and LicencaID="&LicencaID
-			call ExecuteAllServers(sqlupdate)
+			db.execute(sqlupdate)
 
 			%>
 

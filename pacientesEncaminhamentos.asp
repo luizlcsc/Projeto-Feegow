@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 EspecialidadeID = req("a")
+Cid10 = req("Cid10")
 
 if req("i")<>"" then
     set pp = db.execute("select * from encaminhamentos where id="& req("i"))

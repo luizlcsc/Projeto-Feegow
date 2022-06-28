@@ -579,7 +579,7 @@ setMemedError("Prescrição clássica ativa.")
                     <ul class="dropdown-menu" role="menu">
                         <%
                         if IntegracaoUnimedLondrina<>4 then%>
-                                <li><a href="javascript:validaNovoEncaminhamento('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, $('#EspecialidadeIDMemed').val());"><i class="far fa-plus"></i> Encaminhamento Padrão</a></li>
+                                <li><a href="javascript:validaNovoEncaminhamento('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, $('#EspecialidadeIDMemed').val(), $('#Cid10Memed').val());"><i class="far fa-plus"></i> Encaminhamento Padrão</a></li>
                             <%
                         end if
                             %>
@@ -1265,7 +1265,7 @@ LocalStorageRestoreHabilitar();
                 mfp('#modal-form');
             }
             var pl = $("#ProfissionalLaudadorID").val();
-            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a, function (data) {
+            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a + "&Cid10=" + $('#Cid10Memed').val(), function (data) {
                 $("#modal-form .panel").html(data);
             }).fail(function (data){
                 handleFormOpenError(t, p, m, i, a, FormID, CampoID);
@@ -1504,11 +1504,22 @@ function excluirSerie(id) {
         }
     });
 
-function validaNovoEncaminhamento(tipo, pacienteID, EspecialidadeID){
+function validaNovoEncaminhamento(tipo, pacienteID, EspecialidadeID, Cid10){
+    var vampoObrigatorio = false;
+    var texto = '';
+
+    if(tipo == "Encaminhamentos" && Cid10 == 0){
+        vampoObrigatorio = true;
+        texto = 'Selecione um Cid10';
+    }
     if(tipo == "Encaminhamentos" && EspecialidadeID == 0){
+        vampoObrigatorio = true;
+        texto = 'Selecione uma especialidade';
+    }
+    if(vampoObrigatorio){
         return new PNotify({
                 title: 'Dados inválidos!',
-                text: 'Selecione uma especialidade',
+                text: texto,
                 type: 'danger'
             });
     }

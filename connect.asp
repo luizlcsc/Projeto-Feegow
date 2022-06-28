@@ -1885,8 +1885,11 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
 
 	if value<>"" and isnumeric(value) then
 		if ccur(value)<>0 then
-
-			set getTextValue = db.execute("select id, "&showColumn&" from "&resource&" where id="&value)
+            CodigoCidi10 = ""
+            if resource = "cliniccentral.cid10" then
+                CodigoCidi10 = "concat(codigo, ' - ', descricao) as "
+            end if
+			set getTextValue = db.execute("select id, "&CodigoCidi10&showColumn&" from "&resource&" where id="&value)
 			if not getTextValue.EOF then
 				textValue = getTextValue(""&showColumn&"")
 			end if

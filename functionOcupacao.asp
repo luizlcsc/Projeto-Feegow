@@ -39,9 +39,9 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         set especialidadesRet = db_execute(getEspecialidades)
 
         if not especialidadesRet.eof  and especialidadesRet("data")&"" <> "" then
-            ontem = split(cdate(dateadd("d",-1,especialidadesRet("hoje")))," ")(0)
+            hoje = split(cdate(especialidadesRet("hoje"))," ")(0)
 
-            if cdate(split(especialidadesRet("data")&""," ")(0)) <> cdate(ontem) then 
+            if cdate(split(especialidadesRet("data")&""," ")(0)) <> cdate(hoje) then 
                 sqldeleteAll = "delete from agenda_horarios where sysUser="& treatvalzero(sysUser)
                 db.execute(sqldeleteAll)
             else
@@ -712,7 +712,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
         HoraA = bloq("HoraA")
         BloqueioID = bloq("id")
 
-        sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&", Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
+        sqlUP = "UPDATE agenda_horarios SET Bloqueado=1, BloqueioID="&treatvalzero(BloqueioID)&", Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND ProfissionalID="& treatvalnull(ProfissionalID) &" AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
 
         'response.write( sqlUP &" -> "& bloq("Profissionais") &"<br>")
         sqlProfissionalBloq = "ProfissionalID="& treatvalnull(ProfissionalID)
@@ -722,7 +722,7 @@ function ocupacao(De, Ate, refEspecialidade, reffiltroProcedimentoID, rfProfissi
             sqlProfissionalBloq = sqlProfissionalBloq & " OR ProfissionalID IN("& ProfissionaisBloq &") "
         end if
 
-        sqlUP = "UPDATE agenda_horarios SET BloqueioID="&treatvalzero(BloqueioID)&",Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
+        sqlUP = "UPDATE agenda_horarios SET Bloqueado=1, BloqueioID="&treatvalzero(BloqueioID)&",Situacao='B', GradeOriginal=if(GradeOriginal=1, 2, NULL) WHERE sysUser="& treatvalzero(sysUser) &" AND Data="& mydatenull(Data) &" AND ("& sqlProfissionalBloq &") AND Hora BETWEEN "& mytime(HoraDe) &" AND "& mytime(HoraA) &" AND Situacao IN('V', 'A')"
         db.execute( sqlUP )
 
         HBloqueados = HBloqueados + 1

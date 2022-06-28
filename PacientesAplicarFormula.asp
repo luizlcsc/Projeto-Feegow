@@ -108,6 +108,28 @@ elseif req("Tipo")="E" then
             Pedido = "<p><strong>"&listaPedido("TituloPedido")&"</strong>"
             Pedido = Pedido & listaPedido("TextoPedido")&"</p>"
             TextoFinal = Pedido
+
+			PacienteID = req("PacienteID")
+			if session("Table")="profissionais" then
+				ProfissionalID = session("idInTable")
+
+				if session("Atendimentos")<>"" then
+					qAtendimentosSQL = 	" SELECT a.id                               "														&chr(13)&_
+															" FROM atendimentos AS a                    "														&chr(13)&_
+															" WHERE PacienteID="&PacienteID&" AND a.ProfissionalID="&ProfissionalID	&chr(13)&_
+															" ORDER BY a.id DESC                        "														&chr(13)&_
+															" LIMIT 1                                   "
+					SET AtendimentoSQL = db.execute(qAtendimentosSQL)
+						if not AtendimentoSQL.eof then
+							AtendimentoID = AtendimentoSQL("id")
+							TextoFinal = tagsConverte(TextoFinal,"AtendimentoID_"&AtendimentoID,"")
+						end if
+					AtendimentoSQL.close
+					set AtendimentoSQL = nothing
+				end if
+			else
+				ProfissionalID=0
+			end if
         end if
     end if
 '	var PedidoExame = "<p><strong>"+$("#TituloPedido"+id).html()+"</strong><br /><br />";

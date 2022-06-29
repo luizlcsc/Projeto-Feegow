@@ -1885,7 +1885,7 @@ function selectInsert(label, name, value, resource, showColumn, othersToSelect, 
 
 	if value<>"" and isnumeric(value) then
 		if ccur(value)<>0 then
-        
+
 			set getTextValue = db.execute("select id, "&showColumn&" from "&resource&" where id="&value)
 			if not getTextValue.EOF then
 				textValue = getTextValue(""&showColumn&"")

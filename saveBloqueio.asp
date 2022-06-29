@@ -129,7 +129,7 @@ else
 			sqlUpBloq = "update compromissos set DataDe='"&mydate(DataInicio)&"', DataA='"&mydate(DataFim)&"', HoraDe='"&hour(HoraInicio)&":"&minute(HoraInicio)&"', HoraA='"&hour(HoraFim)&":"&minute(HoraFim)&"', ProfissionalID='"&ProfissionalID&"', Titulo='"&ref("Titulo")&"', Descricao='"&ref("Descricao")&"', Usuario='"&session("User")&"', Data='"&now()&"', DiasSemana='"&trim(DiasSemana)&"', Profissionais='"&ref("Profissionais")&"', Unidades='"&ref("Unidades")&"', BloqueioMulti='"&BloqueioMulti&"', feriadoID="&FeriadoID&" where id="&ref("BloqueioID")
 	'		response.Write(sqlUpBloq)
 			db_execute(sqlUpBloq)
-			call eventEmitter(131, sqlUpBloq, ProfissionalID)
+			call eventEmitter(131, sqlUpBloq)
 		end if
 		if isnumeric(ProfissionalID) then
 			if ccur(ProfissionalID) < 0 then

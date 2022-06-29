@@ -504,11 +504,31 @@ end if
                     <input type="hidden" name="DataExecucao<%= id %>" value="<%=DataExecucao%>" />
                     <%
                 end if
-                %>
+                OdontogramaObj=replace(OdontogramaObj,"&quot;","""")
+                if (OdontogramaObj<>"") then
+                    %>
+                    <script>
+                        $(document).ready(function(){
+                            var data = JSON.parse(JSON.stringify(<%=OdontogramaObj%>))
+                            var procedimentos = '';
+                            if (data.length > 1){
+                                data.forEach(function(odonto, i) {
+                                    procedimentos = procedimentos + odonto.id + " ("+odonto.faces[0]+"), "
+                                })
+                            }else{
+                                data.forEach(function(odonto, i) {
+                                    procedimentos =  odonto.id + " ("+odonto.faces[0]+") "
+                                })
+                            }
+                            $("#procedimentos<%=id%>").append("Regiões/Face: " + procedimentos)
+                        });
+                    </script>
+                <%end if %>
                 <%= quickField("datepicker", "DataExecucao"&id, "Data da Execu&ccedil;&atilde;o", 2, DataExecucao, "", "", ""&ExecucaoRequired&DisabledNaoAlterarExecutante) %>
                 <%= quickField("text", "HoraExecucao"&id, "In&iacute;cio", 1, HoraExecucao, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "HoraFim"&id, "Fim", 1, HoraFim, " input-mask-l-time", "", "") %>
                 <%= quickField("text", "Descricao"&id, "Observações", 3, Descricao, "", "", " maxlength='50'") %>
+                <div style="float:left; margin-left:15px; margin-top:10px; margin-bottom:10px; font-weight:bold" id="procedimentos<%=id%>"></div>
             <%end if %>
         </div>
         <div class="row" id="rat<%=id%>">

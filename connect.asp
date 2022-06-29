@@ -24,7 +24,7 @@ On Error Goto 0
 
 'db.Open ConnString
 LicenseID=replace(session("Banco"), "clinic", "")
-'componentslegacyurl = "http://localhost:8080/"
+'componentslegacyurl = "http://localhost:8080/feegow_components/"
 componentslegacyurl = "https://components-legacy.feegow.com/index.php"
 
 PorteClinica = session("PorteClinica") 

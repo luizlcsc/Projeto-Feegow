@@ -303,7 +303,7 @@ end if
                 <input type="hidden" name="AccountID" id="AccountID" value="<%=Pagador %>" />
             <%else %>
                 <label><%=Subtitulo%></label><br />
-                <%=selectInsertCA("", "AccountID", Pagador, "5, 4, 3, 2, 6, 8", "  onclick=""setTimeout(function(){autoPC($(`#AccountID`).val())},200);"" ", "  required", "")%>
+                <%=selectInsertCA("", "AccountID", Pagador, "5, 4, 3, 2, 6, 8", "  onclick=""setTimeout(function(){autoPC($(`#AccountID`).val());getTabelaCadastro($(`#AccountID`).val())},200);"" ", "  required", "")%>
             <%end if %>
         </div>
         <%
@@ -1319,6 +1319,14 @@ function autoPC(CA, ApenasLimitarPlanoContas) {
         });
     }
 }
+
+function getTabelaCadastro(id){
+
+    $.get("buscaTabelaCadastro.asp?ID="+id, function(data){
+            eval(data);
+        });
+}
+
 if($("#sysActive").val()==1){
     autoPC($("#AccountID").val(), true);
 }

@@ -20,10 +20,12 @@ function toDictionary(value)
         valores = UpdateVals(value)
         tipo = "update"
     end if
-    for i=0 to ubound(colunas)-1
-        d.Add colunas(i), valores(i)
-    next
-   set toDictionary = d
+    if tipo<>"" then
+        for i=0 to ubound(colunas)-1
+            d.Add colunas(i), valores(i)
+        next
+    end if
+    set toDictionary = d
 end function
 function treatStr(value)
     value = replace(value,";","")

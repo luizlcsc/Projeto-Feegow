@@ -5,7 +5,7 @@ Tipo = req("Tipo")
 I = req("I")
 
 if Tipo="I" then
-    db.execute("UPDATE buiforms SET TextoPersonalizado='"&ref("TextoPersonalizado")&"' WHERE id="&I)
+    db.execute("UPDATE buiforms SET TextoPersonalizado='"&refHTML("TextoPersonalizado")&"' WHERE id="&I)
 end if
 
 %>

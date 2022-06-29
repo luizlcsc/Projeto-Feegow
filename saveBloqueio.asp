@@ -124,7 +124,7 @@ else
 			sqlBloq = "insert into compromissos (DataDe, DataA, HoraDe, HoraA, ProfissionalID, Titulo, Descricao, Usuario, Data, DiasSemana, Profissionais, Unidades, BloqueioMulti,FeriadoID) values ('"&mydate(DataInicio)&"', '"&mydate(DataFim)&"', '"&hour(HoraInicio)&":"&minute(HoraInicio)&"', '"&hour(HoraFim)&":"&minute(HoraFim)&"', '"&ProfissionalID&"', '"&ref("Titulo")&"', '"&ref("Descricao")&"', '"&session("User")&"', '"&now()&"', '"&trim(DiasSemana)&"','"&ref("Profissionais")&"','"&Unidades&"','"&BloqueioMulti&"',"&FeriadoID&")"
 			db_execute(sqlBloq)
 
-			call eventEmitter(130, sqlInsert, ProfissionalID)
+			call eventEmitter(130, sqlInsert)
 		else
 			sqlUpBloq = "update compromissos set DataDe='"&mydate(DataInicio)&"', DataA='"&mydate(DataFim)&"', HoraDe='"&hour(HoraInicio)&":"&minute(HoraInicio)&"', HoraA='"&hour(HoraFim)&":"&minute(HoraFim)&"', ProfissionalID='"&ProfissionalID&"', Titulo='"&ref("Titulo")&"', Descricao='"&ref("Descricao")&"', Usuario='"&session("User")&"', Data='"&now()&"', DiasSemana='"&trim(DiasSemana)&"', Profissionais='"&ref("Profissionais")&"', Unidades='"&ref("Unidades")&"', BloqueioMulti='"&BloqueioMulti&"', feriadoID="&FeriadoID&" where id="&ref("BloqueioID")
 	'		response.Write(sqlUpBloq)

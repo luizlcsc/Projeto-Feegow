@@ -63,7 +63,7 @@ if ref("User")<>"" then
 			set pult = dbc.execute("select * from licencasusuarios where Email = '"&ref("User")&"' order by id desc LIMIT 1")
 			UserID = pult("id")
 			
-			call eventEmitter(125, sqlEvent, UserID)
+			call eventEmitterID(125, sqlEvent, UserID)
 			set getNomeColuna = db.execute("select * from cliniccentral.sys_financialaccountsassociation where `table` = '"&Table&"'")
 
 			sqlinsert = "replace into licencasusuarios (id, Nome, Tipo, Email, VersaoSenha, SenhaCript, Senha, LicencaID, Admin, Home) "&_

@@ -4,7 +4,7 @@
 <%
 
 function ExecuteAllServers(sql)
-    sqlServers = "select * from cliniccentral.db_servers where Active=1 and Env='"&getEnv("FC_APP_ENV","local")&"'"
+    sqlServers = "select * from cliniccentral.db_servers where Active=1 and isMain=1 and Env='"&getEnv("FC_APP_ENV","local")&"'"
 
     set AllServers = db.execute(sqlServers)
     valueToReturn = Null

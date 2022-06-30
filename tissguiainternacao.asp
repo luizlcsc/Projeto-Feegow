@@ -476,9 +476,10 @@ width: 100%!important;
             </div>
             <br />
             <div class="row">
-                <div class="col-md-2">
-                    <%= selectInsert("CID 10 Principal", "Cid1", Cid1, "cliniccentral.cid10", "codigo", "", "", "") %>
-                </div>
+                <!--<div class="col-md-2">-->
+                    <%= quickField("simpleSelect", "Cid1", "CID 10 Principal", 2, Cid1, "select id, codigo, CONCAT(codigo,' - ',descricao) AS descricao from cliniccentral.cid10 ORDER BY descricao", "descricao", " empty="""" required=""required""") %>
+                    <%'= selectInsert("CID 10 Principal", "Cid1", Cid1, "cliniccentral.cid10", "codigo", " required='required' ", "", "") %>
+                <!--</div>-->
                 <div class="col-md-2">
                     <%= selectInsert("CID 10 (2)", "Cid2", Cid2, "cliniccentral.cid10", "codigo", "", "", "") %>
                  </div>

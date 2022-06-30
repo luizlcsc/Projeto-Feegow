@@ -567,7 +567,7 @@ setMemedError("Prescrição clássica ativa.")
                     <%
                     qCid10SQL = "SELECT id,codigo,CONCAT(codigo, ' - ', Descricao) as Descricao FROM cliniccentral.cid10"
 
-                    response.write(quickfield("select", "Cid10Memed", "CID 10", "", "", qCid10SQL, "Descricao", ""))
+                    response.write(quickfield("select", "Cid10Timeline", "CID 10", "", "", qCid10SQL, "Descricao", ""))
                     %>
                 </div>
                 <br>
@@ -579,7 +579,7 @@ setMemedError("Prescrição clássica ativa.")
                     <ul class="dropdown-menu" role="menu">
                         <%
                         if IntegracaoUnimedLondrina<>4 then%>
-                                <li><a href="javascript:validaNovoEncaminhamento('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, $('#EspecialidadeIDMemed').val(), $('#Cid10Memed').val());"><i class="far fa-plus"></i> Encaminhamento Padrão</a></li>
+                                <li><a href="javascript:validaNovoEncaminhamento('<%= replace(Tipo, "|", "") %>', <%=PacienteID%>, $('#EspecialidadeIDMemed').val(), $('#Cid10Timeline').val());"><i class="far fa-plus"></i> Encaminhamento Padrão</a></li>
                             <%
                         end if
                             %>
@@ -1265,7 +1265,7 @@ LocalStorageRestoreHabilitar();
                 mfp('#modal-form');
             }
             var pl = $("#ProfissionalLaudadorID").val();
-            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a + "&Cid10=" + $('#Cid10Memed').val(), function (data) {
+            $.get("iPront.asp?pl=" + pl + "&t=" + t + "&p=" + p + "&m=" + m + "&i=" + i  + "&a=" + a + "&Cid10=" + $('#Cid10Timeline').val(), function (data) {
                 $("#modal-form .panel").html(data);
             }).fail(function (data){
                 handleFormOpenError(t, p, m, i, a, FormID, CampoID);

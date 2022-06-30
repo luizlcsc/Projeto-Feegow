@@ -238,6 +238,47 @@ while not campo.eof
                     <div class="col-md-12" id="ciapList<%= CampoID %>"></div>
                 </div>
             <%
+
+        case 16'CID-10 - usar a lógica do campo que auto-sugere
+            %>
+            <div class="panel-body">
+                <div class="col-md-12">
+            <%
+                    NomeCid = ""
+                    if ValorPadrao<>"" and isnumeric(ValorPadrao) and not isnull(ValorPadrao) then
+                        set pcid = db.execute("select * from cliniccentral.cid10 where id = '"&ValorPadrao&"'")
+                        if not pcid.eof then
+                            NomeCid = pcid("Codigo") &" - "& pcid("Descricao")
+                        end if
+                    end if
+                    if LadoALado="S" then
+                        %><table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td width="1%" class="cel_label" nowrap>
+                                    <label class="campoLabel"><%=Rotulo%> <% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%> </label>                        </td>
+                                <td width="99%" class="cel_input">
+                                    <input tabindex="<%=Ordem%>"  data-name="<%=Rotulo%>" data-campoid="<%=CampoID%>" class="campoInput form-control" name="input_<%=CampoID%>" id="input_<%=CampoID%>" value="<%=ValorPadrao%>" type="text" <% if Obrigatorio = "S" then %>required <%end if%>>
+                                </td>
+                            </tr>
+                        </table><%
+                    else
+                        %>
+                        <label class="campoLabel"><%=Rotulo%><% if Obrigatorio = "S" then %><small class="text-danger">*</small><%end if%></label>
+                        <select id="Campo<%=CampoID %>"  data-campoid="<%=CampoID%>" data-name="<%=Rotulo%>" name="Campo<%=CampoID %>" <% if Obrigatorio = "S" then %>required <%end if%> class="form-control campoInput prot">
+                            <option value="<%=ValorPadrao %>"><%=NomeCid %></option>
+                        </select>
+                        <script type="text/javascript">
+                            s2aj('Campo<%=CampoID%>', 'cliniccentral.cid10', 'Descricao', '','')
+                        </script>
+
+                    <%
+                    end if
+                    %>
+                </div>
+            </div>
+        <%
+
+
         case 9'TABELA
 
             if instr(Rotulo, "::") then

@@ -63,7 +63,7 @@ if Tipo = "ciapAdd" then
                                     " FROM cliniccentral.tesauro t "&_
                                     " LEFT JOIN cliniccentral.cid10 c ON c.codigo = REPLACE(t.CID10_Cd1,'.','') "&_
                                     " WHERE t.id="&ID)
-        if not Cid10SQL.eof then
+        if not Cid10SQL.eof AND pCampo("EnviarDadosCid")&"" = "1" then
             CidID = Cid10SQL("id")
             DescricaoCid10 = Cid10SQL("Descricao")
             db.execute("insert into pacientesdiagnosticos (PacienteID, PacientesCiapID, FormID, CidID, Descricao, sysUser, sysActive) values ("& PacienteID &", '"& PacientesCiapSQL("last") &"', "& FormID &", "& CidID &", '"& DescricaoCid10 &"', "& session("User") &", '-1')")

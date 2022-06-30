@@ -1,6 +1,7 @@
 <!--#include file="connect.asp"-->
 <%
 EspecialidadeID = req("a")
+Cid10 = req("Cid10")
 
 if req("i")<>"" then
     set pp = db.execute("select * from encaminhamentos where id="& req("i"))
@@ -47,7 +48,7 @@ end if
                         <%response.write(quickField("simpleSelect", "EspecialidadeID", "Especialidade para encaminhamento", 12, EspecialidadeID, "SELECT * FROM especialidades esp WHERE esp.sysActive=1 order by especialidade", "especialidade", "required semVazio disabled"))%>
                     </div>
                     <div class="col-md-6">
-                        <%response.write selectInsert(" CID 10 ", "Cid1", Cid10, "cliniccentral.cid10", "codigo", "", "", "") %>
+                        <%response.write(quickField("simpleSelect", "Cid1", " CID 10 ", 12, Cid10, "select id, concat(codigo, ' - ', descricao) as codigo from cliniccentral.cid10", "codigo", "required semVazio disabled"))%>
                     </div>
                 </div>
                 </div>

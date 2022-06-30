@@ -14,14 +14,6 @@ if Associacao = 3 then
         %>
         $("#invTabelaID").val("<%=TabelaID%>").change();
         <%
-    else 
-        %>
-        $("#invTabelaID").val("0").change();
-        <%  
     end if
-else 
-     %>
-     $("#invTabelaID").val("0").change();
-    <% 
 end if
 %>

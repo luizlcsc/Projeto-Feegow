@@ -44,10 +44,6 @@ if session("Partner")<>"" then
 
 	db_execute("update atendimentos set HoraFim=( select time(UltRef) from sys_users where id="&session("User")&" ) where isnull(HoraFim) and sysUser="&session("User")&" order by id desc limit 1")
 
-        'on error resume next
-        %>
-        <!--#include file="atualizaBanco2.asp"-->
-        <%
 	response.Redirect("./?P=Agenda-1&Pers=1")
 end if
 %>

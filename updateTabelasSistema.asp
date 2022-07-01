@@ -39,10 +39,6 @@ if req("RefazSistema")="S" then
 	t.close
 	set t=nothing
 	
-	%>
-	<!--include file="atualizaBanco22062015.asp"-->
-	<%
-
 	response.Redirect("updateComparaTabelas.asp")
 end if
 %>

@@ -605,17 +605,20 @@ end if
                                                     end if
                                                     response.Write( Rotulo &"<br>"& NomeCid &"<br>" )
                                                 case else
-
+                                                    valorCampo = ""
+                                                    valorComplemento = ""
                                                     if Valor<>"" and Valor<>"<p><br></p>" then
                                                         if left(Valor, 5)="{\rtf" then
                                                                 'problema de conversao de RTF com problema critico
                                                                 'call limpa("_"&ti("Modelo"), pcampos("id"), reg("id"))
 
                                                         end if
-                                                        response.Write( Rotulo &"<br>"& unscapeOutput(Valor)  &"<br>" )
+                                                        'response.Write( Rotulo &"<br>"& unscapeOutput(Valor)  &"<br>" )
+                                                        valorCampo = unscapeOutput(Valor)
                                                     end if
 
                                                     'CID e BMJ de campos de formulários Estruturados
+
                                                     if instr(pcampos("Estruturacao"), "|CID|") > 0 then
                                                         sqlBmj = montaSubqueryBMJ("bmj.codcid10 = t.CID10_Cd1")
                                                         sqlCiap = "SELECT t.CID10_Cd1 as Codigo, c.Descricao as Termo, " & sqlBmj & " as bmj_link " &_
@@ -627,12 +630,17 @@ end if
                                                         set rsCiap = db.execute(sqlCiap)
                                                         while not rsCiap.eof
                                                             'response.write( rsCiap("Codigo") &" "& rsCiap("bmj_link") & "<br>")
-                                                            response.write( rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            'response.write( rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "<br>")
+                                                            valorComplemento = valorComplemento & "<p>" & rsCiap("Codigo") &" - "& rsCiap("Termo") &" "& rsCiap("bmj_link") & "</p>"
                                                             rsCiap.movenext
                                                         wend
                                                         rsCiap.close
                                                         set rsCiap = nothing
 
+                                                    end if
+
+                                                    if valorCampo <> "" OR valorComplemento <> "" then
+                                                        response.Write( "<br>"&Rotulo &"<br>"& valorCampo & valorComplemento)
                                                     end if
 
                                             end select

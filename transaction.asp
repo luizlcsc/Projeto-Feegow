@@ -336,11 +336,11 @@ end if
                 end if
 				%>
                <div>
-                    <label>Saindo de</label> <br />
+                    <label>Entrando em</label> <br />
                     <%=selectInsertCA("", "transactionAccountIDCredit", ref("transactionAccountIDCredit"), "3", "", " required  onchange='cPlan()' " & readonly, "")%>
                </div>
                <div>
-                    <label>Entrando em</label> <br />
+                    <label>Saindo de</label> <br />
                     <%
                     if contaPaciente <> False then
                         set NomePacienteSQL = db_execute("SELECT NomePaciente FROM pacientes WHERE id="&PacienteID)

@@ -360,6 +360,25 @@ select case Tipo
                 %>
             </div>
         </div>
+
+        <script>
+            var formsLoaded = false;
+            function loadFormOptions(tipo, pacienteId, force = false){
+                if(!formsLoaded || force){
+
+                    $.get("modulos/forms/LoadFormsByUser.asp", {Tipo:tipo, PacienteID: pacienteId, force: force ? 1 : 0, EspecialidadeID: '<%=EspecialidadeIDUsuario%>', EmAtendimento:'<%=EmAtendimento%>'}, function(data){
+                        $("#list-form-options").html(data);
+                        $('[data-toggle=tooltip]').tooltip();
+
+                        if(force){
+                            $(".btn-group-insert-form").addClass("open");
+                        }
+
+                        formsLoaded=true;
+                    });
+                }
+            }
+        </script>
         <%
     case "|Diagnostico|"
         subTitulo = "Diagnósticos"
@@ -1562,21 +1581,4 @@ function prontPrint(tipo, id){
         "modal-lg");
 }
 
-
-var formsLoaded = false;
-function loadFormOptions(tipo, pacienteId, force = false){
-    if(!formsLoaded || force){
-
-        $.get("modulos/forms/LoadFormsByUser.asp", {Tipo:tipo, PacienteID: pacienteId, force: force ? 1 : 0, EspecialidadeID: '<%=EspecialidadeIDUsuario%>', EmAtendimento:'<%=EmAtendimento%>'}, function(data){
-            $("#list-form-options").html(data);
-            $('[data-toggle=tooltip]').tooltip();
-
-            if(force){
-                $(".btn-group-insert-form").addClass("open");
-            }
-
-            formsLoaded=true;
-        });
-    }
-}
 </script>
